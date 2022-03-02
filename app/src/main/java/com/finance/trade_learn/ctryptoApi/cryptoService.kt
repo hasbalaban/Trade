@@ -35,7 +35,6 @@ class cryptoService() {
         return retrofit.AllCrypto200(newApi)
 
     }
-
     fun selectedCoinToTrade(coinName: String): Single<List<BaseModelOneCryptoModel>> {
         val newApi = ApiHolder.create()
         return retrofit.selectedCoinToTrade(coinName=coinName,apiKey = newApi)
