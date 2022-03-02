@@ -116,6 +116,7 @@ dependencies {
 
     // Smart Look
     implementation 'com.smartlook.recording:app:1.8.9-native'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
 
 
