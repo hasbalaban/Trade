@@ -17,7 +17,7 @@ android {
         }
 
         debug {
-            storeFile file('myKey.jks')
+            storeFile file('./myKey.jks')
             keyAlias 'myKey'
             storePassword KEYSTORE_PASSWORD
             keyPassword KEY_PASSWORD
