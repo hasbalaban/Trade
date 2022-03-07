@@ -68,7 +68,7 @@ jobs:
 
 
       - name: Sharing on slack
-        uses: rtCamp/action-slack-notify@v2.1.0
+        uses: adrey/slack-file-upload-action@1.0.5
         env:
           # Your slack webhook GitHub secret
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
@@ -78,3 +78,5 @@ jobs:
           SLACK_TITLE: "Android X_X_X.aab"
           SLACK_MESSAGE: "Carla Android"
           SHOW_ACTIONS_URL: false
+          path: ./app/build/outputs/apk/debug/app-debug.apk
+          filename: Github Actions App.apk
