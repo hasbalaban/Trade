@@ -8,6 +8,21 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/Users/hasan/Documents/GitHub/LearnCrypto2/app/myKey.jks')
+            keyAlias 'myKey'
+            storePassword KEYSTORE_PASSWORD
+            keyPassword KEY_PASSWORD
+        }
+
+        debug {
+            storeFile file('/Users/hasan/Documents/GitHub/LearnCrypto2/app/myKey.jks')
+            keyAlias 'myKey'
+            storePassword KEYSTORE_PASSWORD
+            keyPassword KEY_PASSWORD
+        }
+    }
     compileSdk 31
 
     defaultConfig {
@@ -21,11 +36,28 @@ android {
     buildFeatures {
         dataBinding = true
     }
+
+
     buildTypes {
         release {
+            zipAlignEnabled true
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            ndk {
+                abiFilters ""
+            }
+            manifestPlaceholders = [crashlyticsCollectionEnabled:"true"]
         }
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            zipAlignEnabled false
+            signingConfig signingConfigs.debug
+            manifestPlaceholders = [crashlyticsCollectionEnabled:"false"]
+        }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
