@@ -6,9 +6,6 @@ on:
       - git_action
 jobs:
   build:
-
-
-
     name: Building app
     runs-on: ubuntu-latest
     steps:
@@ -39,21 +36,23 @@ jobs:
       - name: Runing build command
         # Run your own gradle command to generate build.
         run: ./gradlew bundleRelease
-
-
-
-
-      - name: Upload APK to Github Artifacts
-        uses: actions/upload-artifact@v1
+      - name: Uploading build
+        uses: actions/upload-artifact@v2
         with:
-          name: app
-          path: /home/runner/work/LearnCrypto2/LearnCrypto2/app/build/outputs/bundle/release/app-release.aab
+          name: bundle
+          path: app/build/outputs/bundle/release/app-release.aab
 
-      - name: Send APK to Slack
-        uses: adrey/slack-file-upload-action@1.0.5
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'echo ${{ github.event.inputs.message }} > message.txt'
+      - uses: MeilCli/slack-upload-file@v1
+        id: message
         with:
-          token: ${{ secrets.SLACK_TOKEN }}
-          path: /home/runner/work/LearnCrypto2/LearnCrypto2/app/build/outputs/bundle/release/app-release.aab
-          channel:  ${{ secrets.SLACK_CHANNEL }}
-          filename: App.aab
-          initial_comment: ${{ github.event.head_commit.message }}
+          slack_token: ${{ secrets.SLACK_TOKEN }}
+          channels: ${{ secrets.SLACK_CHANNEL }}
+          file_path: 'message.txt'
+          file_name: 'message.txt'
+          file_type: 'abb'
+          initial_comment: 'post by slack-upload-file'
+      - run: 'echo ${{ fromJson(steps.message.outputs.response).file.permalink }}'
