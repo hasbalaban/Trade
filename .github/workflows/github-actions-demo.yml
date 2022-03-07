@@ -50,3 +50,4 @@ jobs:
           SLACK_USERNAME: "Carla Android"
           SLACK_TITLE: "Android X_X_X.aab"
           SLACK_MESSAGE: "test"
+          SHOW_ACTIONS_URL: false
