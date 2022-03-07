@@ -48,6 +48,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        print("sd")
 
 
     }
