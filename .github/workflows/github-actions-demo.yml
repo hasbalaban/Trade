@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: Building app
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checking out branch
         uses: actions/checkout@v2
