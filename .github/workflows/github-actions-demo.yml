@@ -40,20 +40,20 @@ jobs:
       - name: Uplaoding to IAS
         id: ias
         uses: sagar-viradiya/internal-app-sharing-action@v1.1.0
-      with:
-      # Your service account JSON GitHub secret
-      serviceAccountJsonPlainText: ${{ secrets.[your-github-service-acc-json-secret] }}
-      # Your package name
-      packageName: 'com.finance.trade_learn'
-      aabFilePath: 'app-release.aab'
+        with:
+          # Your service account JSON GitHub secret
+          serviceAccountJsonPlainText: ${{ secrets.[your-github-service-acc-json-secret] }}
+          # Your package name
+          packageName: 'com.finance.trade_learn'
+          aabFilePath: 'app-release.aab'
 
-        - name: Sharing on slack
-          uses: rtCamp/action-slack-notify@v2.1.0
-          env:
-            # Your slack webhook GitHub secret
-            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-            # Slack channel where you want to notify
-            SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
-            SLACK_USERNAME: "JARVIS"
-            SLACK_TITLE: "Internal testing build"
-            SLACK_MESSAGE: ${{ dowload }}
+      - name: Sharing on slack
+        uses: rtCamp/action-slack-notify@v2.1.0
+        env:
+          # Your slack webhook GitHub secret
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          # Slack channel where you want to notify
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_USERNAME: "JARVIS"
+          SLACK_TITLE: "Internal testing build"
+          SLACK_MESSAGE: ${{ dowload }}
