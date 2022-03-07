@@ -36,47 +36,22 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
       - name: Runing build command
         # Run your own gradle command to generate build.
         run: ./gradlew bundleRelease
+
       - name: Uploading build
         uses: actions/upload-artifact@v2
         with:
           name: bundle
           path: app/build/outputs/bundle/release/app-release.aab
 
-
-  upload_to_internal_app_sharing:
-    name: Uploading build to IAS
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Downloading build
-        uses: actions/download-artifact@v2
-        with:
-          name: bundle
-
-      - name: Uplaoding to IAS
-        id: ias
-        uses: sagar-viradiya/internal-app-sharing-action@v1.1.0
-        with:
-          # Your service account JSON GitHub secret
-          serviceAccountJsonPlainText: ${{ secrets.SERVICE_GITHUB }}
-          # Your package name
-          packageName: 'com.finance.trade_learn'
-          aabFilePath: 'app-release.aab'
-
-
-      - name: Sharing on slack
+      - name: Send APK to Slack
         uses: adrey/slack-file-upload-action@1.0.5
-        env:
-          # Your slack webhook GitHub secret
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          # Slack channel where you want to notify
-          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
-          SLACK_USERNAME: "Carla Android"
-          SLACK_TITLE: "Android X_X_X.aab"
-          SLACK_MESSAGE: "Carla Android"
-          SHOW_ACTIONS_URL: false
-          path: ./app/build/outputs/apk/debug/app-debug.apk
-          filename: Github Actions App.apk
+        with:
+          path: app/build/outputs/bundle/release/app-release.aab
+          channel:  ${{ secrets.SLACK_CHANNEL }}
+          filename: Github Actions bundle.aab
+
+
