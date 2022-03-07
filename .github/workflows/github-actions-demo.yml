@@ -26,34 +26,3 @@ jobs:
         with:
           name: bundle
           path: app/build/outputs/bundle/release/app-release.aab
-
-
-  upload_to_internal_app_sharing:
-    name: Uploading build to IAS
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Downloading build
-        uses: actions/download-artifact@v2
-        with:
-          name: bundle
-      - name: Uplaoding to IAS
-        id: ias
-        uses: sagar-viradiya/internal-app-sharing-action@v1.1.0
-      with:
-      # Your service account JSON GitHub secret
-        serviceAccountJsonPlainText: ${{ secrets.[your-github-service-acc-json-secret] }}
-      # Your package name
-        packageName: 'com.finance.trade_learn'
-        aabFilePath: 'app-release.aab'
-
-        - name: Sharing on slack
-          uses: rtCamp/action-slack-notify@v2.1.0
-          env:
-            # Your slack webhook GitHub secret
-            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-            # Slack channel where you want to notify
-            SLACK_CHANNEL: [secrets.SLACK_CHANNEL]
-            SLACK_USERNAME: "JARVIS"
-            SLACK_TITLE: "Internal testing build"
-            SLACK_MESSAGE: "test"
