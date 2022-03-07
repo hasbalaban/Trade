@@ -55,4 +55,4 @@ jobs:
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
           SLACK_USERNAME: "JARVIS"
           SLACK_TITLE: "Internal testing build"
-          SLACK_MESSAGE: ${{ dowload }}
+          SLACK_MESSAGE: "test"
