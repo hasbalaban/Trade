@@ -37,7 +37,15 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: bundle
-
+      - name: Uplaoding to IAS
+        id: ias
+        uses: sagar-viradiya/internal-app-sharing-action@v1.1.0
+        with:
+          # Your service account JSON GitHub secret
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_GITHUB }}
+          # Your package name
+          packageName: 'com.finance.trade_learn'
+          aabFilePath: 'app-release.aab'
 
       - name: Sharing on slack
         uses: rtCamp/action-slack-notify@v2.1.0
