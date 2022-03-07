@@ -38,7 +38,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Downloading build
         uses: actions/download-artifact@v2
         with:
