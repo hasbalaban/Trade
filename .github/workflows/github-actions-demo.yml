@@ -39,7 +39,6 @@ jobs:
           name: bundle
 
 
-      - name: Uplaoding to IAS
 
 
       - name: Sharing on slack
