@@ -54,6 +54,5 @@ jobs:
           path: ./app/build/outputs/bundle/release/app-release.aab
           channel:  ${{ secrets.SLACK_CHANNEL }}
           filename: bundle.aab
-          initial_comment: ${{ github.event.head_commit.message }}
 
 
