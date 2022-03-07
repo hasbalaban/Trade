@@ -47,17 +47,35 @@ jobs:
 
 
 
-      - name: Upload APK to Github Artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          name: bundle
-          path: ./home/runner/work/LearnCrypto2/app/build/outputs/bundle/release/app-release.aab
+      upload_to_internal_app_sharing:
+        name: Uploading build to IAS
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+          - name: Downloading build
+            uses: actions/download-artifact@v2
+            with:
+              name: bundle
 
-      - name: Send APK to Slack
-        uses: adrey/slack-file-upload-action@1.0.5
-        with:
-          token: ${{ secrets.SLACK_TOKEN }}
-          path: app/build/outputs/bundle/release/app-release.aab
-          channel:  ${{ secrets.SLACK_CHANNEL }}
-          filename: Github_Actions_App.apk
-          initial_comment: ${{ github.event.head_commit.message }}
+
+
+          - name: Upload APK to Github Artifacts
+            uses: actions/upload-artifact@v1
+            id: ias
+            with:
+              name: app
+              path: app/build/outputs/apk/debug/app-debug.apk
+
+
+          - name: Sharing on slack
+            uses: adrey/slack-file-upload-action@1.0.5
+            env:
+              # Your slack webhook GitHub secret
+              SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+              # Slack channel where you want to notify
+              SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+              SLACK_USERNAME: "Carla Android"
+              SLACK_TITLE: "Android X_X_X.aab"
+              SLACK_MESSAGE: "Carla Android " + ${{ steps.ias.outputs.downloadUrl }}
+              SHOW_ACTIONS_URL: false
+
