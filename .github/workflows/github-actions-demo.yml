@@ -6,9 +6,27 @@ on:
       - git_action
 jobs:
   build:
+
+
+
     name: Building app
     runs-on: ubuntu-latest
     steps:
+
+      - name: start Create Apk and Bundle
+        uses: rtCamp/action-slack-notify@v2.1.0
+        env:
+          # Your slack webhook GitHub secret
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          # Slack channel where you want to notify
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_USERNAME: "Carla Android"
+          SLACK_TITLE: "Carla Android"
+          SLACK_MESSAGE: "Create Apk And Bundle Started"
+          SHOW_ACTIONS_URL: false
+
+
+
       - name: Checking out branch
         uses: actions/checkout@v2
         with:
