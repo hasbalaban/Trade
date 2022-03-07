@@ -3,7 +3,7 @@ on:
   push:
     branches:
       # Specify branch from where you are sharing build
-      -  git_action
+      - git_action
 jobs:
   build:
     name: Building app
