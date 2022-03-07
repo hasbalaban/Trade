@@ -51,8 +51,7 @@ jobs:
         with:
           slack_token: ${{ secrets.SLACK_TOKEN }}
           channels: ${{ secrets.SLACK_CHANNEL }}
-          file_path: 'message.txt'
-          file_name: 'message.txt'
-          file_type: 'abb'
+          file_path: app/build/outputs/bundle/release/app-release.aab
+          file_name: 'app-release.aab'
+          file_type: 'aab'
           initial_comment: 'post by slack-upload-file'
-      - run: 'echo ${{ fromJson(steps.message.outputs.response).file.permalink }}'
