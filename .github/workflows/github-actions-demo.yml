@@ -33,10 +33,10 @@ jobs:
 
 
   upload_to_internal_app_sharing:
-
     name: Uploading build to IAS
     needs: build
     runs-on: ubuntu-latest
+
     steps:
       - name: Downloading build
         uses: actions/download-artifact@v2
