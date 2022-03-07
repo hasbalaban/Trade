@@ -42,10 +42,10 @@ jobs:
         uses: sagar-viradiya/internal-app-sharing-action@v1.1.0
       with:
       # Your service account JSON GitHub secret
-      serviceAccountJsonPlainText: ${{ secrets.[your-github-service-acc-json-secret] }}
+        serviceAccountJsonPlainText: ${{ secrets.[your-github-service-acc-json-secret] }}
       # Your package name
-      packageName: 'com.finance.trade_learn'
-      aabFilePath: 'app-release.aab'
+        packageName: 'com.finance.trade_learn'
+        aabFilePath: 'app-release.aab'
 
         - name: Sharing on slack
           uses: rtCamp/action-slack-notify@v2.1.0
