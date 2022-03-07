@@ -7,7 +7,7 @@ on:
 jobs:
   upload_to_internal_app_sharing:
     name: Uploading build to IAS
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
   - name: Sharing on slack
       uses: rtCamp/action-slack-notify@v2.1.0
       env:
