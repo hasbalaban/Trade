@@ -47,7 +47,7 @@ jobs:
           packageName: 'com.finance.trade_learn'
           aabFilePath: 'app-release.aab'
 
-        - name: Sharing on slack
+      - name: Sharing on slack
         uses: rtCamp/action-slack-notify@v2.1.0
         env:
           # Your slack webhook GitHub secret
