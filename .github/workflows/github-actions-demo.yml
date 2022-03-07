@@ -50,6 +50,7 @@ jobs:
       - name: Send APK to Slack
         uses: adrey/slack-file-upload-action@1.0.5
         with:
+          token: ${{ secrets.SLACK_TOKEN }}
           path: app/build/outputs/bundle/release/app-release.aab
           channel:  ${{ secrets.SLACK_CHANNEL }}
           filename: Github Actions bundle.aab
