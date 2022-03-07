@@ -51,13 +51,13 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: app
-          path: ./app/build/outputs/bundle/release/app-release.aab
+          path: app/build/outputs/bundle/release/app-release.aab
 
       - name: Send APK to Slack
         uses: adrey/slack-file-upload-action@1.0.5
         with:
           token: ${{ secrets.SLACK_TOKEN }}
-          path: ./app/build/outputs/bundle/release/app-release.aab
+          path: app/build/outputs/bundle/release/app-release.aab
           channel:  ${{ secrets.SLACK_CHANNEL }}
           filename: Github_Actions_App.apk
           initial_comment: ${{ github.event.head_commit.message }}
