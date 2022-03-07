@@ -5,14 +5,20 @@ on:
       # Specify branch from where you are sharing build
       -  git_action
 jobs:
-  build:
-    name: Building app
+  upload_to_internal_app_sharing:
+    name: Uploading build to IAS
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checking out branch
-        uses: actions/checkout@v2
-        with:
-          # Specify branch to checkout
-          ref: git_action
+          - name: Sharing on slack
+            uses: rtCamp/action-slack-notify@v2.1.0
+            env:
+              # Your slack webhook GitHub secret
+              SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+              # Slack channel where you want to notify
+              SLACK_CHANNEL:  ${{secrets.SLACK_CHANNEL}}
+              SLACK_USERNAME: "JARVIS"
+              SLACK_TITLE: "Internal testing build"
+              SLACK_MESSAGE: "test"
 
 
