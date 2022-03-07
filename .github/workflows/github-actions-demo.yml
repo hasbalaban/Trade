@@ -7,18 +7,16 @@ on:
 jobs:
   upload_to_internal_app_sharing:
     name: Uploading build to IAS
-    needs: build
     runs-on: ubuntu-latest
-    steps:
-          - name: Sharing on slack
-            uses: rtCamp/action-slack-notify@v2.1.0
-            env:
+  - name: Sharing on slack
+      uses: rtCamp/action-slack-notify@v2.1.0
+      env:
               # Your slack webhook GitHub secret
-              SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
               # Slack channel where you want to notify
-              SLACK_CHANNEL:  ${{secrets.SLACK_CHANNEL}}
-              SLACK_USERNAME: "JARVIS"
-              SLACK_TITLE: "Internal testing build"
-              SLACK_MESSAGE: "test"
+      SLACK_CHANNEL:  ${{secrets.SLACK_CHANNEL}}
+      SLACK_USERNAME: "JARVIS"
+      SLACK_TITLE: "Internal testing build"
+      SLACK_MESSAGE: "test"
 
 
