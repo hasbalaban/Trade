@@ -54,6 +54,6 @@ jobs:
         with:
           token: ${{ secrets.SLACK_TOKEN }}
           path: app/build/outputs/bundle/release/app-release.aab
-          channel: random
-          filename: Github Actions App.aab
+          channel:  ${{ secrets.SLACK_CHANNEL }}
+          filename: App.aab
           initial_comment: ${{ github.event.head_commit.message }}
