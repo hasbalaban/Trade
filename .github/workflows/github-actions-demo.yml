@@ -42,6 +42,7 @@ jobs:
         uses: sagar-viradiya/internal-app-sharing-action@v1.1.0
         with:
           # Your service account JSON GitHub secret
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_GITHUB }}
           # Your package name
           packageName: 'com.finance.trade_learn'
           aabFilePath: 'app-release.aab'
