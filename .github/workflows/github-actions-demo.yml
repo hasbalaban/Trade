@@ -50,7 +50,7 @@ jobs:
         with:
           slack_token: ${{ secrets.SLACK_TOKEN }}
           channels: ${{ secrets.SLACK_CHANNEL }}
-          file_path: ./home/runner/work/LearnCrypto2/LearnCrypto2/app/build/outputs/bundle/release
+          file_path: ./app/build/outputs/bundle/release
           file_name: 'app-release.aab'
           file_type: 'aab'
           initial_comment: 'post by slack-upload-file'
