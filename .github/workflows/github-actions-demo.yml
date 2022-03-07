@@ -36,21 +36,21 @@ jobs:
       - name: Runing build command
         # Run your own gradle command to generate build.
         run: ./gradlew bundleRelease
+
       - name: Uploading build
         uses: actions/upload-artifact@v2
         with:
           name: bundle
           path: app/build/outputs/bundle/release/app-release.aab
 
-  post:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: MeilCli/slack-upload-file@v1
-        id: message
-        with:
-          slack_token: ${{ secrets.SLACK_TOKEN }}
-          channels: ${{ secrets.SLACK_CHANNEL }}
-          file_path: app/build/outputs/bundle/release/app-release.aab
-          file_name: 'app-release.aab'
-          file_type: 'aab'
-          initial_comment: 'post by slack-upload-file'
+
+      - name: updoad to slack
+          - uses: MeilCli/slack-upload-file@v1
+            id: message
+            with:
+              slack_token: ${{ secrets.SLACK_TOKEN }}
+              channels: ${{ secrets.SLACK_CHANNEL }}
+              file_path: app/build/outputs/bundle/release/app-release.aab
+              file_name: 'app-release.aab'
+              file_type: 'aab'
+              initial_comment: 'post by slack-upload-file'
