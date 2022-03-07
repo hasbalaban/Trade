@@ -49,5 +49,5 @@ jobs:
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
           SLACK_USERNAME: "Carla Android"
           SLACK_TITLE: "Android X_X_X.aab"
-          SLACK_MESSAGE: "test"
+          SLACK_MESSAGE: "Carla Android"
           SHOW_ACTIONS_URL: false
