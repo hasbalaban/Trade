@@ -8,6 +8,7 @@ jobs:
   build:
     name: Building app
     runs-on: ubuntu-latest
+
     steps:
       - name: Checking out branch
         uses: actions/checkout@v2
@@ -30,8 +31,8 @@ jobs:
 
   upload_to_internal_app_sharing:
     name: Uploading build to IAS
-    needs: build
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Downloading build
         uses: actions/download-artifact@v2
