@@ -43,15 +43,15 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: bundle
-          path: app/build/outputs/bundle/release/app-release.aab
+          path: ./home/runner/work/LearnCrypto2/app/build/outputs/bundle/release/app-release.aab
 
 
 
       - name: Upload APK to Github Artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: app
-          path: app/build/outputs/bundle/release/app-release.aab
+          name: bundle
+          path: ./home/runner/work/LearnCrypto2/app/build/outputs/bundle/release/app-release.aab
 
       - name: Send APK to Slack
         uses: adrey/slack-file-upload-action@1.0.5
