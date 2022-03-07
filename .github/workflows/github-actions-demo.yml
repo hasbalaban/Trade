@@ -51,3 +51,4 @@ jobs:
           SLACK_TITLE: "Android X_X_X.aab"
           SLACK_MESSAGE: "Carla Android"
           SHOW_ACTIONS_URL: false
+          SLACK_COLOR:#e56a00
