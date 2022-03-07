@@ -33,7 +33,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Downloading build
+  - name: Downloading build
         uses: actions/download-artifact@v2
         with:
           name: bundle
