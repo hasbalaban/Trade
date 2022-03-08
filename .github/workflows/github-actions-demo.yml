@@ -50,14 +50,6 @@ jobs:
           path: app/build/outputs/bundle/release/app-release.aab
 
 
-        run: ./gradlew assembleRelease
-      - name: Uploading build
-        uses: actions/upload-artifact@v2
-        with:
-          name: apk
-          path: app/build/outputs/apk/release/app-release.aab
-
-
 
       - name: bundle
         uses: MeilCli/slack-upload-file@v1
@@ -71,6 +63,15 @@ jobs:
           initial_comment: 'Powered by Carla Android'
 
 
+
+        run: ./gradlew assembleRelease
+      - name: Uploading build
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk
+          path: app/build/outputs/apk/release/app-release.aab
+
+
       - name: apk
         uses: MeilCli/slack-upload-file@v1
         id: messageApk
@@ -81,6 +82,5 @@ jobs:
           file_name: 'app-release.apk'
           file_type: 'apk'
           initial_comment: 'Powered by Carla Android'
-
 
 
