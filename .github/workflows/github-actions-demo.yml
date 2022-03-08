@@ -51,14 +51,15 @@ jobs:
           path: app/build/outputs/bundle/release/app-release.aab
 
 
-      - name: updoad to slack
-        uses: MeilCli/slack-upload-file@v1
-        id: message
-        with:
-          slack_token: ${{ secrets.SLACK_TOKEN }}
-          channels: ${{ secrets.SLACK_CHANNEL }}
-          file_path: app/build/outputs/bundle/release/app-release.aab
-          file_name: 'app-release.aab'
-          file_type: 'aab'
-          initial_comment: 'post by slack-upload-file'
+
+
+      - name: test1
+        run: curl -F file=@test.txt
+      - name: test2
+        run: -F "initial_comment=Testing from terminal"
+      - name: test3
+        run: -F channels=mobile-eng -H
+      - name: test4
+      Authorization: Bearer xoxb-6366238721-3208829340948-BNqrFyL346lXVymViR418o1R" https://slack.com/api/files.upload
+
 
