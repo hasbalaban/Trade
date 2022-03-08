@@ -37,47 +37,47 @@ jobs:
         # Run your own gradle command to generate build.
         # Run your own gradle command to generate build.
 
+      steps:
+
+          run: ./gradlew bundleRelease
+        - name: Uploading build
+          uses: actions/upload-artifact@v2
+          with:
+            name: bundle
+            path: app/build/outputs/bundle/release/app-release.aab
 
 
-        run: ./gradlew bundleRelease
-      - name: Uploading build
-        uses: actions/upload-artifact@v2
-        with:
-          name: bundle
-          path: app/build/outputs/bundle/release/app-release.aab
+
+        - name: bundle
+          uses: MeilCli/slack-upload-file@v1
+          id: messageBundle
+          with:
+            slack_token: ${{ secrets.SLACK_TOKEN }}
+            channels: ${{ secrets.SLACK_CHANNEL }}
+            file_path: app/build/outputs/bundle/release/app-release.aab
+            file_name: 'app-release.aab'
+            file_type: 'aab'
+            initial_comment: 'Powered by Carla Android'
 
 
-
-      - name: bundle
-        uses: MeilCli/slack-upload-file@v1
-        id: messageBundle
-        with:
-          slack_token: ${{ secrets.SLACK_TOKEN }}
-          channels: ${{ secrets.SLACK_CHANNEL }}
-          file_path: app/build/outputs/bundle/release/app-release.aab
-          file_name: 'app-release.aab'
-          file_type: 'aab'
-          initial_comment: 'Powered by Carla Android'
+          run: ./gradlew assembleRelease
+        - name: Uploading build
+          uses: actions/upload-artifact@v2
+          with:
+            name: apk
+            path: app/build/outputs/apk/release/app-release.aab
 
 
-        run: ./gradlew assembleRelease
-      - name: Uploading build
-        uses: actions/upload-artifact@v2
-        with:
-          name: apk
-          path: app/build/outputs/apk/release/app-release.aab
-
-
-      - name: apk
-        uses: MeilCli/slack-upload-file@v1
-        id: messageApk
-        with:
-          slack_token: ${{ secrets.SLACK_TOKEN }}
-          channels: ${{ secrets.SLACK_CHANNEL }}
-          file_path: app/build/outputs/bundle/release/app-release.apk
-          file_name: 'app-release.apk'
-          file_type: 'apk'
-          initial_comment: 'Powered by Carla Android'
+        - name: apk
+          uses: MeilCli/slack-upload-file@v1
+          id: messageApk
+          with:
+            slack_token: ${{ secrets.SLACK_TOKEN }}
+            channels: ${{ secrets.SLACK_CHANNEL }}
+            file_path: app/build/outputs/bundle/release/app-release.apk
+            file_name: 'app-release.apk'
+            file_type: 'apk'
+            initial_comment: 'Powered by Carla Android'
 
 
 
