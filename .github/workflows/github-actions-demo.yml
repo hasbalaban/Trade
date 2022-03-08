@@ -34,7 +34,6 @@ jobs:
           file_path: app/build/outputs/apk/release/app-release.apk
           file_name: 'app-release.apk'
           file_type: 'apk'
-          initial_comment: 'Powered by Carla Android'
 
 
         # upload What's New to slack
@@ -47,7 +46,6 @@ jobs:
           file_path: app/what_is_new.txt
           file_name: 'what_is_new.txt'
           file_type: 'txt'
-          initial_comment: 'Powered by Carla Android'
 
 
   job2:
