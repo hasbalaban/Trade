@@ -20,8 +20,8 @@ jobs:
       - name: Uploading build
         uses: actions/upload-artifact@v2
         with:
-            name: ./what_is_new.txt
-            path: what_is_new.txt
+            name: what_is_new
+            path: ../app/what_is_new.txt
 
 
 
@@ -33,7 +33,7 @@ jobs:
         with:
             slack_token: ${{ secrets.SLACK_TOKEN }}
             channels: ${{ secrets.SLACK_CHANNEL }}
-            file_path: app/whats_new/what_is_new.txt
+            file_path: ../app/what_is_new.txt
             file_name: 'what_is_new.txt'
             file_type: 'txt'
             initial_comment: 'Powered by Carla Android'
