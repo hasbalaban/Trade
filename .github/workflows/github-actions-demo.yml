@@ -15,7 +15,7 @@ jobs:
         with:
             slack_token: ${{ secrets.SLACK_TOKEN }}
             channels: ${{ secrets.SLACK_CHANNEL }}
-            file_path: what_is_new.txt
+            file_path: ./what_is_new.txt
             file_name: 'what_is_new.txt'
             file_type: 'txt'
             initial_comment: 'Powered by Carla Android'
