@@ -1,0 +1,10 @@
+This is a TEST
+
+versionCode 999
+versionName “9.9.9”
+
+    Embrace-io integration
+    Simplified success screen
+    Email verification
+    Underagediscounded badge
+    Resolved null hw-id issue

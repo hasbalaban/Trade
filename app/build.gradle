@@ -10,15 +10,15 @@ plugins {
 android {
     signingConfigs {
         release {
-            storeFile file('myKey.jks')
-            keyAlias 'myKey'
+            storeFile file(FILE_PATH)
+            keyAlias KEY_ALIAS
             storePassword KEYSTORE_PASSWORD
             keyPassword KEY_PASSWORD
         }
 
         debug {
             storeFile file('myKey.jks')
-            keyAlias 'myKey'
+            keyAlias KEY_ALIAS
             storePassword KEYSTORE_PASSWORD
             keyPassword KEY_PASSWORD
         }
