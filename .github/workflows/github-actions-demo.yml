@@ -36,9 +36,6 @@ jobs:
       - name: Runing build command
         # Run your own gradle command to generate build.
         # Run your own gradle command to generate build.
-        # Run your own gradle command to generate build.
-        # Run your own gradle command to generate build.
-        # Run your own gradle command to generate build.
 
 
 
@@ -63,7 +60,6 @@ jobs:
           initial_comment: 'Powered by Carla Android'
 
 
-
         run: ./gradlew assembleRelease
       - name: Uploading build
         uses: actions/upload-artifact@v2
@@ -82,5 +78,6 @@ jobs:
           file_name: 'app-release.apk'
           file_type: 'apk'
           initial_comment: 'Powered by Carla Android'
+
 
 
