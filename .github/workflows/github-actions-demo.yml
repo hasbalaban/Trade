@@ -15,16 +15,6 @@ jobs:
         with:
           ref: git_action
 
-      # create whats - new
-      # create whats - new
-      - name: Uploading build
-        uses: actions/upload-artifact@v2
-        with:
-            name: what_is_new
-            path: app/what_is_new.txt
-
-
-
 
 
       - name : What's New
