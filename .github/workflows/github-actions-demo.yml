@@ -9,13 +9,20 @@ jobs:
     name: What's New
     runs-on: ubuntu-latest
     steps:
+
+      - name: Uploading build
+        uses: actions/upload-artifact@v2
+        with:
+          name: What's New
+          path: app/whats_new/what_is_new.txt
+
       - name : What's New
         uses: MeilCli/slack-upload-file@v1
         id: messageBundle
         with:
             slack_token: ${{ secrets.SLACK_TOKEN }}
             channels: ${{ secrets.SLACK_CHANNEL }}
-            file_path: ./what_is_new.txt
+            file_path: app/whats_new/what_is_new.txt
             file_name: 'what_is_new.txt'
             file_type: 'txt'
             initial_comment: 'Powered by Carla Android'
