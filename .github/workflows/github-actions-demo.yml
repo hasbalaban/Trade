@@ -67,15 +67,6 @@ jobs:
           file_type: 'apk'
           initial_comment: 'Powered by Carla Android'
 
-  job3:
-    name: What's New in this Version
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: Checking out branch
-        uses: actions/checkout@v2
-        with:
-          ref: git_action
 
       - name : What's New
         uses: MeilCli/slack-upload-file@v1
@@ -87,6 +78,8 @@ jobs:
           file_name: 'what_is_new.txt'
           file_type: 'txt'
           initial_comment: 'Powered by Carla Android'
+
+
 
 
 
