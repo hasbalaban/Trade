@@ -56,3 +56,4 @@ jobs:
           file_name: 'app-release.aab'
           file_type: 'aab'
           initial_comment: 'post by slack-upload-file'
+          authorization: Bearer ${{ secrets.SLACK_TOKEN }}
