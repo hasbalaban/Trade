@@ -5,32 +5,9 @@ on:
       - git_action
 jobs:
 
+
   job1:
-    name: What's New
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: Checking out branch
-        uses: actions/checkout@v2
-        with:
-          ref: git_action
-
-
-
-      - name : What's New
-        uses: MeilCli/slack-upload-file@v1
-        id: messageBundle
-        with:
-            slack_token: ${{ secrets.SLACK_TOKEN }}
-            channels: ${{ secrets.SLACK_CHANNEL }}
-            file_path: app/what_is_new.txt
-            file_name: 'what_is_new.txt'
-            file_type: 'txt'
-            initial_comment: 'Powered by Carla Android'
-
-
-  job2:
-    name: Building app
+    name: Building Bundle
     runs-on: ubuntu-latest
     steps:
 
@@ -42,17 +19,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Runing build command
 
-
-        # create aab - bundle
+          # create aab - bundle
+      - name: create aab - bundle
         run: ./gradlew bundleRelease
-      - name: Uploading build
-        uses: actions/upload-artifact@v2
-        with:
-          name: bundle
-          path: app/build/outputs/bundle/release/Carla_5_1_8.aab
-
 
 
       - name: bundle
@@ -67,8 +37,8 @@ jobs:
           initial_comment: 'Powered by Carla Android'
 
 
-  job3:
-    name: Building app
+  job2:
+    name: Building apk
     runs-on: ubuntu-latest
     steps:
 
@@ -86,14 +56,6 @@ jobs:
       - name: Runing build command
         run: ./gradlew assembleRelease
 
-      - name: Uploading build
-        uses: actions/upload-artifact@v2
-        with:
-          name: apk
-          path: app/build/outputs/apk/release/Carla_5_1_8.apk
-
-
-
       - name: apk
         uses: MeilCli/slack-upload-file@v1
         id: messageApk
@@ -105,6 +67,26 @@ jobs:
           file_type: 'apk'
           initial_comment: 'Powered by Carla Android'
 
+  job3:
+    name: What's New in this Version
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checking out branch
+        uses: actions/checkout@v2
+        with:
+          ref: git_action
+
+      - name : What's New
+        uses: MeilCli/slack-upload-file@v1
+        id: messageBundle
+        with:
+          slack_token: ${{ secrets.SLACK_TOKEN }}
+          channels: ${{ secrets.SLACK_CHANNEL }}
+          file_path: app/what_is_new.txt
+          file_name: 'what_is_new.txt'
+          file_type: 'txt'
+          initial_comment: 'Powered by Carla Android'
 
 
 
