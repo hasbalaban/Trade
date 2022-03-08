@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Checking out branch
+        uses: actions/checkout@v2
+        with:
+          ref: git_action
+
       # create whats - new
       - name: Uploading build
         uses: actions/upload-artifact@v2
