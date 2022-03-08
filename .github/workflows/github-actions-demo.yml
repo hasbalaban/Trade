@@ -36,6 +36,7 @@ jobs:
       - name: Runing build command
         # Run your own gradle command to generate build.
         # Run your own gradle command to generate build.
+        # Run your own gradle command to generate build.
         run: ./gradlew bundleRelease
 
       - name: Uploading build
