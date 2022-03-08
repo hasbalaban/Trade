@@ -10,11 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      # create whats - new
       - name: Uploading build
         uses: actions/upload-artifact@v2
         with:
-          name: What's New
-          path: app/whats_new/what_is_new.txt
+            name: what_is_new
+            path: app/whats_new/what_is_new.txt
+
+
+
+
 
       - name : What's New
         uses: MeilCli/slack-upload-file@v1
