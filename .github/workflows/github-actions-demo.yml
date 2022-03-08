@@ -2,15 +2,14 @@ name: Build, Upload to IAS and share on slack.
 on:
   push:
     branches:
-      # Specify branch from where you are sharing build
       - git_action
 jobs:
-  build:
-    name: Building app
+
+  job1:
+    name: Start Message job
     runs-on: ubuntu-latest
     steps:
-
-      - name: start Create Apk and Bundle
+      - name : message start
         uses: rtCamp/action-slack-notify@v2.1.0
         env:
           # Your slack webhook GitHub secret
@@ -23,22 +22,23 @@ jobs:
           SHOW_ACTIONS_URL: false
 
 
+  job2:
+    name: Building app
+    runs-on: ubuntu-latest
+    steps:
 
       - name: Checking out branch
         uses: actions/checkout@v2
         with:
-          # Specify branch to checkout
           ref: git_action
       - name: Settting up JDK 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
       - name: Runing build command
-        # Run your own gradle command to generate build.
-        # Run your own gradle command to generate build.
 
 
-
+        # create aab - bundle
         run: ./gradlew bundleRelease
       - name: Uploading build
         uses: actions/upload-artifact@v2
@@ -60,8 +60,25 @@ jobs:
           initial_comment: 'Powered by Carla Android'
 
 
+  job3:
+    name: Building app
+    runs-on: ubuntu-latest
+    steps:
 
+      - name: Checking out branch
+        uses: actions/checkout@v2
+        with:
+          ref: git_action
+
+      - name: Settting up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+          # create apk
+      - name: Runing build command
         run: ./gradlew assembleRelease
+
       - name: Uploading build
         uses: actions/upload-artifact@v2
         with:
