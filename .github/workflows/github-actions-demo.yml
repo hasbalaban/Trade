@@ -25,6 +25,7 @@ jobs:
         run: ./gradlew bundleRelease
 
 
+        # upload bundle to slack
       - name: bundle
         uses: MeilCli/slack-upload-file@v1
         id: messageBundle
@@ -56,6 +57,7 @@ jobs:
       - name: Runing build command
         run: ./gradlew assembleRelease
 
+        # upload apk to slack
       - name: apk
         uses: MeilCli/slack-upload-file@v1
         id: messageApk
@@ -68,6 +70,7 @@ jobs:
           initial_comment: 'Powered by Carla Android'
 
 
+        # upload What's New to slack
       - name : What's New
         uses: MeilCli/slack-upload-file@v1
         id: messageBundle
