@@ -21,7 +21,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
             name: what_is_new
-            path: ../app/what_is_new.txt
+            path: app/what_is_new.txt
 
 
 
