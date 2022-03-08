@@ -61,7 +61,7 @@ jobs:
 
 
 
-        run: ./gradlew bundleRelease
+        run: ./gradlew assembleRelease
       - name: Uploading build
         uses: actions/upload-artifact@v2
         with:
@@ -70,7 +70,7 @@ jobs:
 
 
 
-      - name: bundle
+      - name: apk
         uses: MeilCli/slack-upload-file@v1
         id: messageApk
         with:
