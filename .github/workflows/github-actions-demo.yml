@@ -10,7 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-
+      - name: start Create Apk and Bundle
+        uses: rtCamp/action-slack-notify@v2.1.0
+        env:
+          # Your slack webhook GitHub secret
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          # Slack channel where you want to notify
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_USERNAME: "Carla Android"
+          SLACK_TITLE: "Carla Android"
+          SLACK_MESSAGE: "Create Apk And Bundle Started"
+          SHOW_ACTIONS_URL: false
 
 
 
@@ -33,7 +43,6 @@ jobs:
 
 
         run: ./gradlew bundleRelease
-
       - name: Uploading build
         uses: actions/upload-artifact@v2
         with:
@@ -41,14 +50,37 @@ jobs:
           path: app/build/outputs/bundle/release/app-release.aab
 
 
-      - name: updoad to slack
+        run: ./gradlew assembleRelease
+      - name: Uploading build
+        uses: actions/upload-artifact@v2
+        with:
+          name: bundle
+          path: app/build/outputs/apk/release/app-release.aab
+
+
+
+      - name: bundle
         uses: MeilCli/slack-upload-file@v1
-        id: message
+        id: messageBundle
         with:
           slack_token: ${{ secrets.SLACK_TOKEN }}
           channels: ${{ secrets.SLACK_CHANNEL }}
           file_path: app/build/outputs/bundle/release/app-release.aab
           file_name: 'app-release.aab'
           file_type: 'aab'
-          initial_comment: 'post by slack-upload-file'
+          initial_comment: 'Powered by Carla Android'
+
+
+      - name: apk
+        uses: MeilCli/slack-upload-file@v1
+        id: messageApk
+        with:
+          slack_token: ${{ secrets.SLACK_TOKEN }}
+          channels: ${{ secrets.SLACK_CHANNEL }}
+          file_path: app/build/outputs/bundle/release/app-release.apk
+          file_name: 'app-release.apk'
+          file_type: 'apk'
+          initial_comment: 'Powered by Carla Android'
+
+
 
