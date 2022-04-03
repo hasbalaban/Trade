@@ -272,8 +272,15 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
                             if (dataBindingCurrentTrade.coinAmount.text.toString() != "") {
                                 val currentAmount =
                                     dataBindingCurrentTrade.coinAmount.text.toString().toDouble()
-                                val newAmount = currentAmount - 1.000
-                                dataBindingCurrentTrade.coinAmount.setText(newAmount.toString())
+                                if (currentPrice < 1000.0)
+                                {
+                                    val newAmount = currentAmount - 1.000
+                                    dataBindingCurrentTrade.coinAmount.setText(newAmount.toString())
+                                }
+                                else{
+                                    val newAmount = currentAmount - 0.001
+                                    dataBindingCurrentTrade.coinAmount.setText(newAmount.toString())
+                                }
                             }
 
                         } else {
@@ -296,8 +303,15 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
                     if (dataBindingCurrentTrade.coinAmount.text.toString() != "") {
                         val currentAmount =
                             dataBindingCurrentTrade.coinAmount.text.toString().toDouble()
-                        val newAmount = currentAmount + 1.000
-                        dataBindingCurrentTrade.coinAmount.setText(newAmount.toString())
+                        if (currentPrice < 1000.0)
+                        {
+                            val newAmount = currentAmount + 1.000
+                            dataBindingCurrentTrade.coinAmount.setText(newAmount.toString())
+                        }
+                        else{
+                            val newAmount = currentAmount + 0.001
+                            dataBindingCurrentTrade.coinAmount.setText(newAmount.toString())
+                        }
                     } else {
                         val currentAmount = 0.000
                         val newAmount = currentAmount + 1.000
