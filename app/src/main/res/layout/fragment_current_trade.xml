@@ -109,7 +109,7 @@
 
                 android:id="@+id/coinPrice"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:background="@drawable/style_trade"
                 android:cursorVisible="false"
                 android:focusable="false"
@@ -121,24 +121,24 @@
             <RelativeLayout
                 android:id="@+id/relayout_amount"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/style_trade">
 
                 <ImageView
                     android:id="@+id/minus"
-                    android:padding="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
                     android:onClick="@{view-> clickLisener.ClickListener(view)}"
+                    android:padding="15dp"
                     android:src="@drawable/minus" />
 
                 <EditText
                     android:id="@+id/coinAmount"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="60dp"
                     android:layout_toStartOf="@id/raise"
                     android:layout_toEndOf="@id/minus"
                     android:background="@drawable/none"
@@ -154,9 +154,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:padding="10dp"
                     android:layout_marginEnd="5dp"
                     android:onClick="@{view-> clickLisener.ClickListener(view)}"
+                    android:padding="15dp"
                     android:src="@drawable/raise" />
 
 
@@ -165,7 +165,7 @@
             <EditText
                 android:id="@+id/Total"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/style_trade"
                 android:focusable="false"
@@ -237,7 +237,7 @@
             <Button
                 android:id="@+id/doTrade"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:layout_marginTop="10dp"
                 android:background="@color/onClickBuyBack"
                 android:onClick="@{view-> clickLisener.ClickListener(view)}"

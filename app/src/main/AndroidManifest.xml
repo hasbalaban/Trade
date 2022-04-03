@@ -18,7 +18,7 @@
             android:label="@string/page_name"
             android:parentActivityName=".view.MainActivity"
             android:windowSoftInputMode="stateHidden|adjustPan|adjustNothing"
-            android:name=".view.SearchActivity"
+            android:name=".view.SearchFragment"
             android:exported="true" />
         <activity
             android:name=".view.MainActivity"

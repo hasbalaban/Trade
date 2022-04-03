@@ -24,12 +24,12 @@ interface CryptoOperationInterface {
         @Query("key") apiKey: String
     ): Single<List<BaseModelCrypto>>
 
-    @GET("currencies/ticker?convert=USD")
+    @GET("currencies/ticker?convert=USD&per-page=1&page=1")
     fun selectedCoinToTrade(
         @Query("key") apiKey: String, @Query("ids") coinName: String
     ): Single<List<BaseModelOneCryptoModel>>
 
-    @GET("currencies/ticker?convert=USD")
+    @GET("currencies/ticker?convert=USD&per-page=50&page=1")
     fun getCoinIHave(
         @Query("key") apiKey: String,
         @Query("ids") coinQuery: String

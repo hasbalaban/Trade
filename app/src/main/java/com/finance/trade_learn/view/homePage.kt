@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,6 @@ import com.finance.trade_learn.Adapters.adapter_for_populer_coins
 import com.finance.trade_learn.R
 import com.finance.trade_learn.databinding.FragmentHomeBinding
 import com.finance.trade_learn.enums.enumPriceChange
-import com.finance.trade_learn.utils.IntentNavigate
 import com.finance.trade_learn.viewModel.ViewModeHomePage
 import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
@@ -81,7 +81,6 @@ class home : Fragment() {
 
         clickToSearch()
         startAnimation()
-        isViewModelIntialize()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -135,10 +134,16 @@ class home : Fragment() {
                         viewModelHome.listOfCrypto.observe(
                             viewLifecycleOwner,
                             Observer { list ->
+                                list?.let {
+                                    adapterForHotList.updateData(it)
+                                    if (viewModelHome.isInitialize.value!!){
+                                        dataBindingHome.progressBar.visibility=View.INVISIBLE
+                                    }
 
-                                adapterForHotList.updateData(list)
-                                if (viewModelHome.isInitialize.value!!){
-                                    dataBindingHome.progressBar.visibility=View.INVISIBLE
+
+                                    isViewModelIntialize()
+
+
                                 }
 
 
@@ -147,7 +152,11 @@ class home : Fragment() {
                         viewModelHome.listOfCryptoForPopular.observe(
                             viewLifecycleOwner,
                             Observer { list ->
-                                adapterForPopulerList.updateData(list)
+
+                                list?.let {
+
+                                    adapterForPopulerList.updateData(it)
+                                }
 
                             })
                     }
@@ -169,7 +178,7 @@ class home : Fragment() {
 
                 }
 
-                handler.postDelayed(runnable, 3000)
+                handler.postDelayed(runnable, 6000)
 
             }
 
@@ -195,12 +204,8 @@ class home : Fragment() {
 
     fun clickToSearch() {
         dataBindingHome.searchCoin.setOnClickListener {
-            /* val action = homeDirections.actionHomeToSearchCoin()
+             val action = homeDirections.actionHomeToSearchActivity()
              Navigation.findNavController(it).navigate(action)
-
-
-             */
-            IntentNavigate().navigate(requireContext(), SearchActivity::class.java)
 
 
         }

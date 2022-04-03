@@ -1,22 +1,20 @@
 package com.finance.trade_learn.Adapters
 
-import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.finance.trade_learn.R
 import com.finance.trade_learn.databinding.ItemOfSearchBinding
 import com.finance.trade_learn.models.SearchedModel
-import com.finance.trade_learn.utils.IntentNavigate
 import com.finance.trade_learn.utils.sharedPreferencesManager
-import com.finance.trade_learn.view.isCameFromActivity
+import com.finance.trade_learn.view.SearchFragmentDirections
 
 class adapter_for_search_coin(
     val list: ArrayList<String>,
-    val context: Context,
-    val activity: Activity
+    val context: Context
 ) :
     RecyclerView.Adapter<adapter_for_search_coin.viewHolder>() {
 
@@ -42,8 +40,10 @@ class adapter_for_search_coin(
             sharedPreferencesManager(context)
                 .addSharedPreferencesString("coinName", coinName)
 
-            isCameFromActivity = true
-            activity.finish()
+
+            val directions = SearchFragmentDirections.actionSearchActivityToTradePage()
+            Navigation.findNavController(holder.view.root).navigate(directions)
+
         }
     }
 

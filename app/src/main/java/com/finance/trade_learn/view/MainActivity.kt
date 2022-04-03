@@ -24,8 +24,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-var isCameFromActivity = false
-
 class MainActivity : AppCompatActivity() {
     private lateinit var controller: NavController
     private lateinit var dataBindingMain: ActivityMainBinding
@@ -60,13 +58,6 @@ class MainActivity : AppCompatActivity() {
         controller = findNavController(R.id.fragmentContainerView)
         dataBindingMain.options.setupWithNavController(controller)
 
-
-        if (isCameFromActivity) {
-            val directions = homeDirections.actionHomeToTradePage()
-            controller.navigate(directions)
-        }
-
-
     }
 
     //check is first entering or no ? // if it's first time add 1000 dollars
@@ -90,30 +81,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-    override fun onRestart() {
-        if (isCameFromActivity) {
-            isCameFromActivity = false
-
-
-            when (controller.currentDestination?.id) {
-                R.id.marketPage -> {
-                    val directions = MarketPageDirections.actionMarketPageToTradePage()
-                    controller.navigate(directions)
-                }
-                R.id.home -> {
-                    val directions = homeDirections.actionHomeToTradePage()
-                    controller.navigate(directions)
-
-                }
-                else -> Toast.makeText(this, "there is a error at background", Toast.LENGTH_SHORT)
-                    .show()
-
-
-            }
-        }
-        super.onRestart()
-    }
 
 
     fun firebaseSave() {

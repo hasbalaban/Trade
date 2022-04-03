@@ -12,14 +12,14 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.finance.trade_learn.Adapters.adapter_for_market
+import com.finance.trade_learn.Adapters.AdapterForMarket
 import com.finance.trade_learn.R
-import com.finance.trade_learn.databinding.FragmentMarketPageBinding
-import com.finance.trade_learn.utils.IntentNavigate
 import com.finance.trade_learn.viewModel.ViewModelMarket
 import kotlinx.coroutines.*
 import java.lang.Runnable
+
 
 
 var firstSet = true
@@ -28,13 +28,13 @@ class MarketPage : Fragment() {
 
 
     private lateinit var viewModelMarket: ViewModelMarket
-    private lateinit var dataBindingMarket: FragmentMarketPageBinding
+    private lateinit var dataBindingMarket: com.finance.trade_learn.databinding.FragmentMarketPageBinding
     private var viewVisible = true
     private var job: Job? = null
 
     var runnable = Runnable { }
     var handler = Handler(Looper.getMainLooper())
-    private lateinit var adapter: adapter_for_market
+    private lateinit var adapter: AdapterForMarket
 
     override fun onAttach(context: Context) {
 
@@ -65,7 +65,6 @@ class MarketPage : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         clickToSearch()
-        firstSet = true
 
         setAdapter()
         isIntializeViewModel()
@@ -74,10 +73,10 @@ class MarketPage : Fragment() {
     }
 
     private fun setAdapter() {
-        adapter = adapter_for_market(requireContext(), arrayListOf())
+        adapter = AdapterForMarket(requireContext(), arrayListOf())
+        dataBindingMarket.RecyclerViewMarket.adapter = adapter
         val layoutManager = LinearLayoutManager(requireContext())
         dataBindingMarket.RecyclerViewMarket.layoutManager = layoutManager
-        dataBindingMarket.RecyclerViewMarket.adapter = adapter
     }
 
     private fun isIntializeViewModel() {
@@ -86,11 +85,14 @@ class MarketPage : Fragment() {
         if (status.value!!) {
 
 
-            viewModelMarket.listOfCrypto.observe(viewLifecycleOwner, {
+            viewModelMarket.listOfCrypto.observe(viewLifecycleOwner) {
+                it?.let {
+                    adapter.updateData(it)
+                    viewModelMarket.isInitialized.value = true
+                    dataBindingMarket.progressBar.visibility = View.INVISIBLE
+                }
 
-                adapter.updateData(it)
-                viewModelMarket.isInitialized.value = true
-            })
+            }
         }
 
     }
@@ -99,16 +101,18 @@ class MarketPage : Fragment() {
 
         if (viewVisible) {
             //observer state of list of coins
-            viewModelMarket.state.observe(viewLifecycleOwner, {
+            viewModelMarket.state.observe(viewLifecycleOwner) {
                 if (it) {
-                    viewModelMarket.listOfCrypto.observe(viewLifecycleOwner, Observer { list ->
-                        adapter.updateData(list)
-                        if (viewModelMarket.isInitialized.value!!){
-                            dataBindingMarket.progressBar.visibility=View.INVISIBLE
+                    viewModelMarket.listOfCrypto.observe(viewLifecycleOwner) { list ->
+                        list?.let {
+                            adapter.updateData(list)
+                            dataBindingMarket.RecyclerViewMarket
+                            dataBindingMarket.progressBar.visibility = View.INVISIBLE
                         }
-                    })
+
+                    }
                 }
-            })
+            }
         }
     }
 
@@ -118,7 +122,7 @@ class MarketPage : Fragment() {
                 override fun run() {
                     viewModelMarket.runGetAllCryptoFromApi()
                     getData()
-                    handler.postDelayed(runnable, 6000)
+                    handler.postDelayed(runnable, 7000)
                 }
             }
             handler.post(runnable)
@@ -144,8 +148,8 @@ class MarketPage : Fragment() {
     private fun clickToSearch() {
         dataBindingMarket.searchedCoin.setOnClickListener {
 
-
-            IntentNavigate().navigate(requireContext(), SearchActivity::class.java)
+            val directions = MarketPageDirections.actionMarketPageToSearchActivity()
+            Navigation.findNavController(dataBindingMarket.root).navigate(directions)
 
 
         }

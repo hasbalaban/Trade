@@ -19,6 +19,9 @@
 
 
         </action>
+        <action
+            android:id="@+id/action_marketPage_to_searchActivity"
+            app:destination="@id/searchActivity" />
     </fragment>
     <fragment
         android:id="@+id/tradePage"
@@ -34,7 +37,18 @@
 
 
         </action>
+        <action
+            android:id="@+id/action_home_to_searchActivity"
+            app:destination="@id/searchActivity" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/searchActivity"
+        android:name="com.finance.trade_learn.view.SearchFragment"
+        android:label="SearchActivity" >
+        <action
+            android:id="@+id/action_searchActivity_to_tradePage"
+            app:destination="@id/tradePage" />
     </fragment>
 
 

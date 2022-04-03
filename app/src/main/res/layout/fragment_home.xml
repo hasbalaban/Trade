@@ -53,8 +53,8 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="2dp"
                     android:padding="2dp"
-                    android:textColor="@color/pozitive"
                     android:text="@string/app_name"
+                    android:textColor="@color/pozitive"
                     android:textSize="17sp" />
 
 
@@ -86,7 +86,6 @@
                 android:layout_height="match_parent"
                 android:background="#E4DCDC"
                 android:paddingTop="0dp"
-                android:text="new notices are here"
                 android:textAlignment="viewEnd"
                 android:textColor="@color/negative"
                 android:textSize="15sp"

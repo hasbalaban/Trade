@@ -22,18 +22,16 @@ import com.finance.trade_learn.utils.DifferentItems
 import com.finance.trade_learn.utils.setImageSvg
 import com.finance.trade_learn.utils.sharedPreferencesManager
 import com.finance.trade_learn.view.firstSet
+import com.smartlook.va
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class adapter_for_market(val context: Context, val list: ArrayList<CoinsHome>) :
-    RecyclerView.Adapter<adapter_for_market.viewHolder>() {
+class AdapterForMarket(val context: Context, val list: ArrayList<CoinsHome>) :
+    RecyclerView.Adapter<AdapterForMarket.viewHolder>() {
 
-
-    private var firstEnter = true
     private var border = 0
-
 
 
     class viewHolder(val view: ItemCoinOfTodayBinding) : RecyclerView.ViewHolder(view.root)
@@ -101,12 +99,12 @@ class adapter_for_market(val context: Context, val list: ArrayList<CoinsHome>) :
     }
 
     fun animationSet(position: Int, layoutCoin: ConstraintLayout) {
-        if (position < 10 && firstSet) {
+        if (position < 16 && firstSet) {
             val animation = AnimationUtils.loadAnimation(
                 context, R.anim.animation_for_item_of_recyclers
             )
 
-            layoutCoin.animation = animation
+    //       if (firstSet) layoutCoin.animation = animation
         } else {
             firstSet = false
         }
@@ -131,22 +129,21 @@ class adapter_for_market(val context: Context, val list: ArrayList<CoinsHome>) :
 
 
 
-    fun updateData(newList: ArrayList<CoinsHome>) {
-        if (firstEnter) {
-            list.addAll(newList)
+ fun updateData(newList: ArrayList<CoinsHome>) {
             notifyDataSetChanged()
+            if (firstSet.not() && list.isNullOrEmpty().not()){
+                updateLastList(newList,list)
+            }else{
+                list.addAll(newList)
+                notifyDataSetChanged()
+            }
+
             // this code will change everything.
-            firstEnter = !firstEnter
-        } else {
-            updateLastList(newList, list)
-            // list.clear()
-            // list.addAll(newList)
-        }
 
 
     }
 
-    private fun updateLastList(newList: ArrayList<CoinsHome>, oldList: ArrayList<CoinsHome>) {
+ private fun updateLastList(newList: ArrayList<CoinsHome>, oldList: ArrayList<CoinsHome>) {
 
         CoroutineScope(Dispatchers.IO).launch {
             val diff = DifferentItems<CoinsHome>(oldList, newList).comporeItems()
@@ -168,6 +165,5 @@ class adapter_for_market(val context: Context, val list: ArrayList<CoinsHome>) :
 
 
     }
-
 
 }
