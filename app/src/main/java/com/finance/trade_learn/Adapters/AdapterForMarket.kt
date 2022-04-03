@@ -32,6 +32,7 @@ class AdapterForMarket(val context: Context, val list: ArrayList<CoinsHome>) :
     RecyclerView.Adapter<AdapterForMarket.viewHolder>() {
 
     private var border = 0
+    private var firstEnter = true
 
 
     class viewHolder(val view: ItemCoinOfTodayBinding) : RecyclerView.ViewHolder(view.root)
@@ -130,15 +131,18 @@ class AdapterForMarket(val context: Context, val list: ArrayList<CoinsHome>) :
 
 
  fun updateData(newList: ArrayList<CoinsHome>) {
-            notifyDataSetChanged()
-            if (firstSet.not() && list.isNullOrEmpty().not()){
-                updateLastList(newList,list)
-            }else{
-                list.addAll(newList)
-                notifyDataSetChanged()
-            }
 
-            // this code will change everything.
+     if (firstEnter) {
+         list.addAll(newList)
+         notifyDataSetChanged()
+         // this code will change everything.
+         firstEnter = !firstEnter
+     } else {
+         updateLastList(newList, list)
+         // list.clear()
+         // list.addAll(newList)
+     }
+
 
 
     }
