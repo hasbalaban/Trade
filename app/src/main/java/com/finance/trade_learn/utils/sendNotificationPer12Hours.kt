@@ -124,7 +124,7 @@ fun testWorkManager() {
         .build()
 
     val myWorkRequest: WorkRequest =
-        PeriodicWorkRequestBuilder<SendNotificationPer12Hours>(12, TimeUnit.HOURS)
+        PeriodicWorkRequestBuilder<SendNotificationPer12Hours>(8, TimeUnit.HOURS)
             .setConstraints(constraint)
             .build()
     WorkManager.getInstance().enqueue(myWorkRequest)
