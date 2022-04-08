@@ -78,39 +78,25 @@ class WalletPage : Fragment(), TextWatcher {
     private fun getMyWalletDetails() {
 
         if (viewVisible) {
-            viewModelMyWallet.myCoinsNewModel.observe(viewLifecycleOwner, {
-                myCoinsList.clear()
-                myCoinsList.addAll(it)
+            viewModelMyWallet.myCoinsNewModel.observe(viewLifecycleOwner) {
 
+                it?.let {
+                    myCoinsList.addAll(it)
+                    adapter.updateRecyclerView(it)
 
-                adapter.updateRecyclerView(it)
-
-                if (viewVisible) {
-
-
-                    viewModelMyWallet.totalValue.observe(
-                        viewLifecycleOwner,
-                        { totalValue ->
-                            val text = "≈ "
-                            dataBindingWallet.totalValue.setText(
-                                (text + (totalValue.toString() + "000000000000")).subSequence(
-                                    0,
-                                    10
-                                ).toString()
-                            )
-
-
-                        })
-
-
+                    if (viewVisible) { viewModelMyWallet.totalValue.observe(viewLifecycleOwner) { totalValue ->
+                            dataBindingWallet.totalValue.setText(("≈ " + (totalValue.toString() + "000000000000")).subSequence(0, 10).toString())
+                        }
+                    }
                 }
-            })
+            }
 
         }
     }
 
     override fun onResume() {
         getMyWalletDetails()
+        viewModelMyWallet.myCoinsNewModel.value = viewModelMyWallet.myCoinsNewModel.value
         super.onResume()
     }
 

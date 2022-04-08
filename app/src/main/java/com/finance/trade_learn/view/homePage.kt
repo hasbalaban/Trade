@@ -123,9 +123,6 @@ class home : Fragment() {
 
 
     fun getData() {
-        viewModelHome.runGetAllCryptoFromApi()
-
-
         if (viewVisible) {
             //observer state of list of coins
             viewModelHome.state.observe(viewLifecycleOwner, Observer {
@@ -174,7 +171,9 @@ class home : Fragment() {
             override fun run() {
 
                 runBlocking {
+                    viewModelHome.runGetAllCryptoFromApi()
                     getData()
+
 
                 }
 
@@ -198,6 +197,8 @@ class home : Fragment() {
 
         viewVisible = true
         update()
+        if (viewModelHome.state.value == true) getData()
+
         super.onResume()
     }
 

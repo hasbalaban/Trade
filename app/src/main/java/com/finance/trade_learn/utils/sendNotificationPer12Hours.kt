@@ -61,7 +61,7 @@ class SendNotificationPer12Hours(
             val notificationSettings = Notification.Builder(context, Channel_Id)
 
             val intent = Intent(context,MainActivity::class.java)
-            val pendingIntent= PendingIntent.getActivity(context,0,intent,0)
+            val pendingIntent= PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_MUTABLE)
 
             notificationSettings.setSubText("Learn Trade")
                 .setContentTitle("Coin Name: $coinName")
