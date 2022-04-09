@@ -58,11 +58,11 @@ class adapter_for_hot_coins(val context: Context, val list: ArrayList<CoinsHome>
 
             "-" -> {
                 holder.view.coinPercent.setTextColor(Color.parseColor("#ffffff"))
-                holder.view.coinPercent.setBackgroundColor(Color.parseColor("#F6465D"))
+                holder.view.coinPercent.setBackgroundResource(R.drawable.drop)
             }
             "+" -> {
                 holder.view.coinPercent.setTextColor(Color.parseColor("#ffffff"))
-                holder.view.coinPercent.setBackgroundColor(Color.parseColor("#2ebd85"))
+                holder.view.coinPercent.setBackgroundResource(R.drawable.grown)
             }
             else -> {
                 holder.view.coinPrice.setBackgroundColor(Color.parseColor("#ffffff"))

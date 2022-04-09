@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_walletPage_to_home"
             app:destination="@id/home" />
+        <action
+            android:id="@+id/action_walletPage_to_tradePage"
+            app:destination="@id/tradePage" />
     </fragment>
     <fragment
         android:id="@+id/marketPage"

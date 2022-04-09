@@ -105,7 +105,7 @@ class home : Fragment() {
                         findNavController().navigate(R.id.tradePage)
 
                     }
-                    text = list[random].CoinName + "${list[random].CoinPrice}  chng: ${list[random].CoinChangePercente}"
+                    text = list[random].CoinName + " ${list[random].CoinPrice}  chng: ${list[random].CoinChangePercente}"
                 }
 
 
@@ -179,24 +179,14 @@ class home : Fragment() {
 
     private fun update() {
 
-        runnable = object : Runnable {
-            override fun run() {
-
-                runBlocking {
-                    viewModelHome.runGetAllCryptoFromApi()
-                    getData()
-
-
-                }
-
-                handler.postDelayed(runnable, 6000)
-
+        runnable = Runnable {
+            runBlocking {
+                viewModelHome.runGetAllCryptoFromApi()
+                getData()
             }
-
+            handler.postDelayed(runnable, 7500)
         }
         handler.post(runnable)
-
-
     }
 
     override fun onPause() {

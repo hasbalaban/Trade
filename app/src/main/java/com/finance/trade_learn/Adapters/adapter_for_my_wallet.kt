@@ -7,15 +7,19 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.finance.trade_learn.R
+import com.finance.trade_learn.clickListener.HomePageClickListener
 import com.finance.trade_learn.database.dataBaseEntities.myCoins
 import com.finance.trade_learn.databinding.ItemForMyWalletCoinsBinding
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.utils.setImage
 import com.finance.trade_learn.utils.setImageSvg
+import com.finance.trade_learn.utils.sharedPreferencesManager
+import com.finance.trade_learn.view.WalletPageDirections
 
 class adapter_for_my_wallet(var myCoinList: ArrayList<NewModelForItemHistory>) :
     RecyclerView.Adapter<adapter_for_my_wallet.viewHolder>() {
@@ -42,6 +46,18 @@ class adapter_for_my_wallet(var myCoinList: ArrayList<NewModelForItemHistory>) :
         val image_url = myCoinList[position].Image
         holder.view.coinImage.setImageSvg(image_url)
        // setCoinImage(imageView,image_url)
+
+        holder.view.coinTotal.setBackgroundResource(R.drawable.grown)
+
+
+
+        holder.view.RelayoutWallet.setOnClickListener {
+            val coinName = SolveCoinName(myCoinList[position].CoinName)
+
+            sharedPreferencesManager(holder.view.root.context)
+                .addSharedPreferencesString("coinName", coinName)
+            Navigation.findNavController(it).navigate(R.id.tradePage)
+        }
 
     }
 
