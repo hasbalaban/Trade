@@ -72,7 +72,7 @@ class AdapterForMarket(val context: Context, val list: ArrayList<CoinsHome>) :
             }
             "+" -> {
                 holder.view.coinPercent.setTextColor(Color.parseColor("#ffffff"))
-                holder.view.coinPercent.setBackgroundColor(R.drawable.grown)
+                holder.view.coinPercent.setBackgroundResource(R.drawable.grown)
             }
             else -> {
                 holder.view.coinPercent.setBackgroundColor(Color.parseColor("#ffffff"))
