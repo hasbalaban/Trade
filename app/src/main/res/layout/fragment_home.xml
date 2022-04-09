@@ -79,9 +79,23 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="8dp"
             android:background="#E4DCDC"
             android:textColor="@color/negative">
+
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                ads:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                ads:adSize="BANNER"
+                android:visibility="gone"
+                ads:adUnitId="ca-app-pub-2861105825918511/6778986566">
+            </com.google.android.gms.ads.AdView>
 
             <TextView
                 android:id="@+id/notices"
@@ -92,6 +106,7 @@
                 android:textAlignment="viewEnd"
                 android:textColor="@color/negative"
                 android:textSize="15sp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>

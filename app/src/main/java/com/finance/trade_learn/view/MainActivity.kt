@@ -16,6 +16,7 @@ import com.finance.trade_learn.utils.sharedPreferencesManager
 import com.finance.trade_learn.utils.testWorkManager
 import com.finance.trade_learn.viewModel.ViewModelMarket
 import com.finance.trade_learn.viewModel.viewModelUtils
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -44,6 +45,9 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationItemClickListener()
         isOneEntering()
         firebaseSave()
+
+
+        MobileAds.initialize(this) {}
     }
 
 

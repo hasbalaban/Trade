@@ -29,8 +29,8 @@ android {
         applicationId "com.finance.trade_learn"
         minSdk 23
         targetSdk 31
-        versionCode 36
-        versionName "1.8.3"
+        versionCode 37
+        versionName "1.8.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
@@ -140,7 +140,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     // Coil
-    implementation "io.coil-kt:coil-compose:1.3.2"
+    implementation "io.coil-kt:coil-compose:1.3.1"
 
     // Play Core Android - used to prom a review
     implementation("com.google.android.play:core:1.10.3")
@@ -149,6 +149,10 @@ dependencies {
     // Smart Look
     implementation 'com.smartlook.recording:app:1.8.9-native'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+
+
+    //admob
+    implementation 'com.google.android.gms:play-services-ads:20.6.0'
 
 
 

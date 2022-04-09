@@ -47,10 +47,6 @@ class adapter_for_my_wallet(var myCoinList: ArrayList<NewModelForItemHistory>) :
         holder.view.coinImage.setImageSvg(image_url)
        // setCoinImage(imageView,image_url)
 
-        holder.view.coinTotal.setBackgroundResource(R.drawable.grown)
-
-
-
         holder.view.RelayoutWallet.setOnClickListener {
             val coinName = SolveCoinName(myCoinList[position].CoinName)
 

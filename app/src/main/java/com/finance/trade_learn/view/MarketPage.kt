@@ -16,7 +16,9 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.finance.trade_learn.Adapters.AdapterForMarket
 import com.finance.trade_learn.R
+import com.finance.trade_learn.utils.Ads
 import com.finance.trade_learn.viewModel.ViewModelMarket
+import com.google.android.gms.ads.AdRequest
 import kotlinx.coroutines.*
 import java.lang.Runnable
 
@@ -68,10 +70,16 @@ class MarketPage : Fragment() {
 
         setAdapter()
         isIntializeViewModel()
-
+        setAd()
         super.onViewCreated(view, savedInstanceState)
     }
+    private fun setAd (){
+        dataBindingMarket.adView.apply {
+            loadAd(AdRequest.Builder().build())
+            adListener= Ads.listenerAdRequest(dataBindingMarket.adView)
+        }
 
+    }
     private fun setAdapter() {
         adapter = AdapterForMarket(requireContext(), arrayListOf())
         dataBindingMarket.RecyclerViewMarket.adapter = adapter

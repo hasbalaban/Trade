@@ -25,8 +25,10 @@ import com.finance.trade_learn.R
 import com.finance.trade_learn.clickListener.MarketClickListener
 import com.finance.trade_learn.databinding.FragmentHomeBinding
 import com.finance.trade_learn.enums.enumPriceChange
+import com.finance.trade_learn.utils.Ads
 import com.finance.trade_learn.utils.sharedPreferencesManager
 import com.finance.trade_learn.viewModel.ViewModeHomePage
+import com.google.android.gms.ads.AdRequest
 import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
 
@@ -85,7 +87,16 @@ class home : Fragment() {
 
         clickToSearch()
         startAnimation()
+        setAd()
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun setAd (){
+        dataBindingHome.adView.apply {
+            loadAd(AdRequest.Builder().build())
+            adListener= Ads.listenerAdRequest(dataBindingHome.adView)
+        }
+
     }
 
     private fun isViewModelIntialize() {
@@ -95,7 +106,7 @@ class home : Fragment() {
             viewModelHome.listOfCrypto.observe(viewLifecycleOwner) {list ->
 
                 val random = Random.nextInt(0, list.size - 1)
-
+/*
                 with(dataBindingHome.notices){
 
                     this.setOnClickListener {
@@ -108,7 +119,7 @@ class home : Fragment() {
                     text = list[random].CoinName + " ${list[random].CoinPrice}  chng: ${list[random].CoinChangePercente}"
                 }
 
-
+ */
                 adapterForHotList.updateData(list)
                 viewModelHome.isInitialize.value = true
             }
@@ -125,8 +136,8 @@ class home : Fragment() {
         val animation =
             AnimationUtils.loadAnimation(requireContext(), R.anim.animation_for_home_view)
 
-        val imageView = dataBindingHome.notices
-        imageView.animation = animation
+        //val imageView = dataBindingHome.notices
+        //imageView.animation = animation
     }
 
 

@@ -22,19 +22,20 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/topView"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:orientation="vertical">
 
             <EditText
                 android:id="@+id/searchedCoin"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintHeight_min="50dp"
                 android:layout_marginTop="4dp"
-                android:layout_weight="21"
+                app:layout_constraintTop_toTopOf="parent"
                 android:background="@drawable/search_edittext"
                 android:drawableStart="@drawable/search"
                 android:focusable="false"
@@ -42,42 +43,60 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="0dp" />
 
-            <LinearLayout
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                ads:layout_constraintTop_toBottomOf="@id/searchedCoin"
+                ads:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                ads:adSize="BANNER"
+                android:visibility="gone"
+                ads:adUnitId="ca-app-pub-2861105825918511/9185658050">
+            </com.google.android.gms.ads.AdView>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                app:layout_constraintTop_toBottomOf="@id/adView"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:layout_weight="15"
                 android:orientation="horizontal">
 
+
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginTop="5dp"
-                    android:layout_weight="4"
                     android:paddingStart="15dp"
                     android:paddingEnd="0dp"
                     android:text="@string/name"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    />
 
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:layout_weight="3"
                     android:text="@string/lastPrice"
                     android:textSize="15sp" />
 
                 <TextView
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
-                    android:layout_weight="2"
                     android:text="@string/change24"
                     android:textSize="15sp" />
 
-            </LinearLayout>
-        </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:id="@+id/view1"

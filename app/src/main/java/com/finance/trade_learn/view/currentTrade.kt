@@ -26,10 +26,12 @@ import com.finance.trade_learn.R
 import com.finance.trade_learn.databinding.FragmentCurrentTradeBinding
 import com.finance.trade_learn.enums.tradeEnum
 import com.finance.trade_learn.models.on_crypto_trade.BaseModelOneCryptoModel
+import com.finance.trade_learn.utils.Ads
 import com.finance.trade_learn.utils.ReviewUsI
 import com.finance.trade_learn.utils.setImageSvg
 import com.finance.trade_learn.utils.sharedPreferencesManager
 import com.finance.trade_learn.viewModel.viewModelCurrentTrade
+import com.google.android.gms.ads.AdRequest
 
 
 class currentTrade : Fragment(), TextWatcher, ReviewUsI {
@@ -89,6 +91,16 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
         dataBindingCurrentTrade.coinPrice.addTextChangedListener(this)
         getDetailsOfCoinFromDatabase()
         startAnimation()
+        setAd()
+    }
+
+
+    private fun setAd (){
+        dataBindingCurrentTrade.adView.apply {
+            loadAd(AdRequest.Builder().build())
+            adListener= Ads.listenerAdRequest(dataBindingCurrentTrade.adView)
+        }
+
     }
 
 
