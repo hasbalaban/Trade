@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
       <variable
@@ -9,20 +11,24 @@
 
   </data>
 
-    <LinearLayout
-        android:padding="5dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_populer_coins"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_width="wrap_content">
-        <LinearLayout
+        android:layout_width="wrap_content"
+        android:padding="5dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
-            android:orientation="horizontal"
             android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/populerCoinName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@{populerCoin.coinName}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 android:textSize="13sp"
                 android:background="@drawable/border_radios"
                 android:paddingStart="7dp"
@@ -30,28 +36,33 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:textColor="@color/black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                tools:text="MATIC"
+                />
 
             <TextView
                 android:id="@+id/populerCoinChangePercent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@{populerCoin.coinChangePercente}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/populerCoinName"
                 android:textSize="12sp"
                 android:padding="3dp"
+                tools:text="-1.77%"/>
+
+            <TextView
+                android:id="@+id/populerCoinPrice"
+                android:text="@{populerCoin.coinPrice}"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/populerCoinChangePercent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="8dp"
+                android:textSize="15sp"
+                android:padding="3dp"
+                tools:text="42955.01"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:layout_marginTop="8dp"
-            android:textSize="15sp"
-            android:padding="3dp"
-            android:id="@+id/populerCoinPrice"
-            android:text="@{populerCoin.coinPrice}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

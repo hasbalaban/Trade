@@ -61,7 +61,7 @@ class WalletPage : Fragment(), TextWatcher {
         viewModelMyWallet.getMyCoinsDetails()
 
 
-        dataBindingWallet.serachMyCoins.addTextChangedListener(this)
+        dataBindingWallet.searchMyCoins.addTextChangedListener(this)
 
         dataBindingWallet.myCoins.layoutManager = LinearLayoutManager(requireContext())
         dataBindingWallet.myCoins.adapter = adapter
@@ -110,7 +110,7 @@ class WalletPage : Fragment(), TextWatcher {
 
     override fun afterTextChanged(s: Editable?) {
 
-        val queryCoin = dataBindingWallet.serachMyCoins.text.toString()
+        val queryCoin = dataBindingWallet.searchMyCoins.text.toString()
             .uppercase(Locale.getDefault())
         if (queryCoin != "") {
 

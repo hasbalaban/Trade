@@ -89,20 +89,7 @@ class adapter_for_hot_coins(val context: Context, val list: ArrayList<CoinsHome>
     }
 
 
-    fun SolveCoinName(coinName: String): String {
-        var resolvedName = ""
-        for (i in coinName) {
-            if (i.toString() == " ") {
-                break
-            } else {
 
-                resolvedName += i
-            }
-
-        }
-        return resolvedName
-
-    }
 
 
     fun updateData(newList: ArrayList<CoinsHome>) {
@@ -142,5 +129,21 @@ class adapter_for_hot_coins(val context: Context, val list: ArrayList<CoinsHome>
 
     }
 
+
+}
+
+
+fun SolveCoinName(coinName: String): String {
+    var resolvedName = ""
+    for (i in coinName) {
+        if (i.toString() == " ") {
+            break
+        } else {
+
+            resolvedName += i
+        }
+
+    }
+    return resolvedName
 
 }

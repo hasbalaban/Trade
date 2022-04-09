@@ -183,16 +183,17 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
         viewModelCurrentTrade.getSelectedCoinDetails(coinName)
         if (viewVisible) {
             viewModelCurrentTrade.selectedCoinToTradeDetails.observe(
-                viewLifecycleOwner, { coin ->
-                    currentPrice = coin[0].price.toDouble()
-                    putDataInItemSettings(coin[0])
+                viewLifecycleOwner
+            ) { coin ->
+                currentPrice = coin[0].price.toDouble()
+                putDataInItemSettings(coin[0])
 
 
-                    // after it get data from api initialize max of seek bar
-                    maxOfSeekBar()
+                // after it get data from api initialize max of seek bar
+                maxOfSeekBar()
 
 
-                })
+            }
 
 
         }

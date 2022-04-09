@@ -8,7 +8,11 @@
     <fragment
         android:id="@+id/walletPage"
         android:name="com.finance.trade_learn.view.WalletPage"
-        android:label="walletPage" />
+        android:label="walletPage" >
+        <action
+            android:id="@+id/action_walletPage_to_home"
+            app:destination="@id/home" />
+    </fragment>
     <fragment
         android:id="@+id/marketPage"
         android:name="com.finance.trade_learn.view.MarketPage"
@@ -22,6 +26,9 @@
         <action
             android:id="@+id/action_marketPage_to_searchActivity"
             app:destination="@id/searchActivity" />
+        <action
+            android:id="@+id/action_marketPage_to_home"
+            app:destination="@id/home" />
     </fragment>
     <fragment
         android:id="@+id/tradePage"

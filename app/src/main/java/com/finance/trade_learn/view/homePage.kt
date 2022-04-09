@@ -14,14 +14,18 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.finance.trade_learn.Adapters.SolveCoinName
 import com.finance.trade_learn.Adapters.adapter_for_hot_coins
 import com.finance.trade_learn.Adapters.adapter_for_populer_coins
 import com.finance.trade_learn.R
+import com.finance.trade_learn.clickListener.MarketClickListener
 import com.finance.trade_learn.databinding.FragmentHomeBinding
 import com.finance.trade_learn.enums.enumPriceChange
+import com.finance.trade_learn.utils.sharedPreferencesManager
 import com.finance.trade_learn.viewModel.ViewModeHomePage
 import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
@@ -86,24 +90,32 @@ class home : Fragment() {
 
     private fun isViewModelIntialize() {
         val state = viewModelHome.isInitialize
-        Log.i("state", state.toString())
 
         if (state.value!!) {
-            viewModelHome.listOfCrypto.observe(viewLifecycleOwner, Observer {
+            viewModelHome.listOfCrypto.observe(viewLifecycleOwner) {list ->
 
-                val random = Random.nextInt(0,it.size-1)
-                val chngState = if (it[random].raise == enumPriceChange.negative) "-"
-                else if (it[random].raise == enumPriceChange.pozitive) "+"
-                    else ""
-                dataBindingHome.notices.text =
-                    it[random].CoinName + "${it[random].CoinPrice}  chng: $chngState${it[random].CoinChangePercente}"
-                adapterForHotList.updateData(it)
-                viewModelHome.isInitialize.value=true
-            })
-            viewModelHome.listOfCryptoForPopular.observe(viewLifecycleOwner, Observer {
+                val random = Random.nextInt(0, list.size - 1)
+
+                with(dataBindingHome.notices){
+
+                    this.setOnClickListener {
+                        val coinName = SolveCoinName(list[random].CoinName)
+                        sharedPreferencesManager(context)
+                            .addSharedPreferencesString("coinName", coinName)
+                        findNavController().navigate(R.id.tradePage)
+
+                    }
+                    text = list[random].CoinName + "${list[random].CoinPrice}  chng: ${list[random].CoinChangePercente}"
+                }
+
+
+                adapterForHotList.updateData(list)
+                viewModelHome.isInitialize.value = true
+            }
+            viewModelHome.listOfCryptoForPopular.observe(viewLifecycleOwner) {
 
                 adapterForPopulerList.updateData(it)
-            })
+            }
         }
     }
 
