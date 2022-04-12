@@ -20,6 +20,8 @@ class cryptoService() {
 
     fun PopulerCrypto(): Single<List<BaseModelCrypto>> {
         val newApi = ApiHolder.create()
+
+
         return retrofit.getPopulerCrypto(newApi)
 
     }
