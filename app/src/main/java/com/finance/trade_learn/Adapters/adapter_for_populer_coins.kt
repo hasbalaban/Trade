@@ -14,7 +14,6 @@ import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.utils.DifferentItems
 import com.finance.trade_learn.utils.sharedPreferencesManager
-import com.finance.trade_learn.view.SearchFragmentDirections
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

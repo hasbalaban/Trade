@@ -1,1 +1,3 @@
 /build
+./src/main/java/com.finance.trade_learn/data
+./src/main/java/com.finance.trade_learn/utils/newApiKey

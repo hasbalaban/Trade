@@ -14,9 +14,6 @@ class newApiKey {
 
         Log.i("random",list_of_key[random])
         return list_of_key[random]
-        print("")
-        print("")
-        print("")
     }
 
     fun keys(): ArrayList<String> {

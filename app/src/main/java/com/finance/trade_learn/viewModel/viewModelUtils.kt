@@ -9,7 +9,6 @@ import com.finance.trade_learn.utils.sharedPreferencesManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.finance.trade_learn.database.dataBaseEntities.*
 
 class viewModelUtils() : ViewModel() {
 

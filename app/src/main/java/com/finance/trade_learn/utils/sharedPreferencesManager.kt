@@ -3,7 +3,7 @@ package com.finance.trade_learn.utils
 import android.content.Context
 import android.content.SharedPreferences
 
-class sharedPreferencesManager(val context: Context) {
+class sharedPreferencesManager(private val context: Context) {
     private var packName = "com.finance.trade_learn"
     private val sharedPreferencesManager =
         context.getSharedPreferences(packName, Context.MODE_PRIVATE)
@@ -28,6 +28,7 @@ class sharedPreferencesManager(val context: Context) {
 
     fun getSharedPreferencesBoolen(keyName: String) =
         sharedPreferencesManager.getBoolean(keyName, true)
+
 
 
 }
