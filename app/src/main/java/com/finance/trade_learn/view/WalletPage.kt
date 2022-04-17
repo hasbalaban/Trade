@@ -81,6 +81,7 @@ class WalletPage : Fragment(), TextWatcher {
             viewModelMyWallet.myCoinsNewModel.observe(viewLifecycleOwner) {
 
                 it?.let {
+                    myCoinsList.clear()
                     myCoinsList.addAll(it)
                     adapter.updateRecyclerView(it)
 
@@ -110,21 +111,15 @@ class WalletPage : Fragment(), TextWatcher {
 
     override fun afterTextChanged(s: Editable?) {
 
-        val queryCoin = dataBindingWallet.searchMyCoins.text.toString()
-            .uppercase(Locale.getDefault())
+        val queryCoin = dataBindingWallet.searchMyCoins.text.toString().uppercase(Locale.getDefault())
         if (queryCoin != "") {
-
             val newList = myCoinsList.filter { item ->
                 item.CoinName.contains(queryCoin)
             }
-
             adapter.updateRecyclerView(newList as ArrayList<NewModelForItemHistory>)
-
 
         } else {
             adapter.updateRecyclerView(myCoinsList)
-
-
         }
 
     }

@@ -3,6 +3,7 @@ package com.finance.trade_learn.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
@@ -40,11 +41,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         dataBindingMain = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
 
         bottomNavigationItemClickListener()
         isOneEntering()
-        firebaseSave()
+        //firebaseSave()
 
 
         MobileAds.initialize(this) {}

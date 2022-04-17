@@ -6,7 +6,6 @@ import com.bumptech.glide.Glide
 
 import coil.load
 import coil.transform.CircleCropTransformation
-import coil.transform.RoundedCornersTransformation
 import com.finance.trade_learn.R
 
 
@@ -20,15 +19,13 @@ fun ImageView.setImage( context: Context, URL:String){
 
 fun ImageView.setImageSvg(URL:String){
 
-        this.load(URL){
+        this.load(URL) {
                 placeholder(R.drawable.coin)
                 crossfade(true)
-                crossfade(200)
-                error(R.drawable.coin)
+                crossfade(1000)
                 transformations(CircleCropTransformation())
-              //  transformations(RoundedCornersTransformation(30f))
-        }
 
+        }
 
 }
 

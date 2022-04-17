@@ -2,19 +2,14 @@ package com.finance.trade_learn.Adapters
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.finance.trade_learn.clickListener.MarketClickListener
 import com.finance.trade_learn.R
-import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
 import com.finance.trade_learn.databinding.ItemCoinOfTodayBinding
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
@@ -22,7 +17,6 @@ import com.finance.trade_learn.utils.DifferentItems
 import com.finance.trade_learn.utils.setImageSvg
 import com.finance.trade_learn.utils.sharedPreferencesManager
 import com.finance.trade_learn.view.firstSet
-import com.smartlook.va
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -86,7 +80,7 @@ class AdapterForMarket(val context: Context, val list: ArrayList<CoinsHome>) :
             val coinName = SolveCoinName(list[position].CoinName)
             sharedPreferencesManager(context)
                 .addSharedPreferencesString("coinName", coinName)
-            MarketClickListener().ClickListener(it)
+            MarketClickListener().clickListener(it)
 
         }
         holder.view.coin = list[position]

@@ -4,5 +4,5 @@ import android.view.View
 
 interface ListenerInterface {
 
-    fun ClickListener(view:View)
+    fun clickListener(view:View)
 }

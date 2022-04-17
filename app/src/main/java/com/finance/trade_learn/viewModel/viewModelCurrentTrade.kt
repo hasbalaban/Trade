@@ -28,6 +28,7 @@ class viewModelCurrentTrade(context: Context) : ViewModel() {
     val coinAmountLiveData = MutableLiveData<BigDecimal>()
     private val dao = dataBaseService.invoke(context).databaseDao()
     val selectedCoinToTradeDetails = MutableLiveData<List<BaseModelOneCryptoModel>>()
+    val canChangeAmount = MutableLiveData<Boolean>(true)
 
     // get details coin if exists in database - so if i have
     fun getDetailsOfCoinFromDatabase(coinName: String) {
@@ -92,8 +93,6 @@ class viewModelCurrentTrade(context: Context) : ViewModel() {
                     myMoneyTotal -= total
                     val myDollars = myCoins("USDT", myMoneyTotal)
 
-                    Log.i("islem1", myMoneyTotal.toString())
-                    Log.i("islem1", total.toString())
                     if (coinName != "USDT") {
                         withContext(Dispatchers.Main) {
 

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/home">
+    app:startDestination="@id/homePage">
 
     <fragment
         android:id="@+id/walletPage"
@@ -11,7 +11,7 @@
         android:label="walletPage" >
         <action
             android:id="@+id/action_walletPage_to_home"
-            app:destination="@id/home" />
+            app:destination="@id/homePage" />
         <action
             android:id="@+id/action_walletPage_to_tradePage"
             app:destination="@id/tradePage" />
@@ -31,16 +31,23 @@
             app:destination="@id/searchActivity" />
         <action
             android:id="@+id/action_marketPage_to_home"
-            app:destination="@id/home" />
+            app:destination="@id/homePage" />
     </fragment>
     <fragment
         android:id="@+id/tradePage"
-        android:name="com.finance.trade_learn.view.tradePage"
-        android:label="tradePage" />
+        android:name="com.finance.trade_learn.view.currentTrade"
+        android:label="tradePage" >
+        <action
+            android:id="@+id/action_tradePage_to_home"
+            app:destination="@id/home" />
+        <action
+            android:id="@+id/action_tradePage_to_history_of_trade2"
+            app:destination="@id/history_of_trade" />
+    </fragment>
     <fragment
-        android:id="@+id/home"
+        android:id="@+id/homePage"
         android:name="com.finance.trade_learn.view.home"
-        android:label="home">
+        android:label="homePage">
         <action
             android:id="@+id/action_home_to_tradePage"
             app:destination="@id/tradePage">
@@ -58,6 +65,17 @@
         android:label="SearchActivity" >
         <action
             android:id="@+id/action_searchActivity_to_tradePage"
+            app:destination="@id/tradePage" />
+        <action
+            android:id="@+id/action_searchActivity_to_home"
+            app:destination="@id/homePage" />
+    </fragment>
+    <fragment
+        android:id="@+id/history_of_trade"
+        android:name="com.finance.trade_learn.view.history_of_trade"
+        android:label="history_of_trade" >
+        <action
+            android:id="@+id/action_history_of_trade2_to_tradePage"
             app:destination="@id/tradePage" />
     </fragment>
 

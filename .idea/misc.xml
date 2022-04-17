@@ -11,11 +11,13 @@
         <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/placeholder.xml" value="0.116" />
         <entry key="app/src/main/res/drawable/raise.xml" value="0.2015" />
+        <entry key="app/src/main/res/layout-v28/fragment_current_trade.xml" value="0.23645833333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.23645833333333333" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.23645833333333333" />
         <entry key="app/src/main/res/layout/fragment_current_trade.xml" value="0.3222112019856771" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.12135416666666667" />
         <entry key="app/src/main/res/layout/fragment_market_page.xml" value="0.10625" />
+        <entry key="app/src/main/res/layout/fragment_trade_page.xml" value="0.23645833333333333" />
         <entry key="app/src/main/res/layout/fragment_wallet_page.xml" value="0.23645833333333333" />
         <entry key="app/src/main/res/layout/item_coin_of_today.xml" value="0.23645833333333333" />
         <entry key="app/src/main/res/layout/item_for_my_wallet_coins.xml" value="0.23645833333333333" />

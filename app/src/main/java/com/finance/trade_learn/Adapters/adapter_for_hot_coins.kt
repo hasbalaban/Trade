@@ -3,7 +3,6 @@ package com.finance.trade_learn.Adapters
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -79,7 +78,7 @@ class adapter_for_hot_coins(val context: Context, val list: ArrayList<CoinsHome>
 
             sharedPreferencesManager(context)
                 .addSharedPreferencesString("coinName", coinName)
-            HomePageClickListener().ClickListener(it)
+            HomePageClickListener().clickListener(it)
         }
         holder.view.coinImage.setImageSvg(list[position].CoinImage)
     }

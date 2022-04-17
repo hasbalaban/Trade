@@ -34,8 +34,9 @@ class MarketPage : Fragment() {
     private var viewVisible = true
     private var job: Job? = null
 
-    var runnable = Runnable { }
-    var handler = Handler(Looper.getMainLooper())
+    private var runnable = Runnable { }
+    private var handler = Handler(Looper.getMainLooper())
+    private var timeLoop = 2000L
     private lateinit var adapter: AdapterForMarket
 
     override fun onAttach(context: Context) {
@@ -113,6 +114,7 @@ class MarketPage : Fragment() {
                 if (it) {
                     viewModelMarket.listOfCrypto.observe(viewLifecycleOwner) { list ->
                         list?.let {
+                            timeLoop = 7000
                             adapter.updateData(list)
                             dataBindingMarket.RecyclerViewMarket
                             dataBindingMarket.progressBar.visibility = View.INVISIBLE
@@ -130,7 +132,7 @@ class MarketPage : Fragment() {
                 override fun run() {
                     viewModelMarket.runGetAllCryptoFromApi()
                     getData()
-                    handler.postDelayed(runnable, 7000)
+                    handler.postDelayed(runnable, timeLoop)
                 }
             }
             handler.post(runnable)

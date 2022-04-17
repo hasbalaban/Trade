@@ -1,5 +1,6 @@
 package com.finance.trade_learn.view
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -7,22 +8,18 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.SeekBar
 import android.widget.Toast
-import androidx.compose.ui.geometry.RoundRect
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import coil.load
-import coil.transform.RoundedCornersTransformation
-import com.finance.trade_learn.clickListener.ListenerInterface
 import com.finance.trade_learn.R
+import com.finance.trade_learn.clickListener.ListenerInterface
 import com.finance.trade_learn.databinding.FragmentCurrentTradeBinding
 import com.finance.trade_learn.enums.tradeEnum
 import com.finance.trade_learn.models.on_crypto_trade.BaseModelOneCryptoModel
@@ -32,9 +29,11 @@ import com.finance.trade_learn.utils.setImageSvg
 import com.finance.trade_learn.utils.sharedPreferencesManager
 import com.finance.trade_learn.viewModel.viewModelCurrentTrade
 import com.google.android.gms.ads.AdRequest
+import kotlinx.coroutines.*
+import java.lang.Runnable
 
 
-class currentTrade : Fragment(), TextWatcher, ReviewUsI {
+class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
 
     private lateinit var toast: Toast
@@ -47,12 +46,10 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
     private var tradeState = tradeEnum.Buy
     private lateinit var viewModelCurrentTrade: viewModelCurrentTrade
     private var coinName = "BTC"
+    private var timeLoop = 2000L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        print("sd")
-
-
     }
 
     override fun onCreateView(
@@ -77,21 +74,63 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
     // get dataFrom Database and Api // Call fun setInitialize()
     //call fun startAnimation()- set Click Listener
     private fun setup() {
-
         toast = Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT)
-
-        // viewModelCurrentTrade = ViewModelProvider(this).get(viewModelCurrentTrade::class.java)
         viewModelCurrentTrade = viewModelCurrentTrade(requireContext())
+        // viewModelCurrentTrade = ViewModelProvider(this).get(viewModelCurrentTrade::class.java)
         setInitialize()
-        dataBindingCurrentTrade.coinName.setText(coinName + " / USDT")
-
-
-        dataBindingCurrentTrade.clickLisener = clickListenerInitialize
-        dataBindingCurrentTrade.coinAmount.addTextChangedListener(this)
-        dataBindingCurrentTrade.coinPrice.addTextChangedListener(this)
+        setDataBindingSettings()
         getDetailsOfCoinFromDatabase()
         startAnimation()
         setAd()
+        longClickLister()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun longClickLister(){
+
+        //val currentSelectedAmount = if (dataBindingCurrentTrade.coinAmount.text.toString().isNullOrEmpty()) 0.0 else dataBindingCurrentTrade.coinAmount.text.toString().toDouble()
+
+
+
+
+        dataBindingCurrentTrade.minus.setOnTouchListener { view, motionEvent ->
+            CoroutineScope(Dispatchers.IO).launch {
+                if (viewModelCurrentTrade.canChangeAmount.value == true) {
+                    withContext(Dispatchers.Main){
+                        clickListenerInitialize.clickListener(dataBindingCurrentTrade.minus)
+                        viewModelCurrentTrade.canChangeAmount.value = false
+                        delay(200)
+                        viewModelCurrentTrade.canChangeAmount.value = true
+                    }
+                }
+            }
+            return@setOnTouchListener true
+        }
+
+        dataBindingCurrentTrade.raise.setOnTouchListener { view, motionEvent ->
+            CoroutineScope(Dispatchers.IO).launch {
+                if (viewModelCurrentTrade.canChangeAmount.value == true) {
+                    withContext(Dispatchers.Main){
+                        clickListenerInitialize.clickListener(dataBindingCurrentTrade.raise)
+                        viewModelCurrentTrade.canChangeAmount.value = false
+                        delay(200)
+                        viewModelCurrentTrade.canChangeAmount.value = true
+                    }
+                }
+            }
+            return@setOnTouchListener true
+        }
+
+    }
+
+    private fun setDataBindingSettings(){
+        dataBindingCurrentTrade.apply {
+            coinName.text = "${this@currentTrade::coinName.get()} / USDT"
+            clickLisener = clickListenerInitialize
+            coinAmount.addTextChangedListener(this@currentTrade)
+            coinPrice.addTextChangedListener(this@currentTrade)
+        }
+
     }
 
 
@@ -107,10 +146,8 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
     //first start this to get name of we had clicked
     private fun setInitialize() {
 
-        coinName = sharedPreferencesManager(requireContext())
-            .getSharedPreferencesString("coinName")
-
-        seekBarsProgress()
+        coinName = sharedPreferencesManager(requireContext()).getSharedPreferencesString("coinName")
+         seekBarsProgress()
 
     }
 
@@ -161,7 +198,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
     private fun upDatePer5Sec() {
         runnable = Runnable { //call this function for update
             getDataFromApi()
-            handler.postDelayed(runnable, 3000)
+            handler.postDelayed(runnable, timeLoop)
         }
         handler.post(runnable)
 
@@ -173,7 +210,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
     fun getDetailsOfCoinFromDatabase(coinName: String = "USDT") {
         viewModelCurrentTrade.getDetailsOfCoinFromDatabase(coinName)
         if (viewVisible) {
-            viewModelCurrentTrade.coinAmountLiveData.observe(viewLifecycleOwner, {
+            viewModelCurrentTrade.coinAmountLiveData.observe(viewLifecycleOwner) {
                 if (it != null) {
 
                     val text = (it.toString())
@@ -183,7 +220,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
                 } else
                     dataBindingCurrentTrade.avaibleAmount.text = ""
 
-            })
+            }
 
         }
 
@@ -197,13 +234,15 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
             viewModelCurrentTrade.selectedCoinToTradeDetails.observe(
                 viewLifecycleOwner
             ) { coin ->
-                currentPrice = coin[0].price.toDouble()
-                putDataInItemSettings(coin[0])
+                coin?.let {
 
+                    timeLoop = 7000L
+                    currentPrice = coin[0].price.toDouble()
+                    putDataInItemSettings(coin[0])
 
-                // after it get data from api initialize max of seek bar
-                maxOfSeekBar()
-
+                    // after it get data from api initialize max of seek bar
+                    maxOfSeekBar()
+                }
 
             }
 
@@ -216,7 +255,8 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
     private fun putDataInItemSettings(coin: BaseModelOneCryptoModel) {
 
         try {
-            val coinPrice = coin.price
+            val coinPrice = if ( coin.price.length>10 && coin.price.subSequence(0,10).last().toString() != ".") coin.price.substring(0,10) else  coin.price
+
             dataBindingCurrentTrade.coinPrice.setText(coinPrice)
 
             dataBindingCurrentTrade.coinLogo.setImageSvg(coin.logo_url)
@@ -244,10 +284,8 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
 
             }
         } catch (e: Exception) {
-            Log.i("hatam", e.message.toString())
+            Log.i("error", e.message.toString())
         }
-
-
     }
 
 
@@ -263,7 +301,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
 
     // listener override here and initialize
     private val clickListenerInitialize = object : ListenerInterface {
-        override fun ClickListener(view: View) {
+        override fun clickListener(view: View) {
             when (view.id) {
                 dataBindingCurrentTrade.Buy.id -> {
                     getDetailsOfCoinFromDatabase()
@@ -285,14 +323,18 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
                             if (dataBindingCurrentTrade.coinAmount.text.toString() != "") {
                                 val currentAmount =
                                     dataBindingCurrentTrade.coinAmount.text.toString().toDouble()
-                                if (currentPrice < 1000.0)
+                                if (currentPrice < 50.0)
                                 {
                                     val newAmount = currentAmount - 1.000
-                                    dataBindingCurrentTrade.coinAmount.setText(newAmount.toString())
+
+                                    val amount = if ( newAmount.toString().length>10 && newAmount.toString().subSequence(0,10).last().toString() != ".") newAmount.toString().substring(0,10) else  newAmount.toString()
+                                    dataBindingCurrentTrade.coinAmount.setText(amount)
                                 }
                                 else{
                                     val newAmount = currentAmount - 0.001
-                                    dataBindingCurrentTrade.coinAmount.setText(newAmount.toString())
+
+                                    val amount = if ( newAmount.toString().length>10 && newAmount.toString().subSequence(0,10).last().toString() != ".") newAmount.toString().substring(0,10) else  newAmount.toString()
+                                    dataBindingCurrentTrade.coinAmount.setText(amount)
                                 }
                             }
 
@@ -316,19 +358,23 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
                     if (dataBindingCurrentTrade.coinAmount.text.toString() != "") {
                         val currentAmount =
                             dataBindingCurrentTrade.coinAmount.text.toString().toDouble()
-                        if (currentPrice < 1000.0)
+                        if (currentPrice < 50.0)
                         {
                             val newAmount = currentAmount + 1.000
-                            dataBindingCurrentTrade.coinAmount.setText(newAmount.toString())
+
+                            val amount = if ( newAmount.toString().length>10 && newAmount.toString().subSequence(0,10).last().toString() != ".") newAmount.toString().substring(0,10) else  newAmount.toString()
+                            dataBindingCurrentTrade.coinAmount.setText(amount)
                         }
                         else{
                             val newAmount = currentAmount + 0.001
-                            dataBindingCurrentTrade.coinAmount.setText(newAmount.toString())
+                            val amount = if ( newAmount.toString().length>10 && newAmount.toString().subSequence(0,10).last().toString() != ".") newAmount.toString().substring(0,10) else  newAmount.toString()
+                            dataBindingCurrentTrade.coinAmount.setText(amount)
                         }
                     } else {
                         val currentAmount = 0.000
                         val newAmount = currentAmount + 1.000
-                        dataBindingCurrentTrade.coinAmount.setText(newAmount.toString())
+                        val amount = if ( newAmount.toString().length>10 && newAmount.toString().subSequence(0,10).last().toString() != ".") newAmount.toString().substring(0,10) else  newAmount.toString()
+                        dataBindingCurrentTrade.coinAmount.setText(amount)
                     }
                 }
 
@@ -354,11 +400,10 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
 
                 // navigate last  trade fragment
                 dataBindingCurrentTrade.historyOfTrade.id -> {
-                    val action = currentTradeDirections.actionCurrentTradeToHistoryOfTrade()
+                    val action = currentTradeDirections.actionTradePageToHistoryOfTrade2()
                     Navigation.findNavController(dataBindingCurrentTrade.root).navigate(action)
 
                 }
-
 
             }
         }
@@ -381,7 +426,6 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
             }
         }
         return max
-
     }
 
 
@@ -597,7 +641,8 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
 
             if (amount.toDouble() > 0.0 && price.toDouble() > 0.0) {
                 val total = (amount * price).toString()
-                dataBindingCurrentTrade.Total.setText(total)
+                val coinPrice = if (total.length>10 && total.subSequence(0,10).last().toString() != ".") total.substring(0,10) else  total
+                dataBindingCurrentTrade.Total.setText(coinPrice)
 
             }
         } else {
@@ -610,6 +655,31 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI {
         val reviewUs : ReviewUsI = this
         val reviewUsResult =  reviewUs.reviewUsRequestCompleteListener(activity = requireActivity(), context = requireContext())
         reviewUs.reviewUsStart(activity = requireActivity(), manager = reviewUsResult.first, reviewInfo = reviewUsResult.second)
+    }
+
+    override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
+        when(p0){
+            dataBindingCurrentTrade.raise -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    withContext(Dispatchers.Main){
+                        clickListenerInitialize.clickListener(dataBindingCurrentTrade.raise)
+                    }
+            }
+            }
+            dataBindingCurrentTrade.minus -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        withContext(Dispatchers.Main){
+                            clickListenerInitialize.clickListener(dataBindingCurrentTrade.minus)
+                        }
+                        //delay(200)
+                    }
+        }
+
+
+            //delay(200)
+        }
+
+        return false
     }
 
 
