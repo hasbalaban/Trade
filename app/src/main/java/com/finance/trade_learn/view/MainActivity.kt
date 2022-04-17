@@ -42,6 +42,10 @@ class MainActivity : AppCompatActivity() {
         dataBindingMain = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
 
+        val androidId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+        if (androidId != "8d1e30b2ef5afa39") Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
+
+
         bottomNavigationItemClickListener()
         isOneEntering()
         //firebaseSave()
