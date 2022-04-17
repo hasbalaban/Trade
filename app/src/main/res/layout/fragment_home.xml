@@ -31,7 +31,7 @@
             android:id="@+id/toolbar"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="50dp"
             android:background="#F6F3F3">
 
             <RelativeLayout
@@ -73,10 +73,16 @@
         </androidx.appcompat.widget.Toolbar>
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-
-            android:id="@+id/notice_layout"
+        <View
+            android:id="@+id/DividerAd"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
+            android:layout_width="match_parent"
+            android:background="#B5B5B5"
+            android:layout_height="1dp"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/notice_layout"
+            app:layout_constraintTop_toBottomOf="@id/DividerAd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#E4DCDC"
