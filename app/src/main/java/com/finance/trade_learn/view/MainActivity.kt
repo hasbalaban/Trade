@@ -156,17 +156,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkIsAdShowed(){
         val sharedManager = sharedPreferencesManager(this@MainActivity)
-        var adCounter = sharedManager.getSharedPreferencesInt("AdCounter",0)
-        val adDay =sharedManager.getSharedPreferencesInt("AdDate",Calendar.DAY_OF_YEAR)
+        //var adCounter = sharedManager.getSharedPreferencesInt("AdCounter",0)
+        //val adDay =sharedManager.getSharedPreferencesInt("AdDate",Calendar.DAY_OF_YEAR)
 
-        if (adCounter>=3 && adDay == Calendar.DAY_OF_YEAR) return
-        if (adCounter == 3)  {
-            sharedManager.addSharedPreferencesInt("AdCounter",0)
-            adCounter = sharedManager.getSharedPreferencesInt("AdCounter",0)
-        }
+        //if (adCounter>=3 && adDay == Calendar.DAY_OF_YEAR) return
+        //if (adCounter == 3)  {
+        //    sharedManager.addSharedPreferencesInt("AdCounter",0)
+        //    adCounter = sharedManager.getSharedPreferencesInt("AdCounter",0)
+        //}
 
-        sharedManager.addSharedPreferencesInt("AdCounter",adCounter+1)
-        sharedManager.addSharedPreferencesInt("AdDate",Calendar.DAY_OF_YEAR)
+        //sharedManager.addSharedPreferencesInt("AdCounter",adCounter+1)
+        //sharedManager.addSharedPreferencesInt("AdDate",Calendar.DAY_OF_YEAR)
 
         setInterstitialAd()
     }
