@@ -7,6 +7,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -15,7 +16,7 @@ import com.finance.trade_learn.databinding.ActivityMainBinding
 import com.finance.trade_learn.utils.sharedPreferencesManager
 import com.finance.trade_learn.utils.testWorkManager
 import com.finance.trade_learn.viewModel.ViewModelMarket
-import com.finance.trade_learn.viewModel.viewModelUtils
+import com.finance.trade_learn.viewModel.ViewModelUtils
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
@@ -27,12 +28,12 @@ import com.smartlook.sdk.smartlook.Smartlook
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var controller: NavController
     private lateinit var dataBindingMain: ActivityMainBinding
-    private lateinit var viewModelUtils: viewModelUtils
     private lateinit var viewModelMarket: ViewModelMarket
 
 
@@ -41,33 +42,27 @@ class MainActivity : AppCompatActivity() {
 
     // val disposable = CompositeDisposable()
     override fun onCreate(savedInstanceState: Bundle?) {
-        providers()
         super.onCreate(savedInstanceState)
         dataBindingMain = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        viewModelMarket = ViewModelProvider(this).get(ViewModelMarket::class.java)
+        setup()
+    }
 
-
-        val androidId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
-        if (androidId != "8d1e30b2ef5afa39") Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
-
-
+    private fun setup (){
         bottomNavigationItemClickListener()
         isOneEntering()
         //firebaseSave()
-
-
         MobileAds.initialize(this) {}
         checkIsAdShowed()
     }
 
-
-    private fun providers() {
-        viewModelMarket = ViewModelProvider(this).get(ViewModelMarket::class.java)
+    private fun setTestPhone (){
+        val androidId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+        if (androidId != "8d1e30b2ef5afa39") Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
     }
-
 
     // to navigate according click in fragment
     private fun bottomNavigationItemClickListener() {
-
         controller = findNavController(R.id.fragmentContainerView)
         dataBindingMain.options.setupWithNavController(controller)
         dataBindingMain.options.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
@@ -76,12 +71,11 @@ class MainActivity : AppCompatActivity() {
 
     //check is first entering or no ? // if it's first time add 1000 dollars
     private fun isOneEntering() {
-        viewModelUtils = viewModelUtils()
+        val viewModelUtils = ViewModelUtils()
         val state = viewModelUtils.isOneEntering(this)
         if (state) {
             // these functions just for test
-            testWorkManager()
-            Log.i("first", "this is first Entering")
+            testWorkManager(3,TimeUnit.DAYS,this)
 
             val deviceId = UUID.randomUUID()
             sharedPreferencesManager(this).addSharedPreferencesString(
@@ -90,13 +84,8 @@ class MainActivity : AppCompatActivity() {
             )
 
 
-        } else
-            Log.i("firstNot", "this is not first Entering")
-
+        }
     }
-
-
-
     fun firebaseSave() {
 
         firestore = Firebase.firestore
@@ -155,20 +144,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIsAdShowed(){
-        val sharedManager = sharedPreferencesManager(this@MainActivity)
-        //var adCounter = sharedManager.getSharedPreferencesInt("AdCounter",0)
-        //val adDay =sharedManager.getSharedPreferencesInt("AdDate",Calendar.DAY_OF_YEAR)
-
-        //if (adCounter>=3 && adDay == Calendar.DAY_OF_YEAR) return
-        //if (adCounter == 3)  {
-        //    sharedManager.addSharedPreferencesInt("AdCounter",0)
-        //    adCounter = sharedManager.getSharedPreferencesInt("AdCounter",0)
-        //}
-
-        //sharedManager.addSharedPreferencesInt("AdCounter",adCounter+1)
-        //sharedManager.addSharedPreferencesInt("AdDate",Calendar.DAY_OF_YEAR)
-
-        setInterstitialAd()
+        lifecycleScope.launchWhenCreated {
+            delay(7000)
+            setInterstitialAd()
+        }
     }
 
 }

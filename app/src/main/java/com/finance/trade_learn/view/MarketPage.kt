@@ -74,13 +74,19 @@ class MarketPage : Fragment() {
         setAd()
         super.onViewCreated(view, savedInstanceState)
     }
-    private fun setAd (){
-        dataBindingMarket.adView.apply {
-            loadAd(AdRequest.Builder().build())
-            adListener= Ads.listenerAdRequest(dataBindingMarket.adView)
-        }
 
+    private fun setAd() {
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(5000L)
+            withContext(Dispatchers.Main) {
+                dataBindingMarket.adView.apply {
+                    loadAd(AdRequest.Builder().build())
+                    adListener = Ads.listenerAdRequest(dataBindingMarket.adView)
+                }
+            }
+        }
     }
+
     private fun setAdapter() {
         adapter = AdapterForMarket(requireContext(), arrayListOf())
         dataBindingMarket.RecyclerViewMarket.adapter = adapter
@@ -106,7 +112,7 @@ class MarketPage : Fragment() {
 
     }
 
-    fun getData() {
+    private fun getData() {
 
         if (viewVisible) {
             //observer state of list of coins

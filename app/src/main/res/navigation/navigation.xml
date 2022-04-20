@@ -46,7 +46,7 @@
     </fragment>
     <fragment
         android:id="@+id/homePage"
-        android:name="com.finance.trade_learn.view.home"
+        android:name="com.finance.trade_learn.view.Home"
         android:label="homePage">
         <action
             android:id="@+id/action_home_to_tradePage"

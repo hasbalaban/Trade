@@ -10,36 +10,23 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class viewModelUtils() : ViewModel() {
+class ViewModelUtils() : ViewModel() {
 
 
     fun isOneEntering(context: Context): Boolean {
-        var state = false
         val sharedManager = sharedPreferencesManager(context)
         val isFirst = sharedManager.getSharedPreferencesBoolen("isfirst")
-        Log.i("isFirst", isFirst.toString())
-        if (isFirst) {
-            sharedManager.addSharedPreferencesBoolen("isfirst", false)
-            addDollarsForOneTime(context)
-            state = true
-
-        } else
-            state = false
-
-
-        return state
-
-
-    }
-
-
-    private fun addDollarsForOneTime(context: Context) {
-        val addDollars = 1000.0
-        addOneTimeDollars(addDollars, context)
-
+        return if (isFirst) {
+            true.also {
+                sharedManager.addSharedPreferencesBoolen("isfirst", false)
+                addOneTimeDollars(1000.0,context)
+            }
+        } else false
     }
 
     private fun addOneTimeDollars(dollars: Double, context: Context) {
+        val addDollars = 1000.0
+        addOneTimeDollars(addDollars, context)
         CoroutineScope(Dispatchers.IO).launch {
             val databaseDao = dataBaseService.invoke(context).databaseDao()
             val myCoins = myCoins("USDT", dollars)

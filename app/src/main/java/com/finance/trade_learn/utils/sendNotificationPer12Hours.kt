@@ -22,6 +22,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.sql.Time
 import java.util.concurrent.TimeUnit
 
 class SendNotificationPer12Hours(
@@ -29,21 +30,9 @@ class SendNotificationPer12Hours(
     workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
     override fun doWork(): Result {
-        val number = operation()
-        Log.i("workerManager", number.toString())
         getData()
         return Result.success()
     }
-
-    fun operation(): Int {
-        val sharedManager = sharedPreferencesManager(context)
-        var number = sharedManager.getSharedPreferencesInt("number", 0)
-        number++
-        sharedManager.addSharedPreferencesInt("number", number)
-        return number
-
-    }
-
 
     fun createNotification(coinName: String, price: String) {
         val Channel_Id = "1"
@@ -81,7 +70,7 @@ class SendNotificationPer12Hours(
         }
     }
 
-    fun getData() {
+    private fun getData() {
 
         val coinName = sharedPreferencesManager(context)
             .getSharedPreferencesString("coinName")
@@ -103,37 +92,26 @@ class SendNotificationPer12Hours(
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.i("hatahata", e.message.toString())
                     }
 
 
                 })
         }
-
-
-        //   viewModel.selectedCoinToTradeDetails.observe(
-
     }
 }
 
 
 // this will change because we use this fun for tests...
-fun testWorkManager() {
+fun testWorkManager(repeatTime : Long, timeUnit : TimeUnit,context: Context) {
     val constraint = Constraints.Builder()
         .setRequiresBatteryNotLow(true)
         .build()
 
     val myWorkRequest: WorkRequest =
-        PeriodicWorkRequestBuilder<SendNotificationPer12Hours>(8, TimeUnit.HOURS)
+        PeriodicWorkRequestBuilder<SendNotificationPer12Hours>(repeatTime, timeUnit)
             .setConstraints(constraint)
             .build()
-    WorkManager.getInstance().enqueue(myWorkRequest)
-
-/*
-    val myWorkRequest1: WorkRequest = OneTimeWorkRequestBuilder<SendNotificationPer12Hours>()
-        .setConstraints(constraint)
-        .build()
-    //  WorkManager.getInstance().enqueue(myWorkRequest1)
-
- */
+    WorkManager.getInstance(context).enqueue(myWorkRequest)
+    //WorkManager.getInstance(context).getWorkInfoById(myWorkRequest.id).cancel(true)
+    //WorkManager.getInstance(context).cancelAllWork()
 }

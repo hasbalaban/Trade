@@ -133,13 +133,16 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
     }
 
-
-    private fun setAd (){
-        dataBindingCurrentTrade.adView.apply {
-            loadAd(AdRequest.Builder().build())
-            adListener= Ads.listenerAdRequest(dataBindingCurrentTrade.adView)
+    private fun setAd() {
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(5000L)
+            withContext(Dispatchers.Main) {
+                dataBindingCurrentTrade.adView.apply {
+                    loadAd(AdRequest.Builder().build())
+                    adListener = Ads.listenerAdRequest(dataBindingCurrentTrade.adView)
+                }
+            }
         }
-
     }
 
 

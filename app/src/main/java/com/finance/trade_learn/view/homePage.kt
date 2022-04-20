@@ -4,15 +4,14 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.whenCreated
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,16 +23,17 @@ import com.finance.trade_learn.databinding.FragmentHomeBinding
 import com.finance.trade_learn.utils.Ads
 import com.finance.trade_learn.viewModel.ViewModeHomePage
 import com.google.android.gms.ads.AdRequest
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import java.lang.Runnable
 import kotlin.random.Random
 
-class home : Fragment() {
+class Home : Fragment() {
 
-    lateinit var adapterForHotList: adapter_for_hot_coins
-    lateinit var adapterForPopulerList: adapter_for_populer_coins
+    private lateinit var adapterForHotList: adapter_for_hot_coins
+    private lateinit var adapterForPopulerList: adapter_for_populer_coins
     private var viewVisible = false
-    lateinit var dataBindingHome: FragmentHomeBinding
-    lateinit var viewModelHome: ViewModeHomePage
+    private lateinit var dataBindingHome: FragmentHomeBinding
+    private lateinit var viewModelHome: ViewModeHomePage
     private var runnable = Runnable { }
     private var handler = Handler(Looper.getMainLooper())
     private var timeLoop = 2000L
@@ -82,40 +82,27 @@ class home : Fragment() {
 
 
         clickToSearch()
-        startAnimation()
         setAd()
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun setAd (){
-        dataBindingHome.adView.apply {
-            loadAd(AdRequest.Builder().build())
-            adListener= Ads.listenerAdRequest(dataBindingHome.adView)
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(5000L)
+            withContext(Dispatchers.Main){
+                dataBindingHome.adView.apply {
+                    loadAd(AdRequest.Builder().build())
+                    adListener= Ads.listenerAdRequest(dataBindingHome.adView)
+                }
+            }
         }
-
     }
 
-    private fun isViewModelIntialize() {
+    private fun isViewModelInitialize() {
         val state = viewModelHome.isInitialize
 
         if (state.value!!) {
             viewModelHome.listOfCrypto.observe(viewLifecycleOwner) {list ->
-
-                val random = Random.nextInt(0, list.size - 1)
-/*
-                with(dataBindingHome.notices){
-
-                    this.setOnClickListener {
-                        val coinName = SolveCoinName(list[random].CoinName)
-                        sharedPreferencesManager(context)
-                            .addSharedPreferencesString("coinName", coinName)
-                        findNavController().navigate(R.id.tradePage)
-
-                    }
-                    text = list[random].CoinName + " ${list[random].CoinPrice}  chng: ${list[random].CoinChangePercente}"
-                }
-
- */
                 adapterForHotList.updateData(list)
                 viewModelHome.isInitialize.value = true
             }
@@ -126,62 +113,34 @@ class home : Fragment() {
         }
     }
 
-
-    //animation to start
-    fun startAnimation() {
-        val animation =
-            AnimationUtils.loadAnimation(requireContext(), R.anim.animation_for_home_view)
-
-        //val imageView = dataBindingHome.notices
-        //imageView.animation = animation
-    }
-
-
     // We Check State of Loading if loading is succesed we Will initialize adapter here
     // then we will set on recycler view
-
-
-    fun getData() {
+    private fun getData() {
         if (viewVisible) {
             //observer state of list of coins
-            viewModelHome.state.observe(viewLifecycleOwner, Observer {
+            viewModelHome.state.observe(viewLifecycleOwner) {
                 if (it) {
                     if (viewVisible) {
-                        viewModelHome.listOfCrypto.observe(
-                            viewLifecycleOwner,
-                            Observer { list ->
-                                list?.let {
-                                    adapterForHotList.updateData(it)
-                                    timeLoop = 7500
-                                    if (viewModelHome.isInitialize.value!!){
-                                        dataBindingHome.progressBar.visibility=View.INVISIBLE
-                                    }
-
-
-                                    isViewModelIntialize()
-
-
+                        viewModelHome.listOfCrypto.observe(viewLifecycleOwner) { list ->
+                            list?.let {
+                                adapterForHotList.updateData(it)
+                                timeLoop = 7500
+                                if (viewModelHome.isInitialize.value!!) {
+                                    dataBindingHome.progressBar.visibility = View.INVISIBLE
                                 }
+                                isViewModelInitialize()
+                            }
 
+                        }
 
-                            })
-
-                        viewModelHome.listOfCryptoForPopular.observe(
-                            viewLifecycleOwner,
-                            Observer { list ->
-
-                                list?.let {
-
-                                    adapterForPopulerList.updateData(it)
-                                }
-
-                            })
+                        viewModelHome.listOfCryptoForPopular.observe(viewLifecycleOwner) { list ->
+                            list?.let {
+                                adapterForPopulerList.updateData(it)
+                            }
+                        }
                     }
-                } else {
-
-                    Log.i("ooooooo", "failed")
                 }
-            })
+            }
         }
     }
 
@@ -204,25 +163,17 @@ class home : Fragment() {
     }
 
     override fun onResume() {
-
         viewVisible = true
         update()
         if (viewModelHome.state.value == true) getData()
-
         super.onResume()
     }
 
 
-    fun clickToSearch() {
+    private fun clickToSearch() {
         dataBindingHome.searchCoin.setOnClickListener {
-             val action = homeDirections.actionHomeToSearchActivity()
+             val action = HomeDirections.actionHomeToSearchActivity()
              Navigation.findNavController(it).navigate(action)
-
-
         }
-
-
     }
-
-
 }
