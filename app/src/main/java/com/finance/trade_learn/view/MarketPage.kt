@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.finance.trade_learn.Adapters.AdapterForMarket
 import com.finance.trade_learn.R
 import com.finance.trade_learn.utils.Ads
+import com.finance.trade_learn.utils.sharedPreferencesManager
 import com.finance.trade_learn.viewModel.ViewModelMarket
 import com.google.android.gms.ads.AdRequest
 import kotlinx.coroutines.*
@@ -75,13 +76,17 @@ class MarketPage : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
+
     private fun setAd() {
+        val currentMillis = System.currentTimeMillis()
+        val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("marketPage",currentMillis)
+        val delayTime = if (currentMillis >= updateTime) 0L else updateTime-currentMillis
         CoroutineScope(Dispatchers.IO).launch {
-            delay(5000L)
+            delay(delayTime)
             withContext(Dispatchers.Main) {
                 dataBindingMarket.adView.apply {
                     loadAd(AdRequest.Builder().build())
-                    adListener = Ads.listenerAdRequest(dataBindingMarket.adView)
+                    adListener = Ads.listenerAdRequest(dataBindingMarket.adView,"marketPage",requireContext())
                 }
             }
         }

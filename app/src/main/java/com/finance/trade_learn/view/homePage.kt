@@ -21,6 +21,7 @@ import com.finance.trade_learn.Adapters.adapter_for_populer_coins
 import com.finance.trade_learn.R
 import com.finance.trade_learn.databinding.FragmentHomeBinding
 import com.finance.trade_learn.utils.Ads
+import com.finance.trade_learn.utils.sharedPreferencesManager
 import com.finance.trade_learn.viewModel.ViewModeHomePage
 import com.google.android.gms.ads.AdRequest
 import kotlinx.coroutines.*
@@ -86,13 +87,16 @@ class Home : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun setAd (){
+    private fun setAd() {
+        val currentMillis = System.currentTimeMillis()
+        val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("homePage",currentMillis)
+        val delayTime = if (currentMillis >= updateTime) 0L else updateTime-currentMillis
         CoroutineScope(Dispatchers.IO).launch {
-            delay(5000L)
-            withContext(Dispatchers.Main){
+            delay(delayTime)
+            withContext(Dispatchers.Main) {
                 dataBindingHome.adView.apply {
                     loadAd(AdRequest.Builder().build())
-                    adListener= Ads.listenerAdRequest(dataBindingHome.adView)
+                    adListener = Ads.listenerAdRequest(dataBindingHome.adView,"homePage",requireContext())
                 }
             }
         }
@@ -100,7 +104,6 @@ class Home : Fragment() {
 
     private fun isViewModelInitialize() {
         val state = viewModelHome.isInitialize
-
         if (state.value!!) {
             viewModelHome.listOfCrypto.observe(viewLifecycleOwner) {list ->
                 adapterForHotList.updateData(list)

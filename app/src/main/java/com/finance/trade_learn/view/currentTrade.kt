@@ -134,12 +134,15 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     }
 
     private fun setAd() {
+        val currentMillis = System.currentTimeMillis()
+        val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("currentTrade",currentMillis)
+        val delayTime = if (currentMillis >= updateTime) 0L else updateTime-currentMillis
         CoroutineScope(Dispatchers.IO).launch {
-            delay(5000L)
+            delay(delayTime)
             withContext(Dispatchers.Main) {
                 dataBindingCurrentTrade.adView.apply {
                     loadAd(AdRequest.Builder().build())
-                    adListener = Ads.listenerAdRequest(dataBindingCurrentTrade.adView)
+                    adListener = Ads.listenerAdRequest(dataBindingCurrentTrade.adView,"currentTrade",requireContext())
                 }
             }
         }

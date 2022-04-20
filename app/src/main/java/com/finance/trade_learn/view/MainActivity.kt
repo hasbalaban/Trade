@@ -1,10 +1,12 @@
 package com.finance.trade_learn.view
 
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -70,6 +72,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //check is first entering or no ? // if it's first time add 1000 dollars
+    @RequiresApi(Build.VERSION_CODES.GINGERBREAD)
     private fun isOneEntering() {
         val viewModelUtils = ViewModelUtils()
         val state = viewModelUtils.isOneEntering(this)

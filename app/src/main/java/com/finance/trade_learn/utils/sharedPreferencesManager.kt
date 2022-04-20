@@ -22,6 +22,13 @@ class sharedPreferencesManager(private val context: Context) {
     fun getSharedPreferencesInt(keyName: String, i: Int) =
         sharedPreferencesManager.getInt(keyName, 0)
 
+    fun addSharedPreferencesLong(keyName: String, value: Long) {
+        sharedPreferencesManager.edit().putLong(keyName, value).apply()
+    }
+
+    fun getSharedPreferencesLong(keyName: String, i: Long) =
+        sharedPreferencesManager.getLong(keyName, 0L)
+
     fun addSharedPreferencesBoolen(keyName: String, value: Boolean) {
         sharedPreferencesManager.edit().putBoolean(keyName, value).apply()
     }

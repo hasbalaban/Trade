@@ -18,13 +18,10 @@ fun ImageView.setImage( context: Context, URL:String){
 
 
 fun ImageView.setImageSvg(URL:String){
-
         this.load(URL) {
-                placeholder(R.drawable.coin)
                 crossfade(true)
                 crossfade(1000)
                 transformations(CircleCropTransformation())
-
         }
 
 }
