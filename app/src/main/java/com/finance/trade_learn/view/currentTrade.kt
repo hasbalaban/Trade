@@ -28,7 +28,9 @@ import com.finance.trade_learn.utils.ReviewUsI
 import com.finance.trade_learn.utils.setImageSvg
 import com.finance.trade_learn.utils.sharedPreferencesManager
 import com.finance.trade_learn.viewModel.viewModelCurrentTrade
-import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.coroutines.*
 import java.lang.Runnable
 
@@ -90,9 +92,6 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     private fun longClickLister(){
 
         //val currentSelectedAmount = if (dataBindingCurrentTrade.coinAmount.text.toString().isNullOrEmpty()) 0.0 else dataBindingCurrentTrade.coinAmount.text.toString().toDouble()
-
-
-
 
         dataBindingCurrentTrade.minus.setOnTouchListener { view, motionEvent ->
             CoroutineScope(Dispatchers.IO).launch {
@@ -479,9 +478,11 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                             getDetailsOfCoinFromDatabase()
                             toastMessages(R.string.succes)
                             reviewUs()
+                            //setInterstitialAd()
 
                         } else {
                             toastMessages(R.string.fail)
+                            //setInterstitialAd()
                         }
                     }
 
@@ -503,9 +504,11 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                         if (it) {
                             getDetailsOfCoinFromDatabase(coinName)
                             toastMessages(R.string.succes)
+                            //setInterstitialAd()
 
                         } else {
                             toastMessages(R.string.fail)
+                            //setInterstitialAd()
                         }
                     }
 
@@ -637,4 +640,21 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     }
 
 
+    private fun setInterstitialAd() {
+        val adRequest = AdRequest.Builder().build()
+        MobileAds.setRequestConfiguration(
+            RequestConfiguration.Builder()
+                .build()
+        )
+
+        InterstitialAd.load(requireContext(), "ca-app-pub-2861105825918511/1127322176", adRequest, object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                }
+
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    print("success")
+                    interstitialAd.show(requireActivity())
+                }
+            })
+    }
 }
