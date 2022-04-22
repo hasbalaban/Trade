@@ -12,7 +12,7 @@ object Ads{
         val listener = object  : AdListener() {
             override fun onAdLoaded() {
                 adView.visibility = View.VISIBLE
-                sharedPreferencesManager(context).addSharedPreferencesLong(adFragmentName,System.currentTimeMillis()+(30*1000))
+                sharedPreferencesManager(context).addSharedPreferencesLong(adFragmentName,System.currentTimeMillis()+(28*1000))
                 super.onAdLoaded()
             }
 

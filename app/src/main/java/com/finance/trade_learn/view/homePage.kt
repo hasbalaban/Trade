@@ -38,6 +38,7 @@ class Home : Fragment() {
     private var runnable = Runnable { }
     private var handler = Handler(Looper.getMainLooper())
     private var timeLoop = 2000L
+    private var job : Job? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -91,7 +92,7 @@ class Home : Fragment() {
         val currentMillis = System.currentTimeMillis()
         val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("homePage",currentMillis)
         val delayTime = if (currentMillis >= updateTime) 0L else updateTime-currentMillis
-        CoroutineScope(Dispatchers.IO).launch {
+        job = CoroutineScope(Dispatchers.IO).launch {
             delay(delayTime)
             withContext(Dispatchers.Main) {
                 dataBindingHome.adView.apply {
@@ -148,7 +149,6 @@ class Home : Fragment() {
     }
 
     private fun update() {
-
         runnable = Runnable {
             runBlocking {
                 viewModelHome.runGetAllCryptoFromApi()
@@ -162,6 +162,7 @@ class Home : Fragment() {
     override fun onPause() {
         viewVisible = false
         handler.removeCallbacks(runnable)
+        job?.cancel()
         super.onPause()
     }
 

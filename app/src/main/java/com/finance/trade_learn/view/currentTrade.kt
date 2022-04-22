@@ -47,6 +47,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     private lateinit var viewModelCurrentTrade: viewModelCurrentTrade
     private var coinName = "BTC"
     private var timeLoop = 2000L
+    private var job : Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,7 +138,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         val currentMillis = System.currentTimeMillis()
         val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("currentTrade",currentMillis)
         val delayTime = if (currentMillis >= updateTime) 0L else updateTime-currentMillis
-        CoroutineScope(Dispatchers.IO).launch {
+        job = CoroutineScope(Dispatchers.IO).launch {
             delay(delayTime)
             withContext(Dispatchers.Main) {
                 dataBindingCurrentTrade.adView.apply {
@@ -148,15 +149,11 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         }
     }
 
-
     //first start this to get name of we had clicked
     private fun setInitialize() {
-
         coinName = sharedPreferencesManager(requireContext()).getSharedPreferencesString("coinName")
          seekBarsProgress()
-
     }
-
 
     //animation to start
     private fun startAnimation() {
@@ -195,9 +192,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         val historyOfTrade = dataBindingCurrentTrade.historyOfTrade
         animationToRight.duration = 500
         historyOfTrade.animation = animationToRight
-
     }
-
 
     // this function manager time to get data in per 5 seek.
     //we override here runable as Lambda instead Object
@@ -207,10 +202,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
             handler.postDelayed(runnable, timeLoop)
         }
         handler.post(runnable)
-
-
     }
-
 
     // we getting data from database when fragment starting and after any trade
     fun getDetailsOfCoinFromDatabase(coinName: String = "USDT") {
@@ -218,20 +210,14 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         if (viewVisible) {
             viewModelCurrentTrade.coinAmountLiveData.observe(viewLifecycleOwner) {
                 if (it != null) {
-
                     val text = (it.toString())
                     dataBindingCurrentTrade.avaibleAmount.text = text
                     dataBindingCurrentTrade.symbol.text = coinName
-
                 } else
                     dataBindingCurrentTrade.avaibleAmount.text = ""
-
             }
-
         }
-
     }
-
 
     // we call this function per 5 second .we getting data from Api on this function
     private fun getDataFromApi() {
@@ -241,22 +227,15 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                 viewLifecycleOwner
             ) { coin ->
                 coin?.let {
-
                     timeLoop = 7000L
                     currentPrice = coin[0].price.toDouble()
                     putDataInItemSettings(coin[0])
-
                     // after it get data from api initialize max of seek bar
                     maxOfSeekBar()
                 }
-
             }
-
-
         }
-
     }
-
     // this fun for binding of fata - change percente/price etc.
     private fun putDataInItemSettings(coin: BaseModelOneCryptoModel) {
 
@@ -343,21 +322,15 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                                     dataBindingCurrentTrade.coinAmount.setText(amount)
                                 }
                             }
-
                         } else {
                             toastMessages(R.string.trueValue)
-
                         }
                     }
                     // if amount equals zero (0) show messages
                     else {
                         toastMessages(R.string.trueValue)
-
                     }
-
                 }
-
-
                 //when we click raise button
                 dataBindingCurrentTrade.raise.id -> {
 
@@ -386,7 +359,6 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
                 //when we click do trade button
                 dataBindingCurrentTrade.doTrade.id -> {
-
                     val amount = dataBindingCurrentTrade.coinAmount.text.toString()
                     if (amount != "" || amount != "0.0") {
                         //check views and other is emty or not etc.
@@ -396,14 +368,10 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                         } else {
                             toastMessages(R.string.proggresState)
                         }
-
                     } else {
                         toastMessages(R.string.enterAmountDialog)
                     }
-
-
                 }
-
                 // navigate last  trade fragment
                 dataBindingCurrentTrade.historyOfTrade.id -> {
                     val action = currentTradeDirections.actionTradePageToHistoryOfTrade2()
@@ -437,7 +405,6 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
     // function for trade with seek seekBarsProgress
     private fun seekBarsProgress() {
-
         dataBindingCurrentTrade.percentOfAvaible.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -448,41 +415,27 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
                     tradeEnum.Buy -> {
                         dataBindingCurrentTrade.percentOfAvaible.max = maxOfSeekBar()
-
                         dataBindingCurrentTrade.coinAmount.setText(percentAmount.toString())
                         if (percentAmount.toString() == "0") {
                             dataBindingCurrentTrade.Total.setText(R.string.addZeros)
                         }
-
-
                     }
                     tradeEnum.Sell -> {
-
                         dataBindingCurrentTrade.percentOfAvaible.max = maxOfSeekBar()
                         if (percentAmount.toString() == "0") {
                             dataBindingCurrentTrade.Total.setText(R.string.addZeros)
                         }
-
                         dataBindingCurrentTrade.coinAmount.setText(percentAmount.toString())
-                        Log.i("amountt", percentAmount.toString())
                     }
                 }
 
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
             }
-
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
-
             }
-
-
         })
-
-
     }
 
 
@@ -500,17 +453,11 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                     ((avaibleAmount.toDouble() >= total.toDouble()) && (avaibleAmount.toDouble() > 0.0) && (total.toDouble() > 0.0) && (amount.toDouble() > 0.0))
                 }
                 tradeEnum.Sell -> {
-
                     ((avaibleAmount.toDouble() >= amount.toDouble()) && (avaibleAmount.toDouble() > 0.0) && (total.toDouble() > 0.0) && (amount.toDouble() > 0.0))
-
                 }
-
             }
-
         }
-
         return operationState
-
     }
 
 
@@ -527,7 +474,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                     val total = coinAmount * coinPrice
 
                     viewModelCurrentTrade.buyCoin(coinName, coinAmount, total, currentPrice)
-                    viewModelCurrentTrade.state.observe(viewLifecycleOwner, {
+                    viewModelCurrentTrade.state.observe(viewLifecycleOwner) {
                         if (it) {
                             getDetailsOfCoinFromDatabase()
                             toastMessages(R.string.succes)
@@ -536,7 +483,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                         } else {
                             toastMessages(R.string.fail)
                         }
-                    })
+                    }
 
                 }
 
@@ -552,7 +499,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                     val total = coinAmount * coinPrice
 
                     viewModelCurrentTrade.sellCoin(coinName, coinAmount, total, currentPrice)
-                    viewModelCurrentTrade.state.observe(viewLifecycleOwner, {
+                    viewModelCurrentTrade.state.observe(viewLifecycleOwner) {
                         if (it) {
                             getDetailsOfCoinFromDatabase(coinName)
                             toastMessages(R.string.succes)
@@ -560,7 +507,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                         } else {
                             toastMessages(R.string.fail)
                         }
-                    })
+                    }
 
 
                 }
@@ -612,6 +559,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     override fun onPause() {
         viewVisible = false
         handler.removeCallbacks(runnable)
+        job?.cancel()
         super.onPause()
     }
 

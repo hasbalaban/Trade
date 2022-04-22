@@ -34,6 +34,7 @@ class MarketPage : Fragment() {
     private lateinit var dataBindingMarket: com.finance.trade_learn.databinding.FragmentMarketPageBinding
     private var viewVisible = true
     private var job: Job? = null
+    private var jobAd: Job? = null
 
     private var runnable = Runnable { }
     private var handler = Handler(Looper.getMainLooper())
@@ -81,7 +82,7 @@ class MarketPage : Fragment() {
         val currentMillis = System.currentTimeMillis()
         val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("marketPage",currentMillis)
         val delayTime = if (currentMillis >= updateTime) 0L else updateTime-currentMillis
-        CoroutineScope(Dispatchers.IO).launch {
+        jobAd = CoroutineScope(Dispatchers.IO).launch {
             delay(delayTime)
             withContext(Dispatchers.Main) {
                 dataBindingMarket.adView.apply {
@@ -153,7 +154,7 @@ class MarketPage : Fragment() {
 
     override fun onPause() {
         viewVisible = false
-        job?.cancel()
+        jobAd?.cancel()
         Log.i("onPause", "onPause")
         handler.removeCallbacks(runnable)
         super.onPause()
