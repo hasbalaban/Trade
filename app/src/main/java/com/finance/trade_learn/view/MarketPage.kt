@@ -73,7 +73,7 @@ class MarketPage : Fragment() {
 
         setAdapter()
         isIntializeViewModel()
-        setAd()
+        //setAd()
         super.onViewCreated(view, savedInstanceState)
     }
 

@@ -84,7 +84,7 @@ class Home : Fragment() {
 
 
         clickToSearch()
-        setAd()
+        //setAd()
         super.onViewCreated(view, savedInstanceState)
     }
 

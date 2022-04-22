@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationItemClickListener()
         isOneEntering()
         //firebaseSave()
-        MobileAds.initialize(this) {}
         checkIsAdShowed()
     }
 
@@ -72,7 +71,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     //check is first entering or no ? // if it's first time add 1000 dollars
-    @RequiresApi(Build.VERSION_CODES.GINGERBREAD)
     private fun isOneEntering() {
         val viewModelUtils = ViewModelUtils()
         val state = viewModelUtils.isOneEntering(this)
@@ -147,9 +145,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIsAdShowed(){
+        //MobileAds.initialize(this) {}
         lifecycleScope.launchWhenCreated {
             delay(7000)
-            setInterstitialAd()
+            //setInterstitialAd()
         }
     }
 

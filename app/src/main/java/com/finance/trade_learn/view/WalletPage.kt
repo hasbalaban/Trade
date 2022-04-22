@@ -56,7 +56,7 @@ class WalletPage : Fragment(), TextWatcher {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setup()
         observerFun()
-        setAd()
+        //setAd()
         super.onViewCreated(view, savedInstanceState)
     }
 

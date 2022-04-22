@@ -25,8 +25,6 @@ class ViewModelUtils() : ViewModel() {
     }
 
     private fun addOneTimeDollars(dollars: Double, context: Context) {
-        val addDollars = 1000.0
-        addOneTimeDollars(addDollars, context)
         CoroutineScope(Dispatchers.IO).launch {
             val databaseDao = dataBaseService.invoke(context).databaseDao()
             val myCoins = myCoins("USDT", dollars)

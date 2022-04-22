@@ -82,7 +82,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         setDataBindingSettings()
         getDetailsOfCoinFromDatabase()
         startAnimation()
-        setAd()
+        //setAd()
         longClickLister()
     }
 
