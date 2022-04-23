@@ -8,13 +8,15 @@
         <entry key="app/src/main/res/drawable/drop.xml" value="0.2015" />
         <entry key="app/src/main/res/drawable/edittext_wallet.xml" value="0.2025" />
         <entry key="app/src/main/res/drawable/grown.xml" value="0.2015" />
+        <entry key="app/src/main/res/drawable/history_of_trade.xml" value="0.129" />
         <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/placeholder.xml" value="0.116" />
         <entry key="app/src/main/res/drawable/raise.xml" value="0.2015" />
-        <entry key="app/src/main/res/layout-v28/fragment_current_trade.xml" value="0.23645833333333333" />
+        <entry key="app/src/main/res/layout-v28/fragment_current_trade.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.23645833333333333" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.23645833333333333" />
         <entry key="app/src/main/res/layout/fragment_current_trade.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_history_of_trade.xml" value="0.23541666666666666" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.12135416666666667" />
         <entry key="app/src/main/res/layout/fragment_market_page.xml" value="0.10625" />
         <entry key="app/src/main/res/layout/fragment_trade_page.xml" value="0.23645833333333333" />
@@ -35,5 +37,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.1" />
+      </ProjectState>
+    </option>
   </component>
 </project>
