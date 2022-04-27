@@ -27,6 +27,14 @@ class newApiKey {
         API_KEYS.add("8a0f15cae34634cdc03898b4c585a156ca974df0")
         API_KEYS.add("70c78f9c149e61d79c81db0ea7748a262c0cbc63")
         API_KEYS.add("2c19b8fce8aa7eb5dd33bd08063fc33c01cace1d")
+        //
+        API_KEYS.add("cd8fddbedad5e35c8a61f079a967da4da5f12722")
+        API_KEYS.add("d15f4e3ce343e690f6256e08b40ccad1f8b80bbd")
+        API_KEYS.add("8fe2e2b8b4bd6a17f77c1cd55b6a6a101757b18a")
+        API_KEYS.add("7771fd3c2c02f52a188a0ace81c9288549d0c754")
+        API_KEYS.add("40d3ea300e2163ece8433de0e061c1934b3f68bc")
+        API_KEYS.add("2478cab5a9aa27072c5f30ce10ba9f6586f074c1")
+        API_KEYS.add("ba8e13b1daee074b83b798e260fd153ce959f13d")
         return API_KEYS
     }
 }
