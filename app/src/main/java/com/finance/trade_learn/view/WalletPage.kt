@@ -56,7 +56,7 @@ class WalletPage : Fragment(), TextWatcher {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setup()
         observerFun()
-        //setAd()
+        setAd()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -115,6 +115,8 @@ class WalletPage : Fragment(), TextWatcher {
     }
 
     private fun setAd() {
+        if (System.currentTimeMillis()<1653298595591) return
+
         val currentMillis = System.currentTimeMillis()
         val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("walletPage",currentMillis)
         val delayTime = if (currentMillis >= updateTime) 0L else updateTime-currentMillis

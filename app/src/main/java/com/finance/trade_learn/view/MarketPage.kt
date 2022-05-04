@@ -73,12 +73,14 @@ class MarketPage : Fragment() {
 
         setAdapter()
         isIntializeViewModel()
-        //setAd()
+        setAd()
         super.onViewCreated(view, savedInstanceState)
     }
 
 
     private fun setAd() {
+        if (System.currentTimeMillis()<1653298595591) return
+
         val currentMillis = System.currentTimeMillis()
         val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("marketPage",currentMillis)
         val delayTime = if (currentMillis >= updateTime) 0L else updateTime-currentMillis

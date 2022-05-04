@@ -1,12 +1,9 @@
 package com.finance.trade_learn.view
 
 
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -146,10 +143,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIsAdShowed(){
-        //MobileAds.initialize(this) {}
+        if (System.currentTimeMillis()<1653298595591) return
+
+        MobileAds.initialize(this) {}
         lifecycleScope.launchWhenCreated {
             delay(7000)
-            //setInterstitialAd()
+            setInterstitialAd()
         }
     }
 

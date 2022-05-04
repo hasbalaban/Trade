@@ -84,7 +84,7 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         setDataBindingSettings()
         getDetailsOfCoinFromDatabase()
         startAnimation()
-        //setAd()
+        setAd()
         longClickLister()
     }
 
@@ -134,6 +134,8 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     }
 
     private fun setAd() {
+        if (System.currentTimeMillis()<1653298595591) return
+
         val currentMillis = System.currentTimeMillis()
         val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("currentTrade",currentMillis)
         val delayTime = if (currentMillis >= updateTime) 0L else updateTime-currentMillis
@@ -478,11 +480,11 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                             getDetailsOfCoinFromDatabase()
                             toastMessages(R.string.succes)
                             reviewUs()
-                            //setInterstitialAd()
+                            setInterstitialAd()
 
                         } else {
                             toastMessages(R.string.fail)
-                            //setInterstitialAd()
+                            setInterstitialAd()
                         }
                     }
 
@@ -504,11 +506,11 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                         if (it) {
                             getDetailsOfCoinFromDatabase(coinName)
                             toastMessages(R.string.succes)
-                            //setInterstitialAd()
+                            setInterstitialAd()
 
                         } else {
                             toastMessages(R.string.fail)
-                            //setInterstitialAd()
+                            setInterstitialAd()
                         }
                     }
 
@@ -641,6 +643,8 @@ class currentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
 
     private fun setInterstitialAd() {
+        if (System.currentTimeMillis()<1653298595591) return
+
         val adRequest = AdRequest.Builder().build()
         MobileAds.setRequestConfiguration(
             RequestConfiguration.Builder()
