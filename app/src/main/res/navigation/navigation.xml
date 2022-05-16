@@ -35,11 +35,12 @@
     </fragment>
     <fragment
         android:id="@+id/tradePage"
-        android:name="com.finance.trade_learn.view.currentTrade"
+        android:name="com.finance.trade_learn.view.CurrentTrade"
         android:label="tradePage" >
         <action
             android:id="@+id/action_tradePage_to_home"
             app:destination="@id/home" />
+
         <action
             android:id="@+id/action_tradePage_to_history_of_trade2"
             app:destination="@id/history_of_trade" />

@@ -18,50 +18,56 @@
         android:layout_height="wrap_content">
 
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/infoLayout"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintHeight_min="90dp"
-            android:paddingVertical="10dp"
-
-            >
+            android:layout_height="90dp"
+            app:layout_constraintHeight_max="100dp"
+            android:paddingVertical="10dp">
 
             <ImageView
                 android:id="@+id/coin_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="15"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:padding="5dp"
+                android:src="@drawable/ust"
+                app:layout_constraintEnd_toStartOf="@id/coinName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
 
                 />
 
             <TextView
                 android:id="@+id/coinName"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="40"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loading..."
                 android:paddingStart="5dp"
                 android:paddingEnd="0dp"
                 android:paddingTop="30dp"
                 android:textAlignment="center"
                 android:textColor="#202BED"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/coin_logo"
                 android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/coinChangePercent"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingStart="3dp"
                 android:paddingTop="30dp"
                 android:paddingEnd="2dp"
+                android:text="Loading..."
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:textColor="@color/negative"
                 android:textSize="18sp" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
