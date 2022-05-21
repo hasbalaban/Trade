@@ -36,9 +36,9 @@ class adapter_for_my_wallet(var myCoinList: ArrayList<NewModelForItemHistory>) :
             holder.view.coinAmount.context, R.anim.animation_for_item_of_recyclers
         )
         holder.view.RelayoutWallet.animation = animation
-        val imageView=holder.view.coinImage
+       // val imageView=holder.view.coinImage
         val image_url = myCoinList[position].Image
-        holder.view.coinImage.setImageSvg(image_url)
+       // holder.view.coinImage.setImageSvg(image_url)
        // setCoinImage(imageView,image_url)
 
         holder.view.RelayoutWallet.setOnClickListener {

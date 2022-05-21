@@ -80,7 +80,7 @@ class adapter_for_hot_coins(val context: Context, val list: ArrayList<CoinsHome>
                 .addSharedPreferencesString("coinName", coinName)
             HomePageClickListener().clickListener(it)
         }
-        holder.view.coinImage.setImageSvg(list[position].CoinImage)
+      //  holder.view.coinImage.setImageSvg(list[position].CoinImage)
     }
 
     override fun getItemCount(): Int {

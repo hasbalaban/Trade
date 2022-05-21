@@ -15,14 +15,13 @@ import com.finance.trade_learn.R
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.models.on_crypto_trade.BaseModelOneCryptoModel
 import com.finance.trade_learn.view.MainActivity
-import com.finance.trade_learn.viewModel.viewModelCurrentTrade
+import com.finance.trade_learn.viewModel.ViewModelCurrentTrade
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.sql.Time
 import java.util.concurrent.TimeUnit
 
 class SendNotificationPer12Hours(
@@ -74,7 +73,7 @@ class SendNotificationPer12Hours(
 
         val coinName = sharedPreferencesManager(context)
             .getSharedPreferencesString("coinName")
-        val viewModel = viewModelCurrentTrade(context)
+        val viewModel = ViewModelCurrentTrade(context)
         viewModel.getSelectedCoinDetails(coinName)
 
         CoroutineScope(Dispatchers.IO).launch {

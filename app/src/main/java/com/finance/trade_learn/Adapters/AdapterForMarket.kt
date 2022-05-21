@@ -85,7 +85,7 @@ class AdapterForMarket(val context: Context, val list: ArrayList<CoinsHome>) :
         }
         holder.view.coin = list[position]
         animationSet(position, holder.view.LayoutCoin)
-        holder.view.coinImage.setImageSvg(list[position].CoinImage)
+        //holder.view.coinImage.setImageSvg(list[position].CoinImage)
 
     }
 

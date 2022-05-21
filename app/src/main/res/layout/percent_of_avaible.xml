@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<data>
+    <variable
+        name="vm"
+        type="com.finance.trade_learn.viewModel.ViewModelCurrentTrade" />
+</data>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/percent25Layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1">
+            <ImageView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/percent25Image"
+                android:layout_width="0dp"
+                app:layout_constraintHeight_max="20dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toTopOf="@id/text25"
+                android:src="@drawable/percent"/>
+            <TextView
+                android:id="@+id/text25"
+                app:layout_constraintTop_toBottomOf="@id/percent25Image"
+                app:layout_constraintEnd_toEndOf="@id/percent25Image"
+                app:layout_constraintStart_toStartOf="@id/percent25Image"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="25%"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/percent50Layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1">
+            <ImageView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/percent50Image"
+                android:layout_width="0dp"
+                app:layout_constraintHeight_max="20dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toTopOf="@id/text50"
+                android:src="@drawable/percent" />
+            <TextView
+                android:id="@+id/text50"
+                app:layout_constraintTop_toBottomOf="@id/percent50Image"
+                app:layout_constraintEnd_toEndOf="@id/percent50Image"
+                app:layout_constraintStart_toStartOf="@id/percent50Image"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="50%"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/percent75Layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1">
+            <ImageView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/percent75Image"
+                android:layout_width="0dp"
+                app:layout_constraintHeight_max="20dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toTopOf="@id/text75"
+                android:src="@drawable/percent" />
+            <TextView
+                android:id="@+id/text75"
+                app:layout_constraintTop_toBottomOf="@id/percent75Image"
+                app:layout_constraintEnd_toEndOf="@id/percent75Image"
+                app:layout_constraintStart_toStartOf="@id/percent75Image"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="75%"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/percent100Layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1">
+            <ImageView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/percent100Image"
+                android:layout_width="0dp"
+                app:layout_constraintHeight_max="20dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toTopOf="@id/text100"
+                android:src="@drawable/percent" />
+            <TextView
+                android:id="@+id/text100"
+                app:layout_constraintTop_toBottomOf="@id/percent100Image"
+                app:layout_constraintEnd_toEndOf="@id/percent100Image"
+                app:layout_constraintStart_toStartOf="@id/percent100Image"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="100%"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </LinearLayout>
+</layout>

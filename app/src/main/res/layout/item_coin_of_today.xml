@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="coin"
             type="com.finance.trade_learn.models.modelsConvector.CoinsHome" />
@@ -48,6 +47,7 @@
                 android:layout_marginTop="5dp"
                 android:paddingVertical="3dp"
                 android:paddingEnd="5dp"
+                app:imageUrl="@{coin.coinImage}"
                 android:paddingStart="0dp"
                 app:layout_constraintStart_toEndOf="@id/coinName"
                 app:layout_constraintTop_toTopOf="parent"

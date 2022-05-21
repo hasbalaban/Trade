@@ -3,7 +3,6 @@ package com.finance.trade_learn.database.dataBaseEntities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.finance.trade_learn.enums.tradeEnum
 
 @Entity(tableName = "SaveCoin")
 data class SaveCoin(

@@ -1,19 +1,14 @@
 package com.finance.trade_learn.utils
 
-import android.util.Log
-import java.util.*
 import kotlin.collections.ArrayList
 
-class newApiKey {
+class NewApiKey {
     val API_KEYS = ArrayList<String>()
 
     fun create(): String {
-
-        val list_of_key = keys()
-        val random = (0 until list_of_key.size).random()
-
-        Log.i("random",list_of_key[random])
-        return list_of_key[random]
+        val listOfKey = keys()
+        val random = (0 until listOfKey.size).random()
+        return listOfKey[random]
     }
 
     fun keys(): ArrayList<String> {

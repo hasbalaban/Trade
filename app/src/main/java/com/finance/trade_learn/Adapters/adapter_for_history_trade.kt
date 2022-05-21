@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.finance.trade_learn.R
 import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
 import com.finance.trade_learn.databinding.ItemOfHistoryBinding
-import com.finance.trade_learn.enums.tradeEnum
+import com.finance.trade_learn.enums.TradeType
 
 class adapter_for_history_trade(val list_of_trade: ArrayList<SaveCoin>) :
     RecyclerView.Adapter<adapter_for_history_trade.viewHolder>() {
@@ -36,7 +36,7 @@ class adapter_for_history_trade(val list_of_trade: ArrayList<SaveCoin>) :
     override fun onBindViewHolder(holder: viewHolder, position: Int) {
         holder.view.trade = list_of_trade[position]
 
-        if (list_of_trade[position].tradeOperation==tradeEnum.Sell.toString()){
+        if (list_of_trade[position].tradeOperation==TradeType.Sell.toString()){
             setColor(holder.view)
         }
 

@@ -2,13 +2,16 @@ package com.finance.trade_learn.viewModel
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.finance.trade_learn.R
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.database.dataBaseEntities.myCoins
 import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
 import com.finance.trade_learn.database.dataBaseService
-import com.finance.trade_learn.enums.tradeEnum
+import com.finance.trade_learn.enums.TradeType
+import com.finance.trade_learn.models.SelectedPercent
 import com.finance.trade_learn.models.on_crypto_trade.BaseModelOneCryptoModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -22,17 +25,31 @@ import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
 
-class viewModelCurrentTrade(context: Context) : ViewModel() {
+class ViewModelCurrentTrade(context: Context) : ViewModel() {
     private var disposable = CompositeDisposable()
     var state = MutableLiveData<Boolean>()
     val coinAmountLiveData = MutableLiveData<BigDecimal>()
     private val dao = dataBaseService.invoke(context).databaseDao()
     val selectedCoinToTradeDetails = MutableLiveData<List<BaseModelOneCryptoModel>>()
     val canChangeAmount = MutableLiveData<Boolean>(true)
+    private val _tradeType = MutableLiveData<TradeType>(TradeType.Buy)
+    val tradeType : LiveData<TradeType> = _tradeType
+    private val _selectedPercent =  MutableLiveData<SelectedPercent>(SelectedPercent.Percent25)
+    val selectedPercent : LiveData<SelectedPercent> = _selectedPercent
+    val buy = R.color.onClickBuyBack
+    val sell = R.color.onClickSellBack
+
+
+    fun changeTradeType (type : TradeType){
+        _tradeType.value = type
+    }
+
+    fun changeSelectedPercent (percent : SelectedPercent){
+        _selectedPercent.value = percent
+    }
 
     // get details coin if exists in database - so if i have
     fun getDetailsOfCoinFromDatabase(coinName: String) {
-
         CoroutineScope(Dispatchers.IO).launch {
             val coin = dao.getOnCoinForTrade(coinName)
             withContext(Dispatchers.Main) {
@@ -47,8 +64,6 @@ class viewModelCurrentTrade(context: Context) : ViewModel() {
 
     // this function for get details of coin that  i will buy
     fun getSelectedCoinDetails(coinName: String) {
-
-
         disposable.add(
             cryptoService().selectedCoinToTrade(coinName)
                 .subscribeOn(Schedulers.io())
@@ -75,7 +90,7 @@ class viewModelCurrentTrade(context: Context) : ViewModel() {
 
     // this function for buy coin that i want to be have
     fun buyCoin(coinName: String, addCoinAmount: Double, total: Double, coinPrice: Double) {
-        val tradeOperation = tradeEnum.Buy
+        val tradeOperation = TradeType.Buy
 
         CoroutineScope(Dispatchers.IO).launch {
             val myCoin = dao.getOnCoinForTrade(coinName)
@@ -169,7 +184,7 @@ class viewModelCurrentTrade(context: Context) : ViewModel() {
     // this function for sell coin that i have
     fun sellCoin(coinName: String, sellAmount: Double, total: Double, coinPrice: Double) {
         state.value = true
-        val tradeOperation = tradeEnum.Sell
+        val tradeOperation = TradeType.Sell
 
         CoroutineScope(Dispatchers.IO).launch {
             val myCoin = dao.getOneCoin(coinName)
@@ -222,7 +237,7 @@ class viewModelCurrentTrade(context: Context) : ViewModel() {
         coinAmount: Double,
         coinPrice: Double,
         total: Double,
-        tradeOperation: tradeEnum
+        tradeOperation: TradeType
     ) {
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
 
@@ -241,10 +256,7 @@ class viewModelCurrentTrade(context: Context) : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             dao.addTrade(newTrade)
         }
-
-
     }
-
 
     override fun onCleared() {
         disposable.clear()
