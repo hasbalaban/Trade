@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setTestPhone (){
         val androidId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
-        //if (androidId != "8d1e30b2ef5afa39")
+        if (androidId != "8d1e30b2ef5afa39") 1 else 2
     }
 
     // to navigate according click in fragment
