@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var firestore: FirebaseFirestore
     private var mInterstitialAd: InterstitialAd? = null
 
-    // val disposable = CompositeDisposable()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataBindingMain = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -52,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         isOneEntering()
         //firebaseSave()
         checkIsAdShowed()
-     //   Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
+        Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
     }
 
     private fun setTestPhone (){
@@ -143,7 +142,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIsAdShowed(){
-        if (System.currentTimeMillis()<1653298595591) return
 
         MobileAds.initialize(this) {}
         lifecycleScope.launchWhenCreated {

@@ -1,6 +1,8 @@
 package com.finance.trade_learn.view
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -84,6 +86,7 @@ class Home : Fragment() {
 
 
         clickToSearch()
+        clickSendEmailButton()
         //setAd()
         super.onViewCreated(view, savedInstanceState)
     }
@@ -179,5 +182,20 @@ class Home : Fragment() {
              val action = HomeDirections.actionHomeToSearchActivity()
              Navigation.findNavController(it).navigate(action)
         }
+    }
+
+    private fun clickSendEmailButton(){
+        dataBindingHome.sendMail.setOnClickListener {
+            composeEmail(arrayOf("learntradeapp@gmail.com"),"A intent or Request")
+        }
+    }
+    fun composeEmail(addresses: Array<String>, subject: String) {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:") // only email apps should handle this
+            putExtra(Intent.EXTRA_EMAIL, addresses)
+            putExtra(Intent.EXTRA_SUBJECT, subject)
+        }
+        try { startActivity(intent)
+        }catch (e:Exception){ }
     }
 }
