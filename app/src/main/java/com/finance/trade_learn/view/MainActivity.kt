@@ -115,29 +115,19 @@ class MainActivity : AppCompatActivity() {
 
         InterstitialAd.load(this,"ca-app-pub-2861105825918511/1127322176", adRequest, object : InterstitialAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
-                print("fail1")
                 mInterstitialAd = null
             }
 
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                print("success")
                 interstitialAd.show(this@MainActivity)
+                sharedPreferencesManager(this@MainActivity).addSharedPreferencesLong("interstitialAdLoadedTime",System.currentTimeMillis()+(60*60*1000))
             }
         })
 
         mInterstitialAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
-            override fun onAdDismissedFullScreenContent() {
-                print("fail2")
-            }
-
-            override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
-                print("fail3")
-            }
-
-            override fun onAdShowedFullScreenContent() {
-                print("success2")
-                mInterstitialAd = null
-            }
+            override fun onAdDismissedFullScreenContent() {}
+            override fun onAdFailedToShowFullScreenContent(adError: AdError?) {}
+            override fun onAdShowedFullScreenContent() { mInterstitialAd = null }
         }
     }
 
@@ -145,7 +135,10 @@ class MainActivity : AppCompatActivity() {
 
         MobileAds.initialize(this) {}
         lifecycleScope.launchWhenCreated {
-            delay(7000)
+            val currentMillis = System.currentTimeMillis()
+            val updateTime = sharedPreferencesManager(this@MainActivity).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
+            if (currentMillis < updateTime) return@launchWhenCreated
+
             setInterstitialAd()
         }
     }

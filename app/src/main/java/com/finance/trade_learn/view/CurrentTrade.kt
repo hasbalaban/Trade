@@ -357,11 +357,11 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                             getDetailsOfCoinFromDatabase()
                             toastMessages(R.string.succes)
                             reviewUs()
-                            showInterstitialAd()
+                            adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
                             return@observe
                         }
                         toastMessages(R.string.fail)
-                        showInterstitialAd()
+                        adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
                     }
                 }
             }
@@ -380,11 +380,11 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                         if (it) {
                             getDetailsOfCoinFromDatabase(coinName)
                             toastMessages(R.string.succes)
-                            showInterstitialAd()
+                            adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
                             return@observe
                         }
                         toastMessages(R.string.fail)
-                        showInterstitialAd()
+                        adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
                     }
                 }
             }
@@ -656,29 +656,25 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     private fun showInterstitialAd() {
         adInterstitial?.apply {
             show(requireActivity())
-            sharedPreferencesManager(requireContext()).addSharedPreferencesLong("currentTradeInterstitialAd",System.currentTimeMillis()+(30*1000))
+            adInterstitial = null
+            sharedPreferencesManager(requireContext()).addSharedPreferencesLong("interstitialAdLoadedTime",System.currentTimeMillis()+(60*60*1000))
         }
     }
 
     private fun setInterstitialAd() {
 
         val currentMillis = System.currentTimeMillis()
-        val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("currentTradeInterstitialAd", currentMillis)
-        val delayTime = if (currentMillis >= updateTime) 0L else updateTime - currentMillis
+        val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
+        if (currentMillis < updateTime) return
 
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(delayTime+60*1000*60)
-            withContext(Dispatchers.Main){
-                val adRequest = AdRequest.Builder().build()
-                MobileAds.setRequestConfiguration(RequestConfiguration.Builder().build())
-
-                InterstitialAd.load(requireContext(), "ca-app-pub-2861105825918511/1127322176", adRequest, object : InterstitialAdLoadCallback() {
-                    override fun onAdFailedToLoad(adError: LoadAdError) {}
-                    override fun onAdLoaded(interstitialAd: InterstitialAd) { adInterstitial = interstitialAd }
-                })
-
+        val adRequest = AdRequest.Builder().build()
+        MobileAds.setRequestConfiguration(RequestConfiguration.Builder().build())
+        InterstitialAd.load(requireContext(), "ca-app-pub-2861105825918511/1127322176", adRequest, object : InterstitialAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {}
+            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                adInterstitial = interstitialAd
             }
-        }
+        })
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
