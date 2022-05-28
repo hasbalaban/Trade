@@ -132,13 +132,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIsAdShowed(){
-
-        MobileAds.initialize(this) {}
         lifecycleScope.launchWhenCreated {
             val currentMillis = System.currentTimeMillis()
             val updateTime = sharedPreferencesManager(this@MainActivity).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
             if (currentMillis < updateTime) return@launchWhenCreated
 
+            MobileAds.initialize(this@MainActivity) {}
             setInterstitialAd()
         }
     }
