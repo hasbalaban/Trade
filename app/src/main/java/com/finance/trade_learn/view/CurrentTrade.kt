@@ -79,7 +79,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         getDetailsOfCoinFromDatabase()
         startAnimation()
         setAd()
-        //setInterstitialAd()
+        setInterstitialAd()
         longClickLister()
         percentClickHandler()
     }
@@ -667,7 +667,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         val delayTime = if (currentMillis >= updateTime) 0L else updateTime - currentMillis
 
         CoroutineScope(Dispatchers.IO).launch {
-            delay(delayTime+60*1000*2)
+            delay(delayTime+60*1000*60)
             withContext(Dispatchers.Main){
                 val adRequest = AdRequest.Builder().build()
                 MobileAds.setRequestConfiguration(RequestConfiguration.Builder().build())

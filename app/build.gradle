@@ -29,8 +29,8 @@ android {
         applicationId "com.finance.trade_learn"
         minSdk 23
         targetSdk 31
-        versionCode 56
-        versionName "2.0.1"
+        versionCode 57
+        versionName "2.0.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
