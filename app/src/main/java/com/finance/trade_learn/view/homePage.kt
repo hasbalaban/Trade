@@ -120,7 +120,7 @@ class Home : Fragment() {
         }
     }
 
-    // We Check State of Loading if loading is succesed we Will initialize adapter here
+    // We Check State of Loading if loading is successed we Will initialize adapter here
     // then we will set on recycler view
     private fun getData() {
         if (viewVisible) {
@@ -132,7 +132,7 @@ class Home : Fragment() {
                             list?.let {
                                 adapterForHotList.updateData(it)
                                 timeLoop = 7500
-                                if (viewModelHome.isInitialize.value!!) {
+                                if (viewModelHome.isInitialize.value == true) {
                                     dataBindingHome.progressBar.visibility = View.INVISIBLE
                                 }
                                 isViewModelInitialize()
