@@ -23,8 +23,6 @@ import com.google.android.material.navigation.NavigationBarView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.smartlook.sdk.smartlook.Smartlook
-import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -51,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         isOneEntering()
         //firebaseSave()
         checkIsAdShowed()
-        Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
+     //   Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
     }
 
     private fun setTestPhone (){

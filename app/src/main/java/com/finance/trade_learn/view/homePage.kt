@@ -10,10 +10,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.whenCreated
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +26,6 @@ import com.finance.trade_learn.viewModel.ViewModeHomePage
 import com.google.android.gms.ads.AdRequest
 import kotlinx.coroutines.*
 import java.lang.Runnable
-import kotlin.random.Random
 
 class Home : Fragment() {
 
@@ -52,7 +49,6 @@ class Home : Fragment() {
     }
 
     private fun providers() {
-
         viewModelHome = ViewModelProvider(requireActivity())[ViewModeHomePage::class.java]
 
     }
@@ -65,8 +61,6 @@ class Home : Fragment() {
             inflater, R.layout.fragment_home,
             container, false
         )
-
-
         return dataBindingHome.root
     }
 
@@ -108,7 +102,7 @@ class Home : Fragment() {
 
     private fun isViewModelInitialize() {
         val state = viewModelHome.isInitialize
-        if (state.value!!) {
+        if (state.value == true) {
             viewModelHome.listOfCrypto.observe(viewLifecycleOwner) {list ->
                 adapterForHotList.updateData(list)
                 viewModelHome.isInitialize.value = true
@@ -154,7 +148,7 @@ class Home : Fragment() {
     private fun update() {
         runnable = Runnable {
             runBlocking {
-                viewModelHome.runGetAllCryptoFromApi()
+                viewModelHome.getAllCryptoFromApi()
                 getData()
             }
             handler.postDelayed(runnable, timeLoop)
@@ -189,7 +183,7 @@ class Home : Fragment() {
             composeEmail(arrayOf("learntradeapp@gmail.com"),"A intent or Request")
         }
     }
-    fun composeEmail(addresses: Array<String>, subject: String) {
+    private fun composeEmail(addresses: Array<String>, subject: String) {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse("mailto:") // only email apps should handle this
             putExtra(Intent.EXTRA_EMAIL, addresses)

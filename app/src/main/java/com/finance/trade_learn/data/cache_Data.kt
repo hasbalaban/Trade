@@ -56,7 +56,8 @@ class Cache_Data() {
             "1337","OCN","IDLE","CMT","TRA","NYZO","SNM","FTC","SPC","MTC","XMY","AMP","GRG","ROOBEE","XPX","SPH","LND","REDPANDA",
             "STQ","AOA","ACT","AVINOC","BITCNY","MIDAS","BIRD","BLK","UMX","YAM","HIT","XCASH","ABYSS","BIX","FIN","PRCY","PND",
             "ONION","OIN","DAGT","KAT","DYN","ZOO","MTGY","FNT","EMT","SFD","HAKKA","ABL","ANRX","VIA","UNIDX","TUSC","BCDT","IMT",
-            "EFL","SHIBX","BUIDL","TLM","BCN"))
+            "EFL","SHIBX","BUIDL","TLM","BCN","LUNC","MEGRA","PSHKR","BITBTC","CYC","ENJ","MEGG","FURRY","DAI","ZED","MNG","DGROW",
+            "ETHGROW","ETHI"))
         return coinsNamePush
     }
 }

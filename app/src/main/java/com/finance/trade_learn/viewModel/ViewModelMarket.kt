@@ -65,9 +65,9 @@ class ViewModelMarket @Inject constructor(@ApplicationContext application: Appli
     fun convert(t: List<BaseModelCrypto>) {
         val data = converOperation(t, listOfCryptoforCompare).convertDataToUse()
 
-        listOfCrypto = data.ListOfCryptoo
-        change = data.changee
-        listOfCryptoforCompare = data.ListOfCryptoforComparee
+        listOfCrypto = data.ListOfCrypto
+        change = data.change
+        listOfCryptoforCompare = data.ListOfCryptoForCompare
 
     }
 
