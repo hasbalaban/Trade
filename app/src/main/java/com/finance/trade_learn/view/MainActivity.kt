@@ -13,7 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.finance.trade_learn.R
 import com.finance.trade_learn.databinding.ActivityMainBinding
 import com.finance.trade_learn.utils.sharedPreferencesManager
-import com.finance.trade_learn.utils.testWorkManager
+import com.finance.trade_learn.utils.NotificationWorkManager
 import com.finance.trade_learn.viewModel.ViewModelMarket
 import com.finance.trade_learn.viewModel.ViewModelUtils
 import com.google.android.gms.ads.*
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationItemClickListener()
         isOneEntering()
         //firebaseSave()
-        checkIsAdShowed()
+     //   checkIsAdShowed()
      //   Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
     }
 
@@ -70,8 +70,8 @@ class MainActivity : AppCompatActivity() {
         val viewModelUtils = ViewModelUtils()
         val state = viewModelUtils.isOneEntering(this)
         if (state) {
-            // these functions just for test
-            testWorkManager(3,TimeUnit.DAYS,this)
+            // create notification
+            NotificationWorkManager(3,TimeUnit.DAYS,this)
 
             val deviceId = UUID.randomUUID()
             sharedPreferencesManager(this).addSharedPreferencesString(

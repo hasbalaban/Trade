@@ -101,7 +101,7 @@ class SendNotificationPer12Hours(
 
 
 // this will change because we use this fun for tests...
-fun testWorkManager(repeatTime : Long, timeUnit : TimeUnit,context: Context) {
+fun NotificationWorkManager(repeatTime : Long, timeUnit : TimeUnit, context: Context) {
     val constraint = Constraints.Builder()
         .setRequiresBatteryNotLow(true)
         .build()
@@ -111,6 +111,4 @@ fun testWorkManager(repeatTime : Long, timeUnit : TimeUnit,context: Context) {
             .setConstraints(constraint)
             .build()
     WorkManager.getInstance(context).enqueue(myWorkRequest)
-    //WorkManager.getInstance(context).getWorkInfoById(myWorkRequest.id).cancel(true)
-    //WorkManager.getInstance(context).cancelAllWork()
 }
