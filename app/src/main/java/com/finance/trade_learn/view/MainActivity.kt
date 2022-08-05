@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationItemClickListener()
         isOneEntering()
         //firebaseSave()
-     //   checkIsAdShowed()
+        checkIsAdShowed()
      //   Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
     }
 
