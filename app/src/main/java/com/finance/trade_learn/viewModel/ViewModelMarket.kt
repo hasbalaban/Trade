@@ -33,6 +33,7 @@ class ViewModelMarket @Inject constructor(@ApplicationContext application: Appli
 
     fun runGetAllCryptoFromApi() {
 
+        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         state.value = false
         CoroutineScope(Dispatchers.IO).launch {
             disposable.add(

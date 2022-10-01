@@ -146,6 +146,7 @@ class Home : Fragment() {
     }
 
     private fun update() {
+        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         runnable = Runnable {
             runBlocking {
                 viewModelHome.getAllCryptoFromApi()

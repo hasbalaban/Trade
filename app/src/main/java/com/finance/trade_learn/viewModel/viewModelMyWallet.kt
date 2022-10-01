@@ -57,6 +57,7 @@ class viewModelMyWallet(val context: Context) : ViewModel() {
 
     fun getDataFromApi(coinQuery: String) {
 
+        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         disposable.add(
             cryptoService().getCoinIHave(coinQuery)
                 .subscribeOn(Schedulers.io())

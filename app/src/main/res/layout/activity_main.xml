@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -14,19 +14,34 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentStart="true"
+            android:visibility="gone"
             app:defaultNavHost="true"
             app:navGraph="@navigation/navigation" />
+        <TextView
+            android:id="@+id/InfoMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@android:color/holo_red_dark"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textAlignment="center"
+            android:paddingHorizontal="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Opsss We are updating app, \nIt able to take time \n\n\n\n\nThank you for your patience..." />
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/options"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_gravity="bottom"
             app:menu="@menu/options_menu"
+            android:visibility="gone"
             tools:ignore="BottomAppBar" />
 
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

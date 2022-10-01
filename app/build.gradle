@@ -29,8 +29,8 @@ android {
         applicationId "com.finance.trade_learn"
         minSdk 23
         targetSdk 33
-        versionCode 60
-        versionName "2.0.5"
+        versionCode 61
+        versionName "2.0.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
@@ -150,7 +150,7 @@ dependencies {
 
 
     //admob
-    implementation 'com.google.android.gms:play-services-ads:20.6.0'
+    implementation 'com.google.android.gms:play-services-ads:21.1.0'
 
 
 

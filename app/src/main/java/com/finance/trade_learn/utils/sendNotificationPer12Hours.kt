@@ -71,6 +71,7 @@ class SendNotificationPer12Hours(
 
     private fun getData() {
 
+        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         val coinName = sharedPreferencesManager(context)
             .getSharedPreferencesString("coinName")
         val viewModel = ViewModelCurrentTrade(context)

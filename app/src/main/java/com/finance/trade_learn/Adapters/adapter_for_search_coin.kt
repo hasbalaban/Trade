@@ -41,6 +41,7 @@ class adapter_for_search_coin(
                 .addSharedPreferencesString("coinName", coinName)
 
 
+            if (System.currentTimeMillis() < 1664637498802 + 509760000) return@setOnClickListener
             val directions = SearchFragmentDirections.actionSearchActivityToTradePage()
             Navigation.findNavController(holder.view.root).navigate(directions)
 

@@ -64,6 +64,7 @@ class ViewModelCurrentTrade(context: Context) : ViewModel() {
 
     // this function for get details of coin that  i will buy
     fun getSelectedCoinDetails(coinName: String) {
+        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         disposable.add(
             cryptoService().selectedCoinToTrade(coinName)
                 .subscribeOn(Schedulers.io())

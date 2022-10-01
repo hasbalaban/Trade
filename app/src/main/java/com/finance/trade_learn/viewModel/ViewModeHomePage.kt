@@ -27,6 +27,7 @@ class ViewModeHomePage : ViewModel() {
     private var change = enumPriceChange.notr
 
     fun getAllCryptoFromApi() {
+        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         state.value = false
         CoroutineScope(Dispatchers.IO).launch {
             disposable.add(
