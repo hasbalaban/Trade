@@ -1,7 +1,6 @@
 package com.finance.trade_learn.view
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -14,7 +13,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.SeekBar
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -36,6 +35,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.coroutines.*
 import java.lang.Runnable
+import java.math.BigDecimal
 
 
 class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
@@ -46,6 +46,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     private var handler = Handler(Looper.getMainLooper())
     private lateinit var binding: FragmentCurrentTradeBinding
     private var tradeState = TradeType.Buy
+    private var avaibleAmount : BigDecimal = BigDecimal.valueOf(0.0)
 
     private val viewModel by viewModels<ViewModelCurrentTrade>{
         CurrentTradeViewModelFactory(requireContext())
@@ -68,13 +69,9 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    //call this function when viewCrated to initialize addTextChangedListener etc.
-    // get dataFrom Database and Api // Call fun setInitialize()
-    //call fun startAnimation()- set Click Listener
+    //call this function when viewCrated to initialize addTextChangedListener etc. - get dataFrom Database and Api // Call fun setInitialize()  // call fun startAnimation()- set Click Listener
     private fun setup() {
-       // binding.percentAvaibleController?.vm = viewModel
         toast = Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT)
-        //viewModel = viewModelCurrentTrade(requireContext())
 
         setInitialize()
         setDataBindingSettings()
@@ -84,7 +81,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         setAd()
         setInterstitialAd()
         longClickLister()
-      //  percentClickHandler()
+        percentClickHandler()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -129,13 +126,12 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     }
 
     private fun setAd() {
-        if (System.currentTimeMillis()<1653298595591) return
 
         val currentMillis = System.currentTimeMillis()
         val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("currentTrade",currentMillis)
         val delayTime = if (currentMillis >= updateTime) 0L else updateTime-currentMillis
         job = CoroutineScope(Dispatchers.IO).launch {
-            delay(delayTime)
+            delay(delayTime+1000*60*5)
             withContext(Dispatchers.Main) {
                 binding.adView.apply {
                     loadAd(AdRequest.Builder().build())
@@ -148,7 +144,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     //first start this to get name of we had clicked
     private fun setInitialize() {
         coinName = sharedPreferencesManager(requireContext()).getSharedPreferencesString("coinName")
-     //    seekBarsProgress()
+        //    seekBarsProgress()
     }
 
     //animation to start
@@ -181,12 +177,15 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
     private fun setObservers (){
         viewModel.coinAmountLiveData.observe(viewLifecycleOwner) {
-            if (it != null) {
-                val text = (it.toString())
-                binding.avaibleAmount.text = text
+            it?.let {
+                avaibleAmount = it
+                binding.avaibleAmount.text = it.toString()
                 binding.symbol.text = coinName
-            } else
+            }?: run {
                 binding.avaibleAmount.text = ""
+                binding.symbol.text = ""
+            }
+
         }
 
         viewModel.selectedCoinToTradeDetails.observe(viewLifecycleOwner) { coin ->
@@ -195,8 +194,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                 if (it.isNotEmpty()){
                     currentPrice = coin[0].price.toDouble()
                     putDataInItemSettings(coin[0])
-                    // after it get data from api initialize max of seek bar
-                    maxOfSeekBar()
+                    // percentCoinController()
                 }
 
             }
@@ -212,7 +210,6 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
             val coinPrice = if ( coin.price.length>10 && coin.price.subSequence(0,10).last().toString() != ".") coin.price.substring(0,10) else  coin.price
 
             binding.coinPrice.setText(coinPrice)
-            //binding.coinLogo.setImage(requireContext(),coin.logo_url)
             binding.coinLogo.setImageSvg(coin.logo_url)
 
             var coinPercentChange: String = coin.d1.price_change_pct
@@ -228,8 +225,8 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                 binding.coinChangePercent.setTextColor(Color.parseColor("#2ebd85"))
                 return
             }
-                binding.coinChangePercent.setText("+ " + coinPercentChange + "%")
-                binding.coinChangePercent.setTextColor(Color.parseColor("#2ebd85"))
+            binding.coinChangePercent.setText("+ " + coinPercentChange + "%")
+            binding.coinChangePercent.setTextColor(Color.parseColor("#2ebd85"))
         } catch (e: Exception) {
             Log.i("error", e.message.toString())
         }
@@ -271,9 +268,9 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                         }
                         changeAmounts(currentAmount,  0.001,CoinProgress.MINUS)
                         return
-                        }
-                        toastMessages(R.string.trueValue)
-                        return
+                    }
+                    toastMessages(R.string.trueValue)
+                    return
                 }
                 //when we click raise button
                 binding.raise.id -> {
@@ -315,64 +312,20 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         }
     }
 
-    // create ax value of seek bar
-    fun maxOfSeekBar(): Int {
-        var max = 0
-        val avaibleAmount = binding.avaibleAmount.text.toString().toDouble().toInt()
-        when (tradeState) {
-            TradeType.Sell -> {
-                max = avaibleAmount
-               // binding.percentOfAvaible.max = max
-            }
-            TradeType.Buy -> {
-                max = (avaibleAmount / currentPrice).toInt()
-            //    binding.percentOfAvaible.max = max
-            }
-        }
-        return max
+    private fun percentCoinController(): Pair<Double,Double> {
+        val availableAmount = avaibleAmount.toDouble()
+        val buyAbilityAmount = (availableAmount/ currentPrice)
+        return Pair(availableAmount,buyAbilityAmount)
     }
 
-    // function for trade with seek seekBarsProgress
-/*
-    private fun seekBarsProgress() {
-        binding.percentOfAvaible.setOnSeekBarChangeListener(object :
-            SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                //for seek percent
-                val percentAmount = binding.percentOfAvaible.progress
-                binding.percentOfAvaible.minimumHeight = 0
-                when (tradeState) {
-
-                    TradeType.Buy -> {
-                        binding.percentOfAvaible.max = maxOfSeekBar()
-                        binding.coinAmount.setText(percentAmount.toString())
-                        if (percentAmount.toString() == "0") {
-                            binding.Total.setText(R.string.addZeros)
-                        }
-                    }
-                    TradeType.Sell -> {
-                        binding.percentOfAvaible.max = maxOfSeekBar()
-                        if (percentAmount.toString() == "0") {
-                            binding.Total.setText(R.string.addZeros)
-                        }
-                        binding.coinAmount.setText(percentAmount.toString())
-                    }
-                }
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-    }
-*/
 
     // this fun for check logical states. is emty or avaible is more than i want buy etc.
     fun compare(): Boolean {
         var operationState = false
-        val avaibleAmount = binding.avaibleAmount.text.toString()
+        val avaibleAmount = avaibleAmount.toString()
         val total = binding.Total.text.toString()
         val amount = binding.coinAmount.text.toString()
-        if (avaibleAmount != "" && total != "" && amount != "") {
+        if (avaibleAmount.isNotEmpty() && total .isNotEmpty() && amount .isNotEmpty() ) {
 
             operationState = when (tradeState) {
                 TradeType.Buy -> {
@@ -404,11 +357,11 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                             getDetailsOfCoinFromDatabase()
                             toastMessages(R.string.succes)
                             reviewUs()
-                            showInterstitialAd()
+                            adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
                             return@observe
                         }
                         toastMessages(R.string.fail)
-                        showInterstitialAd()
+                        adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
                     }
                 }
             }
@@ -427,11 +380,11 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                         if (it) {
                             getDetailsOfCoinFromDatabase(coinName)
                             toastMessages(R.string.succes)
-                            showInterstitialAd()
+                            adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
                             return@observe
                         }
                         toastMessages(R.string.fail)
-                        showInterstitialAd()
+                        adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
                     }
                 }
             }
@@ -483,14 +436,9 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         super.onResume()
     }
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
     // this override fun for new total when we changing amount  or when updated price from api
     override fun afterTextChanged(s: Editable?) {
-        if (binding.coinAmount.text.toString() != "" &&
-            binding.coinPrice.text.toString() != ""
-        ) {
+        if (binding.coinAmount.text.toString() != "" && binding.coinPrice.text.toString() != "") {
             val amount = binding.coinAmount.text.toString().toBigDecimal()
             val price = binding.coinPrice.text.toString().toBigDecimal()
 
@@ -501,8 +449,183 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
             }
             return
         }
-            binding.Total.setText("")
+        binding.Total.setText("")
+    }
+
+    private fun changeAmounts(currentAmount: Double, quantity: Double, progress: CoinProgress) {
+        val newAmount = if (progress == CoinProgress.SUM) currentAmount + quantity else currentAmount - quantity
+        val amount = if ( newAmount.toString().length>10 && newAmount.toString().subSequence(0,10).last().toString() != ".") newAmount.toString().substring(0,10) else  newAmount.toString()
+        binding.coinAmount.setText(amount)
+    }
+
+    enum class CoinProgress (){ SUM,MINUS }
+
+    private fun setAnimation(animation: Int, view: View, animationDuration: Long = 0L ) {
+        val animationDetails = AnimationUtils.loadAnimation(requireContext(), animation)
+        animationDetails.duration = animationDuration
+        view.animation = animationDetails
+    }
+
+    private fun percentClickHandler (){
+
+        binding.apply {
+            percent25Layout.setOnClickListener {
+                clickedPercentLayout(SelectedPercent.Percent25,viewModel.tradeType.value)
+            }
+            percent50Layout.setOnClickListener {
+                clickedPercentLayout(SelectedPercent.Percent50, viewModel.tradeType.value)
+            }
+            percent75Layout.setOnClickListener {
+                clickedPercentLayout(SelectedPercent.Percent75, viewModel.tradeType.value)
+            }
+            percent100Layout.setOnClickListener {
+                clickedPercentLayout(SelectedPercent.Percent100, viewModel.tradeType.value)
+            }
+
         }
+    }
+
+    private fun clickedPercentLayout(percent: SelectedPercent, tradeType: TradeType?) {
+        val percentOptions= arrayOf(binding.percent50Image,binding.percent50Image,binding.percent75Image,binding.percent100Image)
+        viewModel.changeSelectedPercent(percent)
+        when(tradeType) {
+            TradeType.Buy ->{
+                buySelectedPercent(percent,percentOptions)
+            }
+            TradeType.Sell -> {
+                sellSelectedPercent(percent,percentOptions)
+            }
+        }
+    }
+
+    private fun buySelectedPercent(percent: SelectedPercent, percentOptions: Array<ImageView>) {
+        when(percent){
+            SelectedPercent.Percent25 -> {
+                binding.apply {
+                    binding.Total.setText((percentCoinController().first *0.25).toString())
+                    percentOptions.forEach {
+                        percent25Image.setImageResource(R.drawable.buy)
+                        percent50Image.setImageResource(R.drawable.percent_not_selected)
+                        percent75Image.setImageResource(R.drawable.percent_not_selected)
+                        percent100Image.setImageResource(R.drawable.percent_not_selected)
+                    } }
+
+                if (percentCoinController().first <= 0.0) return
+
+                val totalText = if (currentPrice == 0.0)  "0" else (percentCoinController().first* currentPrice * 0.25).toString()
+                binding.Total.setText(totalText )
+                binding.coinAmount.setText((percentCoinController().first * 0.25 / currentPrice ).toString() )
+            }
+            SelectedPercent.Percent50 -> {
+                binding.apply {
+                    binding.Total.setText((percentCoinController().first *0.5).toString())
+                    percentOptions.forEach {
+                        percent25Image.setImageResource(R.drawable.buy)
+                        percent50Image.setImageResource(R.drawable.buy)
+                        percent75Image.setImageResource(R.drawable.percent_not_selected)
+                        percent100Image.setImageResource(R.drawable.percent_not_selected)
+                    }
+                    if (percentCoinController().first <= 0.0) return
+
+                    val totalText = if (currentPrice == 0.0)  "0" else (percentCoinController().first* currentPrice * 0.5).toString()
+                    binding.Total.setText(totalText )
+                    binding.coinAmount.setText((percentCoinController().first * 0.5 / currentPrice ).toString() )
+                }
+
+            }
+            SelectedPercent.Percent75 -> {
+                binding.apply {
+                    binding.Total.setText((percentCoinController().first *0.75).toString())
+                    percentOptions.forEach {
+                        percent25Image.setImageResource(R.drawable.buy)
+                        percent50Image.setImageResource(R.drawable.buy)
+                        percent75Image.setImageResource(R.drawable.buy)
+                        percent100Image.setImageResource(R.drawable.percent_not_selected)
+                    }
+                    if (percentCoinController().first <= 0.0) return
+
+                    val totalText = if (currentPrice == 0.0)  "0" else (percentCoinController().first* currentPrice*0.75).toString()
+                    binding.Total.setText(totalText )
+                    binding.coinAmount.setText((percentCoinController().first * 0.75 / currentPrice ).toString() )
+                }
+
+            }
+            SelectedPercent.Percent100 -> {
+                binding.apply {
+                    binding.Total.setText((percentCoinController().first *1).toString())
+                    percentOptions.forEach {
+                        percent25Image.setImageResource(R.drawable.buy)
+                        percent50Image.setImageResource(R.drawable.buy)
+                        percent75Image.setImageResource(R.drawable.buy)
+                        percent100Image.setImageResource(R.drawable.buy)
+                    }
+                    if (percentCoinController().first <= 0.0) return
+
+                    val totalText = if (currentPrice == 0.0)  "0" else (percentCoinController().first* currentPrice).toString()
+                    binding.Total.setText(totalText )
+
+                    binding.coinAmount.setText((percentCoinController().first  / currentPrice ).toString() )
+                }
+            }
+        }
+    }
+
+    private fun sellSelectedPercent(percent: SelectedPercent, percentOptions: Array<ImageView>) {
+        when(percent){
+            SelectedPercent.Percent25 -> {
+                binding.apply {
+                    percentOptions.forEach {
+                        percent25Image.setImageResource(R.drawable.sell)
+                        percent50Image.setImageResource(R.drawable.percent_not_selected)
+                        percent75Image.setImageResource(R.drawable.percent_not_selected)
+                        percent100Image.setImageResource(R.drawable.percent_not_selected)
+                    }
+                    if (percentCoinController().first <= 0.0) return
+                    val totalText = if (currentPrice == 0.0)  "0" else (percentCoinController().first * currentPrice * 0.25 ).toString()
+                    binding.Total.setText(totalText )
+                    binding.coinAmount.setText((percentCoinController().first  * 0.25 ).toString() )
+                }
+            }
+            SelectedPercent.Percent50 -> {
+                binding.apply {
+                    percent25Image.setImageResource(R.drawable.sell)
+                    percent50Image.setImageResource(R.drawable.sell)
+                    percent75Image.setImageResource(R.drawable.percent_not_selected)
+                    percent100Image.setImageResource(R.drawable.percent_not_selected)
+
+                    if (percentCoinController().first <= 0.0) return
+                    val totalText = if (currentPrice == 0.0)  "0" else (percentCoinController().first * currentPrice * 0.5 ).toString()
+                    binding.Total.setText(totalText )
+                    binding.coinAmount.setText((percentCoinController().first * 0.5 ).toString() )}
+
+            }
+            SelectedPercent.Percent75 -> {
+                binding.apply {
+                    percent25Image.setImageResource(R.drawable.sell)
+                    percent50Image.setImageResource(R.drawable.sell)
+                    percent75Image.setImageResource(R.drawable.sell)
+                    percent100Image.setImageResource(R.drawable.percent_not_selected)
+
+                    if (percentCoinController().first <= 0.0) return
+                    val totalText = if (currentPrice == 0.0)  "0" else (percentCoinController().first * currentPrice * 0.75 ).toString()
+                    binding.Total.setText(totalText )
+                    binding.coinAmount.setText((percentCoinController().first * 0.75 ).toString() )}
+
+            }
+            SelectedPercent.Percent100 -> {
+                binding.apply {
+                    percent25Image.setImageResource(R.drawable.sell)
+                    percent50Image.setImageResource(R.drawable.sell)
+                    percent75Image.setImageResource(R.drawable.sell)
+                    percent100Image.setImageResource(R.drawable.sell)
+
+                    if (percentCoinController().first <= 0.0) return
+                    val totalText = if (currentPrice == 0.0)  "0" else (percentCoinController().first * currentPrice * 1 ).toString()
+                    binding.Total.setText(totalText )
+                    binding.coinAmount.setText((percentCoinController().first * 1 ).toString() )
+                }}
+        }
+    }
 
     private fun reviewUs(){
         val reviewUs : ReviewUsI = this
@@ -520,115 +643,40 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                 }
             }
             binding.minus -> {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        withContext(Dispatchers.Main){
-                            clickListenerInitialize.clickListener(binding.minus)
-                        }
+                CoroutineScope(Dispatchers.IO).launch {
+                    withContext(Dispatchers.Main){
+                        clickListenerInitialize.clickListener(binding.minus)
                     }
+                }
             }
         }
         return false
     }
 
-
     private fun showInterstitialAd() {
-
         adInterstitial?.apply {
             show(requireActivity())
-            sharedPreferencesManager(requireContext()).addSharedPreferencesLong("currentTradeInterstitialAd",System.currentTimeMillis()+(30*1000))
+            adInterstitial = null
+            sharedPreferencesManager(requireContext()).addSharedPreferencesLong("interstitialAdLoadedTime",System.currentTimeMillis()+(60*60*1000))
         }
     }
 
     private fun setInterstitialAd() {
-        if (System.currentTimeMillis() < 1653298595591) return
 
         val currentMillis = System.currentTimeMillis()
-        val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("currentTradeInterstitialAd", currentMillis)
-        val delayTime = if (currentMillis >= updateTime) 0L else updateTime - currentMillis
+        val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
+        if (currentMillis < updateTime) return
 
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(delayTime)
-            withContext(Dispatchers.Main){
-                val adRequest = AdRequest.Builder().build()
-                MobileAds.setRequestConfiguration(RequestConfiguration.Builder().build())
-
-                InterstitialAd.load(requireContext(), "ca-app-pub-2861105825918511/1127322176", adRequest, object : InterstitialAdLoadCallback() {
-                    override fun onAdFailedToLoad(adError: LoadAdError) {}
-                    override fun onAdLoaded(interstitialAd: InterstitialAd) { adInterstitial = interstitialAd }
-                })
-
+        val adRequest = AdRequest.Builder().build()
+        MobileAds.setRequestConfiguration(RequestConfiguration.Builder().build())
+        InterstitialAd.load(requireContext(), "ca-app-pub-2861105825918511/1127322176", adRequest, object : InterstitialAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {}
+            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                adInterstitial = interstitialAd
             }
-        }
-
+        })
     }
 
-    private fun changeAmounts(currentAmount: Double, quantity: Double, progress: CoinProgress) {
-        val newAmount = if (progress == CoinProgress.SUM) currentAmount + quantity else currentAmount - quantity
-        val amount = if ( newAmount.toString().length>10 && newAmount.toString().subSequence(0,10).last().toString() != ".") newAmount.toString().substring(0,10) else  newAmount.toString()
-        binding.coinAmount.setText(amount)
-    }
-
-    enum class CoinProgress (){
-        SUM,MINUS
-    }
-
-    private fun setAnimation(animation: Int, view: View, animationDuration: Long = 0L ) {
-        val animationDetails = AnimationUtils.loadAnimation(requireContext(), animation)
-        animationDetails.duration = animationDuration
-        view.animation = animationDetails
-    }
-
-  /*  private fun percentClickHandler (){
-        binding.percentAvaibleController?.apply {
-            percent25Layout.setOnClickListener {
-                clickedPercentLayout(SelectedPercent.Percent25,viewModel.tradeType.value)
-            }
-            percent50Layout.setOnClickListener {
-                clickedPercentLayout(SelectedPercent.Percent50, viewModel.tradeType.value)
-            }
-            percent75Layout.setOnClickListener {
-                clickedPercentLayout(SelectedPercent.Percent75, viewModel.tradeType.value)
-            }
-            percent100Layout.setOnClickListener {
-                clickedPercentLayout(SelectedPercent.Percent100, viewModel.tradeType.value)
-            }
-
-        }
-    }*/
-
-    private fun clickedPercentLayout(percent: SelectedPercent, tradeType: TradeType?) {
-        viewModel.changeSelectedPercent(percent)
-        tradeType?.let {
-            when(it){
-                TradeType.Sell -> {
-                    buy(percent)
-                }
-                TradeType.Buy -> {
-
-                }
-            }
-
-
-        }
-    }
-
-    private fun buy(percent: SelectedPercent) {
-        when(percent){
-            SelectedPercent.Percent25 -> {
-   //             binding.percentAvaibleController?.let {
-     //               it.percent25Image.setImageResource(R.drawable.buy)
-       //         }
-
-            }
-            SelectedPercent.Percent50 -> {
-
-            }
-            SelectedPercent.Percent75 -> {
-
-            }
-            SelectedPercent.Percent100 -> {
-
-            }
-        }
-    }
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 }

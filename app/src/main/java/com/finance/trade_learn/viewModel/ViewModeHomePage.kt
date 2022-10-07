@@ -1,12 +1,12 @@
 package com.finance.trade_learn.viewModel
 
 import com.finance.trade_learn.models.BaseModelCrypto
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
+import com.finance.trade_learn.models.returnDataForHomePage
 import com.finance.trade_learn.utils.converOperation
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 
 class ViewModeHomePage : ViewModel() {
-    var isInitialize = MutableLiveData (false)
+    var isInitialize = MutableLiveData(false)
     private var disposable: CompositeDisposable = CompositeDisposable()
     var state = MutableLiveData<Boolean>()
     var listOfCrypto = MutableLiveData<ArrayList<CoinsHome>>()
@@ -26,40 +26,8 @@ class ViewModeHomePage : ViewModel() {
     private var listOfCryptoforCompare = MutableLiveData<List<CoinsHome>>()
     private var change = enumPriceChange.notr
 
-    /*
-        fun runGetPopulerCryptoFromApi() {
-
-
-            state.value = false
-
-           CoroutineScope(Dispatchers.IO).launch {
-                disposable.add(
-                    cryptoService().PopulerCrypto()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(object : DisposableSingleObserver<List<BaseModelCrypto>>() {
-                            override fun onSuccess(t: List<BaseModelCrypto>) {
-                                Log.i("messages", "e.message!!")
-                                //convert data fun
-                                state.value = true
-                            }
-
-                            override fun onError(e: Throwable) {
-                                Log.i("messages", e.message!!)
-                                state.value = false
-                            }
-                        })
-                )
-            }
-
-
-
-
-        }
-
-
-     */
-    fun runGetAllCryptoFromApi() {
+    fun getAllCryptoFromApi() {
+        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         state.value = false
         CoroutineScope(Dispatchers.IO).launch {
             disposable.add(
@@ -68,24 +36,18 @@ class ViewModeHomePage : ViewModel() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(object : DisposableSingleObserver<List<BaseModelCrypto>>() {
                         override fun onSuccess(t: List<BaseModelCrypto>) {
-                            //convert data fun
                             try {
-
-                                convert(     t.filter { it.day1!=null })
+                                val data = convert(t.filter { it.day1 != null })
                                 state.value = true
                                 isInitialize.value = true
-                            }catch (e:Exception){
-                                Log.i("hata","hata")
-                            }
-
+                                change = data.change
+                                listOfCrypto = data.ListOfCrypto
+                                listOfCryptoforCompare = data.ListOfCryptoForCompare
+                                listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto.value)
+                            } catch (e: Exception) { }
                         }
 
-                        override fun onError(e: Throwable) {
-                            state.value = false
-                            Log.i("messages", e.message!!)
-
-
-                        }
+                        override fun onError(e: Throwable) { state.value = false }
                     })
             )
         }
@@ -93,41 +55,23 @@ class ViewModeHomePage : ViewModel() {
 
     }
 
-    fun convert(t: List<BaseModelCrypto>) {
-        val data = converOperation(t, listOfCryptoforCompare).convertDataToUse()
-
-        listOfCrypto = data.ListOfCryptoo
-        convertPopularCoinList(data.ListOfCryptoo.value)
-        change = data.changee
-        listOfCryptoforCompare = data.ListOfCryptoforComparee
-
+    fun convert(t: List<BaseModelCrypto>): returnDataForHomePage {
+        return converOperation(t, listOfCryptoforCompare).convertDataToUse()
     }
 
-    private fun convertPopularCoinList(list: ArrayList<CoinsHome>?) {
-
+    private fun convertPopularCoinList(list: ArrayList<CoinsHome>?): ArrayList<CoinsHome>? {
         val popList = arrayListOf<CoinsHome>()
-        if (list != null) {
+        return if (list != null) {
             for (i in list) {
-                if (i.CoinName.subSequence(
-                        0,
-                        3
-                    ) == "BTC" || i.CoinName.subSequence(
-                        0, 3
-                    ) == "BNB" || i.CoinName.subSequence(0, 3) == "ETH"
-                ) {
-                    popList.add(i)
-                }
-            }
-            listOfCryptoForPopular.value = popList
-
-        }
+                if (i.CoinName.subSequence(0, 3) == "BTC" || i.CoinName.subSequence(0, 3) == "BNB" || i.CoinName.subSequence(0, 3) == "ETH") {
+                    popList.add(i) } }
+            popList
+        } else null
 
     }
 
     override fun onCleared() {
         disposable.clear()
-
-        Log.i("clear", "clear")
         super.onCleared()
     }
 

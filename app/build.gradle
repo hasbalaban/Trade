@@ -28,9 +28,9 @@ android {
     defaultConfig {
         applicationId "com.finance.trade_learn"
         minSdk 23
-        targetSdk 31
-        versionCode 51
-        versionName "1.9.8"
+        targetSdk 33
+        versionCode 61
+        versionName "2.0.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
@@ -146,13 +146,11 @@ dependencies {
     implementation("com.google.android.play:core:1.10.3")
     implementation("com.google.android.play:core-ktx:1.8.1")
 
-    // Smart Look
-    implementation 'com.smartlook.recording:app:1.8.9-native'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
 
     //admob
-    implementation 'com.google.android.gms:play-services-ads:20.6.0'
+    implementation 'com.google.android.gms:play-services-ads:21.1.0'
 
 
 

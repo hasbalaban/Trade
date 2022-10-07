@@ -33,6 +33,7 @@ class ViewModelMarket @Inject constructor(@ApplicationContext application: Appli
 
     fun runGetAllCryptoFromApi() {
 
+        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         state.value = false
         CoroutineScope(Dispatchers.IO).launch {
             disposable.add(
@@ -65,9 +66,9 @@ class ViewModelMarket @Inject constructor(@ApplicationContext application: Appli
     fun convert(t: List<BaseModelCrypto>) {
         val data = converOperation(t, listOfCryptoforCompare).convertDataToUse()
 
-        listOfCrypto = data.ListOfCryptoo
-        change = data.changee
-        listOfCryptoforCompare = data.ListOfCryptoforComparee
+        listOfCrypto = data.ListOfCrypto
+        change = data.change
+        listOfCryptoforCompare = data.ListOfCryptoForCompare
 
     }
 

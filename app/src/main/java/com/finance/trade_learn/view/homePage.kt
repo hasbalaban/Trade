@@ -1,6 +1,8 @@
 package com.finance.trade_learn.view
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,10 +10,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.whenCreated
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +26,6 @@ import com.finance.trade_learn.viewModel.ViewModeHomePage
 import com.google.android.gms.ads.AdRequest
 import kotlinx.coroutines.*
 import java.lang.Runnable
-import kotlin.random.Random
 
 class Home : Fragment() {
 
@@ -50,7 +49,6 @@ class Home : Fragment() {
     }
 
     private fun providers() {
-
         viewModelHome = ViewModelProvider(requireActivity())[ViewModeHomePage::class.java]
 
     }
@@ -63,8 +61,6 @@ class Home : Fragment() {
             inflater, R.layout.fragment_home,
             container, false
         )
-
-
         return dataBindingHome.root
     }
 
@@ -84,6 +80,7 @@ class Home : Fragment() {
 
 
         clickToSearch()
+        clickSendEmailButton()
         //setAd()
         super.onViewCreated(view, savedInstanceState)
     }
@@ -105,7 +102,7 @@ class Home : Fragment() {
 
     private fun isViewModelInitialize() {
         val state = viewModelHome.isInitialize
-        if (state.value!!) {
+        if (state.value == true) {
             viewModelHome.listOfCrypto.observe(viewLifecycleOwner) {list ->
                 adapterForHotList.updateData(list)
                 viewModelHome.isInitialize.value = true
@@ -117,7 +114,7 @@ class Home : Fragment() {
         }
     }
 
-    // We Check State of Loading if loading is succesed we Will initialize adapter here
+    // We Check State of Loading if loading is successed we Will initialize adapter here
     // then we will set on recycler view
     private fun getData() {
         if (viewVisible) {
@@ -129,7 +126,7 @@ class Home : Fragment() {
                             list?.let {
                                 adapterForHotList.updateData(it)
                                 timeLoop = 7500
-                                if (viewModelHome.isInitialize.value!!) {
+                                if (viewModelHome.isInitialize.value == true) {
                                     dataBindingHome.progressBar.visibility = View.INVISIBLE
                                 }
                                 isViewModelInitialize()
@@ -149,9 +146,10 @@ class Home : Fragment() {
     }
 
     private fun update() {
+        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         runnable = Runnable {
             runBlocking {
-                viewModelHome.runGetAllCryptoFromApi()
+                viewModelHome.getAllCryptoFromApi()
                 getData()
             }
             handler.postDelayed(runnable, timeLoop)
@@ -179,5 +177,20 @@ class Home : Fragment() {
              val action = HomeDirections.actionHomeToSearchActivity()
              Navigation.findNavController(it).navigate(action)
         }
+    }
+
+    private fun clickSendEmailButton(){
+        dataBindingHome.sendMail.setOnClickListener {
+            composeEmail(arrayOf("learntradeapp@gmail.com"),"A intent or Request")
+        }
+    }
+    private fun composeEmail(addresses: Array<String>, subject: String) {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:") // only email apps should handle this
+            putExtra(Intent.EXTRA_EMAIL, addresses)
+            putExtra(Intent.EXTRA_SUBJECT, subject)
+        }
+        try { startActivity(intent)
+        }catch (e:Exception){ }
     }
 }
