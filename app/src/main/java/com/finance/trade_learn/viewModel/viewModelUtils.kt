@@ -1,7 +1,6 @@
 package com.finance.trade_learn.viewModel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.finance.trade_learn.database.dataBaseEntities.myCoins
 import com.finance.trade_learn.database.dataBaseService
@@ -27,7 +26,7 @@ class ViewModelUtils() : ViewModel() {
     private fun addOneTimeDollars(dollars: Double, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val databaseDao = dataBaseService.invoke(context).databaseDao()
-            val myCoins = myCoins("USDT", dollars)
+            val myCoins = myCoins("TETHER", dollars)
             databaseDao.addCoin(myCoins)
         }
     }

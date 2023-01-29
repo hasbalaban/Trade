@@ -11,13 +11,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.finance.trade_learn.Adapters.adapter_for_hot_coins
-import com.finance.trade_learn.Adapters.adapter_for_populer_coins
+import com.finance.trade_learn.Adapters.AdapterForPopulerCoins
 import com.finance.trade_learn.R
 import com.finance.trade_learn.databinding.FragmentHomeBinding
 import com.finance.trade_learn.utils.Ads
@@ -30,28 +31,13 @@ import java.lang.Runnable
 class Home : Fragment() {
 
     private lateinit var adapterForHotList: adapter_for_hot_coins
-    private lateinit var adapterForPopulerList: adapter_for_populer_coins
-    private var viewVisible = false
+    private lateinit var adapterForPopulerList: AdapterForPopulerCoins
     private lateinit var dataBindingHome: FragmentHomeBinding
-    private lateinit var viewModelHome: ViewModeHomePage
+    private val viewModelHome: ViewModeHomePage by viewModels<ViewModeHomePage> ()
     private var runnable = Runnable { }
     private var handler = Handler(Looper.getMainLooper())
     private var timeLoop = 2000L
     private var job : Job? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
-    override fun onAttach(context: Context) {
-        providers()
-        super.onAttach(context)
-    }
-
-    private fun providers() {
-        viewModelHome = ViewModelProvider(requireActivity())[ViewModeHomePage::class.java]
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,14 +54,10 @@ class Home : Fragment() {
 
 
         adapterForHotList = adapter_for_hot_coins(requireContext(), arrayListOf())
-        dataBindingHome.RecyclerViewCoinsOfToday.layoutManager =
-            LinearLayoutManager(requireContext())
+        dataBindingHome.RecyclerViewCoinsOfToday.layoutManager = LinearLayoutManager(requireContext())
         dataBindingHome.RecyclerViewCoinsOfToday.adapter = adapterForHotList
 
-
-        adapterForPopulerList = adapter_for_populer_coins(requireContext(), arrayListOf())
-        dataBindingHome.RecyclerViewPopulerCoins.layoutManager =
-            GridLayoutManager(requireContext(), 3, RecyclerView.VERTICAL, false)
+        adapterForPopulerList = AdapterForPopulerCoins(requireContext(), arrayListOf())
         dataBindingHome.RecyclerViewPopulerCoins.adapter = adapterForPopulerList
 
 
@@ -101,52 +83,39 @@ class Home : Fragment() {
     }
 
     private fun isViewModelInitialize() {
-        val state = viewModelHome.isInitialize
-        if (state.value == true) {
             viewModelHome.listOfCrypto.observe(viewLifecycleOwner) {list ->
                 adapterForHotList.updateData(list)
-                viewModelHome.isInitialize.value = true
             }
             viewModelHome.listOfCryptoForPopular.observe(viewLifecycleOwner) {
 
                 adapterForPopulerList.updateData(it)
             }
-        }
     }
 
     // We Check State of Loading if loading is successed we Will initialize adapter here
     // then we will set on recycler view
     private fun getData() {
-        if (viewVisible) {
             //observer state of list of coins
-            viewModelHome.state.observe(viewLifecycleOwner) {
-                if (it) {
-                    if (viewVisible) {
+            viewModelHome.isLoading.observe(viewLifecycleOwner) {
+                if (it.not()) {
                         viewModelHome.listOfCrypto.observe(viewLifecycleOwner) { list ->
                             list?.let {
                                 adapterForHotList.updateData(it)
-                                timeLoop = 7500
-                                if (viewModelHome.isInitialize.value == true) {
-                                    dataBindingHome.progressBar.visibility = View.INVISIBLE
-                                }
+                                timeLoop = 10000
+                                dataBindingHome.progressBar.visibility = View.INVISIBLE
                                 isViewModelInitialize()
                             }
 
                         }
 
-                        viewModelHome.listOfCryptoForPopular.observe(viewLifecycleOwner) { list ->
-                            list?.let {
-                                adapterForPopulerList.updateData(it)
-                            }
+                        viewModelHome.listOfCryptoForPopular.value?.let {list ->
+                                adapterForPopulerList.updateData(list)
                         }
                     }
-                }
             }
-        }
     }
 
     private fun update() {
-        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         runnable = Runnable {
             runBlocking {
                 viewModelHome.getAllCryptoFromApi()
@@ -158,16 +127,14 @@ class Home : Fragment() {
     }
 
     override fun onPause() {
-        viewVisible = false
         handler.removeCallbacks(runnable)
         job?.cancel()
         super.onPause()
     }
 
     override fun onResume() {
-        viewVisible = true
         update()
-        if (viewModelHome.state.value == true) getData()
+        if (viewModelHome.isLoading.value == false) getData()
         super.onResume()
     }
 

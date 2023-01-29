@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Kripto Demo - Ücretsiz Al-Sat</string>
     <string name="hello_blank_fragment">merhaba boş fragment</string>
-    <string name="usdt"> / USDT</string>
+    <string name="USD"> / USD</string>
 
     <string name="home" >Anasayfa</string>
     <string name="Market" >Market</string>
@@ -22,7 +22,7 @@
     <string name="Value">Değer ($)</string>
     <string name="price">Fiyat</string>
     <string name="total">Toplam</string>
-    <string name="totalUSDT">Toplam (USDT)</string>
+    <string name="totalUSD">Toplam (USD)</string>
     <string name="date">Tarih</string>
     <string name="state">Durum</string>
     <string name="trueValue">Lütfen geçerli bir değer giriniz</string>
@@ -33,4 +33,7 @@
     <string name="addZeros">0.000000</string>
 
     <string name="page_name">Kripto Ara</string>
+    <string name="notification_title">Ücretsiz Bildirimler</string>
+    <string name="notification_allow_button">İzin Ver</string>
+    <string name="notification_subTitle">Ücretsiz bildirimleri almak için bildirimlere izin ver.</string>
 </resources>

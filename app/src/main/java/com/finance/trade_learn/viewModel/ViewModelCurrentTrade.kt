@@ -12,7 +12,7 @@ import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
 import com.finance.trade_learn.database.dataBaseService
 import com.finance.trade_learn.enums.TradeType
 import com.finance.trade_learn.models.SelectedPercent
-import com.finance.trade_learn.models.on_crypto_trade.BaseModelOneCryptoModel
+import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
@@ -30,7 +30,7 @@ class ViewModelCurrentTrade(context: Context) : ViewModel() {
     var state = MutableLiveData<Boolean>()
     val coinAmountLiveData = MutableLiveData<BigDecimal>()
     private val dao = dataBaseService.invoke(context).databaseDao()
-    val selectedCoinToTradeDetails = MutableLiveData<List<BaseModelOneCryptoModel>>()
+    val selectedCoinToTradeDetails = MutableLiveData<List<CoinDetail>>()
     val canChangeAmount = MutableLiveData<Boolean>(true)
     private val _tradeType = MutableLiveData<TradeType>(TradeType.Buy)
     val tradeType : LiveData<TradeType> = _tradeType
@@ -64,18 +64,15 @@ class ViewModelCurrentTrade(context: Context) : ViewModel() {
 
     // this function for get details of coin that  i will buy
     fun getSelectedCoinDetails(coinName: String) {
-        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         disposable.add(
-            cryptoService().selectedCoinToTrade(coinName)
+            cryptoService().getSelectedCoinToTradeCoinGecko(coinName.lowercase())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object :
-                    DisposableSingleObserver<List<BaseModelOneCryptoModel>>() {
+                    DisposableSingleObserver<List<CoinDetail>>() {
 
-                    override fun onSuccess(t: List<BaseModelOneCryptoModel>) {
+                    override fun onSuccess(t: List<CoinDetail>) {
                         selectedCoinToTradeDetails.value = t
-
-
                     }
 
                     override fun onError(e: Throwable) {
@@ -95,7 +92,7 @@ class ViewModelCurrentTrade(context: Context) : ViewModel() {
 
         CoroutineScope(Dispatchers.IO).launch {
             val myCoin = dao.getOnCoinForTrade(coinName)
-            var myMoneyTotal = dao.getOneCoin("USDT").CoinAmount
+            var myMoneyTotal = dao.getOneCoin("TETHER").CoinAmount
 
             Log.i("islem1", myMoneyTotal.toString())
 
@@ -107,9 +104,9 @@ class ViewModelCurrentTrade(context: Context) : ViewModel() {
                 if (myMoneyTotal >= total) {
 
                     myMoneyTotal -= total
-                    val myDollars = myCoins("USDT", myMoneyTotal)
+                    val myDollars = myCoins("TETHER", myMoneyTotal)
 
-                    if (coinName != "USDT") {
+                    if (coinName != "TETHER") {
                         withContext(Dispatchers.Main) {
 
                             try {
@@ -142,11 +139,11 @@ class ViewModelCurrentTrade(context: Context) : ViewModel() {
                 if (myMoneyTotal >= total) {
 
                     myMoneyTotal -= total
-                    val myDollars = myCoins("USDT", myMoneyTotal)
+                    val myDollars = myCoins("TETHER", myMoneyTotal)
 
                     Log.i("islem1", myMoneyTotal.toString())
                     Log.i("islem1", total.toString())
-                    if (coinName != "USDT") {
+                    if (coinName != "TETHER") {
 
                         withContext(Dispatchers.Main) {
 
@@ -189,7 +186,7 @@ class ViewModelCurrentTrade(context: Context) : ViewModel() {
 
         CoroutineScope(Dispatchers.IO).launch {
             val myCoin = dao.getOneCoin(coinName)
-            var myMoneyTotal = dao.getOneCoin("USDT").CoinAmount
+            var myMoneyTotal = dao.getOneCoin("TETHER").CoinAmount
 
 
             val firstAmount = myCoin.CoinAmount
@@ -200,9 +197,9 @@ class ViewModelCurrentTrade(context: Context) : ViewModel() {
                 val myCoinItem = myCoins(coinName, newAmount)
 
                 myMoneyTotal += total
-                val myDollars = myCoins("USDT", myMoneyTotal)
+                val myDollars = myCoins("TETHER", myMoneyTotal)
 
-                if (coinName != "USDT") {
+                if (coinName != "TETHER") {
                     withContext(Dispatchers.Main) {
                     }
 

@@ -8,9 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.finance.trade_learn.viewModel.viewModelMyWallet
+import com.finance.trade_learn.viewModel.ViewModelMyWallet
 import com.finance.trade_learn.Adapters.adapter_for_my_wallet
 import com.finance.trade_learn.R
 import com.finance.trade_learn.databinding.FragmentWalletPageBinding
@@ -28,7 +27,7 @@ class WalletPage : Fragment(), TextWatcher {
     private var viewVisible = true
     private lateinit var dataBindingWallet: FragmentWalletPageBinding
     private lateinit var adapter: adapter_for_my_wallet
-    private lateinit var viewModelMyWallet: viewModelMyWallet
+    private lateinit var viewModelMyWallet: ViewModelMyWallet
     //  private var disposable = CompositeDisposable()
 
     private var myCoinsList = ArrayList<NewModelForItemHistory>()
@@ -48,8 +47,6 @@ class WalletPage : Fragment(), TextWatcher {
             inflater, R.layout.fragment_wallet_page,
             container, false
         )
-
-        //      demo()
         return dataBindingWallet.root
     }
 
@@ -62,7 +59,7 @@ class WalletPage : Fragment(), TextWatcher {
 
 
     private fun setup() {
-        viewModelMyWallet = viewModelMyWallet(requireContext())
+        viewModelMyWallet = ViewModelMyWallet(requireContext())
         viewModelMyWallet.getMyCoinsDetails()
         dataBindingWallet.searchMyCoins.addTextChangedListener(this)
         dataBindingWallet.myCoins.layoutManager = LinearLayoutManager(requireContext())

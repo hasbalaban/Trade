@@ -1,7 +1,9 @@
 package com.finance.trade_learn.view
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,6 +17,8 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,8 +27,9 @@ import com.finance.trade_learn.R
 import com.finance.trade_learn.clickListener.ListenerInterface
 import com.finance.trade_learn.databinding.FragmentCurrentTradeBinding
 import com.finance.trade_learn.enums.TradeType
+import com.finance.trade_learn.models.CustomAlertFields
 import com.finance.trade_learn.models.SelectedPercent
-import com.finance.trade_learn.models.on_crypto_trade.BaseModelOneCryptoModel
+import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.viewModel.ViewModelCurrentTrade
 import com.google.android.gms.ads.AdRequest
@@ -33,6 +38,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.mobikasaba.carlaandroid.utils.AlertDialogCustomBuilder
 import kotlinx.coroutines.*
 import java.lang.Runnable
 import java.math.BigDecimal
@@ -51,7 +57,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     private val viewModel by viewModels<ViewModelCurrentTrade>{
         CurrentTradeViewModelFactory(requireContext())
     }
-    private var coinName = "BTC"
+    private var coinName = "bitcoin"
     private var timeLoop = 2000L
     private var job : Job? = null
     private var adInterstitial: InterstitialAd? = null
@@ -78,7 +84,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         setObservers()
         getDetailsOfCoinFromDatabase()
         startAnimation()
-        setAd()
+       // setAd()
         setInterstitialAd()
         longClickLister()
         percentClickHandler()
@@ -118,7 +124,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     @SuppressLint("SetTextI18n")
     private fun setDataBindingSettings(){
         binding.apply {
-            coinName.text = "${this@CurrentTrade::coinName.get()} / USDT"
+            coinName.text = "${this@CurrentTrade::coinName.get()} / USD"
             clickLisener = clickListenerInitialize
             coinAmount.addTextChangedListener(this@CurrentTrade)
             coinPrice.addTextChangedListener(this@CurrentTrade)
@@ -171,7 +177,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     }
 
     // we getting data from database when fragment starting and after any trade
-    fun getDetailsOfCoinFromDatabase(coinName: String = "USDT") {
+    fun getDetailsOfCoinFromDatabase(coinName: String = "TETHER") {
         viewModel.getDetailsOfCoinFromDatabase(coinName)
     }
 
@@ -180,7 +186,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
             it?.let {
                 avaibleAmount = it
                 binding.avaibleAmount.text = it.toString()
-                binding.symbol.text = coinName
+                binding.symbol.text = if (tradeState == TradeType.Buy) "USD" else coinName
             }?: run {
                 binding.avaibleAmount.text = ""
                 binding.symbol.text = ""
@@ -192,7 +198,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
             coin?.let {
                 timeLoop = 7000L
                 if (it.isNotEmpty()){
-                    currentPrice = coin[0].price.toDouble()
+                    currentPrice = coin.firstOrNull()?.current_price ?: 0.0
                     putDataInItemSettings(coin[0])
                     // percentCoinController()
                 }
@@ -204,19 +210,19 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
     // this fun for binding of fata - change percente/price etc.
     @SuppressLint("SetTextI18n")
-    private fun putDataInItemSettings(coin: BaseModelOneCryptoModel) {
+    private fun putDataInItemSettings(coin: CoinDetail) {
 
         try {
-            val coinPrice = if ( coin.price.length>10 && coin.price.subSequence(0,10).last().toString() != ".") coin.price.substring(0,10) else  coin.price
+            val coinPrice = if ( coin.current_price.toString().length>10 && coin.current_price.toString().subSequence(0,10).last().toString() != ".") coin.current_price.toString().substring(0,10) else  coin.current_price
 
-            binding.coinPrice.setText(coinPrice)
-            binding.coinLogo.setImageSvg(coin.logo_url)
+            binding.coinPrice.setText(coinPrice.toString())
+            binding.coinLogo.setImageSvg(coin.image)
 
-            var coinPercentChange: String = coin.d1.price_change_pct
-            coinPercentChange = ((coinPercentChange.toDouble() * 100.0).toString() + "0000").subSequence(0, 5).toString()
+            var coinPercentChange: String = coin.price_change_percentage_24h.toString()
+            coinPercentChange = ((coinPercentChange.toDouble()).toString() + "0000").subSequence(0, 5).toString()
 
-            if (coin.d1.price_change_pct.subSequence(0, 1) == "-") {
-                binding.coinChangePercent.setText(coinPercentChange + "%")
+            if (coin.price_change_percentage_24h.toString().subSequence(0, 1) == "-") {
+                binding.coinChangePercent.text = "$coinPercentChange%"
                 binding.coinChangePercent.setTextColor(Color.parseColor("#F6465D"))
                 return
             }
@@ -225,7 +231,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                 binding.coinChangePercent.setTextColor(Color.parseColor("#2ebd85"))
                 return
             }
-            binding.coinChangePercent.setText("+ " + coinPercentChange + "%")
+            binding.coinChangePercent.text = "+ $coinPercentChange%"
             binding.coinChangePercent.setTextColor(Color.parseColor("#2ebd85"))
         } catch (e: Exception) {
             Log.i("error", e.message.toString())
@@ -357,6 +363,10 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                             getDetailsOfCoinFromDatabase()
                             toastMessages(R.string.succes)
                             reviewUs()
+
+                            if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU){
+                                requestPostPermission()
+                            }
                             adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
                             return@observe
                         }
@@ -396,7 +406,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     fun buyClicked() {
         tradeState = TradeType.Buy
         viewModel.changeTradeType(TradeType.Buy)
-        getDetailsOfCoinFromDatabase("USDT")
+        getDetailsOfCoinFromDatabase("TETHER")
         binding.apply {
             Buy.setTextColor(Color.parseColor("#ffffff"))
             Buy.setBackgroundColor(Color.parseColor("#2ebd85"))
@@ -679,4 +689,14 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun requestPostPermission(){
+        if (NotificationPermissionManager.canAskNotificationPermission(requireActivity())){
+            val requestedPermissions = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+            ActivityCompat.requestPermissions(requireActivity(), requestedPermissions, Constants.POST_NOTIFICATION)
+            return
+        }
+        AlertDialogCustomBuilder.showNotificationPermissionPopup(requireContext(), layoutInflater, CustomAlertFields(R.drawable.notification_icon, getString(R.string.notification_title), getString(R.string.notification_subTitle), getString(R.string.notification_allow_button),null), requireActivity()).show()
+    }
 }

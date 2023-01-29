@@ -12,7 +12,7 @@ class sharedPreferencesManager(private val context: Context) {
         sharedPreferencesManager.edit().putString(keyName, value).apply()
     }
 
-    fun getSharedPreferencesString(keyName: String, defaultValue: String = "BTC") =
+    fun getSharedPreferencesString(keyName: String, defaultValue: String = "bitcoin") =
         sharedPreferencesManager.getString(keyName, defaultValue).toString()
 
     fun addSharedPreferencesInt(keyName: String, value: Int) {

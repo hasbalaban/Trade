@@ -6,8 +6,10 @@ import androidx.lifecycle.*
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.BaseModelCrypto
+import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
-import com.finance.trade_learn.utils.converOperation
+import com.finance.trade_learn.utils.ConverOperation
+import com.finance.trade_learn.utils.converOperation1
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -32,19 +34,17 @@ class ViewModelMarket @Inject constructor(@ApplicationContext application: Appli
 
 
     fun runGetAllCryptoFromApi() {
-
-        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         state.value = false
         CoroutineScope(Dispatchers.IO).launch {
             disposable.add(
-                cryptoService().AllCrypto1000()
+                cryptoService().getCoinGecko(null, page = 2)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(object : DisposableSingleObserver<List<BaseModelCrypto>>() {
-                        override fun onSuccess(t: List<BaseModelCrypto>) {
+                    .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
+                        override fun onSuccess(t: List<CoinDetail>) {
                             //convert data fun
                             try {
-                                convert(t.filter { it.day1 != null })
+                                convert1(t)
                                 state.value = true
                                 isInitialized.value = true
                             } catch (e: Exception) {
@@ -64,7 +64,7 @@ class ViewModelMarket @Inject constructor(@ApplicationContext application: Appli
     }
 
     fun convert(t: List<BaseModelCrypto>) {
-        val data = converOperation(t, listOfCryptoforCompare).convertDataToUse()
+        val data = ConverOperation(t, listOfCryptoforCompare).convertDataToUse()
 
         listOfCrypto = data.ListOfCrypto
         change = data.change
@@ -75,9 +75,14 @@ class ViewModelMarket @Inject constructor(@ApplicationContext application: Appli
 
     override fun onCleared() {
         disposable.clear()
-
-        Log.i("clear", "clear")
         super.onCleared()
+    }
+
+    fun convert1(t: List<CoinDetail>) {
+        val data = converOperation1(t, listOfCryptoforCompare).convertDataToUse()
+        listOfCrypto = data.ListOfCrypto
+        change = data.change
+        listOfCryptoforCompare = data.ListOfCryptoForCompare
     }
 
 

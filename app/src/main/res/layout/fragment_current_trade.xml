@@ -204,7 +204,7 @@
                             android:layout_marginTop="10dp"
                             android:background="@drawable/style_trade"
                             android:focusable="false"
-                            android:hint="@string/totalUSDT"
+                            android:hint="@string/totalUSD"
                             android:inputType="number|numberDecimal"
                             android:textAlignment="center"
                             android:textColorHint="#474242" />
@@ -360,7 +360,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_alignParentEnd="true"
                                 android:padding="10dp"
-                                android:text="USDT"
+                                android:text="USD"
                                 android:textColor="@color/onClickBuyBack"
                                 android:textSize="17sp" />
 
