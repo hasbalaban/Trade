@@ -1,7 +1,6 @@
 package com.finance.trade_learn.viewModel
 
 import android.util.Log
-import com.finance.trade_learn.models.on_crypto_trade.BaseModelOneCryptoModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
@@ -13,17 +12,20 @@ import androidx.lifecycle.ViewModel
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.database.dataBaseEntities.myCoins
 import com.finance.trade_learn.database.dataBaseService
+import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import kotlinx.coroutines.*
 import java.math.BigDecimal
+import java.util.*
+import kotlin.collections.ArrayList
 
-class viewModelMyWallet(val context: Context) : ViewModel() {
-    val myCoinsDatabaseModel = MutableLiveData<List<myCoins>>()
+class ViewModelMyWallet(val context: Context) : ViewModel() {
+    private val myCoinsDatabaseModel = MutableLiveData<List<myCoins>>()
     val myCoinsNewModel = MutableLiveData<ArrayList<NewModelForItemHistory>>()
-    val myBaseModelOneCryptoModel = MutableLiveData<List<BaseModelOneCryptoModel>>()
+    val myBaseModelOneCryptoModel = MutableLiveData<List<CoinDetail>>()
     var disposable = CompositeDisposable()
     var totalValue = MutableLiveData<BigDecimal>()
-    val databaseDao = dataBaseService.invoke(context).databaseDao()
+    private val databaseDao = dataBaseService.invoke(context).databaseDao()
 
     // this function fot get coins that i have
     fun getMyCoinsDetails(constrait: String? = null) {
@@ -48,23 +50,22 @@ class viewModelMyWallet(val context: Context) : ViewModel() {
         myCoinsDatabaseModel.let {
             var coinQuery = ""
             for (i in myCoinsDatabaseModel.value!!) {
-                coinQuery += i.CoinName + ","
+                coinQuery += i.CoinName.lowercase() + ","
             }
-            getDataFromApi(coinQuery.subSequence(0, coinQuery.length).toString())
+            val ids = coinQuery.drop(coinQuery.length)
+            getDataFromApi(ids)
         }
     }
 
 
     fun getDataFromApi(coinQuery: String) {
-
-        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
         disposable.add(
-            cryptoService().getCoinIHave(coinQuery)
+            cryptoService().getSelectedCoinToTradeCoinGecko(coinQuery.lowercase())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<List<BaseModelOneCryptoModel>>() {
+                .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
 
-                    override fun onSuccess(t: List<BaseModelOneCryptoModel>) {
+                    override fun onSuccess(t: List<CoinDetail>) {
                         myBaseModelOneCryptoModel.value = t
                         createNewModel()
                     }
@@ -91,13 +92,12 @@ class viewModelMyWallet(val context: Context) : ViewModel() {
                 for (i in myBaseModelOneCryptoModel.value!!) {
 
                     for (z in myCoinsDatabaseModel.value!!) {
-                        if (i.symbol == z.CoinName) {
-                            Log.i("symbolcompare", i.symbol + " " + z.CoinName)
-                            val name = i.symbol
-                            val price = i.price.toBigDecimal()
+                        if (i.id.lowercase() == z.CoinName.lowercase()) {
+                            val name = i.id.uppercase(Locale.getDefault())
+                            val price = i.current_price.toBigDecimal()
 
                             val amount = databaseDao.getOneCoin(name).CoinAmount.toBigDecimal()
-                            val image = i.logo_url
+                            val image = i.image
                             j++
 
                             total += (price * amount)
