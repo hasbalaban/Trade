@@ -38,7 +38,6 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.mobikasaba.carlaandroid.utils.AlertDialogCustomBuilder
 import kotlinx.coroutines.*
 import java.lang.Runnable
 import java.math.BigDecimal
@@ -84,8 +83,8 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         setObservers()
         getDetailsOfCoinFromDatabase()
         startAnimation()
-       // setAd()
-        setInterstitialAd()
+        //setAd()
+        //setInterstitialAd()
         longClickLister()
         percentClickHandler()
     }
@@ -168,15 +167,13 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
     // this function manager time to get data in per 5 seek.
     //we override here runable as Lambda instead Object
-    private fun upDatePer5Sec() {
+    private fun getCoinDetail() {
         runnable = Runnable { //call this function for update
             viewModel.getSelectedCoinDetails(coinName)
             handler.postDelayed(runnable, timeLoop)
         }
         handler.post(runnable)
     }
-
-    // we getting data from database when fragment starting and after any trade
     fun getDetailsOfCoinFromDatabase(coinName: String = "TETHER") {
         viewModel.getDetailsOfCoinFromDatabase(coinName)
     }
@@ -200,7 +197,6 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                 if (it.isNotEmpty()){
                     currentPrice = coin.firstOrNull()?.current_price ?: 0.0
                     putDataInItemSettings(coin[0])
-                    // percentCoinController()
                 }
 
             }
@@ -213,7 +209,10 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     private fun putDataInItemSettings(coin: CoinDetail) {
 
         try {
-            val coinPrice = if ( coin.current_price.toString().length>10 && coin.current_price.toString().subSequence(0,10).last().toString() != ".") coin.current_price.toString().substring(0,10) else  coin.current_price
+            val coinPrice = if (coin.current_price.toString().length>10
+                && coin.current_price.toString().subSequence(0,10).last().toString() != "."
+            ) coin.current_price.toString().substring(0,10)
+            else coin.current_price
 
             binding.coinPrice.setText(coinPrice.toString())
             binding.coinLogo.setImageSvg(coin.image)
@@ -233,9 +232,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
             }
             binding.coinChangePercent.text = "+ $coinPercentChange%"
             binding.coinChangePercent.setTextColor(Color.parseColor("#2ebd85"))
-        } catch (e: Exception) {
-            Log.i("error", e.message.toString())
-        }
+        } catch (_: Exception) { }
     }
 
     //create tost message function
@@ -284,10 +281,9 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                         val currentAmount = binding.coinAmount.text.toString().toDouble()
                         if (currentPrice < 50.0){
                             changeAmounts(currentAmount, 1.000,CoinProgress.SUM)
+                            return
                         }
-                        else {
-                            changeAmounts(currentAmount,  0.001,CoinProgress.SUM)
-                        }
+                        changeAmounts(currentAmount,  0.001,CoinProgress.SUM)
                         return
                     }
                     val currentAmount = 0.000
@@ -302,12 +298,12 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                         val logicalCompare = compare()
                         if (logicalCompare) {
                             operationTrade()
-                        } else {
-                            toastMessages(R.string.proggresState)
+                            return
                         }
-                    } else {
-                        toastMessages(R.string.enterAmountDialog)
+                        toastMessages(R.string.proggresState)
+                        return
                     }
+                    toastMessages(R.string.enterAmountDialog)
                 }
                 // navigate last  trade fragment
                 binding.historyOfTrade.id -> {
@@ -363,8 +359,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                             getDetailsOfCoinFromDatabase()
                             toastMessages(R.string.succes)
                             reviewUs()
-
-                            if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU){
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ){
                                 requestPostPermission()
                             }
                             adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
@@ -442,7 +437,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
     // when program on resume start update service and do visible true
     override fun onResume() {
-        upDatePer5Sec()
+        getCoinDetail()
         super.onResume()
     }
 
@@ -505,6 +500,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
             TradeType.Sell -> {
                 sellSelectedPercent(percent,percentOptions)
             }
+            else -> {}
         }
     }
 

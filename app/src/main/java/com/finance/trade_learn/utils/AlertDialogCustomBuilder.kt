@@ -1,4 +1,4 @@
-package com.mobikasaba.carlaandroid.utils
+package com.finance.trade_learn.utils
 
 import android.app.Activity
 import android.content.Context
@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog
 import com.finance.trade_learn.databinding.CustomAlertBinding
 import com.finance.trade_learn.models.CustomAlertFields
 import com.finance.trade_learn.utils.DialogManager.configureWindow
-import com.finance.trade_learn.utils.NotificationPermissionManager
 
 object AlertDialogCustomBuilder {
         fun showAlertDialog(context: Context,layoutInflater: LayoutInflater,fields: CustomAlertFields,cancellable : Boolean = true, failProgress :() -> Unit = {}, successProgress :() -> Unit = {}): AlertDialog {

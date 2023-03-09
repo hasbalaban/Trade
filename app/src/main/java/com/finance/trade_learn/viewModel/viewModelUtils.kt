@@ -14,10 +14,10 @@ class ViewModelUtils() : ViewModel() {
 
     fun isOneEntering(context: Context): Boolean {
         val sharedManager = sharedPreferencesManager(context)
-        val isFirst = sharedManager.getSharedPreferencesBoolen("isfirst")
-        return if (isFirst) {
+        val firstOpen = sharedManager.getSharedPreferencesBoolen("firstOpen")
+        return if (firstOpen ) {
             true.also {
-                sharedManager.addSharedPreferencesBoolen("isfirst", false)
+                sharedManager.addSharedPreferencesBoolen("firstOpen", false)
                 addOneTimeDollars(1000.0,context)
             }
         } else false
