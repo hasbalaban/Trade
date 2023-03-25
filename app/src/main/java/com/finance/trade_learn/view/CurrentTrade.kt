@@ -84,7 +84,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         getDetailsOfCoinFromDatabase()
         startAnimation()
         //setAd()
-        //setInterstitialAd()
+        setInterstitialAd()
         longClickLister()
         percentClickHandler()
     }
