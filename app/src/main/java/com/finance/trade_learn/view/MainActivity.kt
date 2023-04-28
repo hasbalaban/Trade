@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.finance.trade_learn.R
+import com.finance.trade_learn.ads_manager.AdsConst
 import com.finance.trade_learn.databinding.ActivityMainBinding
 import com.finance.trade_learn.models.CustomAlertFields
 import com.finance.trade_learn.utils.*
@@ -55,7 +56,9 @@ class MainActivity : AppCompatActivity() {
             requestPostPermission(delay = 4000)
         }
         //firebaseSave()
-        checkIsAdShowed()
+        if (AdsConst.shouldShowAds){
+            checkIsAdShowed()
+        }
      //   Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
     }
 

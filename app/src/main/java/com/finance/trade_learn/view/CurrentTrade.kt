@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import com.finance.trade_learn.R
+import com.finance.trade_learn.ads_manager.AdsConst
 import com.finance.trade_learn.clickListener.ListenerInterface
 import com.finance.trade_learn.databinding.FragmentCurrentTradeBinding
 import com.finance.trade_learn.enums.TradeType
@@ -668,6 +669,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     }
 
     private fun setInterstitialAd() {
+        if (AdsConst.shouldShowAds.not()) return
 
         val currentMillis = System.currentTimeMillis()
         val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)

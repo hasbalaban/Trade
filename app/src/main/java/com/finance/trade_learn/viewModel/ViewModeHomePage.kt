@@ -4,7 +4,6 @@ import com.finance.trade_learn.models.BaseModelCrypto
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.finance.trade_learn.ctryptoApi.cryptoService
-import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.models.returnDataForHomePage
@@ -24,8 +23,7 @@ class ViewModeHomePage : ViewModel() {
     var isLoading = MutableLiveData<Boolean>()
     var listOfCrypto = MutableLiveData<ArrayList<CoinsHome>>()
     var listOfCryptoForPopular = MutableLiveData<ArrayList<CoinsHome>>()
-    private var listOfCryptoforCompare = MutableLiveData<List<CoinsHome>>()
-    private var change = enumPriceChange.notr
+    private var lastCrypoList = MutableLiveData<List<CoinsHome>>()
 
     fun getAllCryptoFromApi() {
         isLoading.value = true
@@ -37,11 +35,13 @@ class ViewModeHomePage : ViewModel() {
                     .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
                         override fun onSuccess(t: List<CoinDetail>) {
                             try {
-                                val data = convert1(t)
                                 isLoading.value = false
-                                change = data.change
+                                val filteredList = t.filter {
+                                    it.name.length <= 18
+                                }
+                                val data = convert(filteredList)
                                 listOfCrypto = data.ListOfCrypto
-                                listOfCryptoforCompare = data.ListOfCryptoForCompare
+                                lastCrypoList = data.lastCrypoList
                                 listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto.value)
                             } catch (e: Exception) {
                                 println(e.localizedMessage)
@@ -57,12 +57,12 @@ class ViewModeHomePage : ViewModel() {
 
     }
 
-    fun convert(t: List<BaseModelCrypto>): returnDataForHomePage {
-        return ConverOperation(t, listOfCryptoforCompare).convertDataToUse()
+    fun convert1(t: List<BaseModelCrypto>): returnDataForHomePage {
+        return ConverOperation(t, lastCrypoList).convertDataToUse()
     }
 
-    fun convert1(t: List<CoinDetail>): returnDataForHomePage {
-        return converOperation1(t, listOfCryptoforCompare).convertDataToUse()
+    fun convert(t: List<CoinDetail>): returnDataForHomePage {
+        return converOperation1(t, lastCrypoList).convertDataToUse()
     }
 
     private fun convertPopularCoinList(list: ArrayList<CoinsHome>?): ArrayList<CoinsHome>? {

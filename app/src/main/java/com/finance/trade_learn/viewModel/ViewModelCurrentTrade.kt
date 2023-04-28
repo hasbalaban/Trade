@@ -76,7 +76,6 @@ class ViewModelCurrentTrade(context: Context) : ViewModel() {
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.i("hatahata", e.message.toString())
                     }
 
 
@@ -93,8 +92,6 @@ class ViewModelCurrentTrade(context: Context) : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             val myCoin = dao.getOnCoinForTrade(coinName)
             var myMoneyTotal = dao.getOneCoin("TETHER").CoinAmount
-
-            Log.i("islem1", myMoneyTotal.toString())
 
             if (myCoin != null) {
                 val firstAmount = myCoin.CoinAmount
@@ -140,9 +137,6 @@ class ViewModelCurrentTrade(context: Context) : ViewModel() {
 
                     myMoneyTotal -= total
                     val myDollars = myCoins("TETHER", myMoneyTotal)
-
-                    Log.i("islem1", myMoneyTotal.toString())
-                    Log.i("islem1", total.toString())
                     if (coinName != "TETHER") {
 
                         withContext(Dispatchers.Main) {
@@ -213,17 +207,11 @@ class ViewModelCurrentTrade(context: Context) : ViewModel() {
                         withContext(Dispatchers.Main) {
                             state.value = true
                         }
-                    } catch (e: Exception) {
-
-                    }
-
-
+                    } catch (_: Exception) { }
                 }
 
             } else {
-
                 state.value = false
-                Log.i("islem", "the progres is failed")
             }
 
         }

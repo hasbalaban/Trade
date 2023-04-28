@@ -68,7 +68,7 @@ class ViewModelMarket @Inject constructor(@ApplicationContext application: Appli
 
         listOfCrypto = data.ListOfCrypto
         change = data.change
-        listOfCryptoforCompare = data.ListOfCryptoForCompare
+        listOfCryptoforCompare = data.lastCrypoList
 
     }
 
@@ -82,7 +82,7 @@ class ViewModelMarket @Inject constructor(@ApplicationContext application: Appli
         val data = converOperation1(t, listOfCryptoforCompare).convertDataToUse()
         listOfCrypto = data.ListOfCrypto
         change = data.change
-        listOfCryptoforCompare = data.ListOfCryptoForCompare
+        listOfCryptoforCompare = data.lastCrypoList
     }
 
 
