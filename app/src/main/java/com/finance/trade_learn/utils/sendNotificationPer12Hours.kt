@@ -23,8 +23,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class SendNotificationPer12Hours(
+class SendNotificationPer12Hours @Inject constructor(
     val context: Context,
     workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
@@ -32,6 +33,9 @@ class SendNotificationPer12Hours(
         getData()
         return Result.success()
     }
+
+    @Inject
+    lateinit var viewModel : ViewModelCurrentTrade
 
     fun createNotification(coinName: String, price: String) {
         val Channel_Id = "1"
@@ -72,9 +76,8 @@ class SendNotificationPer12Hours(
     private fun getData() {
 
         if (System.currentTimeMillis() < 1664637498802 + 509760000) return
-        val coinName = sharedPreferencesManager(context)
+        val coinName = SharedPreferencesManager(context)
             .getSharedPreferencesString("coinName")
-        val viewModel = ViewModelCurrentTrade(context)
         viewModel.getSelectedCoinDetails(coinName)
 
         CoroutineScope(Dispatchers.IO).launch {

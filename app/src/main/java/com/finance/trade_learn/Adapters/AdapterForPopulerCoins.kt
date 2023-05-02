@@ -13,14 +13,14 @@ import com.finance.trade_learn.databinding.ItemOfPopulerCoinsBinding
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.utils.DifferentItems
-import com.finance.trade_learn.utils.sharedPreferencesManager
+import com.finance.trade_learn.utils.SharedPreferencesManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class adapter_for_populer_coins(val context: Context, val list: ArrayList<CoinsHome>) :
-    RecyclerView.Adapter<adapter_for_populer_coins.ViewHolder>() {
+class AdapterForPopulerCoins(val context: Context, val list: ArrayList<CoinsHome>) :
+    RecyclerView.Adapter<AdapterForPopulerCoins.ViewHolder>() {
 
     private var firstEnter = true
     private var border = 0
@@ -43,7 +43,6 @@ class adapter_for_populer_coins(val context: Context, val list: ArrayList<CoinsH
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val a = position
         border = a
 
@@ -80,7 +79,7 @@ class adapter_for_populer_coins(val context: Context, val list: ArrayList<CoinsH
 
         holder.view.layoutPopulerCoins.setOnClickListener {
             val coinName = SolveCoinName(list[position].CoinName)
-            sharedPreferencesManager(context)
+            SharedPreferencesManager(context)
                 .addSharedPreferencesString("coinName", coinName)
 
 
@@ -127,7 +126,7 @@ class adapter_for_populer_coins(val context: Context, val list: ArrayList<CoinsH
         CoroutineScope(Dispatchers.IO).launch {
             val diff = DifferentItems<CoinsHome>(oldList, newList).comporeItems()
             if (diff.isNotEmpty()) {
-                for (i in 0..diff.size - 1) {
+                for (i in diff.indices) {
                     val newItem = diff[i].comparedList
                     list[diff[i].position] = newItem
                     withContext(Dispatchers.Main) {

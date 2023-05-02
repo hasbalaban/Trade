@@ -2,12 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-        <variable
-            name="clickLisener"
-            type="com.finance.trade_learn.clickListener.ListenerInterface" />
-    </data>
+    
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -102,7 +97,6 @@
                             android:paddingTop="10dp"
                             android:paddingBottom="12dp"
                             android:background="@drawable/buy_style"
-                            android:onClick="@{view-> clickLisener.clickListener(view)}"
                             android:textAlignment="center"
                             android:text="@string/textBuy"
                             android:textColor="@color/onClickBuyText"
@@ -120,7 +114,6 @@
                             android:paddingBottom="12dp"
                             android:textAlignment="center"
                             android:background="@drawable/sell_style"
-                            android:onClick="@{view-> clickLisener.clickListener(view)}"
                             android:text="@string/textSell"
                             android:textColor="@color/SellText"
                             android:textSize="25sp" />
@@ -165,7 +158,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="10dp"
-                                android:onClick="@{view-> clickLisener.clickListener(view)}"
                                 android:padding="15dp"
                                 android:src="@drawable/minus" />
 
@@ -189,7 +181,6 @@
                                 android:layout_alignParentEnd="true"
                                 android:layout_centerVertical="true"
                                 android:layout_marginEnd="5dp"
-                                android:onClick="@{view-> clickLisener.clickListener(view)}"
                                 android:longClickable="true"
                                 android:padding="15dp"
                                 android:src="@drawable/raise" />
@@ -204,7 +195,7 @@
                             android:layout_marginTop="10dp"
                             android:background="@drawable/style_trade"
                             android:focusable="false"
-                            android:hint="@string/totalUSDT"
+                            android:hint="@string/totalUSD"
                             android:inputType="number|numberDecimal"
                             android:textAlignment="center"
                             android:textColorHint="#474242" />
@@ -360,7 +351,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_alignParentEnd="true"
                                 android:padding="10dp"
-                                android:text="USDT"
+                                android:text="USD"
                                 android:textColor="@color/onClickBuyBack"
                                 android:textSize="17sp" />
 
@@ -373,7 +364,6 @@
                             android:layout_height="60dp"
                             android:layout_marginTop="10dp"
                             android:background="@color/onClickBuyBack"
-                            android:onClick="@{view-> clickLisener.clickListener(view)}"
                             android:text="@string/textBuy"
                             android:textAlignment="center"
                             android:textSize="20sp" />
@@ -391,26 +381,9 @@
                                 android:layout_alignParentEnd="true"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
-                                android:onClick="@{view-> clickLisener.clickListener(view)}"
                                 android:src="@drawable/history_of_trade" />
 
                         </RelativeLayout>
-
-
-                        <com.google.android.gms.ads.AdView
-                            xmlns:ads="http://schemas.android.com/apk/res-auto"
-                            android:id="@+id/adView"
-                            ads:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            ads:adSize="BANNER"
-                            ads:adUnitId="ca-app-pub-2861105825918511/5956574073">
-                        </com.google.android.gms.ads.AdView>
-
-
 
                     </LinearLayout>
 

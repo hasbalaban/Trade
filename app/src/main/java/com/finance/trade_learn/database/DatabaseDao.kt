@@ -8,7 +8,7 @@ import com.finance.trade_learn.database.dataBaseEntities.myCoins
 import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
 
 @Dao
-interface databaseDao {
+interface DatabaseDao {
 
     // ------ operations of sell and buy
     @Insert
@@ -18,17 +18,13 @@ interface databaseDao {
     @Query("select * from myCoins where CoinAmount>0.0")
     suspend fun getAllCoins(): List<myCoins>
 
-
-    @Query("select * from myCoins where CoinName=:coinName ")
-    suspend fun getOneCoin(coinName: String): myCoins
-
     // this fun will return that it  constraint
     @Query("select * from myCoins where CoinName LIKE '%' || :firstName || '%'")
-    suspend fun getConstraintCoin(firstName: String): List<myCoins>
+    suspend fun getFilteredItems(firstName: String): List<myCoins>
 
 
     @Query("select * from myCoins where CoinName=:coinName ")
-    suspend fun getOnCoinForTrade(coinName: String): myCoins?
+    suspend fun getSelectedCoinInfo(coinName: String): myCoins?
 
 
     @Update

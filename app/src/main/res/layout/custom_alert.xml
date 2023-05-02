@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="customAlertFields"
+            type="com.finance.trade_learn.models.CustomAlertFields" />
+        <variable
+            name="notYetButtonText"
+            type="String" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        style="@style/Card.12Rad.12Elev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_margin="@dimen/spacing_normal">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/spacing_large"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:src="@{customAlertFields.imageResId}"
+                tools:text="Get Promo Codes"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:textAlignment="center"
+                style="@style/Bold.Black.Title"
+                android:text="@{customAlertFields.title}"
+                android:visibility="@{customAlertFields.title == null ? View.GONE : View.VISIBLE, default=visible}"
+                tools:text="Did You Pick Up Your Car?" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:textAlignment="center"
+                style="@style/Bold.Black.Title"
+                android:text="@{customAlertFields.subtitle}"
+                android:visibility="@{customAlertFields.subtitle == null ? View.GONE : View.VISIBLE, default=visible}"
+                tools:text="Your experience is important to us!" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/positiveButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_24"
+                android:visibility="@{customAlertFields.positiveButtonText == null ? View.GONE : View.VISIBLE, default=visible}"
+                style="@style/CardStyle.Orange.4dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="@dimen/spacing_normal"
+                    android:paddingTop="@dimen/spacing_normal"
+                    android:includeFontPadding="false"
+                    android:textAlignment="center"
+                    android:text="@{customAlertFields.positiveButtonText}"
+                    style="@style/Medium.White.Title"
+                    tools:text="Yes, I did!" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/negativeButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:visibility="@{customAlertFields.negativeButtonText == null ? View.GONE : View.VISIBLE, default=gone}"
+                style="@style/CardStyle.White.4dp"
+                tools:visibility="visible">
+                <TextView
+                    android:id="@+id/negativeButtonText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="@dimen/spacing_normal"
+                    android:paddingTop="@dimen/spacing_normal"
+                    android:includeFontPadding="false"
+                    android:textAlignment="center"
+                    android:text="@{customAlertFields.negativeButtonText}"
+                    style="@style/Orange.Medium.Title"
+                    tools:text="No, I did not!" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/notYetButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:visibility="@{notYetButtonText == null ? View.GONE : View.VISIBLE, default=gone}"
+                style="@style/CardStyle.White.4dp"
+                tools:visibility="visible">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="@dimen/spacing_normal"
+                    android:paddingTop="@dimen/spacing_normal"
+                    android:includeFontPadding="false"
+                    android:textAlignment="center"
+                    android:text="@{notYetButtonText}"
+                    style="@style/Orange.Medium.Title"
+                    tools:text="Later" />
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

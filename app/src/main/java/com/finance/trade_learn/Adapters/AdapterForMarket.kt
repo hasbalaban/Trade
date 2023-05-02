@@ -7,15 +7,14 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
-import com.finance.trade_learn.clickListener.MarketClickListener
 import com.finance.trade_learn.R
 import com.finance.trade_learn.databinding.ItemCoinOfTodayBinding
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.utils.DifferentItems
-import com.finance.trade_learn.utils.setImageSvg
-import com.finance.trade_learn.utils.sharedPreferencesManager
+import com.finance.trade_learn.utils.SharedPreferencesManager
 import com.finance.trade_learn.view.firstSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -78,9 +77,9 @@ class AdapterForMarket(val context: Context, val list: ArrayList<CoinsHome>) :
 
         holder.view.LayoutCoin.setOnClickListener {
             val coinName = SolveCoinName(list[position].CoinName)
-            sharedPreferencesManager(context)
+            SharedPreferencesManager(context)
                 .addSharedPreferencesString("coinName", coinName)
-            MarketClickListener().clickListener(it)
+            Navigation.findNavController(holder.view.root).navigate(R.id.tradePage)
 
         }
         holder.view.coin = list[position]

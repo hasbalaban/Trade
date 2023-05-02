@@ -43,7 +43,6 @@ class ConverOperation(val t: List<BaseModelCrypto>,
 
             val coinImage=i.logo_url
             val coinName = i.name.uppercase(Locale.getDefault()) + " / USD"
-            val coinSymbol =  i.symbol.uppercase(Locale.getDefault()) + " / USD"
             val coinPrice = (i.price.toString()+"00000000").subSequence(0, 8).toString()
             var percenteChange: Percent?=null
             if (i.day1!!.price_change_pct==null){
@@ -57,14 +56,13 @@ class ConverOperation(val t: List<BaseModelCrypto>,
                 val coinPercenteChange = percenteChange!!.raise + (percenteChange.percentChange
                     .toString() + "0000").subSequence(0, 4).toString() + "%"
 
-                val item = CoinsHome(coinName, coinSymbol, coinPrice, coinPercenteChange, coinImage, change)
+                val item = CoinsHome(coinName, coinPrice, coinPercenteChange, coinImage, change)
 
                 val coinPercenteChangeCompare = percenteChange.percentChange
                 val coinPriceCompare = i.price.toString()
                 val itemCompare =
                     CoinsHome(
                         coinName,
-                        coinSymbol,
                         coinPriceCompare,
                         coinPercenteChangeCompare.toString(),
                         coinImage,
@@ -108,7 +106,7 @@ class ConverOperation(val t: List<BaseModelCrypto>,
 
 }
 
-class ConverOperation1(
+class converOperation1(
     val t: List<CoinDetail>,
     val ListOfCryptoforCompare: MutableLiveData<List<CoinsHome>>
 ){
@@ -142,45 +140,84 @@ class ConverOperation1(
 
             val coinImage=i.image
             val coinName = i.name.uppercase(Locale.getDefault()) + " / USD"
-            val coinSymbol = i.symbol.uppercase(Locale.getDefault()) + " / USD"
             val coinPrice = (i.current_price.toString()+"00000000").subSequence(0, 8).toString()
             var percenteChange: Percent?=null
-            percenteChange = if (i.price_change_24h==null){
-                Percent(0.0,"+","%")
-            } else {
-                percenteChange(i.price_change_percentage_24h.toString())
+            if (i.price_change_24h==null){
+                percenteChange = Percent(0.0,"+","%")
             }
+            else {
+                percenteChange = percenteChange1(i.price_change_percentage_24h.toString())
+            }
+            //set lenght of percent as char
 
-            val coinPercenteChange = percenteChange.raise + (percenteChange.percentChange
-                .toString() + "0000").subSequence(0, 4).toString() + "%"
+                val coinPercenteChange = percenteChange!!.raise + (percenteChange.percentChange
+                    .toString() + "0000").subSequence(0, 4).toString() + "%"
 
-            val item = CoinsHome(coinName, coinSymbol,  coinPrice, coinPercenteChange, coinImage, change)
-            val coinPercenteChangeCompare = percenteChange.percentChange
-            val coinPriceCompare = i.current_price.toString()
-            val itemCompare =
-                CoinsHome(
-                    coinName,
-                    coinSymbol,
-                    coinPriceCompare,
-                    coinPercenteChangeCompare.toString(),
-                    coinImage,
-                    enumPriceChange.notr
-                )
-            ListItemForCompare.add(itemCompare)
-            ListItem.add(item)
-            position++
+                val item = CoinsHome(coinName, coinPrice, coinPercenteChange, coinImage, change)
+
+                val coinPercenteChangeCompare = percenteChange.percentChange
+                val coinPriceCompare = i.current_price.toString()
+                val itemCompare =
+                    CoinsHome(
+                        coinName,
+                        coinPriceCompare,
+                        coinPercenteChangeCompare.toString(),
+                        coinImage,
+                        enumPriceChange.notr
+                    )
+
+                ListItemForCompare.add(itemCompare)
+                ListItem.add(item)
+                position++
         }
 
         ListOfCrypto.value = ListItem
         ListOfCryptoforCompare.value = ListItemForCompare
+
         return returnDataForHomePage(ListOfCryptoforCompare, ListOfCrypto, change)
+
+
     }
 
     fun percenteChange(coinPrice: String): Percent {
-        return when (coinPrice.subSequence(0, 1)) {
-            "-" -> Percent(coinPrice.subSequence(1, coinPrice.length).toString().toDouble(), "-")
-            else -> Percent(coinPrice.subSequence(0, coinPrice.length).toString().toDouble(), "+")
+        var pct: Percent? = null
+        when (coinPrice.subSequence(0, 1)) {
+
+            "-" -> pct =
+                Percent(
+                    coinPrice.subSequence(1, coinPrice.length).toString()
+                        .toDouble(), "-"
+                )
+            else -> pct =
+                Percent(
+                    coinPrice.subSequence(0, coinPrice.length).toString()
+                        .toDouble(), "+"
+                )
+
+
         }
+        return pct
+
+    }
+    fun percenteChange1(coinPrice: String): Percent {
+        var pct: Percent? = null
+        when (coinPrice.subSequence(0, 1)) {
+
+            "-" -> pct =
+                Percent(
+                    coinPrice.subSequence(1, coinPrice.length).toString()
+                        .toDouble(), "-"
+                )
+            else -> pct =
+                Percent(
+                    coinPrice.subSequence(0, coinPrice.length).toString()
+                        .toDouble(), "+"
+                )
+
+
+        }
+        return pct
+
     }
 
 
