@@ -73,7 +73,7 @@
     </fragment>
     <fragment
         android:id="@+id/history_of_trade"
-        android:name="com.finance.trade_learn.view.history_of_trade"
+        android:name="com.finance.trade_learn.view.TradeHistory"
         android:label="history_of_trade" >
         <action
             android:id="@+id/action_history_of_trade2_to_tradePage"

@@ -5,22 +5,21 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.finance.trade_learn.R
-import com.finance.trade_learn.clickListener.HomePageClickListener
 import com.finance.trade_learn.databinding.ItemCoinOfTodayBinding
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.utils.DifferentItems
-import com.finance.trade_learn.utils.setImageSvg
-import com.finance.trade_learn.utils.sharedPreferencesManager
+import com.finance.trade_learn.utils.SharedPreferencesManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class adapter_for_hot_coins(val context: Context, val list: ArrayList<CoinsHome>) :
-    RecyclerView.Adapter<adapter_for_hot_coins.viewHolder>() {
+class adapterForHotCoins(val context: Context, val list: ArrayList<CoinsHome>) :
+    RecyclerView.Adapter<adapterForHotCoins.viewHolder>() {
 
     private var firstEnter = true
     private var border = 0
@@ -76,9 +75,9 @@ class adapter_for_hot_coins(val context: Context, val list: ArrayList<CoinsHome>
         holder.view.LayoutCoin.setOnClickListener {
             val coinName = SolveCoinName(list[position].CoinName)
 
-            sharedPreferencesManager(context)
+            SharedPreferencesManager(context)
                 .addSharedPreferencesString("coinName", coinName)
-            HomePageClickListener().clickListener(it)
+            Navigation.findNavController(holder.view.root).navigate(R.id.tradePage)
         }
       //  holder.view.coinImage.setImageSvg(list[position].CoinImage)
     }

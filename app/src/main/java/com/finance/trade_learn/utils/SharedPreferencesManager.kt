@@ -1,9 +1,8 @@
 package com.finance.trade_learn.utils
 
 import android.content.Context
-import android.content.SharedPreferences
 
-class sharedPreferencesManager(private val context: Context) {
+class SharedPreferencesManager(context: Context) {
     private var packName = "com.finance.trade_learn"
     private val sharedPreferencesManager =
         context.getSharedPreferences(packName, Context.MODE_PRIVATE)
@@ -14,13 +13,6 @@ class sharedPreferencesManager(private val context: Context) {
 
     fun getSharedPreferencesString(keyName: String, defaultValue: String = "bitcoin") =
         sharedPreferencesManager.getString(keyName, defaultValue).toString()
-
-    fun addSharedPreferencesInt(keyName: String, value: Int) {
-        sharedPreferencesManager.edit().putInt(keyName, value).apply()
-    }
-
-    fun getSharedPreferencesInt(keyName: String, i: Int) =
-        sharedPreferencesManager.getInt(keyName, 0)
 
     fun addSharedPreferencesLong(keyName: String, value: Long) {
         sharedPreferencesManager.edit().putLong(keyName, value).apply()
@@ -35,7 +27,5 @@ class sharedPreferencesManager(private val context: Context) {
 
     fun getSharedPreferencesBoolen(keyName: String) =
         sharedPreferencesManager.getBoolean(keyName, true)
-
-
 
 }

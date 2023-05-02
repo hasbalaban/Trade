@@ -1,14 +1,12 @@
 package com.finance.trade_learn.viewModel
 
-import com.finance.trade_learn.models.BaseModelCrypto
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.models.returnDataForHomePage
-import com.finance.trade_learn.utils.ConverOperation
-import com.finance.trade_learn.utils.converOperation1
+import com.finance.trade_learn.utils.ConverOperation1
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
@@ -18,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 
-class ViewModeHomePage : ViewModel() {
+class ViewModeHomePage : BaseViewModel() {
     private var disposable: CompositeDisposable = CompositeDisposable()
     var isLoading = MutableLiveData<Boolean>()
     var listOfCrypto = MutableLiveData<ArrayList<CoinsHome>>()
@@ -34,12 +32,10 @@ class ViewModeHomePage : ViewModel() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
                         override fun onSuccess(t: List<CoinDetail>) {
+                            isLoading.value = false
                             try {
-                                isLoading.value = false
-                                val filteredList = t.filter {
-                                    it.name.length <= 18
-                                }
-                                val data = convert(filteredList)
+                                val filteredList = t.filter { it.name.length <= 18 }
+                                val data = convertCryptoList(filteredList)
                                 listOfCrypto = data.ListOfCrypto
                                 lastCrypoList = data.lastCrypoList
                                 listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto.value)
@@ -57,27 +53,23 @@ class ViewModeHomePage : ViewModel() {
 
     }
 
-    fun convert1(t: List<BaseModelCrypto>): returnDataForHomePage {
-        return ConverOperation(t, lastCrypoList).convertDataToUse()
-    }
-
-    fun convert(t: List<CoinDetail>): returnDataForHomePage {
-        return converOperation1(t, lastCrypoList).convertDataToUse()
+    fun convertCryptoList(t: List<CoinDetail>): returnDataForHomePage {
+        return ConverOperation1(t, lastCrypoList).convertDataToUse()
     }
 
     private fun convertPopularCoinList(list: ArrayList<CoinsHome>?): ArrayList<CoinsHome>? {
         val popList = arrayListOf<CoinsHome>()
         val populerlist = mutableListOf("bit", "bnb", "eth", "sol", "gate", "avax")
-        return if (list != null) {
+        return list?.let{
             for (i in list) {
                 if (populerlist.contains(i.CoinName.subSequence(0, 3).toString().lowercase())) {
                     popList.add(i)
                     populerlist.remove(i.CoinName.subSequence(0, 3))
                 if (popList.size == 3) return popList
-                } }
+                }
+            }
             popList
-        } else null
-
+        }
     }
 
     override fun onCleared() {

@@ -32,7 +32,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:text="@{coin.coinName}"
+                android:text="@{coin.coinSymbol}"
                 tools:text="Etherium"
                 android:textColor="@color/black"
                 android:textSize="16sp" />

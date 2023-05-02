@@ -13,7 +13,7 @@ import com.finance.trade_learn.databinding.ItemOfPopulerCoinsBinding
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.utils.DifferentItems
-import com.finance.trade_learn.utils.sharedPreferencesManager
+import com.finance.trade_learn.utils.SharedPreferencesManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -79,7 +79,7 @@ class AdapterForPopulerCoins(val context: Context, val list: ArrayList<CoinsHome
 
         holder.view.layoutPopulerCoins.setOnClickListener {
             val coinName = SolveCoinName(list[position].CoinName)
-            sharedPreferencesManager(context)
+            SharedPreferencesManager(context)
                 .addSharedPreferencesString("coinName", coinName)
 
 

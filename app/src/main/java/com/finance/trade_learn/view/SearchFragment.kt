@@ -3,40 +3,26 @@ package com.finance.trade_learn.view
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.finance.trade_learn.Adapters.AdapterForSearchCoin
 import com.finance.trade_learn.data.Cache_Data
 import com.finance.trade_learn.R
+import com.finance.trade_learn.base.BaseFragmentViewModel
 import com.finance.trade_learn.databinding.SearchFragmentBinding
 import com.finance.trade_learn.models.SearchCoinItem
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
 import kotlinx.coroutines.*
 import java.util.*
 
-class SearchFragment : Fragment(), TextWatcher {
+class SearchFragment :  BaseFragmentViewModel<SearchFragmentBinding, SearchCoinViewModel>(SearchFragmentBinding::inflate), TextWatcher {
 
 
     var job = arrayListOf<Job>()
     var fromCoinGecko = true
     private lateinit var adapter: AdapterForSearchCoin
-    private lateinit var binding: SearchFragmentBinding
-    private val viewModel: SearchCoinViewModel by viewModels()
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.search_fragment,container,false)
-        return binding.root
-    }
+    override val viewModel: SearchCoinViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requireActivity().setTheme(R.style.thema_search)

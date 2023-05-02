@@ -12,8 +12,7 @@ import coil.transform.RoundedCornersTransformation
 import com.finance.trade_learn.R
 import com.finance.trade_learn.databinding.ItemForMyWalletCoinsBinding
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
-import com.finance.trade_learn.utils.setImageSvg
-import com.finance.trade_learn.utils.sharedPreferencesManager
+import com.finance.trade_learn.utils.SharedPreferencesManager
 
 class adapter_for_my_wallet(var myCoinList: ArrayList<NewModelForItemHistory>) :
     RecyclerView.Adapter<adapter_for_my_wallet.viewHolder>() {
@@ -44,7 +43,7 @@ class adapter_for_my_wallet(var myCoinList: ArrayList<NewModelForItemHistory>) :
         holder.view.RelayoutWallet.setOnClickListener {
             val coinName = SolveCoinName(myCoinList[position].CoinName)
 
-            sharedPreferencesManager(holder.view.root.context)
+            SharedPreferencesManager(holder.view.root.context)
                 .addSharedPreferencesString("coinName", coinName)
             Navigation.findNavController(it).navigate(R.id.tradePage)
         }

@@ -9,23 +9,16 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import com.finance.trade_learn.R
-import com.finance.trade_learn.ads_manager.AdsConst
-import com.finance.trade_learn.clickListener.ListenerInterface
+import com.finance.trade_learn.base.BaseFragmentViewModel
 import com.finance.trade_learn.databinding.FragmentCurrentTradeBinding
 import com.finance.trade_learn.enums.TradeType
 import com.finance.trade_learn.models.CustomAlertFields
@@ -39,36 +32,30 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.lang.Runnable
 import java.math.BigDecimal
+import java.util.*
+import javax.inject.Inject
 
 
-class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
+@AndroidEntryPoint
+class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrentTradeBinding, ViewModelCurrentTrade>(FragmentCurrentTradeBinding::inflate), TextWatcher, ReviewUsI {
 
     private lateinit var toast: Toast
     private var currentPrice = 0.0
     private var runnable = Runnable { }
     private var handler = Handler(Looper.getMainLooper())
-    private lateinit var binding: FragmentCurrentTradeBinding
     private var tradeState = TradeType.Buy
     private var avaibleAmount : BigDecimal = BigDecimal.valueOf(0.0)
 
-    private val viewModel by viewModels<ViewModelCurrentTrade>{
-        CurrentTradeViewModelFactory(requireContext())
-    }
-    private var coinName = "bitcoin"
-    private var timeLoop = 2000L
+    override val viewModel: ViewModelCurrentTrade by viewModels()
+
+    private var selectedItemName = "bitcoin"
+    private var timeLoop = 10000L
     private var job : Job? = null
     private var adInterstitial: InterstitialAd? = null
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_current_trade, container, false)
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setup()
@@ -84,19 +71,103 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         setObservers()
         getDetailsOfCoinFromDatabase()
         startAnimation()
-        //setAd()
         setInterstitialAd()
-        longClickLister()
-        percentClickHandler()
+        setClickListeners()
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun longClickLister(){
+    private fun setClickListeners(){
+        binding.Buy.setOnClickListener {
+            getDetailsOfCoinFromDatabase()
+            tradeState = TradeType.Buy
+            buyClicked()
+        }
+        binding.Sell.setOnClickListener {
+            getDetailsOfCoinFromDatabase(selectedItemName)
+            tradeState = TradeType.Sell
+            sellClicked()
+        }
+        // add one more coin
+        binding.minus.setOnClickListener {
+            // if amount not equals zero (0)
+            if (binding.coinAmount.text.toString() != "" && binding.coinAmount.text.toString().toDouble() != 0.0) {
+                val currentAmount = binding.coinAmount.text.toString().toDouble()
+                if (currentPrice < 50.0)
+                {
+                    changeAmounts(currentAmount, 1.000,CoinProgress.MINUS)
+                    return@setOnClickListener
+                }
+                changeAmounts(currentAmount,  0.001,CoinProgress.MINUS)
+                return@setOnClickListener
+            }
+            toastMessages(R.string.trueValue)
+        }
+        //when we click raise button
+        binding.raise.setOnClickListener {
+            if (binding.coinAmount.text.toString().isNotEmpty()) {
+                val currentAmount = binding.coinAmount.text.toString().toDouble()
+                if (currentPrice < 50.0){
+                    changeAmounts(currentAmount, 1.000,CoinProgress.SUM)
+                    return@setOnClickListener
+                }
+                changeAmounts(currentAmount,  0.001,CoinProgress.SUM)
+                return@setOnClickListener
+            }
+            val currentAmount = 0.000
+            changeAmounts(currentAmount,  1.000,CoinProgress.SUM)
+        }
+
+        //when we click do trade button
+        binding.doTrade.setOnClickListener {
+            val amount = binding.coinAmount.text.toString()
+            if (amount != "" || amount != "0.0") {
+                //check views and other is empty or not etc.
+                val logicalCompare = compare()
+                if (logicalCompare) {
+                    operationTrade()
+                    return@setOnClickListener
+                }
+                toastMessages(R.string.proggresState)
+                return@setOnClickListener
+            }
+            toastMessages(R.string.enterAmountDialog)
+        }
+        // navigate last  trade fragment
+        binding.historyOfTrade.setOnClickListener {
+            val action =CurrentTradeDirections.actionTradePageToHistoryOfTrade2()
+            Navigation.findNavController(binding.root).navigate(action)
+        }
+        binding.apply {
+            percent25Layout.setOnClickListener {
+                clickedPercentLayout(SelectedPercent.Percent25,viewModel.tradeType.value)
+            }
+            percent50Layout.setOnClickListener {
+                clickedPercentLayout(SelectedPercent.Percent50, viewModel.tradeType.value)
+            }
+            percent75Layout.setOnClickListener {
+                clickedPercentLayout(SelectedPercent.Percent75, viewModel.tradeType.value)
+            }
+            percent100Layout.setOnClickListener {
+                clickedPercentLayout(SelectedPercent.Percent100, viewModel.tradeType.value)
+            }
+        }
+
         binding.minus.setOnTouchListener { _, _ ->
             CoroutineScope(Dispatchers.IO).launch {
                 if (viewModel.canChangeAmount.value == true) {
                     withContext(Dispatchers.Main){
-                        clickListenerInitialize.clickListener(binding.minus)
+                        // if amount not equals zero (0)
+                        if (binding.coinAmount.text.toString() != "" && binding.coinAmount.text.toString().toDouble() != 0.0) {
+                            val currentAmount = binding.coinAmount.text.toString().toDouble()
+                            if (currentPrice < 50.0)
+                            {
+                                changeAmounts(currentAmount, 1.000,CoinProgress.MINUS)
+                                return@withContext
+                            }
+                            changeAmounts(currentAmount,  0.001,CoinProgress.MINUS)
+                            return@withContext
+                        }
+                        toastMessages(R.string.trueValue)
                         viewModel.canChangeAmount.value = false
                         delay(200)
                         viewModel.canChangeAmount.value = true
@@ -110,7 +181,17 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
             CoroutineScope(Dispatchers.IO).launch {
                 if (viewModel.canChangeAmount.value == true) {
                     withContext(Dispatchers.Main){
-                        clickListenerInitialize.clickListener(binding.raise)
+                        if (binding.coinAmount.text.toString().isNotEmpty()) {
+                            val currentAmount = binding.coinAmount.text.toString().toDouble()
+                            if (currentPrice < 50.0){
+                                changeAmounts(currentAmount, 1.000,CoinProgress.SUM)
+                                return@withContext
+                            }
+                            changeAmounts(currentAmount,  0.001,CoinProgress.SUM)
+                            return@withContext
+                        }
+                        val currentAmount = 0.000
+                        changeAmounts(currentAmount,  1.000,CoinProgress.SUM)
                         viewModel.canChangeAmount.value = false
                         delay(200)
                         viewModel.canChangeAmount.value = true
@@ -124,32 +205,15 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     @SuppressLint("SetTextI18n")
     private fun setDataBindingSettings(){
         binding.apply {
-            coinName.text = "${this@CurrentTrade::coinName.get()} / USD"
-            clickLisener = clickListenerInitialize
+            coinName.text = "${this@CurrentTrade::selectedItemName.get()} / USD"
             coinAmount.addTextChangedListener(this@CurrentTrade)
             coinPrice.addTextChangedListener(this@CurrentTrade)
         }
     }
 
-    private fun setAd() {
-
-        val currentMillis = System.currentTimeMillis()
-        val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("currentTrade",currentMillis)
-        val delayTime = if (currentMillis >= updateTime) 0L else updateTime-currentMillis
-        job = CoroutineScope(Dispatchers.IO).launch {
-            delay(delayTime+1000*60*5)
-            withContext(Dispatchers.Main) {
-                binding.adView.apply {
-                    loadAd(AdRequest.Builder().build())
-                    adListener = Ads.listenerAdRequest(binding.adView,"currentTrade",requireContext())
-                }
-            }
-        }
-    }
-
     //first start this to get name of we had clicked
     private fun setInitialize() {
-        coinName = sharedPreferencesManager(requireContext()).getSharedPreferencesString("coinName")
+        selectedItemName = SharedPreferencesManager(requireContext()).getSharedPreferencesString("coinName")
         //    seekBarsProgress()
     }
 
@@ -170,12 +234,12 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     //we override here runable as Lambda instead Object
     private fun getCoinDetail() {
         runnable = Runnable { //call this function for update
-            viewModel.getSelectedCoinDetails(coinName)
+            viewModel.getSelectedCoinDetails(selectedItemName)
             handler.postDelayed(runnable, timeLoop)
         }
         handler.post(runnable)
     }
-    fun getDetailsOfCoinFromDatabase(coinName: String = "TETHER") {
+    private fun getDetailsOfCoinFromDatabase(coinName: String = "TETHER") {
         viewModel.getDetailsOfCoinFromDatabase(coinName)
     }
 
@@ -184,7 +248,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
             it?.let {
                 avaibleAmount = it
                 binding.avaibleAmount.text = it.toString()
-                binding.symbol.text = if (tradeState == TradeType.Buy) "USD" else coinName
+                binding.symbol.text = if (tradeState == TradeType.Buy) "USD" else selectedItemName
             }?: run {
                 binding.avaibleAmount.text = ""
                 binding.symbol.text = ""
@@ -194,13 +258,29 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
         viewModel.selectedCoinToTradeDetails.observe(viewLifecycleOwner) { coin ->
             coin?.let {
-                timeLoop = 7000L
+                timeLoop = 12000L
                 if (it.isNotEmpty()){
                     currentPrice = coin.firstOrNull()?.current_price ?: 0.0
                     putDataInItemSettings(coin[0])
                 }
 
             }
+        }
+
+
+        viewModel.isSuccess.observe(viewLifecycleOwner) {
+            if (it) {
+                getDetailsOfCoinFromDatabase(coinName = if (viewModel.tradeType.value == TradeType.Buy) "tether" else selectedItemName)
+                toastMessages(R.string.succes)
+                reviewUs()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ){
+                    //requestPostPermission()
+                }
+                adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
+                return@observe
+            }
+            toastMessages(R.string.fail)
+            adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
         }
 
     }
@@ -245,76 +325,6 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         }
     }
 
-
-    // listener override here and initialize
-    private val clickListenerInitialize = object : ListenerInterface {
-        override fun clickListener(view: View) {
-            when (view.id) {
-                binding.Buy.id -> {
-                    getDetailsOfCoinFromDatabase()
-                    tradeState = TradeType.Buy
-                    buyClicked()
-                }
-                binding.Sell.id -> {
-                    getDetailsOfCoinFromDatabase(coinName)
-                    tradeState = TradeType.Sell
-                    sellClicked()
-                }
-                // add one more coin
-                binding.minus.id -> {
-                    // if amount not equals zero (0)
-                    if (binding.coinAmount.text.toString() != "" && binding.coinAmount.text.toString().toDouble() != 0.0) {
-                        val currentAmount = binding.coinAmount.text.toString().toDouble()
-                        if (currentPrice < 50.0)
-                        {
-                            changeAmounts(currentAmount, 1.000,CoinProgress.MINUS)
-                            return
-                        }
-                        changeAmounts(currentAmount,  0.001,CoinProgress.MINUS)
-                        return
-                    }
-                    toastMessages(R.string.trueValue)
-                    return
-                }
-                //when we click raise button
-                binding.raise.id -> {
-                    if (binding.coinAmount.text.toString().isNotEmpty()) {
-                        val currentAmount = binding.coinAmount.text.toString().toDouble()
-                        if (currentPrice < 50.0){
-                            changeAmounts(currentAmount, 1.000,CoinProgress.SUM)
-                            return
-                        }
-                        changeAmounts(currentAmount,  0.001,CoinProgress.SUM)
-                        return
-                    }
-                    val currentAmount = 0.000
-                    changeAmounts(currentAmount,  1.000,CoinProgress.SUM)
-                }
-
-                //when we click do trade button
-                binding.doTrade.id -> {
-                    val amount = binding.coinAmount.text.toString()
-                    if (amount != "" || amount != "0.0") {
-                        //check views and other is empty or not etc.
-                        val logicalCompare = compare()
-                        if (logicalCompare) {
-                            operationTrade()
-                            return
-                        }
-                        toastMessages(R.string.proggresState)
-                        return
-                    }
-                    toastMessages(R.string.enterAmountDialog)
-                }
-                // navigate last  trade fragment
-                binding.historyOfTrade.id -> {
-                    val action =CurrentTradeDirections.actionTradePageToHistoryOfTrade2()
-                    Navigation.findNavController(binding.root).navigate(action)
-                }
-            }
-        }
-    }
-
     private fun percentCoinController(): Pair<Double,Double> {
         val availableAmount = avaibleAmount.toDouble()
         val buyAbilityAmount = (availableAmount/ currentPrice)
@@ -323,7 +333,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
 
 
     // this fun for check logical states. is emty or avaible is more than i want buy etc.
-    fun compare(): Boolean {
+    private fun compare(): Boolean {
         var operationState = false
         val avaibleAmount = avaibleAmount.toString()
         val total = binding.Total.text.toString()
@@ -343,7 +353,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     }
 
     // this fun for trade operation - buy , sell operation etc.
-    fun operationTrade() {
+    private fun operationTrade() {
         when (tradeState) {
             TradeType.Buy -> {
                 val amount = binding.coinAmount.text.toString()
@@ -354,21 +364,7 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                     val coinPrice = currentPrice
                     val total = coinAmount * coinPrice
 
-                    viewModel.buyCoin(coinName, coinAmount, total, currentPrice)
-                    viewModel.state.observe(viewLifecycleOwner) {
-                        if (it) {
-                            getDetailsOfCoinFromDatabase()
-                            toastMessages(R.string.succes)
-                            reviewUs()
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ){
-                                requestPostPermission()
-                            }
-                            adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
-                            return@observe
-                        }
-                        toastMessages(R.string.fail)
-                        adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
-                    }
+                    viewModel.buyCoin(selectedItemName.lowercase(Locale.getDefault()), coinAmount, total, currentPrice)
                 }
             }
 
@@ -380,29 +376,18 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                     val coinAmount = amount.toDouble()
                     val coinPrice = currentPrice
                     val total = coinAmount * coinPrice
-
-                    viewModel.sellCoin(coinName, coinAmount, total, currentPrice)
-                    viewModel.state.observe(viewLifecycleOwner) {
-                        if (it) {
-                            getDetailsOfCoinFromDatabase(coinName)
-                            toastMessages(R.string.succes)
-                            adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
-                            return@observe
-                        }
-                        toastMessages(R.string.fail)
-                        adInterstitial?.let { showInterstitialAd() } ?: run { setInterstitialAd() }
-                    }
+                    viewModel.sellCoin(selectedItemName.lowercase(Locale.getDefault()), coinAmount, total, currentPrice)
                 }
             }
         }
-        viewModel.state
+        viewModel.isSuccess
     }
 
     // this fun for when we click buy button set backGroung color, text color etc.
-    fun buyClicked() {
+    private fun buyClicked() {
         tradeState = TradeType.Buy
         viewModel.changeTradeType(TradeType.Buy)
-        getDetailsOfCoinFromDatabase("TETHER")
+        getDetailsOfCoinFromDatabase("tether")
         binding.apply {
             Buy.setTextColor(Color.parseColor("#ffffff"))
             Buy.setBackgroundColor(Color.parseColor("#2ebd85"))
@@ -414,9 +399,9 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
     }
 
     // this fun for when we click sell button set backGroung color, text color etc.
-    fun sellClicked() {
+    private fun sellClicked() {
         tradeState = TradeType.Sell
-        getDetailsOfCoinFromDatabase(coinName)
+        getDetailsOfCoinFromDatabase(selectedItemName)
         viewModel.changeTradeType(TradeType.Sell)
 
         binding.apply {
@@ -472,25 +457,6 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         view.animation = animationDetails
     }
 
-    private fun percentClickHandler (){
-
-        binding.apply {
-            percent25Layout.setOnClickListener {
-                clickedPercentLayout(SelectedPercent.Percent25,viewModel.tradeType.value)
-            }
-            percent50Layout.setOnClickListener {
-                clickedPercentLayout(SelectedPercent.Percent50, viewModel.tradeType.value)
-            }
-            percent75Layout.setOnClickListener {
-                clickedPercentLayout(SelectedPercent.Percent75, viewModel.tradeType.value)
-            }
-            percent100Layout.setOnClickListener {
-                clickedPercentLayout(SelectedPercent.Percent100, viewModel.tradeType.value)
-            }
-
-        }
-    }
-
     private fun clickedPercentLayout(percent: SelectedPercent, tradeType: TradeType?) {
         val percentOptions= arrayOf(binding.percent50Image,binding.percent50Image,binding.percent75Image,binding.percent100Image)
         viewModel.changeSelectedPercent(percent)
@@ -512,9 +478,10 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                     binding.Total.setText((percentCoinController().first *0.25).toString())
                     percentOptions.forEach {
                         percent25Image.setImageResource(R.drawable.buy)
-                        percent50Image.setImageResource(R.drawable.percent_not_selected)
-                        percent75Image.setImageResource(R.drawable.percent_not_selected)
-                        percent100Image.setImageResource(R.drawable.percent_not_selected)
+
+                        arrayOf(percent50Image, percent75Image, percent100Image).forEach {
+                            it.setImageResource(R.drawable.percent_not_selected)
+                        }
                     } }
 
                 if (percentCoinController().first <= 0.0) return
@@ -527,10 +494,12 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                 binding.apply {
                     binding.Total.setText((percentCoinController().first *0.5).toString())
                     percentOptions.forEach {
-                        percent25Image.setImageResource(R.drawable.buy)
-                        percent50Image.setImageResource(R.drawable.buy)
-                        percent75Image.setImageResource(R.drawable.percent_not_selected)
-                        percent100Image.setImageResource(R.drawable.percent_not_selected)
+                        arrayOf(percent25Image, percent50Image).forEach {
+                            it.setImageResource(R.drawable.buy)
+                        }
+                        arrayOf(percent75Image, percent100Image).forEach {
+                            it.setImageResource(R.drawable.percent_not_selected)
+                        }
                     }
                     if (percentCoinController().first <= 0.0) return
 
@@ -544,9 +513,9 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                 binding.apply {
                     binding.Total.setText((percentCoinController().first *0.75).toString())
                     percentOptions.forEach {
-                        percent25Image.setImageResource(R.drawable.buy)
-                        percent50Image.setImageResource(R.drawable.buy)
-                        percent75Image.setImageResource(R.drawable.buy)
+                        arrayOf(percent25Image, percent50Image, percent75Image).forEach {
+                            it.setImageResource(R.drawable.buy)
+                        }
                         percent100Image.setImageResource(R.drawable.percent_not_selected)
                     }
                     if (percentCoinController().first <= 0.0) return
@@ -561,10 +530,9 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                 binding.apply {
                     binding.Total.setText((percentCoinController().first *1).toString())
                     percentOptions.forEach {
-                        percent25Image.setImageResource(R.drawable.buy)
-                        percent50Image.setImageResource(R.drawable.buy)
-                        percent75Image.setImageResource(R.drawable.buy)
-                        percent100Image.setImageResource(R.drawable.buy)
+                        arrayOf(percent25Image, percent50Image, percent75Image, percent100Image).forEach {
+                            it.setImageResource(R.drawable.buy)
+                        }
                     }
                     if (percentCoinController().first <= 0.0) return
 
@@ -583,9 +551,9 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                 binding.apply {
                     percentOptions.forEach {
                         percent25Image.setImageResource(R.drawable.sell)
-                        percent50Image.setImageResource(R.drawable.percent_not_selected)
-                        percent75Image.setImageResource(R.drawable.percent_not_selected)
-                        percent100Image.setImageResource(R.drawable.percent_not_selected)
+                        arrayOf(percent50Image, percent75Image, percent100Image).forEach {
+                            it.setImageResource(R.drawable.percent_not_selected)
+                        }
                     }
                     if (percentCoinController().first <= 0.0) return
                     val totalText = if (currentPrice == 0.0)  "0" else (percentCoinController().first * currentPrice * 0.25 ).toString()
@@ -597,8 +565,9 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
                 binding.apply {
                     percent25Image.setImageResource(R.drawable.sell)
                     percent50Image.setImageResource(R.drawable.sell)
-                    percent75Image.setImageResource(R.drawable.percent_not_selected)
-                    percent100Image.setImageResource(R.drawable.percent_not_selected)
+                    arrayOf(percent75Image, percent100Image).forEach {
+                        it.setImageResource(R.drawable.percent_not_selected)
+                    }
 
                     if (percentCoinController().first <= 0.0) return
                     val totalText = if (currentPrice == 0.0)  "0" else (percentCoinController().first * currentPrice * 0.5 ).toString()
@@ -608,9 +577,9 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
             }
             SelectedPercent.Percent75 -> {
                 binding.apply {
-                    percent25Image.setImageResource(R.drawable.sell)
-                    percent50Image.setImageResource(R.drawable.sell)
-                    percent75Image.setImageResource(R.drawable.sell)
+                    arrayOf(percent50Image, percent75Image, percent100Image).forEach {
+                        it.setImageResource(R.drawable.sell)
+                    }
                     percent100Image.setImageResource(R.drawable.percent_not_selected)
 
                     if (percentCoinController().first <= 0.0) return
@@ -621,11 +590,9 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
             }
             SelectedPercent.Percent100 -> {
                 binding.apply {
-                    percent25Image.setImageResource(R.drawable.sell)
-                    percent50Image.setImageResource(R.drawable.sell)
-                    percent75Image.setImageResource(R.drawable.sell)
-                    percent100Image.setImageResource(R.drawable.sell)
-
+                    arrayOf(percent25Image, percent50Image, percent75Image, percent100Image).forEach {
+                        it.setImageResource(R.drawable.sell)
+                    }
                     if (percentCoinController().first <= 0.0) return
                     val totalText = if (currentPrice == 0.0)  "0" else (percentCoinController().first * currentPrice * 1 ).toString()
                     binding.Total.setText(totalText )
@@ -640,39 +607,18 @@ class CurrentTrade : Fragment(), TextWatcher, ReviewUsI,View.OnTouchListener {
         reviewUs.reviewUsStart(activity = requireActivity(), manager = reviewUsResult.first, reviewInfo = reviewUsResult.second)
     }
 
-    override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-        when(p0){
-            binding.raise -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    withContext(Dispatchers.Main){
-                        clickListenerInitialize.clickListener(binding.raise)
-                    }
-                }
-            }
-            binding.minus -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    withContext(Dispatchers.Main){
-                        clickListenerInitialize.clickListener(binding.minus)
-                    }
-                }
-            }
-        }
-        return false
-    }
-
     private fun showInterstitialAd() {
         adInterstitial?.apply {
             show(requireActivity())
             adInterstitial = null
-            sharedPreferencesManager(requireContext()).addSharedPreferencesLong("interstitialAdLoadedTime",System.currentTimeMillis()+(60*60*1000))
+            SharedPreferencesManager(requireContext()).addSharedPreferencesLong("interstitialAdLoadedTime",System.currentTimeMillis()+(60*60*1000))
         }
     }
 
     private fun setInterstitialAd() {
-        if (AdsConst.shouldShowAds.not()) return
-
+        if (Constants.SHOULD_SHOW_ADS.not()) return
         val currentMillis = System.currentTimeMillis()
-        val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
+        val updateTime = SharedPreferencesManager(requireContext()).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
         if (currentMillis < updateTime) return
 
         val adRequest = AdRequest.Builder().build()

@@ -11,7 +11,7 @@ import com.finance.trade_learn.databinding.ItemOfSearchBinding
 import com.finance.trade_learn.models.SearchCoinItem
 import com.finance.trade_learn.models.SearchedModel
 import com.finance.trade_learn.models.coin_gecko.CoinInfoList
-import com.finance.trade_learn.utils.sharedPreferencesManager
+import com.finance.trade_learn.utils.SharedPreferencesManager
 import com.finance.trade_learn.view.SearchFragmentDirections
 
 class AdapterForSearchCoin(
@@ -39,7 +39,7 @@ class AdapterForSearchCoin(
             is CoinInfoList -> {
                 holder.view.coin = SearchedModel(item.name, "")
                 holder.view.CoinText.setOnClickListener {
-                    sharedPreferencesManager(context)
+                    SharedPreferencesManager(context)
                         .addSharedPreferencesString("coinName", item.id)
 
                     val directions = SearchFragmentDirections.actionSearchActivityToTradePage()
@@ -50,7 +50,7 @@ class AdapterForSearchCoin(
             else -> {
                 holder.view.coin = SearchedModel(item.coinId, "")
                 holder.view.CoinText.setOnClickListener {
-                    sharedPreferencesManager(context)
+                    SharedPreferencesManager(context)
                         .addSharedPreferencesString("coinName", item.coinId)
 
                     val directions = SearchFragmentDirections.actionSearchActivityToTradePage()

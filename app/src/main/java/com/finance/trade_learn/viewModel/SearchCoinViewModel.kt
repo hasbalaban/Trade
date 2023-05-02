@@ -1,7 +1,7 @@
 package com.finance.trade_learn.viewModel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.models.coin_gecko.CoinInfoList
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SearchCoinViewModel: ViewModel() {
+class SearchCoinViewModel: BaseViewModel() {
     private var disposable: CompositeDisposable = CompositeDisposable()
     val coinListDetail = MutableLiveData<List<CoinInfoList>>()
 

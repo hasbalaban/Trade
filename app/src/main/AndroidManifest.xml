@@ -12,6 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_background"
         android:supportsRtl="true"
+        android:name=".depency_injection.HiltApplication"
         android:theme="@style/Theme.LearnTrade">
 
         <meta-data

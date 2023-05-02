@@ -14,7 +14,7 @@ data class CoinDetail(
     val total_volume: String,
     val high_24h: String,
     val low_24h: String,
-    val price_change_24h: String,
+    val price_change_24h: String?,
     val price_change_percentage_24h: Double,
     val market_cap_change_24h: String,
     val market_cap_change_percentage_24h: Double,

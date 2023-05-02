@@ -2,12 +2,11 @@ package com.finance.trade_learn.view
 
 
 import android.Manifest
-import android.app.Activity
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -17,9 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.finance.trade_learn.R
-import com.finance.trade_learn.ads_manager.AdsConst
 import com.finance.trade_learn.databinding.ActivityMainBinding
-import com.finance.trade_learn.models.CustomAlertFields
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.viewModel.ViewModelMarket
 import com.finance.trade_learn.viewModel.ViewModelUtils
@@ -27,12 +24,14 @@ import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.navigation.NavigationBarView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var controller: NavController
     private lateinit var dataBindingMain: ActivityMainBinding
@@ -55,13 +54,12 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU){
             requestPostPermission(delay = 4000)
         }
+        checkIsAdShowed()
         //firebaseSave()
-        if (AdsConst.shouldShowAds){
-            checkIsAdShowed()
-        }
      //   Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
     }
 
+    @SuppressLint("HardwareIds")
     private fun setTestPhone (){
         val androidId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
         if (androidId != "8d1e30b2ef5afa39") 1 else 2
@@ -95,7 +93,7 @@ class MainActivity : AppCompatActivity() {
             NotificationWorkManager(3,TimeUnit.DAYS,this)
 
             val deviceId = UUID.randomUUID()
-            sharedPreferencesManager(this).addSharedPreferencesString(
+            SharedPreferencesManager(this).addSharedPreferencesString(
                 "deviceId",
                 deviceId.toString()
             )
@@ -111,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
 
-        val deviceID = sharedPreferencesManager(this).getSharedPreferencesString("deviceId", "0")
+        val deviceID = SharedPreferencesManager(this).getSharedPreferencesString("deviceId", "0")
         val openAppDetails = hashMapOf(
             "open" to "1",
             "time" to currentDate,
@@ -141,7 +139,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                 interstitialAd.show(this@MainActivity)
-                sharedPreferencesManager(this@MainActivity).addSharedPreferencesLong("interstitialAdLoadedTime",System.currentTimeMillis()+(60*60*1000))
+                SharedPreferencesManager(this@MainActivity).addSharedPreferencesLong("interstitialAdLoadedTime",System.currentTimeMillis()+(60*60*1000))
             }
         })
 
@@ -153,10 +151,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIsAdShowed(){
-        lifecycleScope.launchWhenCreated {
+        if (Constants.SHOULD_SHOW_ADS.not()) return
+        lifecycleScope.launch {
             val currentMillis = System.currentTimeMillis()
-            val updateTime = sharedPreferencesManager(this@MainActivity).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
-            if (currentMillis < updateTime) return@launchWhenCreated
+            val updateTime = SharedPreferencesManager(this@MainActivity).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
+            if (currentMillis < updateTime) return@launch
 
             MobileAds.initialize(this@MainActivity) {}
             setInterstitialAd()

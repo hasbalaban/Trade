@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.finance.trade_learn.database.dataBaseEntities.myCoins
 import com.finance.trade_learn.database.dataBaseService
-import com.finance.trade_learn.utils.sharedPreferencesManager
+import com.finance.trade_learn.utils.SharedPreferencesManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,11 +13,11 @@ class ViewModelUtils() : ViewModel() {
 
 
     fun isOneEntering(context: Context): Boolean {
-        val sharedManager = sharedPreferencesManager(context)
-        val firstOpen = sharedManager.getSharedPreferencesBoolen("firstOpen")
-        return if (firstOpen ) {
+        val sharedManager = SharedPreferencesManager(context)
+        val shouldGiveGiftDollars = sharedManager.getSharedPreferencesBoolen("shouldGiveGiftDollars")
+        return if (shouldGiveGiftDollars ) {
             true.also {
-                sharedManager.addSharedPreferencesBoolen("firstOpen", false)
+                sharedManager.addSharedPreferencesBoolen("shouldGiveGiftDollars", false)
                 addOneTimeDollars(1000.0,context)
             }
         } else false
@@ -26,7 +26,7 @@ class ViewModelUtils() : ViewModel() {
     private fun addOneTimeDollars(dollars: Double, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val databaseDao = dataBaseService.invoke(context).databaseDao()
-            val myCoins = myCoins("TETHER", dollars)
+            val myCoins = myCoins("tether", dollars)
             databaseDao.addCoin(myCoins)
         }
     }

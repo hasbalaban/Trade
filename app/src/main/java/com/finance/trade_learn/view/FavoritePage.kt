@@ -1,25 +1,19 @@
 package com.finance.trade_learn.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.finance.trade_learn.R
+import com.finance.trade_learn.base.BaseFragmentViewModel
 import com.finance.trade_learn.databinding.FragmentFavoritePageBinding
+import com.finance.trade_learn.viewModel.SearchCoinViewModel
 
 
-class favoritePage : Fragment() {
+class FavoritePage(override val viewModel: SearchCoinViewModel) :  BaseFragmentViewModel<FragmentFavoritePageBinding, SearchCoinViewModel>(FragmentFavoritePageBinding::inflate) {
 
     lateinit var dataBindingFavorite: FragmentFavoritePageBinding
-
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
