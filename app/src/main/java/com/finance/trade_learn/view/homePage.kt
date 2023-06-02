@@ -6,13 +6,25 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.finance.trade_learn.Adapters.adapterForHotCoins
-import com.finance.trade_learn.Adapters.AdapterForPopulerCoins
+import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseFragmentViewModel
 import com.finance.trade_learn.databinding.FragmentHomeBinding
+import com.finance.trade_learn.utils.SharedPreferencesManager
 import com.finance.trade_learn.viewModel.ViewModeHomePage
 import kotlinx.coroutines.*
 import java.lang.Runnable
@@ -21,51 +33,58 @@ class Home : BaseFragmentViewModel<FragmentHomeBinding, ViewModeHomePage>(Fragme
 
     override val viewModel : ViewModeHomePage by viewModels()
 
-    private lateinit var adapterForHotList: adapterForHotCoins
-    private lateinit var adapterForPopulerList: AdapterForPopulerCoins
     private var runnable = Runnable { }
     private var handler = Handler(Looper.getMainLooper())
-    private var timeLoop = 2000L
+    private var timeLoop = 30000L
     private var job : Job? = null
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        adapterForHotList = adapterForHotCoins(requireContext(), arrayListOf())
-        binding.RecyclerViewCoinsOfToday.layoutManager = LinearLayoutManager(requireContext())
-        binding.RecyclerViewCoinsOfToday.adapter = adapterForHotList
-
-        adapterForPopulerList = AdapterForPopulerCoins(requireContext(), arrayListOf())
-        binding.RecyclerViewPopulerCoins.adapter = adapterForPopulerList
-
-
         clickToSearch()
         clickSendEmailButton()
+        setSubscribeObservers()
+
+        binding.mainView.setContent {
+            HomePageItems(){
+                Navigation.findNavController(binding.root).navigate(it)
+            }
+        }
+
+        binding.progressBar.setContent {
+            CircularProgressIndicator(
+                color = Color(resources.getColor(R.color.pozitive, null))
+            )
+        }
+
+        binding.view1.setContent {
+            Row(modifier = Modifier.background(color = colorResource(id = R.color.light_grey))) {
+
+            }
+        }
+
+        binding.dividerAd.setContent {
+            Row(modifier = Modifier.background(color = colorResource(id = R.color.light_grey))) {
+
+            }
+        }
+
         super.onViewCreated(view, savedInstanceState)
     }
 
 
     private fun setSubscribeObservers() {
-        viewModel.listOfCrypto.observe(viewLifecycleOwner) { list ->
-            adapterForHotList.updateData(list)
+
+        viewModel.isLoading.observe(viewLifecycleOwner){
+            binding.progressBar.isVisible = it
         }
+
         viewModel.listOfCryptoForPopular.observe(viewLifecycleOwner) {
-            adapterForPopulerList.updateData(it)
-        }
-    }
-
-    private fun getData() {
-        viewModel.listOfCrypto.observe(viewLifecycleOwner) { list ->
-            list?.let {
-                adapterForHotList.updateData(it)
-                timeLoop = 10000
-                binding.progressBar.visibility = View.INVISIBLE
-                setSubscribeObservers()
+            binding.PopulerCoins.setContent {
+                PopularItemsView(it){selectedItemName ->
+                    SharedPreferencesManager(requireContext()).addSharedPreferencesString("coinName", selectedItemName)
+                    Navigation.findNavController(binding.root).navigate(R.id.tradePage)
+                }
             }
-        }
-
-        viewModel.listOfCryptoForPopular.value?.let { list ->
-            adapterForPopulerList.updateData(list)
         }
     }
 
@@ -73,7 +92,6 @@ class Home : BaseFragmentViewModel<FragmentHomeBinding, ViewModeHomePage>(Fragme
         runnable = Runnable {
             runBlocking {
                 viewModel.getAllCryptoFromApi()
-                getData()
             }
             handler.postDelayed(runnable, timeLoop)
         }
@@ -88,7 +106,6 @@ class Home : BaseFragmentViewModel<FragmentHomeBinding, ViewModeHomePage>(Fragme
 
     override fun onResume() {
         update()
-        if (viewModel.isLoading.value == false) getData()
         super.onResume()
     }
 

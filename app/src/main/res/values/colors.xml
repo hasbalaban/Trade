@@ -20,5 +20,6 @@
 
     <color name="pozitive">#2ebd85</color>
     <color name="negative">#F6465D</color>
+    <color name="light_grey">#E4DCDC</color>
 
 </resources>

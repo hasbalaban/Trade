@@ -31,21 +31,17 @@ class ViewModelMyWallet @Inject constructor(
     var totalValue = MutableLiveData<BigDecimal>()
 
     // this function fot get coins that i have
-    fun getMyCoinsDetails(constrait: String? = null) {
+    fun getMyCoinsDetails(constraint: String? = null) {
 
         CoroutineScope(Dispatchers.Main).launch {
-            if (constrait == null) {
+            if (constraint == null) {
                 myCoinsDatabaseModel.value = coinDetailRepositoryImp.getAllItems()
                 checkDatabaseData(myCoinsDatabaseModel)
-            } else {
-                myCoinsDatabaseModel.value = coinDetailRepositoryImp.getFilteredItems(constrait)
-                checkDatabaseData(myCoinsDatabaseModel)
+                return@launch
             }
-
-
+            myCoinsDatabaseModel.value = coinDetailRepositoryImp.getFilteredItems(constraint)
+            checkDatabaseData(myCoinsDatabaseModel)
         }
-
-
     }
 
     private fun checkDatabaseData(myCoinsDatabaseModel: MutableLiveData<List<myCoins>>) {

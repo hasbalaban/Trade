@@ -1,5 +1,6 @@
 package com.finance.trade_learn.utils
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -7,13 +8,16 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import com.finance.trade_learn.R
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.models.on_crypto_trade.BaseModelOneCryptoModel
+import com.finance.trade_learn.repository.CoinDetailRepositoryImp
 import com.finance.trade_learn.view.MainActivity
 import com.finance.trade_learn.viewModel.ViewModelCurrentTrade
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,22 +39,23 @@ class SendNotificationPer12Hours @Inject constructor(
     }
 
     @Inject
-    lateinit var viewModel : ViewModelCurrentTrade
+    lateinit var coinDetailRepositoryImp : CoinDetailRepositoryImp
+    val viewModel : ViewModelCurrentTrade = ViewModelCurrentTrade(coinDetailRepositoryImp)
 
     fun createNotification(coinName: String, price: String) {
-        val Channel_Id = "1"
-        val Channel_Name = "Coin Price Notifications"
+        val channelId = "1"
+        val channelName = "Coin Price Notifications"
 
         Log.i("version", Build.VERSION.SDK_INT.toString())
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Log.i("version is equals or bigger", Build.VERSION.SDK_INT.toString())
 
             val priority = NotificationManager.IMPORTANCE_HIGH
-            val NotifManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            val channel = NotificationChannel(Channel_Id, Channel_Name, priority)
+            val notifyManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            val channel = NotificationChannel(channelId, channelName, priority)
 
-            NotifManager.createNotificationChannel(channel)
-            val notificationSettings = Notification.Builder(context, Channel_Id)
+            notifyManager.createNotificationChannel(channel)
+            val notificationSettings = Notification.Builder(context, channelId)
 
             val intent = Intent(context,MainActivity::class.java)
             val pendingIntent= PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_MUTABLE)
@@ -64,24 +69,19 @@ class SendNotificationPer12Hours @Inject constructor(
                 .setAutoCancel(true)
 
             val notification = NotificationManagerCompat.from(context)
-            notification.notify(1, notificationSettings.build())
-        } else {
-
-            Log.i("version is lower", Build.VERSION.SDK_INT.toString())
-
-
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                notification.notify(1, notificationSettings.build())
+            }
+            return
         }
+        Log.i("version is lower", Build.VERSION.SDK_INT.toString())
     }
 
     private fun getData() {
-
-        if (System.currentTimeMillis() < 1664637498802 + 509760000) return
-        val coinName = SharedPreferencesManager(context)
-            .getSharedPreferencesString("coinName")
+        val coinName = SharedPreferencesManager(context).getSharedPreferencesString("coinName")
         viewModel.getSelectedCoinDetails(coinName)
 
         CoroutineScope(Dispatchers.IO).launch {
-
             cryptoService().selectedCoinToTrade(coinName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -89,15 +89,10 @@ class SendNotificationPer12Hours @Inject constructor(
                     DisposableSingleObserver<List<BaseModelOneCryptoModel>>() {
 
                     override fun onSuccess(t: List<BaseModelOneCryptoModel>) {
-
                         createNotification(t[0].symbol, t[0].price)
-
                     }
 
-                    override fun onError(e: Throwable) {
-                    }
-
-
+                    override fun onError(e: Throwable) {}
                 })
         }
     }

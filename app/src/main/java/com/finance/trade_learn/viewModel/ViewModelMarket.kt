@@ -43,7 +43,7 @@ class ViewModelMarket @Inject constructor() : BaseViewModel() {
                         override fun onSuccess(t: List<CoinDetail>) {
                             //convert data fun
                             try {
-                                convert1(t)
+                                convert(t)
                                 state.value = true
                                 isInitialized.value = true
                             } catch (e: Exception) {
@@ -62,26 +62,16 @@ class ViewModelMarket @Inject constructor() : BaseViewModel() {
 
     }
 
-    fun convert(t: List<BaseModelCrypto>) {
-        val data = ConverOperation(t, listOfCryptoforCompare).convertDataToUse()
-
-        listOfCrypto = data.ListOfCrypto
-        change = data.change
-        listOfCryptoforCompare = data.lastCrypoList
-
-    }
-
-
     override fun onCleared() {
         disposable.clear()
         super.onCleared()
     }
 
-    fun convert1(t: List<CoinDetail>) {
+    fun convert(t: List<CoinDetail>) {
         val data = ConverOperation1(t, listOfCryptoforCompare).convertDataToUse()
-        listOfCrypto = data.ListOfCrypto
+        listOfCrypto.value = data.ListOfCrypto
         change = data.change
-        listOfCryptoforCompare = data.lastCrypoList
+        listOfCryptoforCompare.value = data.lastCrypoList
     }
 
 

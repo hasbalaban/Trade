@@ -28,7 +28,7 @@
                 android:id="@+id/populerCoinName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{populerCoin.coinName}"
+                android:text="@{populerCoin.coinSymbol}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:textSize="13sp"
