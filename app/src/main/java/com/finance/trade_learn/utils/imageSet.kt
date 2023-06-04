@@ -2,12 +2,10 @@ package com.finance.trade_learn.utils
 
 import android.content.Context
 import android.widget.ImageView
-import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 
 import coil.load
 import coil.transform.CircleCropTransformation
-import com.finance.trade_learn.R
 
 
 fun ImageView.setImage( context: Context, URL:String){
@@ -16,7 +14,6 @@ fun ImageView.setImage( context: Context, URL:String){
 
 
 
-@BindingAdapter("imageUrl")
 fun ImageView.setImageSvg(URL:String){
         this.load(URL) {
                 crossfade(true)

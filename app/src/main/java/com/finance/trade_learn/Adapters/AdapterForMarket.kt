@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.finance.trade_learn.R
@@ -15,6 +14,7 @@ import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.utils.DifferentItems
 import com.finance.trade_learn.utils.SharedPreferencesManager
+import com.finance.trade_learn.utils.setImageSvg
 import com.finance.trade_learn.view.firstSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,9 +32,7 @@ class AdapterForMarket(val context: Context, val list: ArrayList<CoinsHome>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHolder {
         val inflater = LayoutInflater.from(context)
-        val view = DataBindingUtil.inflate<ItemCoinOfTodayBinding>(
-            inflater, R.layout.item_coin_of_today, parent, false
-        )
+        val view = ItemCoinOfTodayBinding.inflate(inflater, parent, false)
         return viewHolder(view)
     }
 
@@ -82,10 +80,14 @@ class AdapterForMarket(val context: Context, val list: ArrayList<CoinsHome>) :
             Navigation.findNavController(holder.view.root).navigate(R.id.tradePage)
 
         }
-        holder.view.coin = list[position]
+        holder.view.apply {
+            val currentItem = list[position]
+            coinName.text = currentItem.coinSymbol
+            coinImage.setImageSvg(currentItem.CoinImage)
+            coinPrice.text = currentItem.CoinPrice
+            coinPercent.text = currentItem.CoinChangePercente
+        }
         animationSet(position, holder.view.LayoutCoin)
-        //holder.view.coinImage.setImageSvg(list[position].CoinImage)
-
     }
 
     override fun getItemCount(): Int {
@@ -105,23 +107,6 @@ class AdapterForMarket(val context: Context, val list: ArrayList<CoinsHome>) :
     }
 
 
-    fun SolveCoinName(coinName: String): String {
-        var resolvedName = ""
-        for (i in coinName) {
-            if (i.toString() == " ") {
-                break
-            } else {
-
-                resolvedName += i
-            }
-
-        }
-        return resolvedName
-
-    }
-
-
-
 
  fun updateData(newList: ArrayList<CoinsHome>) {
 
@@ -132,8 +117,6 @@ class AdapterForMarket(val context: Context, val list: ArrayList<CoinsHome>) :
          firstEnter = !firstEnter
      } else {
          updateLastList(newList, list)
-         // list.clear()
-         // list.addAll(newList)
      }
 
 
@@ -163,4 +146,18 @@ class AdapterForMarket(val context: Context, val list: ArrayList<CoinsHome>) :
 
     }
 
+}
+
+fun SolveCoinName(coinName: String): String {
+    var resolvedName = ""
+    for (i in coinName) {
+        if (i.toString() == " ") {
+            break
+        } else {
+
+            resolvedName += i
+        }
+
+    }
+    return resolvedName
 }

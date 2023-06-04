@@ -3,15 +3,13 @@ package com.finance.trade_learn.Adapters
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.finance.trade_learn.R
 import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
 import com.finance.trade_learn.databinding.ItemOfHistoryBinding
 import com.finance.trade_learn.enums.TradeType
 
-class adapter_for_history_trade(val list_of_trade: ArrayList<SaveCoin>) :
-    RecyclerView.Adapter<adapter_for_history_trade.viewHolder>() {
+class AdapterForHistoryTrade(val list_of_trade: ArrayList<SaveCoin>) :
+    RecyclerView.Adapter<AdapterForHistoryTrade.viewHolder>() {
 
 
     inner class viewHolder(val view: ItemOfHistoryBinding) : RecyclerView.ViewHolder(view.root)
@@ -23,18 +21,21 @@ class adapter_for_history_trade(val list_of_trade: ArrayList<SaveCoin>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = DataBindingUtil.inflate<ItemOfHistoryBinding>(
-            inflater,
-            R.layout.item_of_history,
-            parent,
-            false
-        )
+        val view = ItemOfHistoryBinding.inflate(inflater, parent, false)
 
         return viewHolder(view)
     }
 
     override fun onBindViewHolder(holder: viewHolder, position: Int) {
-        holder.view.trade = list_of_trade[position]
+        holder.view.apply {
+            val currentItem = list_of_trade[position]
+            coinName.text = currentItem.coinName
+            coinAmount.text = currentItem.coinAmount
+            coinPrice.text = currentItem.coinPrice
+            total.text = currentItem.total
+            date.text = currentItem.date
+            operation.text = currentItem.tradeOperation
+        }
 
         if (list_of_trade[position].tradeOperation==TradeType.Sell.toString()){
             setColor(holder.view)

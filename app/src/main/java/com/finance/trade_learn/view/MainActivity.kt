@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -43,7 +42,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dataBindingMain = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        dataBindingMain = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(dataBindingMain.root)
         viewModelMarket = ViewModelProvider(this).get(ViewModelMarket::class.java)
         setup()
     }

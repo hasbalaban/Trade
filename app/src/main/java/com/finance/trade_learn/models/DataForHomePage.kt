@@ -1,12 +1,11 @@
 package com.finance.trade_learn.models
 
-import androidx.lifecycle.MutableLiveData
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 
-open class returnDataForHomePage (
-    val lastCrypoList: MutableLiveData<List<CoinsHome>>,
-    var ListOfCrypto : MutableLiveData<ArrayList<CoinsHome>>,
+class DataForHomePage (
+    val lastCrypoList: List<CoinsHome>,
+    var ListOfCrypto : ArrayList<CoinsHome>,
     var change :enumPriceChange
 
     )

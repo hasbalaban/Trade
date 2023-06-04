@@ -1,32 +1,30 @@
 package com.finance.trade_learn.viewModel
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
-import com.finance.trade_learn.models.returnDataForHomePage
+import com.finance.trade_learn.models.DataForHomePage
 import com.finance.trade_learn.utils.ConverOperation1
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 
 class ViewModeHomePage : BaseViewModel() {
     private var disposable: CompositeDisposable = CompositeDisposable()
-    var isLoading = MutableLiveData<Boolean>()
+    var isLoading = MutableLiveData<Boolean>(false)
     var listOfCrypto = MutableLiveData<ArrayList<CoinsHome>>()
     var listOfCryptoForPopular = MutableLiveData<ArrayList<CoinsHome>>()
     private var lastCrypoList = MutableLiveData<List<CoinsHome>>()
 
     fun getAllCryptoFromApi() {
         isLoading.value = true
-        CoroutineScope(Dispatchers.IO).launch {
-            disposable.add(
+        viewModelScope.launch {
                 cryptoService().getCoinGecko(null, 1)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -34,42 +32,42 @@ class ViewModeHomePage : BaseViewModel() {
                         override fun onSuccess(t: List<CoinDetail>) {
                             isLoading.value = false
                             try {
-                                val filteredList = t.filter { it.name.length <= 18 }
-                                val data = convertCryptoList(filteredList)
-                                listOfCrypto = data.ListOfCrypto
-                                lastCrypoList = data.lastCrypoList
-                                listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto.value)
-                            } catch (e: Exception) {
-                                println(e.localizedMessage)
+                                val data = convertCryptoList(t)
+                                if (data.ListOfCrypto.isNotEmpty()){
+                                    listOfCrypto.value = data.ListOfCrypto
+                                    lastCrypoList.value = data.lastCrypoList
+                                    listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
+                                }
 
+                            } catch (_: Exception) {
+                                isLoading.value = false
                             }
                         }
 
-                        override fun onError(e: Throwable) { isLoading.value = false }
+                        override fun onError(e: Throwable) {
+                            isLoading.value = false
+                        }
                     })
-            )
         }
-
-
     }
 
-    fun convertCryptoList(t: List<CoinDetail>): returnDataForHomePage {
+    fun convertCryptoList(t: List<CoinDetail>): DataForHomePage {
         return ConverOperation1(t, lastCrypoList).convertDataToUse()
     }
 
     private fun convertPopularCoinList(list: ArrayList<CoinsHome>?): ArrayList<CoinsHome>? {
         val popList = arrayListOf<CoinsHome>()
         val populerlist = mutableListOf("bit", "bnb", "eth", "sol", "gate", "avax")
-        return list?.let{
+        list?.let{
             for (i in list) {
+                if (popList.size == 3) return@let
                 if (populerlist.contains(i.CoinName.subSequence(0, 3).toString().lowercase())) {
                     popList.add(i)
                     populerlist.remove(i.CoinName.subSequence(0, 3))
-                if (popList.size == 3) return popList
                 }
             }
-            popList
         }
+        return popList
     }
 
     override fun onCleared() {

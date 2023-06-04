@@ -1,23 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-
-        <variable
-            name="data"
-            type="com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory" />
-
-    </data>
-
-    <RelativeLayout
-
-        android:id="@+id/Relayout_Wallet"
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
-
-
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/Relayout_Wallet"
+    android:layout_width="match_parent"
+    android:layout_height="60dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,11 +15,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:paddingStart="5dp"
             android:paddingTop="15dp"
-            app:imageUrl="@{data.image}"
-            android:paddingBottom="15dp"
             android:paddingEnd="5dp"
-            android:paddingStart="5dp"/>
+            android:paddingBottom="15dp" />
 
         <TextView
             android:id="@+id/coinName"
@@ -41,7 +26,6 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:paddingTop="20dp"
-            android:text="@{data.CoinName}"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
@@ -50,11 +34,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:paddingTop="20dp"
-            android:paddingEnd="10dp"
             android:maxLength="15"
             android:paddingStart="1dp"
-            android:text="@{data.CoinAmount}"
+            android:paddingTop="20dp"
+            android:paddingEnd="10dp"
             android:textColor="@color/black"
             android:textSize="15sp" />
 
@@ -63,21 +46,17 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:paddingTop="20dp"
             android:maxLength="10"
-            android:text="@{data.Total}"
+            android:paddingTop="20dp"
             android:textColor="@color/black"
             android:textSize="15sp" />
-
-
     </LinearLayout>
-        <View
-            android:layout_marginBottom="2dp"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#575555"/>
 
-    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="2dp"
+        android:background="#575555" />
 
-</layout>
+</RelativeLayout>

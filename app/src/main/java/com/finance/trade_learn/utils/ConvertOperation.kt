@@ -6,7 +6,7 @@ import com.finance.trade_learn.models.BaseModelCrypto
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.models.modelsConvector.Percent
-import com.finance.trade_learn.models.returnDataForHomePage
+import com.finance.trade_learn.models.DataForHomePage
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -16,7 +16,7 @@ class ConverOperation(val t: List<BaseModelCrypto>,
 
     var change = enumPriceChange.notr
     var ListOfCrypto = MutableLiveData<ArrayList<CoinsHome>>()
-    fun convertDataToUse(): returnDataForHomePage {
+    fun convertDataToUse(): DataForHomePage {
 
 
         val ListItem = arrayListOf<CoinsHome>()
@@ -79,7 +79,7 @@ class ConverOperation(val t: List<BaseModelCrypto>,
         ListOfCrypto.value = ListItem
         ListOfCryptoforCompare.value = ListItemForCompare
 
-        return returnDataForHomePage(ListOfCryptoforCompare, ListOfCrypto, change)
+        return DataForHomePage(ListOfCryptoforCompare.value ?: listOf(), ListOfCrypto.value ?: ArrayList(), change)
 
 
     }
@@ -115,7 +115,7 @@ class ConverOperation1(
 
     var change = enumPriceChange.notr
     var ListOfCrypto = MutableLiveData<ArrayList<CoinsHome>>()
-    fun convertDataToUse(): returnDataForHomePage {
+    fun convertDataToUse(): DataForHomePage {
 
 
         val ListItem = arrayListOf<CoinsHome>()
@@ -173,7 +173,7 @@ class ConverOperation1(
 
         ListOfCrypto.value = ListItem
         ListOfCryptoforCompare.value = ListItemForCompare
-        return returnDataForHomePage(ListOfCryptoforCompare, ListOfCrypto, change)
+        return DataForHomePage(ListOfCryptoforCompare.value ?: listOf(), ListOfCrypto.value ?: ArrayList(), change)
     }
 
     fun percenteChange(coinPrice: String): Percent {

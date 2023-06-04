@@ -7,12 +7,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.finance.trade_learn.viewModel.ViewModelMyWallet
 import com.finance.trade_learn.Adapters.adapter_for_my_wallet
-import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseFragmentViewModel
 import com.finance.trade_learn.databinding.FragmentWalletPageBinding
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
@@ -44,10 +42,7 @@ class WalletPage : BaseFragmentViewModel<FragmentWalletPageBinding, ViewModelMyW
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        dataBindingWallet = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_wallet_page,
-            container, false
-        )
+        dataBindingWallet = FragmentWalletPageBinding.inflate(inflater, container, false)
         return dataBindingWallet.root
     }
 
