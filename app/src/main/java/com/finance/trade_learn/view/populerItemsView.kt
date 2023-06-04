@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -16,55 +17,61 @@ import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.Adapters.SolveCoinName
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
+import com.finance.trade_learn.viewModel.ViewModeHomePage
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 @Composable
 fun PopularItemsView (
-    list: ArrayList<CoinsHome>,
+    viewModel : ViewModeHomePage = androidx.lifecycle.viewmodel.compose.viewModel(),
     clickedItem: (String) -> Unit
 ){
+    val list = viewModel.listOfCryptoForPopular.observeAsState().value
+    list?.let {
 
-    val first = list.getOrNull(0)
-    val second = list.getOrNull(1)
-    val third = list.getOrNull(2)
+        val first = list.getOrNull(0)
+        val second = list.getOrNull(1)
+        val third = list.getOrNull(2)
 
-    Row(modifier = Modifier.fillMaxWidth()){
-        first?.let {
-            Column (modifier = Modifier
-                .clickable {
-                    val coinName = SolveCoinName(it.CoinName)
-                    clickedItem.invoke(coinName.lowercase(Locale.getDefault()))
+        Row(modifier = Modifier.fillMaxWidth()){
+            first?.let {
+                Column (modifier = Modifier
+                    .clickable {
+                        val coinName = SolveCoinName(it.CoinName)
+                        clickedItem.invoke(coinName.lowercase(Locale.getDefault()))
+                    }
+                    .padding(start = 6.dp)
+                    .fillMaxWidth(0.33f)){
+                    PopularItems(first)
                 }
-                .padding(start = 6.dp)
-                .fillMaxWidth(0.33f)){
-                PopularItems(first)
+            }
+            second?.let {
+                Column (modifier = Modifier
+                    .clickable {
+                        val coinName = SolveCoinName(it.CoinName)
+                        clickedItem.invoke(coinName.lowercase(Locale.getDefault()))
+                    }
+                    .padding(start = 6.dp)
+                    .fillMaxWidth(0.5f)){
+                    PopularItems(second)
+                }
+            }
+            third?.let {
+                Column (modifier = Modifier
+                    .clickable {
+                        val coinName = SolveCoinName(it.CoinName)
+                        clickedItem.invoke(coinName.lowercase(Locale.getDefault()))
+                    }
+                    .padding(start = 6.dp)
+                    .fillMaxWidth(1f)){
+                    PopularItems(third)
+                }
             }
         }
-        second?.let {
-            Column (modifier = Modifier
-                .clickable {
-                    val coinName = SolveCoinName(it.CoinName)
-                    clickedItem.invoke(coinName.lowercase(Locale.getDefault()))
-                }
-                .padding(start = 6.dp)
-                .fillMaxWidth(0.5f)){
-                PopularItems(second)
-            }
-        }
-        third?.let {
-            Column (modifier = Modifier
-                .clickable {
-                    val coinName = SolveCoinName(it.CoinName)
-                    clickedItem.invoke(coinName.lowercase(Locale.getDefault()))
-                }
-                .padding(start = 6.dp)
-                .fillMaxWidth(1f)){
-                PopularItems(third)
-            }
-        }
+
     }
+
 
 }
 

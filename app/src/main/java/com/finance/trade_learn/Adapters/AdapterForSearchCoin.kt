@@ -3,7 +3,6 @@ package com.finance.trade_learn.Adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.finance.trade_learn.R
@@ -24,12 +23,7 @@ class AdapterForSearchCoin(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = DataBindingUtil.inflate<ItemOfSearchBinding>(
-            inflater,
-            R.layout.item_of_search,
-            parent,
-            false
-        )
+        val view = ItemOfSearchBinding.inflate(inflater, parent, false)
 
         return viewHolder(view)
     }
@@ -37,7 +31,7 @@ class AdapterForSearchCoin(
     override fun onBindViewHolder(holder: viewHolder, position: Int) {
         when (val item = list[position]) {
             is CoinInfoList -> {
-                holder.view.coin = SearchedModel(item.name, "")
+                holder.view.CoinText.text = SearchedModel(item.name, "").coinName
                 holder.view.CoinText.setOnClickListener {
                     SharedPreferencesManager(context)
                         .addSharedPreferencesString("coinName", item.id)
@@ -48,7 +42,7 @@ class AdapterForSearchCoin(
                 item.id
             }
             else -> {
-                holder.view.coin = SearchedModel(item.coinId, "")
+                holder.view.CoinText.text  = SearchedModel(item.coinId, "").coinName
                 holder.view.CoinText.setOnClickListener {
                     SharedPreferencesManager(context)
                         .addSharedPreferencesString("coinName", item.coinId)

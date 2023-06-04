@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseFragmentViewModel
 import com.finance.trade_learn.databinding.FragmentFavoritePageBinding
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
@@ -19,10 +17,7 @@ class FavoritePage(override val viewModel: SearchCoinViewModel) :  BaseFragmentV
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        dataBindingFavorite = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_favorite_page,
-            container, false
-        )
+        dataBindingFavorite = FragmentFavoritePageBinding.inflate(inflater, container, false)
         return  dataBindingFavorite.root
     }
 }

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseFragmentViewModel
 import com.finance.trade_learn.databinding.FragmentMarketPageBinding
@@ -21,8 +20,7 @@ class SettingPage(override val viewModel: ViewModelMarket) : BaseFragmentViewMod
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        dataBindingSetting= DataBindingUtil.inflate(inflater,R.layout.fragment_setting_page,
-            container,false)
+        dataBindingSetting= FragmentSettingPageBinding.inflate(inflater, container,false)
         return  dataBindingSetting.root
     }
 

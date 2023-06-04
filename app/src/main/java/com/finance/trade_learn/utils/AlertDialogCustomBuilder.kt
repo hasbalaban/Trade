@@ -4,14 +4,16 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import com.finance.trade_learn.databinding.CustomAlertBinding
 import com.finance.trade_learn.models.CustomAlertFields
 import com.finance.trade_learn.utils.DialogManager.configureWindow
+import kotlin.io.path.fileVisitor
 
 object AlertDialogCustomBuilder {
-        fun showAlertDialog(context: Context,layoutInflater: LayoutInflater,fields: CustomAlertFields,cancellable : Boolean = true, failProgress :() -> Unit = {}, successProgress :() -> Unit = {}): AlertDialog {
+        private fun showAlertDialog(context: Context, layoutInflater: LayoutInflater, fields: CustomAlertFields, cancellable : Boolean = true, failProgress :() -> Unit = {}, successProgress :() -> Unit = {}): AlertDialog {
             lateinit var alertDialog: AlertDialog
             CustomAlertBinding.inflate(layoutInflater).also { binding ->
                 alertDialog = AlertDialog.Builder(context)
@@ -21,7 +23,26 @@ object AlertDialogCustomBuilder {
                         window?.configureWindow(24f)
                     }
             }.apply {
-                customAlertFields = fields
+                fields.imageResId?.let {
+                    dialogImage.setImageResource(fields.imageResId)
+                }
+                fields.title?.let {
+                    title.visibility = View.VISIBLE
+                    title.text = it
+                }
+                fields.subtitle?.let {
+                    subTitle.visibility = View.VISIBLE
+                    subTitle.text = it
+                }
+                fields.positiveButtonText?.let {
+                    positiveButton.visibility = View.VISIBLE
+                    positiveButtonText.text = it
+                }
+                fields.negativeButtonText?.let {
+                    negativeButton.visibility = View.VISIBLE
+                    negativeButtonText.text = it
+                }
+
                 positiveButton.setOnClickListener {
                     successProgress.invoke()
                     alertDialog.dismiss()

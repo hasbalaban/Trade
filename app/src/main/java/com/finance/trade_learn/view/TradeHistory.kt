@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.finance.trade_learn.Adapters.adapter_for_history_trade
+import com.finance.trade_learn.Adapters.AdapterForHistoryTrade
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseFragmentViewModel
 import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
@@ -27,10 +26,7 @@ class TradeHistory : BaseFragmentViewModel<FragmentHistoryOfTradeBinding, ViewMo
         savedInstanceState: Bundle?
     ): View {
 
-        dataBindinghistoryOfTrade = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_history_of_trade,
-            container, false
-        )
+        dataBindinghistoryOfTrade = FragmentHistoryOfTradeBinding.inflate(inflater, container, false)
         return dataBindinghistoryOfTrade.root
     }
 
@@ -71,7 +67,7 @@ class TradeHistory : BaseFragmentViewModel<FragmentHistoryOfTradeBinding, ViewMo
     // this fun for recycler view set data
     private fun settingsOfRecyclerView(list_of_trade: ArrayList<SaveCoin>) {
         dataBindinghistoryOfTrade.recyclerViewHistory.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = adapter_for_history_trade(list_of_trade)
+        val adapter = AdapterForHistoryTrade(list_of_trade)
         dataBindinghistoryOfTrade.recyclerViewHistory.adapter = adapter
 
     }
