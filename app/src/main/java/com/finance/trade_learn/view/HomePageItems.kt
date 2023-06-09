@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -27,9 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import com.finance.trade_learn.Adapters.SolveCoinName
+import com.finance.trade_learn.Adapters.solveCoinName
 import com.finance.trade_learn.R
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
@@ -111,7 +109,7 @@ fun HomePageItem(coinsHome: CoinsHome, clickedItem: (String) -> Unit) {
             .fillMaxSize()
             .clickable {
 
-                val coinName = SolveCoinName(coinsHome.CoinName)
+                val coinName = solveCoinName(coinsHome.CoinName)
                 clickedItem.invoke(coinName.lowercase(Locale.getDefault()))
             }
 

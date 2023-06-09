@@ -41,7 +41,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
-import com.finance.trade_learn.Adapters.AdapterForMarket
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseFragmentViewModel
 import com.finance.trade_learn.databinding.FragmentMarketPageBinding
@@ -60,7 +59,6 @@ class MarketPage() : BaseFragmentViewModel<FragmentMarketPageBinding, ViewModelM
     private var runnable = Runnable { }
     private var handler = Handler(Looper.getMainLooper())
     private var timeLoop = 20000L
-    private lateinit var adapter: AdapterForMarket
     override val viewModel : ViewModelMarket by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

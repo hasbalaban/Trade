@@ -36,7 +36,7 @@ class adapter_for_my_wallet(var myCoinList: ArrayList<NewModelForItemHistory>) :
         )
         holder.view.RelayoutWallet.animation = animation
         holder.view.RelayoutWallet.setOnClickListener {
-            val coinName = SolveCoinName(myCoinList[position].CoinName)
+            val coinName = solveCoinName(myCoinList[position].CoinName)
             SharedPreferencesManager(holder.view.root.context).addSharedPreferencesString("coinName", coinName)
             Navigation.findNavController(it).navigate(R.id.tradePage)
         }
