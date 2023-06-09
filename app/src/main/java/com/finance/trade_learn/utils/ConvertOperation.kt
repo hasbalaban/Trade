@@ -2,7 +2,6 @@ package com.finance.trade_learn.utils
 
 import androidx.lifecycle.MutableLiveData
 import com.finance.trade_learn.enums.enumPriceChange
-import com.finance.trade_learn.models.BaseModelCrypto
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.models.modelsConvector.Percent
@@ -10,105 +9,9 @@ import com.finance.trade_learn.models.DataForHomePage
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ConverOperation(val t: List<BaseModelCrypto>,
-                      val ListOfCryptoforCompare: MutableLiveData<List<CoinsHome>>
-){
-
-    var change = enumPriceChange.notr
-    var ListOfCrypto = MutableLiveData<ArrayList<CoinsHome>>()
-    fun convertDataToUse(): DataForHomePage {
 
 
-        val ListItem = arrayListOf<CoinsHome>()
-        val ListItemForCompare = arrayListOf<CoinsHome>()
-        var position = 0
-
-        for (i in t) {
-            val last = ListOfCryptoforCompare.value?.get(position)?.CoinPrice?.toDouble()
-            val new = i.price.toDouble()
-
-            //control for state of change
-            if (last != null) {
-                if (last > new) {
-                    change = enumPriceChange.negative
-
-
-                } else if (new > last) {
-                    change = enumPriceChange.pozitive
-
-                } else if (new.toString() == last.toString()) {
-                    change = enumPriceChange.notr
-                }
-            }
-
-            val coinImage=i.logo_url
-            val coinName = i.name.uppercase(Locale.getDefault()) + " / USD"
-            val coinSymbol =  i.symbol.uppercase(Locale.getDefault()) + " / USD"
-            val coinPrice = (i.price.toString()+"00000000").subSequence(0, 8).toString()
-            var percenteChange: Percent?=null
-            if (i.day1!!.price_change_pct==null){
-                percenteChange = Percent(0.0,"+","%")
-            }
-            else {
-                percenteChange = percenteChange(i.day1.price_change_pct!!)
-            }
-            //set lenght of percent as char
-
-            val coinPercenteChange = percenteChange!!.raise + (percenteChange.percentChange
-                .toString() + "0000").subSequence(0, 4).toString() + "%"
-
-            val item = CoinsHome(coinName, coinSymbol, coinPrice, coinPercenteChange, coinImage, change)
-
-            val coinPercenteChangeCompare = percenteChange.percentChange
-            val coinPriceCompare = i.price.toString()
-            val itemCompare =
-                CoinsHome(
-                    coinName,
-                    coinSymbol,
-                    coinPriceCompare,
-                    coinPercenteChangeCompare.toString(),
-                    coinImage,
-                    enumPriceChange.notr
-                )
-
-            ListItemForCompare.add(itemCompare)
-            ListItem.add(item)
-            position++
-        }
-
-        ListOfCrypto.value = ListItem
-        ListOfCryptoforCompare.value = ListItemForCompare
-
-        return DataForHomePage(ListOfCryptoforCompare.value ?: listOf(), ListOfCrypto.value ?: ArrayList(), change)
-
-
-    }
-
-    fun percenteChange(coinPrice: String): Percent {
-        var pct: Percent? = null
-        when (coinPrice.subSequence(0, 1)) {
-
-            "-" -> pct =
-                Percent(
-                    coinPrice.subSequence(1, coinPrice.length).toString()
-                        .toDouble() , "-"
-                )
-            else -> pct =
-                Percent(
-                    coinPrice.subSequence(0, coinPrice.length).toString()
-                        .toDouble() , "+"
-                )
-
-
-        }
-        return pct
-
-    }
-
-
-}
-
-class ConverOperation1(
+class ConvertOperation(
     val t: List<CoinDetail>,
     val ListOfCryptoforCompare: MutableLiveData<List<CoinsHome>>
 ){
@@ -120,24 +23,16 @@ class ConverOperation1(
 
         val ListItem = arrayListOf<CoinsHome>()
         val ListItemForCompare = arrayListOf<CoinsHome>()
-        var position = 0
 
-        for (i in t) {
+        for ((position, i) in t.withIndex()) {
             val last = ListOfCryptoforCompare.value?.get(position)?.CoinPrice?.toDouble()
             val new = i.current_price
 
             //control for state of change
             if (last != null) {
-                if (last > new) {
-                    change = enumPriceChange.negative
-
-
-                } else if (new > last) {
-                    change = enumPriceChange.pozitive
-
-                } else if (new.toString() == last.toString()) {
-                    change = enumPriceChange.notr
-                }
+                change = if (last > new) enumPriceChange.negative
+                else if (new > last) enumPriceChange.pozitive
+                else enumPriceChange.notr
             }
 
             val coinImage=i.image
@@ -168,7 +63,6 @@ class ConverOperation1(
                 )
             ListItemForCompare.add(itemCompare)
             ListItem.add(item)
-            position++
         }
 
         ListOfCrypto.value = ListItem
@@ -176,12 +70,11 @@ class ConverOperation1(
         return DataForHomePage(ListOfCryptoforCompare.value ?: listOf(), ListOfCrypto.value ?: ArrayList(), change)
     }
 
-    fun percenteChange(coinPrice: String): Percent {
+    private fun percenteChange(coinPrice: String): Percent {
         return when (coinPrice.subSequence(0, 1)) {
             "-" -> Percent(coinPrice.subSequence(1, coinPrice.length).toString().toDouble(), "-")
             else -> Percent(coinPrice.subSequence(0, coinPrice.length).toString().toDouble(), "+")
         }
     }
-
 
 }

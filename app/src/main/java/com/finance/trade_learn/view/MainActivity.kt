@@ -44,19 +44,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         dataBindingMain = ActivityMainBinding.inflate(layoutInflater)
         setContentView(dataBindingMain.root)
-        viewModelMarket = ViewModelProvider(this).get(ViewModelMarket::class.java)
+        viewModelMarket = ViewModelProvider(this)[ViewModelMarket::class.java]
         setup()
     }
 
     private fun setup (){
         bottomNavigationItemClickListener()
         isOneEntering()
-        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU){
-            requestPostPermission(delay = 4000)
-        }
         checkIsAdShowed()
+        showNotificationPermission()
         //firebaseSave()
      //   Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
+    }
+
+    private fun showNotificationPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requestPostPermission(delay = 3000)
+           // NotificationPermissionManager.canAskNotificationPermission(this)
+        }
+
     }
 
     @SuppressLint("HardwareIds")

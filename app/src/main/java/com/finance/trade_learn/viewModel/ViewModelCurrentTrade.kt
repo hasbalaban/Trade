@@ -72,10 +72,14 @@ class ViewModelCurrentTrade @Inject constructor(
                     }
 
                     override fun onError(e: Throwable) {
+                        println("ssss")
+                        println("ssss")
+                        println("ssss")
+                        println("ssss")
                     }
 
-
-                })
+                    }
+                )
         )
 
     }
