@@ -128,10 +128,7 @@ class ViewModelMyWallet @Inject constructor(
                 }
             }
         }
-
-
     }
-
 
     override fun onCleared() {
         disposable.clear()
