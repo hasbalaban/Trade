@@ -34,7 +34,6 @@ class SendNotificationPer12Hours @Inject constructor(
     workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
     override fun doWork(): Result {
-        println("1111")
         getData()
         return Result.success()
     }
@@ -92,18 +91,9 @@ class SendNotificationPer12Hours @Inject constructor(
 
                     override fun onSuccess(t: List<CoinDetail>) {
                         createNotification(t[0].symbol, t[0].current_price.toString())
-
-                        println("onSuccess")
-                        println("onSuccess")
-                        println("onSuccess")
                     }
 
-                    override fun onError(e: Throwable) {
-                        println("onError")
-                        println("onError")
-                        println("onError")
-
-                    }
+                    override fun onError(e: Throwable) {}
                 })
         }
     }
