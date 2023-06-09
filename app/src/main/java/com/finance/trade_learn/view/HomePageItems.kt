@@ -34,17 +34,15 @@ import com.finance.trade_learn.R
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.utils.SharedPreferencesManager
-import com.finance.trade_learn.viewModel.ViewModeHomePage
 import java.util.Locale
 
 @Composable
 fun HomePageItems (
-    viewModel: ViewModeHomePage = viewModel(),
+    coinsHome: ArrayList<CoinsHome>?,
     onViewClick : (Int) -> Unit
 ) {
     val context = LocalContext.current
-    val listOfItems = viewModel.listOfCrypto.observeAsState()
-    listOfItems.value?.toList()?.let {item ->
+    coinsHome?.let {item ->
 
         LazyColumn(modifier = Modifier){
             items(
@@ -104,8 +102,6 @@ fun HomePageItem(coinsHome: CoinsHome, clickedItem: (String) -> Unit) {
 
         }
     }
-    val context = LocalContext.current
-
 
     Row(modifier = Modifier
         .height(60.dp)
