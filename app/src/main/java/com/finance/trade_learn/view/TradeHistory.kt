@@ -1,75 +1,84 @@
 package com.finance.trade_learn.view
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.finance.trade_learn.Adapters.AdapterForHistoryTrade
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseFragmentViewModel
-import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
 import com.finance.trade_learn.databinding.FragmentHistoryOfTradeBinding
-import com.finance.trade_learn.viewModel.ViewModeHomePage
-import com.finance.trade_learn.viewModel.viewModelHistoryTrade
+import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
 
 
-class TradeHistory : BaseFragmentViewModel<FragmentHistoryOfTradeBinding, ViewModeHomePage>(FragmentHistoryOfTradeBinding::inflate){
+class TradeHistory : BaseFragmentViewModel<FragmentHistoryOfTradeBinding, ViewModelHistoryTrade>(FragmentHistoryOfTradeBinding::inflate){
 
-    private lateinit var viewModelHistory: viewModelHistoryTrade
-    private lateinit var dataBindinghistoryOfTrade: FragmentHistoryOfTradeBinding
-    override val viewModel: ViewModeHomePage by viewModels()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
-        dataBindinghistoryOfTrade = FragmentHistoryOfTradeBinding.inflate(inflater, container, false)
-        return dataBindinghistoryOfTrade.root
-    }
-
+    override val viewModel: ViewModelHistoryTrade by viewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setup()
         super.onViewCreated(view, savedInstanceState)
     }
-
-    // function holder
+    
     private fun setup() {
-        callOneTime()
-
-    }
-
-    // just call when fragment start
-    private fun callOneTime() {
-        settingViewModel()
-    }
-
-    // this fun for viewModel Settings
-    private fun settingViewModel() {
-        viewModelHistory = viewModelHistoryTrade()
-        viewModelHistory.getDataFromDatabase(requireContext())
         getDataFromDatabase()
+        setComposeView()
     }
+    
+    private fun setComposeView() {
+        binding.composeView.setContent {
+            viewModel.listOfTrade.observeAsState().value?.let {
 
+                Column(modifier = Modifier.fillMaxSize()) {
+                    val titles = arrayOf(
+                        stringResource(id = R.string.name),
+                        stringResource(id = R.string.Amount),
+                        stringResource(id = R.string.price),
+                        stringResource(id = R.string.total),
+                        stringResource(id = R.string.date),
+                        stringResource(id = R.string.state)
+                    )
 
-    // this fun for get data from database as observe data
-    private fun getDataFromDatabase() {
-        viewModelHistory.listOfTrade.observe(viewLifecycleOwner) {
-            it?.let {
-                settingsOfRecyclerView(it)
+                    Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                        titles.forEach {
+                            Text(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(5.dp),
+                                text = it,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .background(colorResource(id = R.color.hint_grey))
+                            .fillMaxWidth()
+                            .height(1.dp)
+                    ) {}
+
+                    HistoryItemComposeView(it)
+                }
             }
         }
 
     }
 
-    // this fun for recycler view set data
-    private fun settingsOfRecyclerView(list_of_trade: ArrayList<SaveCoin>) {
-        dataBindinghistoryOfTrade.recyclerViewHistory.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = AdapterForHistoryTrade(list_of_trade)
-        dataBindinghistoryOfTrade.recyclerViewHistory.adapter = adapter
-
+    private fun getDataFromDatabase() {
+        viewModel.getDataFromDatabase(requireContext())
     }
 
 }

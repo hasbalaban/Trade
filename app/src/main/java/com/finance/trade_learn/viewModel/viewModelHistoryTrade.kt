@@ -2,14 +2,14 @@ package com.finance.trade_learn.viewModel
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
 import com.finance.trade_learn.database.dataBaseService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class viewModelHistoryTrade : ViewModel() {
+class ViewModelHistoryTrade : BaseViewModel() {
     val listOfTrade = MutableLiveData<ArrayList<SaveCoin>>()
 
     fun getDataFromDatabase(context: Context) {
@@ -18,8 +18,6 @@ class viewModelHistoryTrade : ViewModel() {
             val list = dao.getAllTrades()
             convertListForAdapter(list)
         }
-
-
     }
 
     private fun convertListForAdapter(list: List<SaveCoin>) {
@@ -39,8 +37,6 @@ class viewModelHistoryTrade : ViewModel() {
             newModel.add(itemOfHistory)
 
         }
-
         listOfTrade.value = newModel
-
     }
 }
