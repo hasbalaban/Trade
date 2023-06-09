@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -27,24 +26,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import com.finance.trade_learn.Adapters.SolveCoinName
+import com.finance.trade_learn.Adapters.solveCoinName
 import com.finance.trade_learn.R
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.utils.SharedPreferencesManager
-import com.finance.trade_learn.viewModel.ViewModeHomePage
 import java.util.Locale
 
 @Composable
 fun HomePageItems (
-    viewModel: ViewModeHomePage = viewModel(),
+    coinsHome: ArrayList<CoinsHome>?,
     onViewClick : (Int) -> Unit
 ) {
     val context = LocalContext.current
-    val listOfItems = viewModel.listOfCrypto.observeAsState()
-    listOfItems.value?.toList()?.let {item ->
+    coinsHome?.let {item ->
 
         LazyColumn(modifier = Modifier){
             items(
@@ -104,8 +100,6 @@ fun HomePageItem(coinsHome: CoinsHome, clickedItem: (String) -> Unit) {
 
         }
     }
-    val context = LocalContext.current
-
 
     Row(modifier = Modifier
         .height(60.dp)
@@ -115,7 +109,7 @@ fun HomePageItem(coinsHome: CoinsHome, clickedItem: (String) -> Unit) {
             .fillMaxSize()
             .clickable {
 
-                val coinName = SolveCoinName(coinsHome.CoinName)
+                val coinName = solveCoinName(coinsHome.CoinName)
                 clickedItem.invoke(coinName.lowercase(Locale.getDefault()))
             }
 
