@@ -9,6 +9,7 @@
     <string name="Trade" >Ticaret</string>
     <string name="Wallet" >Cüzdan</string>
     <string name="hintSearch" >Coin Ara</string>
+    <string name="filter_coin" >Filter Coin</string>
     <string name="name">Coin Adı:</string>
     <string name="lastPrice">Güncel Fiyat:</string>
     <string name="change24">24h Değişim:</string>

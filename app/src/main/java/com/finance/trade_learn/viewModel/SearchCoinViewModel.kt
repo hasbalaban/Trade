@@ -26,9 +26,7 @@ class SearchCoinViewModel: BaseViewModel() {
                         override fun onSuccess(t: List<CoinInfoList>) {
                             coinListDetail.value = t
                             try {
-                            } catch (e: Exception) {
-                                println()
-                            }
+                            } catch (_: Exception) { }
                         }
 
                         override fun onError(e: Throwable) {
