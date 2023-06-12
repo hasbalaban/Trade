@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -126,10 +127,10 @@ class WalletPage : BaseFragmentViewModel<FragmentWalletPageBinding, ViewModelMyW
                 Row(modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                    Text(modifier = Modifier.weight(2f), text = "")
-                    Text(modifier = Modifier.weight(5f), text = stringResource(id = R.string.Symbol))
-                    Text(modifier = Modifier.weight(5f), text = stringResource(id = R.string.Amount))
-                    Text(modifier = Modifier.weight(5f), text = stringResource(id = R.string.Value))
+                    Text(modifier = Modifier.weight(1f), text = "")
+                    Text(modifier = Modifier.weight(2f), text = stringResource(id = R.string.Symbol), textAlign = TextAlign.Start, color = Color.Red, fontSize = 16.sp)
+                    Text(modifier = Modifier.weight(3f), text = stringResource(id = R.string.Amount), textAlign = TextAlign.Start, color = Color.Red, fontSize = 16.sp)
+                    Text(modifier = Modifier.weight(2f), text = stringResource(id = R.string.Value), textAlign = TextAlign.Start, color = Color.Red, fontSize = 16.sp)
 
                 }
 

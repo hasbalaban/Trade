@@ -24,11 +24,11 @@ import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelF
 
 @Composable
 fun WalletItemComposeView(historyList: List<NewModelForItemHistory>, function: (String) -> Unit) {
-    LazyColumn(modifier = Modifier.fillMaxWidth().background(Color.Yellow)){
+    LazyColumn(modifier = Modifier.fillMaxWidth().background(color = Color(0xFFECD9D9))){
         items(historyList){item ->
             val painter = rememberAsyncImagePainter(model = item.Image, filterQuality = FilterQuality.High,)
 
-            Row(modifier = Modifier.fillMaxWidth().clickable {
+            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp).clickable {
                 function(item.CoinName)
             }) {
                 Image(painter = painter,
