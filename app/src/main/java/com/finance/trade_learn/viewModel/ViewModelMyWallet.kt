@@ -94,7 +94,7 @@ class ViewModelMyWallet @Inject constructor(
                             for (z in myCoinsDatabaseModel.value!!) {
                                 if (i.id.lowercase() == z.CoinName.lowercase()) {
                                     val name = i.id.lowercase(Locale.getDefault())
-                                    val price = i.current_price.toBigDecimal()
+                                    val price = i.current_price?.toBigDecimal() ?: BigDecimal.ZERO
 
                                     val amount =
                                         coinDetailRepositoryImp.getSelectedItemDetail(i.id.lowercase(Locale.getDefault()))?.CoinAmount?.toBigDecimal() ?:

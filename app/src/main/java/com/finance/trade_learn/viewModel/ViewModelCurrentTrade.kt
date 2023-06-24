@@ -34,14 +34,14 @@ class ViewModelCurrentTrade @Inject constructor(
     val canChangeAmount = MutableLiveData<Boolean>(true)
     private val _tradeType = MutableLiveData<TradeType>(TradeType.Buy)
     val tradeType : LiveData<TradeType> = _tradeType
-    private val _selectedPercent =  MutableLiveData<SelectedPercent>(SelectedPercent.Percent25)
+    val selectedPercent =  MutableLiveData<SelectedPercent>()
 
     fun changeTradeType (type : TradeType){
         _tradeType.value = type
     }
 
     fun changeSelectedPercent (percent : SelectedPercent){
-        _selectedPercent.value = percent
+        selectedPercent.value = percent
     }
 
     // get details coin if exists in database - so if i have

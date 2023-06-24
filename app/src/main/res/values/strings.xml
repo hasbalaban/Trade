@@ -40,5 +40,8 @@
     <string name="notification_allow_button">Allow</string>
 
 
+    <string name="loading">Loading</string>
+
+
 
 </resources>
