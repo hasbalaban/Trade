@@ -14,20 +14,6 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/navigation" />
 
-    <TextView
-        android:id="@+id/InfoMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="30dp"
-        android:text="Opsss We are updating app, \nIt able to take time \n\n\n\n\nThank you for your patience..."
-        android:textAlignment="center"
-        android:textColor="@android:color/holo_red_dark"
-        android:textSize="20sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

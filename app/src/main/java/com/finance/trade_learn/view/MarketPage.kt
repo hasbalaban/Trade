@@ -180,8 +180,8 @@ class MarketPage() : BaseFragmentViewModel<FragmentMarketPageBinding, ViewModelM
                 ),
                 border = BorderStroke(1.dp, colorResource(id = R.color.search_background_border)),
                 onClick = {
-                    val directions = MarketPageDirections.actionMarketPageToSearchActivity()
-                    Navigation.findNavController(binding.root).navigate(directions)
+                //    val directions = MarketPageDirections.actionMarketPageToSearchActivity()
+                 //   Navigation.findNavController(binding.root).navigate(directions)
                 }) {
 
                 Image(painter = painterResource(id = R.drawable.search),
@@ -190,10 +190,10 @@ class MarketPage() : BaseFragmentViewModel<FragmentMarketPageBinding, ViewModelM
                         .wrapContentSize()
                         .padding(start = 3.dp, top = 5.dp, bottom = 2.dp)
                         .clickable(role = Role.DropdownList) {
-                            val directions = MarketPageDirections.actionMarketPageToSearchActivity()
-                            Navigation
-                                .findNavController(binding.root)
-                                .navigate(directions)
+                          //  val directions = MarketPageDirections.actionMarketPageToSearchActivity()
+                          //  Navigation
+                          //      .findNavController(binding.root)
+                          //      .navigate(directions)
                         },
 
                 )
