@@ -7,12 +7,18 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Composable
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.findNavController
+import androidx.navigation.navArgument
 import androidx.navigation.ui.setupWithNavController
 import com.finance.trade_learn.R
 import com.finance.trade_learn.databinding.ActivityMainBinding
@@ -42,10 +48,50 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dataBindingMain = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(dataBindingMain.root)
-        viewModelMarket = ViewModelProvider(this)[ViewModelMarket::class.java]
-        setup()
+        //dataBindingMain = ActivityMainBinding.inflate(layoutInflater)
+        //setContentView(dataBindingMain.root)
+        //viewModelMarket = ViewModelProvider(this)[ViewModelMarket::class.java]
+        //setup()
+
+        setContent {
+            MainScreen()
+        }
+    }
+
+    @Composable
+    private fun MainScreen(){
+        val navController = rememberNavController()
+
+        NavHost(navController = navController, startDestination = "homeScreen" ){
+            composable("homeScreen") {
+                MainView(
+                    openSearch = {
+                        navController.navigate("searchScreen")
+                    },
+                    openTradePage = {
+                        navController.navigate("tradeScreen?coinName=$it")
+                    }
+                )
+            }
+            composable("searchScreen") {
+
+                SearchView(
+                    openTradePage = {
+                        navController.navigate("tradeScreen?coinName=$it")
+                    }
+                )
+            }
+            composable("tradeScreen?coinName={coinName}", arguments = listOf(navArgument("coinName") {
+                type = NavType.StringType
+                defaultValue = "bitcoin"
+            })
+            ) {backStackEntry->
+                CurrentTradeView(backStackEntry.arguments?.getString("coinName"))
+            }
+
+
+        }
+
     }
 
     private fun setup (){
@@ -54,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         checkIsAdShowed()
         showNotificationPermission()
         //firebaseSave()
-     //   Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
+        //Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
     }
 
     private fun showNotificationPermission(){
@@ -133,10 +179,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setInterstitialAd(){
         val adRequest = AdRequest.Builder().build()
-        MobileAds.setRequestConfiguration(
-            RequestConfiguration.Builder()
-                .build()
-        )
+        MobileAds.setRequestConfiguration(RequestConfiguration.Builder().build())
 
         InterstitialAd.load(this,"ca-app-pub-2861105825918511/1127322176", adRequest, object : InterstitialAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {

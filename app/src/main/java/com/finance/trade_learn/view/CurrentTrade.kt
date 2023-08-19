@@ -1,19 +1,16 @@
 package com.finance.trade_learn.view
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,8 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.input.pointer.consumeAllChanges
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -51,7 +46,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
 import coil.compose.rememberAsyncImagePainter
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseFragmentViewModel
@@ -286,11 +280,7 @@ class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrent
                 Column(modifier = modifier.weight(1f)
                 ) {
                     MainView(tradeType.value ?: TradeType.Buy, itemAmountData.value, selectedItemInfo, modifier)
-
-
                 }
-
-                
             }
         }
 
@@ -315,9 +305,7 @@ class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrent
             ) {
 
                 Image(
-                    modifier = modifier
-                        .height(48.dp)
-                        .padding(5.dp),
+                    modifier = modifier.height(48.dp).padding(5.dp),
                     painter = painter, contentDescription = null)
 
                 Text(modifier = modifier
@@ -340,8 +328,7 @@ class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrent
                     else -> Pair("+ $coinPercentChange%", colorResource(id = R.color.pozitive))
                 }
 
-            Text(modifier = modifier
-                .padding(end = 4.dp),
+            Text(modifier = modifier.padding(end = 4.dp),
                 text = percentChangeInfo.first ,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
@@ -356,27 +343,20 @@ class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrent
     private fun MainView(tradeType : TradeType, itemAmountData : BigDecimal?, selectedItemInfo: CoinDetail?, modifier: Modifier = Modifier){
         var inputAmount : Double? by remember { mutableStateOf(0.0) }
         val selectedPercent = viewModel.selectedPercent.observeAsState()
-        Column(modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)) {
+        Column(modifier = modifier.fillMaxWidth().padding(horizontal = 24.dp)) {
 
-            Row(modifier = modifier
-                .fillMaxWidth()
-                .paddingFromBaseline(20.dp),
+            Row(modifier = modifier.fillMaxWidth().paddingFromBaseline(20.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
                 ) {
 
-                Text(modifier = modifier
-                    .clickable {
+                Text(modifier = modifier.clickable {
                         getDetailsOfCoinFromDatabase()
                         tradeState = TradeType.Buy
                         buyClicked()
                     }
-                    .clip(RoundedCornerShape(8f))
-                    .background(color = colorResource(id = if (tradeType == TradeType.Buy) R.color.onClickBuyBack else R.color.BuyBack))
-                    .padding(vertical = 10.dp)
-                    .weight(1f),
+                    .clip(RoundedCornerShape(8f)).background(color = colorResource(id = if (tradeType == TradeType.Buy) R.color.onClickBuyBack else R.color.BuyBack))
+                    .padding(vertical = 10.dp).weight(1f),
                     color = colorResource(id = if (tradeType == TradeType.Buy) R.color.white else R.color.BuyText),
                     fontSize = 24.sp,
                     text = stringResource(id = R.string.textBuy),
@@ -384,16 +364,13 @@ class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrent
                 )
 
                 Text(modifier = modifier
-                    .padding(start = 20.dp)
-                    .clickable {
+                    .padding(start = 20.dp).clickable {
                         getDetailsOfCoinFromDatabase(selectedItemName)
                         tradeState = TradeType.Sell
                         sellClicked()
                     }
-                    .clip(RoundedCornerShape(8f))
-                    .background(color = colorResource(id = if (tradeType == TradeType.Sell) R.color.onClickSellBack else R.color.SellBack))
-                    .padding(vertical = 10.dp)
-                    .weight(1f),
+                    .clip(RoundedCornerShape(8f)).background(color = colorResource(id = if (tradeType == TradeType.Sell) R.color.onClickSellBack else R.color.SellBack))
+                    .padding(vertical = 10.dp).weight(1f),
                     color = colorResource(id = if (tradeType == TradeType.Sell) R.color.white else R.color.SellText),
                     fontSize = 24.sp,
                     textAlign = TextAlign.Center,
@@ -410,23 +387,16 @@ class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrent
 
 
             Text(text = coinPrice, modifier = modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .padding(top = 12.dp)
+                .fillMaxWidth().height(60.dp).padding(top = 12.dp)
                 .background(color = colorResource(id = R.color.SellBack))
-                .clip(RoundedCornerShape(8f))
-                .padding(10.dp),
+                .clip(RoundedCornerShape(8f)).padding(10.dp),
                 color = androidx.compose.ui.graphics.Color.Black,
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp
                 )
 
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .padding(top = 12.dp)
-                .clip(RoundedCornerShape(8f))
+            Row(modifier = Modifier.fillMaxWidth().height(60.dp).padding(top = 12.dp).clip(RoundedCornerShape(8f))
                 .background(color = colorResource(id = R.color.all_trade))
 
             ) {
@@ -469,9 +439,7 @@ class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrent
                         val currentAmount = 0.000
                         inputAmount = changeAmounts(currentAmount,  1.000,CoinProgress.SUM)
 
-                    }.fillMaxHeight()
-                        .padding(horizontal = 12.dp)
-                        .padding(16.dp),
+                    }.fillMaxHeight().padding(horizontal = 12.dp).padding(16.dp),
                     painter = painterResource(id = R.drawable.raise), contentDescription = null)
 
             }
@@ -499,37 +467,27 @@ class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrent
                 fontSize = 16.sp
             )
             
-            Row(modifier = modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp)
-                .height(24.dp),
+            Row(modifier = modifier.fillMaxWidth().padding(top = 12.dp).height(24.dp),
                 horizontalArrangement = Arrangement.Start
-                ) {
+            ) {
                 val maxPurchase = (avaibleAmount / (price ?: 0.0))
-                PercentItemView(
-                    percentPosition = SelectedPercent.Percent25,
+                PercentItemView(percentPosition = SelectedPercent.Percent25,
                     selectedPercent = selectedPercent.value, tradeType,
-                    modifier = modifier
-                        .clickable {
+                    modifier = modifier.clickable {
                             viewModel.changeSelectedPercent(SelectedPercent.Percent25)
                             inputAmount = maxPurchase * (1.0/4.0)
-                        }
-                        .weight(1f))
-                PercentItemView(
-                    percentPosition = SelectedPercent.Percent50,
+                        }.weight(1f))
+                PercentItemView(percentPosition = SelectedPercent.Percent50,
                     selectedPercent = selectedPercent.value, tradeType,
                     modifier = modifier
                         .clickable {
                             viewModel.changeSelectedPercent(SelectedPercent.Percent50)
                             inputAmount = maxPurchase * (2.0/4.0)
-                        }
-                        .weight(1f)
-                        .padding(start = 16.dp))
+                        }.weight(1f).padding(start = 16.dp))
                 PercentItemView(
                     percentPosition = SelectedPercent.Percent75,
                     selectedPercent = selectedPercent.value, tradeType,
-                    modifier = modifier
-                        .clickable {
+                    modifier = modifier.clickable {
                             viewModel.changeSelectedPercent(SelectedPercent.Percent75)
                             inputAmount = maxPurchase * (3.0/4.0)
                         }
@@ -538,28 +496,17 @@ class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrent
                 PercentItemView(
                     percentPosition = SelectedPercent.Percent100,
                     selectedPercent = selectedPercent.value, tradeType,
-                    modifier = modifier
-                        .clickable {
+                    modifier = modifier.clickable {
                             viewModel.changeSelectedPercent(SelectedPercent.Percent100)
                             inputAmount = maxPurchase * (1.0)
-                        }
-                        .weight(1f)
-                        .padding(start = 16.dp))
+                        }.weight(1f).padding(start = 16.dp))
             }
 
-
-            Row(modifier = modifier
-                .padding(top = 12.dp)
-                .height(20.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-                ) {
-
+            Row(modifier = modifier.padding(top = 12.dp).height(20.dp).fillMaxWidth(), horizontalArrangement = Arrangement.End
+            ) {
                 Text(
                     text = itemAmountData.toString(),
-                    modifier = modifier
-                        .fillMaxHeight()
-                        .padding(end = 10.dp),
+                    modifier = modifier.fillMaxHeight().padding(end = 10.dp),
                     color = colorResource(id = R.color.red),
                     textAlign = TextAlign.Center,
                     fontSize = 16.sp
@@ -581,10 +528,7 @@ class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrent
 
             }
 
-            Button(modifier = modifier
-                .padding(top = 20.dp)
-                .fillMaxWidth()
-                .height(60.dp),
+            Button(modifier = modifier.padding(top = 20.dp).fillMaxWidth().height(60.dp),
                 shape = RoundedCornerShape(12),
                 onClick = {
 
@@ -617,18 +561,11 @@ class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrent
             }
 
             Row(
-                modifier = modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth(),
+                modifier = modifier.padding(top = 16.dp).fillMaxWidth(),
                 horizontalArrangement = Arrangement.End) {
-                Image(
-                    modifier = modifier
-                        .size(50.dp)
+                Image(modifier = modifier.size(50.dp)
                         .clickable {
-                            val action = CurrentTradeDirections.actionTradePageToHistoryOfTrade2()
-                            Navigation
-                                .findNavController(binding.root)
-                                .navigate(action)
+                            //val action = CurrentTradeDirections.actionTradePageToHistoryOfTrade2()Navigation .findNavController(binding.root).navigate(action)
                         },
                     painter = painterResource(id = R.drawable.history_of_trade), contentDescription = null)
             }

@@ -37,7 +37,7 @@ import java.util.Locale
 @Composable
 fun HomePageItems (
     coinsHome: ArrayList<CoinsHome>?,
-    onViewClick : (Int) -> Unit
+    onViewClick : (String) -> Unit
 ) {
     val context = LocalContext.current
     coinsHome?.let {item ->
@@ -50,8 +50,7 @@ fun HomePageItems (
                 }
             ){
                 HomePageItem(it){selectedItemName ->
-                    SharedPreferencesManager(context).addSharedPreferencesString("coinName", selectedItemName)
-                    onViewClick.invoke(R.id.tradePage)
+                    onViewClick.invoke(selectedItemName)
                 }
             }
         }
