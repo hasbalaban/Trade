@@ -32,6 +32,9 @@ android {
         versionCode 72
         versionName "2.2.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
+
     }
     buildFeatures {
         compose true
@@ -196,6 +199,15 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.3.0")
 
 
+    def nav_version = "2.6.0"
+
+    implementation "androidx.navigation:navigation-compose:$nav_version"
+
+
+
+
+
+    implementation 'com.android.support:multidex:1.0.3'
 
 
 }

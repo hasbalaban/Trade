@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.data'
+    namespace 'com.finance.data'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.data"
+        applicationId "com.finance.data"
         minSdk 24
         targetSdk 33
         versionCode 1

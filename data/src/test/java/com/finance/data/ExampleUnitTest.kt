@@ -1,4 +1,4 @@
-package com.example.data
+package com.finance.data
 
 import org.junit.Test
 
