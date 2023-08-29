@@ -29,7 +29,7 @@ class ViewModelCurrentTrade @Inject constructor(
 
     private var disposable = CompositeDisposable()
     var isSuccess = MutableLiveData<Boolean>()
-    val coinAmountLiveData = MutableLiveData<BigDecimal>()
+    val coinAmountLiveData = MutableLiveData<BigDecimal?>()
     val selectedCoinToTradeDetails = MutableLiveData<List<CoinDetail>>()
     val canChangeAmount = MutableLiveData<Boolean>(true)
     private val _tradeType = MutableLiveData<TradeType>(TradeType.Buy)
@@ -46,7 +46,7 @@ class ViewModelCurrentTrade @Inject constructor(
 
     // get details coin if exists in database - so if i have
     fun getDetailsOfCoinFromDatabase(coinName: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             val coin = coinDetailRepositoryImp.getSelectedItemDetail(coinName)
             withContext(Dispatchers.Main) {
                 coinAmountLiveData.value = BigDecimal.valueOf(0.0)
@@ -157,7 +157,6 @@ class ViewModelCurrentTrade @Inject constructor(
 
     // this function for sell coin that i have
     fun sellCoin(coinName: String, sellAmount: Double, total: Double, coinPrice: Double) {
-        isSuccess.value = true
         val tradeOperation = TradeType.Sell
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -187,9 +186,6 @@ class ViewModelCurrentTrade @Inject constructor(
                 }
                 return@launch
 
-            }
-            withContext(Dispatchers.Main) {
-                isSuccess.value = false
             }
         }
     }

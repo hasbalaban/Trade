@@ -24,9 +24,9 @@ import java.util.*
 
 
 @Composable
-fun SearchView(openTradePage : (String) -> Unit, viewModel: SearchCoinViewModel = androidx.lifecycle.viewmodel.compose.viewModel()){
+fun SearchScreen(openTradePage : (String) -> Unit, viewModel : SearchCoinViewModel){
     viewModel.getCoinList()
-    SetComposeView(openTradePage)
+    SearchComposeView(openTradePage)
 }
 
 private fun getItemsList (searchedItems : String, viewModel: SearchCoinViewModel): List<CoinInfoList> {
@@ -40,11 +40,11 @@ private fun getItemsList (searchedItems : String, viewModel: SearchCoinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SetComposeView (openTradePage : (String) -> Unit, viewModel: SearchCoinViewModel = androidx.lifecycle.viewmodel.compose.viewModel()){
+private fun SearchComposeView (openTradePage : (String) -> Unit, viewModel: SearchCoinViewModel = androidx.lifecycle.viewmodel.compose.viewModel()){
         var searchedItem by remember { mutableStateOf("") }
         var resultItems by remember { mutableStateOf(emptyList<CoinInfoList>()) }
 
-        val textChanged : (String) -> Unit =  {
+        val textChanged : (String) -> Unit =textChangedScope@{
             searchedItem = it
             resultItems = getItemsList(searchedItem, viewModel = viewModel )
         }

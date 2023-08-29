@@ -20,7 +20,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat.startActivity
+import androidx.lifecycle.Lifecycle
 import com.finance.trade_learn.R
 import com.finance.trade_learn.viewModel.ViewModeHomePage
 import kotlinx.coroutines.*
@@ -109,19 +113,34 @@ private fun MainToolbar(openSearch : () -> Unit) {
     }
 }
 @Composable
-fun MainView (openSearch : () -> Unit, openTradePage : (String) -> Unit, viewModel : ViewModeHomePage = androidx.lifecycle.viewmodel.compose.viewModel()){
-
-    var runnable = Runnable { }
-    val handler = Handler(Looper.getMainLooper())
-    val timeLoop = 30000L
-
-    runnable = Runnable {
-        runBlocking {
-            viewModel.getAllCryptoFromApi()
-        }
-        handler.postDelayed(runnable, timeLoop)
+fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) -> Unit, viewModel : ViewModeHomePage = androidx.lifecycle.viewmodel.compose.viewModel()){
+    var runnable by remember {
+        mutableStateOf(Runnable {  })
     }
-    handler.post(runnable)
+    val handler by remember {
+        mutableStateOf(Handler(Looper.getMainLooper()))
+    }
+    val timeLoop by remember {
+        mutableStateOf(30000L)
+    }
+
+
+    LifeCycleListener {
+        when (it) {
+            Lifecycle.Event.ON_RESUME -> {
+                runnable = Runnable {
+                    runBlocking {
+                        viewModel.getAllCryptoFromApi(page)
+                    }
+                    handler.postDelayed(runnable, timeLoop)
+                }
+                handler.post(runnable)            }
+            Lifecycle.Event.ON_PAUSE -> {
+                handler.removeCallbacks(runnable)
+            }
+            else -> {}
+        }
+    }
 
 
 

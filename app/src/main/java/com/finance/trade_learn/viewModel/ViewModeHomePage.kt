@@ -22,10 +22,10 @@ class ViewModeHomePage : BaseViewModel() {
     var listOfCryptoForPopular = MutableLiveData<ArrayList<CoinsHome>>()
     private var lastCrypoList = MutableLiveData<List<CoinsHome>>()
 
-    fun getAllCryptoFromApi() {
+    fun getAllCryptoFromApi(page : Int) {
         isLoading.value = true
         viewModelScope.launch {
-                cryptoService().getCoinGecko(1)
+                cryptoService().getCoinGecko(2)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {

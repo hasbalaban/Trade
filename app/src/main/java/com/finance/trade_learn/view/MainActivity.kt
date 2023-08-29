@@ -9,26 +9,35 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.core.app.ActivityCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.findNavController
 import androidx.navigation.navArgument
-import androidx.navigation.ui.setupWithNavController
-import com.finance.trade_learn.R
-import com.finance.trade_learn.databinding.ActivityMainBinding
 import com.finance.trade_learn.utils.*
-import com.finance.trade_learn.viewModel.ViewModelMarket
+import com.finance.trade_learn.viewModel.SearchCoinViewModel
+import com.finance.trade_learn.viewModel.ViewModelCurrentTrade
+import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
+import com.finance.trade_learn.viewModel.ViewModelMyWallet
 import com.finance.trade_learn.viewModel.ViewModelUtils
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
@@ -38,9 +47,6 @@ import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var controller: NavController
-    private lateinit var dataBindingMain: ActivityMainBinding
-    private lateinit var viewModelMarket: ViewModelMarket
 
 
  //   private lateinit var firestore: FirebaseFirestore
@@ -48,45 +54,99 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //dataBindingMain = ActivityMainBinding.inflate(layoutInflater)
-        //setContentView(dataBindingMain.root)
-        //viewModelMarket = ViewModelProvider(this)[ViewModelMarket::class.java]
-        //setup()
+
 
         setContent {
-            MainScreen()
+
+            // remember navController so it does not
+            // get recreated on recomposition
+            val navController = rememberNavController()
+
+            Surface(color = Color.White) {
+                // Scaffold Component
+                Scaffold(
+                    // Bottom navigation
+                    bottomBar = {
+                        BottomNavigationBar(navController = navController)
+                    }
+                ){padding ->
+                    MainScreen(navController)
+                }
+            }
         }
     }
 
     @Composable
-    private fun MainScreen(){
-        val navController = rememberNavController()
+    private fun MainScreen(navController: NavHostController) {
 
-        NavHost(navController = navController, startDestination = "homeScreen" ){
-            composable("homeScreen") {
+        NavHost(navController = navController, startDestination = "home" ){
+            composable(Screens.Home.route) {
                 MainView(
                     openSearch = {
-                        navController.navigate("searchScreen")
+                        navController.navigate(Screens.SearchScreen.route)
                     },
                     openTradePage = {
-                        navController.navigate("tradeScreen?coinName=$it")
+                        navController.navigate(Screens.Trade(it).route)
                     }
                 )
             }
-            composable("searchScreen") {
-
-                SearchView(
+            composable(Screens.Market.route) {
+                MainView(
+                    page = 2,
+                    openSearch = {
+                        navController.navigate(Screens.SearchScreen.route)
+                    },
                     openTradePage = {
-                        navController.navigate("tradeScreen?coinName=$it")
+                        navController.navigate(Screens.Trade(it).route)
                     }
                 )
             }
-            composable("tradeScreen?coinName={coinName}", arguments = listOf(navArgument("coinName") {
+
+            composable("trade?coinName={coinName}", arguments = listOf(navArgument("coinName") {
                 type = NavType.StringType
                 defaultValue = "bitcoin"
             })
-            ) {backStackEntry->
-                CurrentTradeView(backStackEntry.arguments?.getString("coinName"))
+            ){backStackEntry->
+                val coinName = backStackEntry.arguments?.getString("coinName") ?: "TETHER"
+                val viewModel = hiltViewModel<ViewModelCurrentTrade>()
+
+                TradeScreen(
+                    openHistoryScreen = {
+                        navController.navigate(Screens.HistoryScreen.route)
+                    },
+                    viewModel = viewModel,
+                    coinName = coinName,
+
+                    )
+            }
+            composable(Screens.Wallet.route) {
+                val viewModel = hiltViewModel<ViewModelMyWallet>()
+
+                WalletScreen(
+                    openSearch = {
+                        navController.navigate(Screens.SearchScreen.route)
+                    },
+                    openTradePage = {
+                        navController.navigate(Screens.Trade(it).route)
+                    },
+                    viewModel = viewModel
+                )
+            }
+
+            composable(Screens.HistoryScreen.route) {
+                val viewModel = hiltViewModel<ViewModelHistoryTrade>()
+                HistoryScreen(viewModel)
+            }
+
+            composable(Screens.SearchScreen.route) {
+                val viewModel = hiltViewModel<SearchCoinViewModel>()
+
+                SearchScreen(
+                    openTradePage = {
+                        navController.navigate(Screens.Trade(it).route)
+                    },
+                    viewModel = viewModel
+                )
             }
 
 
@@ -95,7 +155,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setup (){
-        bottomNavigationItemClickListener()
         isOneEntering()
         checkIsAdShowed()
         showNotificationPermission()
@@ -128,13 +187,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // to navigate according click in fragment
-    private fun bottomNavigationItemClickListener() {
-        controller = findNavController(R.id.fragmentContainerView)
-        dataBindingMain.options.setupWithNavController(controller)
-        dataBindingMain.options.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
-
-    }
 
     //check is first entering or no ? // if it's first time add 1000 dollars
     private fun isOneEntering() {
@@ -208,6 +260,42 @@ class MainActivity : AppCompatActivity() {
 
             MobileAds.initialize(this@MainActivity) {}
             setInterstitialAd()
+        }
+    }
+
+
+
+    @Composable
+    fun BottomNavigationBar(navController: NavHostController) {
+
+        BottomNavigation(
+            backgroundColor = Color.White
+        ) {
+
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
+
+            Constants.BottomNavItems.forEach { navItem ->
+
+                BottomNavigationItem(
+
+                    selected = currentRoute == navItem.route,
+                    onClick = {
+                        navController.navigate(navItem.route){
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+
+                    icon = {
+                        Image(painter = painterResource(id = navItem.icon), contentDescription = navItem.label)
+                    },
+                    label = {
+                        Text(text = navItem.label)
+                    },
+                    alwaysShowLabel = false
+                )
+            }
         }
     }
 
