@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.TextField
 import androidx.compose.material3.Button
@@ -108,34 +109,34 @@ private fun compare(amount : Double?, total : Double): Boolean {
     }
 }
 
-private fun operationTrade(itemAmount : Double, price : Double?, viewModel: ViewModelCurrentTrade) {
+private fun operationTrade(itemAmount : Double, price : Double?, viewModel: ViewModelCurrentTrade, coinName: String) {
     when (tradeState) {
         TradeType.Buy -> {
             if (itemAmount.toString().isNullOrEmpty().not() && price != null) {
                 val total = itemAmount * price
-                viewModel.buyCoin(selectedItemName.lowercase(Locale.getDefault()), itemAmount, total, currentPrice)
+                viewModel.buyCoin(coinName.lowercase(Locale.getDefault()), itemAmount, total, currentPrice)
             }
         }
 
         TradeType.Sell -> {
             if (itemAmount.toString() != "" && price != null) {
                 val total = itemAmount * price
-                viewModel.sellCoin(selectedItemName.lowercase(Locale.getDefault()), itemAmount, total, currentPrice)
+                viewModel.sellCoin(coinName.lowercase(Locale.getDefault()), itemAmount, total, currentPrice)
             }
         }
     }
     viewModel.isSuccess
 }
 
-private fun buyClicked(viewModel: ViewModelCurrentTrade) {
+private fun buyClicked(viewModel: ViewModelCurrentTrade, coinName: String) {
     tradeState = TradeType.Buy
     viewModel.changeTradeType(TradeType.Buy)
-    getDetailsOfCoinFromDatabase("tether", viewModel)
+    getDetailsOfCoinFromDatabase(coinName, viewModel)
 }
 
-private fun sellClicked(viewModel: ViewModelCurrentTrade) {
+private fun sellClicked(viewModel: ViewModelCurrentTrade, coinName: String) {
     tradeState = TradeType.Sell
-    getDetailsOfCoinFromDatabase(selectedItemName, viewModel)
+    getDetailsOfCoinFromDatabase(coinName , viewModel)
     viewModel.changeTradeType(TradeType.Sell)
 }
 
@@ -224,17 +225,17 @@ fun TradeScreen(
     Column(modifier = modifier.fillMaxSize()
 
     ) {
-        MainTopView(selectedItemInfo, modifier)
+        MainTopView(selectedItemInfo, modifier, coinName = coinName)
         Column(modifier = modifier.weight(1f)
         ) {
-            MainView(tradeType.value ?: TradeType.Buy, itemAmountData.value, selectedItemInfo, modifier, viewModel, openHistoryScreen, selectedPercent.value, result.value)
+            MainView(tradeType.value ?: TradeType.Buy, itemAmountData.value, selectedItemInfo, modifier, viewModel, openHistoryScreen, selectedPercent.value, result.value, coinName)
         }
     }
 
 }
 
 @Composable
-private fun MainTopView(selectedItemInfo: CoinDetail?, modifier: Modifier = Modifier){
+private fun MainTopView(selectedItemInfo: CoinDetail?, modifier: Modifier = Modifier, coinName: String){
 
     val painter = rememberAsyncImagePainter(model = selectedItemInfo?.image, filterQuality = FilterQuality.High)
 
@@ -253,13 +254,14 @@ private fun MainTopView(selectedItemInfo: CoinDetail?, modifier: Modifier = Modi
 
             Image(
                 modifier = modifier
+                    .width(50.dp)
                     .height(48.dp)
                     .padding(5.dp),
                 painter = painter, contentDescription = null)
 
             Text(modifier = modifier
                 .padding(start = 5.dp),
-                text = "$selectedItemName / USD",
+                text = "$coinName / USD",
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
                 color = androidx.compose.ui.graphics.Color(0xff202BED)
@@ -297,6 +299,7 @@ private fun MainView(tradeType : TradeType,
                      openHistoryScreen: () -> Unit,
                      selectedPercent: SelectedPercent?,
                      result: Boolean?,
+                     coinName: String
 ){
 
     val context = LocalContext.current
@@ -307,7 +310,7 @@ private fun MainView(tradeType : TradeType,
 
     if (result == true){
         getDetailsOfCoinFromDatabase(
-            coinName = if (viewModel.tradeType.value == TradeType.Buy) "tether" else selectedItemName,
+            coinName = if (viewModel.tradeType.value == TradeType.Buy) "tether" else coinName,
             viewModel = viewModel
         )
         Toast.makeText(context, R.string.succes, Toast.LENGTH_SHORT).show()
@@ -338,7 +341,7 @@ private fun MainView(tradeType : TradeType,
                 .clickable {
                     getDetailsOfCoinFromDatabase(viewModel = viewModel)
                     tradeState = TradeType.Buy
-                    buyClicked(viewModel)
+                    buyClicked(viewModel, coinName)
                 }
                 .clip(RoundedCornerShape(8f))
                 .background(color = colorResource(id = if (tradeType == TradeType.Buy) R.color.onClickBuyBack else R.color.BuyBack))
@@ -353,9 +356,9 @@ private fun MainView(tradeType : TradeType,
             Text(modifier = modifier
                 .padding(start = 20.dp)
                 .clickable {
-                    getDetailsOfCoinFromDatabase(selectedItemName, viewModel)
+                    getDetailsOfCoinFromDatabase(coinName, viewModel)
                     tradeState = TradeType.Sell
-                    sellClicked(viewModel)
+                    sellClicked(viewModel, coinName)
                 }
                 .clip(RoundedCornerShape(8f))
                 .background(color = colorResource(id = if (tradeType == TradeType.Sell) R.color.onClickSellBack else R.color.SellBack))
@@ -540,7 +543,7 @@ private fun MainView(tradeType : TradeType,
 
             val selectedAvailableItem = when {
                 tradeState == TradeType.Buy && itemAmountData != null -> "USD"
-                tradeState == TradeType.Sell && itemAmountData != null -> selectedItemName
+                tradeState == TradeType.Sell && itemAmountData != null -> coinName
                 else -> ""
             }
 
@@ -569,7 +572,7 @@ private fun MainView(tradeType : TradeType,
                             total = totalPrice,
                         )
                         if (logicalCompare) {
-                            operationTrade(inputAmount ?: 0.0, selectedItemInfo?.current_price, viewModel)
+                            operationTrade(inputAmount ?: 0.0, selectedItemInfo?.current_price, viewModel, coinName)
                             return@Button
                         }
                         Toast.makeText(context, R.string.proggresState, Toast.LENGTH_SHORT).show()
@@ -625,13 +628,10 @@ private fun PercentItemView(
 
 
 private var currentPrice = 0.0
-private var runnable = Runnable { }
-private var handler = Handler(Looper.getMainLooper())
 private var tradeState = TradeType.Buy
 private var avaibleAmount : Double = 0.0
 
 
-private var selectedItemName = "bitcoin"
 private var timeLoop = 10000L
 private var job : Job? = null
 private var adInterstitial: InterstitialAd? = null
