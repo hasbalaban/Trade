@@ -1,152 +1,85 @@
 package com.finance.trade_learn.view
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.finance.trade_learn.Adapters.AdapterForMarket
 import com.finance.trade_learn.R
-import com.finance.trade_learn.utils.Ads
-import com.finance.trade_learn.utils.sharedPreferencesManager
+import com.finance.trade_learn.base.BaseFragmentViewModel
+import com.finance.trade_learn.databinding.FragmentMarketPageBinding
 import com.finance.trade_learn.viewModel.ViewModelMarket
-import com.google.android.gms.ads.AdRequest
 import kotlinx.coroutines.*
 import java.lang.Runnable
 
 
-
 var firstSet = true
 
-class MarketPage : Fragment() {
+class MarketPage() : BaseFragmentViewModel<FragmentMarketPageBinding, ViewModelMarket>(FragmentMarketPageBinding::inflate) {
 
-
-    private lateinit var viewModelMarket: ViewModelMarket
-    private lateinit var dataBindingMarket: com.finance.trade_learn.databinding.FragmentMarketPageBinding
     private var viewVisible = true
     private var job: Job? = null
-    private var jobAd: Job? = null
 
     private var runnable = Runnable { }
     private var handler = Handler(Looper.getMainLooper())
-    private var timeLoop = 2000L
-    private lateinit var adapter: AdapterForMarket
-
-    override fun onAttach(context: Context) {
-
-        providers()
-        super.onAttach(context)
-    }
-
-    private fun providers() {
-
-        viewModelMarket = ViewModelProvider(requireActivity())[ViewModelMarket::class.java]
-        // update()
-
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        // Inflate the layout for this fragment
-        dataBindingMarket = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_market_page,
-            container, false
-        )
-
-        return dataBindingMarket.root
-    }
+    private var timeLoop = 20000L
+    override val viewModel : ViewModelMarket by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        clickToSearch()
-
-        setAdapter()
-        isIntializeViewModel()
-        //setAd()
+        setup()
         super.onViewCreated(view, savedInstanceState)
     }
 
+    private fun setup () {
+        clickToSearch()
 
-    private fun setAd() {
-
-        val currentMillis = System.currentTimeMillis()
-        val updateTime = sharedPreferencesManager(requireContext()).getSharedPreferencesLong("marketPage",currentMillis)
-        val delayTime = if (currentMillis >= updateTime) 0L else updateTime-currentMillis
-        jobAd = CoroutineScope(Dispatchers.IO).launch {
-            delay(delayTime)
-            withContext(Dispatchers.Main) {
-                dataBindingMarket.adView.apply {
-                    loadAd(AdRequest.Builder().build())
-                    adListener = Ads.listenerAdRequest(dataBindingMarket.adView,"marketPage",requireContext())
-                }
-            }
+        binding.marketScreenCompose.setContent {
+            ComposeView()
         }
     }
 
-    private fun setAdapter() {
-        adapter = AdapterForMarket(requireContext(), arrayListOf())
-        dataBindingMarket.RecyclerViewMarket.adapter = adapter
-        val layoutManager = LinearLayoutManager(requireContext())
-        dataBindingMarket.RecyclerViewMarket.layoutManager = layoutManager
-    }
-
-    private fun isIntializeViewModel() {
-
-        val status = viewModelMarket.isInitialized
-        if (status.value!!) {
-
-
-            viewModelMarket.listOfCrypto.observe(viewLifecycleOwner) {
-                it?.let {
-                    adapter.updateData(it)
-                    viewModelMarket.isInitialized.value = true
-                    dataBindingMarket.progressBar.visibility = View.INVISIBLE
-                }
-
-            }
-        }
-
-    }
-
-    private fun getData() {
-
-        if (viewVisible) {
-            //observer state of list of coins
-            viewModelMarket.state.observe(viewLifecycleOwner) {
-                if (it) {
-                    viewModelMarket.listOfCrypto.observe(viewLifecycleOwner) { list ->
-                        list?.let {
-                            timeLoop = 7000
-                            adapter.updateData(list)
-                            dataBindingMarket.RecyclerViewMarket
-                            dataBindingMarket.progressBar.visibility = View.INVISIBLE
-                        }
-
-                    }
-                }
-            }
-        }
-    }
 
     private fun update() {
         job = CoroutineScope(Dispatchers.Main + Job()).launch {
-            runnable = object : Runnable {
-                override fun run() {
-                    viewModelMarket.runGetAllCryptoFromApi()
-                    getData()
-                    handler.postDelayed(runnable, timeLoop)
-                }
+            runnable = Runnable {
+                viewModel.runGetAllCryptoFromApi()
+                handler.postDelayed(runnable, timeLoop)
             }
             handler.post(runnable)
         }
@@ -155,28 +88,156 @@ class MarketPage : Fragment() {
 
     override fun onPause() {
         viewVisible = false
-        jobAd?.cancel()
+        job?.cancel()
         Log.i("onPause", "onPause")
         handler.removeCallbacks(runnable)
         super.onPause()
     }
 
     override fun onResume() {
-
         update()
         viewVisible = true
         super.onResume()
     }
 
     private fun clickToSearch() {
-        dataBindingMarket.searchedCoin.setOnClickListener {
+    }
 
-            val directions = MarketPageDirections.actionMarketPageToSearchActivity()
-            Navigation.findNavController(dataBindingMarket.root).navigate(directions)
 
+    @Composable
+    private fun ComposeView(viewModel : ViewModelMarket = androidx.lifecycle.viewmodel.compose.viewModel()){
+
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+
+            Box(modifier = Modifier.fillMaxSize()) {
+                val isLoading = viewModel.isLoading.observeAsState().value ?: false
+                if (isLoading){
+                    Row(modifier = Modifier.fillMaxSize()) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            CircularProgressIndicator(
+                                color = Color(resources.getColor(R.color.pozitive, null)),
+                            )
+                        }
+                    }
+                }
+                ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                    val (toolbar, divider1, mainItemsScreen) = createRefs()
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .constrainAs(toolbar) {
+                            top.linkTo(parent.top)
+                        }) {
+                        MainToolbar()
+
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(color = colorResource(id = R.color.light_grey))) {}
+                    }
+
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .constrainAs(mainItemsScreen) {
+                            top.linkTo(toolbar.bottom)
+                            bottom.linkTo(parent.bottom)
+                            height = Dimension.fillToConstraints
+                        }
+
+                    ) {
+                        val listOfItems = viewModel.listOfCrypto.observeAsState()
+                        HomePageItems(coinsHome = listOfItems.value){
+                            Navigation.findNavController(binding.root).navigate(it)
+                        }
+                    }
+                }
+            }
 
         }
     }
 
+    @Composable
+    private fun MainToolbar() {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = colorResource(id = R.color.white))
+                .padding(horizontal = 2.dp)
+        ) {
+            OutlinedButton(
+                shape = RoundedCornerShape(40),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    colorResource(id = R.color.search_background)
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 1.dp),
+                contentPadding = PaddingValues(
+                    horizontal = 2.dp,
+                    vertical = 10.dp
+                ),
+                border = BorderStroke(1.dp, colorResource(id = R.color.search_background_border)),
+                onClick = {
+                    val directions = MarketPageDirections.actionMarketPageToSearchActivity()
+                    Navigation.findNavController(binding.root).navigate(directions)
+                }) {
 
-}
+                Image(painter = painterResource(id = R.drawable.search),
+                    contentDescription = "Send Email",
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(start = 3.dp, top = 5.dp, bottom = 2.dp)
+                        .clickable(role = Role.DropdownList) {
+                            val directions = MarketPageDirections.actionMarketPageToSearchActivity()
+                            Navigation
+                                .findNavController(binding.root)
+                                .navigate(directions)
+                        },
+
+                )
+
+                Text(text = stringResource(id = R.string.hintSearch),
+                    textAlign = TextAlign.Center,
+                    color = colorResource(id = R.color.hint_grey),
+                    fontSize = 17.sp,
+                    modifier = Modifier
+                        .padding(start = 3.dp)
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = stringResource(id = R.string.name),
+                    textAlign = TextAlign.Center,
+                    fontSize = 17.sp,
+                    modifier = Modifier
+                        .padding(start = 3.dp)
+                )
+                Text(text = stringResource(id = R.string.lastPrice),
+                    textAlign = TextAlign.Center,
+                    fontSize = 17.sp,
+                    modifier = Modifier
+                        .padding(start = 3.dp)
+                )
+                Text(text = stringResource(id = R.string.change24),
+                    textAlign = TextAlign.Center,
+                    fontSize = 17.sp,
+                    modifier = Modifier
+                        .padding(start = 3.dp)
+                )
+            }
+        }
+    }
+
+    @Preview
+    @Composable
+    private fun MarketPagePreview(){
+        ComposeView()
+
+    }
+
+    }

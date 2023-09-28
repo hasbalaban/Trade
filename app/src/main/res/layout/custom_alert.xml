@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        style="@style/Card.12Rad.12Elev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_margin="@dimen/spacing_normal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_large">
+
+            <ImageView
+                android:id="@+id/dialogImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                tools:ignore="ContentDescription"
+                tools:text="Get Promo Codes" />
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/Bold.Black.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:textAlignment="center"
+                tools:text="Did You Pick Up Your Car?"
+                android:visibility="gone"
+                tools:visibility="visible"
+                />
+
+            <TextView
+                android:id="@+id/subTitle"
+                style="@style/Bold.Black.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:textAlignment="center"
+                tools:text="Your experience is important to us!"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/positiveButton"
+                style="@style/CardStyle.Orange.4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_24"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/positiveButtonText"
+                    style="@style/Medium.White.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:includeFontPadding="false"
+                    android:paddingTop="@dimen/spacing_normal"
+                    android:paddingBottom="@dimen/spacing_normal"
+                    android:textAlignment="center"
+                    tools:text="Yes, I did!" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/negativeButton"
+                style="@style/CardStyle.White.4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/negativeButtonText"
+                    style="@style/Orange.Medium.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:includeFontPadding="false"
+                    android:paddingTop="@dimen/spacing_normal"
+                    android:paddingBottom="@dimen/spacing_normal"
+                    android:textAlignment="center"
+                    tools:text="No, I did not!" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/notYetButton"
+                style="@style/CardStyle.White.4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/notYetButtonText"
+                    style="@style/Orange.Medium.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:includeFontPadding="false"
+                    android:paddingTop="@dimen/spacing_normal"
+                    android:paddingBottom="@dimen/spacing_normal"
+                    android:textAlignment="center"
+                    tools:text="Later" />
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

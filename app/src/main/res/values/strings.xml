@@ -2,7 +2,7 @@
     <string name="app_name">Crypto Account Demo Buy-Sell</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="usdt"> / USDT</string>
+    <string name="USD"> / USD</string>
 
 
     <string name="home" >Home</string>
@@ -10,6 +10,7 @@
     <string name="Trade" >Trade</string>
     <string name="Wallet" >Wallet</string>
     <string name="hintSearch" >Search Coin</string>
+    <string name="filter_coin" >Filter Coin</string>
     <string name="name">Name:</string>
     <string name="lastPrice">last Price:</string>
     <string name="change24">24h change:</string>
@@ -23,7 +24,7 @@
     <string name="Value">Value ($)</string>
     <string name="price">Price</string>
     <string name="total">Total</string>
-    <string name="totalUSDT">Total (USDT)</string>
+    <string name="totalUSD">Total (USD)</string>
     <string name="date">Date</string>
     <string name="state">State</string>
     <string name="trueValue">please input True Value</string>
@@ -33,6 +34,11 @@
     <string name="fail">Progress Failed</string>
     <string name="addZeros">0.000000</string>
     <string name="page_name">Search Coin</string>
+
+    <string name="notification_title">Let\'s get Free Notification</string>
+    <string name="notification_subTitle">To get free notification allow notification permission</string>
+    <string name="notification_allow_button">Allow</string>
+
 
 
 </resources>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Card">
+        <item name="android:clipToPadding">false</item>
+        <item name="android:foreground">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="Card.12Rad">
+        <item name="cardCornerRadius">12dp</item>
+    </style>
+
+    <style name="Card.12Rad.12Elev">
+        <item name="cardElevation">@dimen/spacing_normal</item>
+    </style>
+
+
+
+
+    <style name="Bold">
+    </style>
+
+    <style name="Bold.Black">
+        <item name="android:textColor">#525266</item>
+    </style>
+
+
+    <style name="Bold.Black.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="CardStyle" parent="CardView">
+        <item name="cardElevation">0dp</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="cardCornerRadius">4dp</item>
+        <item name="android:foreground">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="CardStyle.Orange" parent="CardStyle">
+        <item name="cardBackgroundColor">#FF7D0E</item>
+    </style>
+
+    <style name="CardStyle.Orange.4dp">
+        <item name="cardCornerRadius">4dp</item>
+    </style>
+
+
+    <style name="Medium"></style>
+    <style name="Medium.White">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Medium.White.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+
+
+
+
+    <style name="Orange">
+        <item name="android:textColor">#FF7D0E</item>
+    </style>
+
+    <style name="Orange.Medium"></style>
+
+    <style name="Orange.Medium.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+
+
+
+
+
+    <style name="CardStyle.White.4dp">
+        <item name="cardCornerRadius">4dp</item>
+    </style>
+
+
+    <style name="CardStyle.White" parent="CardStyle">
+        <item name="cardBackgroundColor">@color/white</item>
+    </style>
+
+
+
+
+
+</resources>

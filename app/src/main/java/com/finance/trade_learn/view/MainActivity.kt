@@ -1,12 +1,14 @@
 package com.finance.trade_learn.view
 
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import android.view.View
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -14,19 +16,21 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.finance.trade_learn.R
 import com.finance.trade_learn.databinding.ActivityMainBinding
-import com.finance.trade_learn.utils.sharedPreferencesManager
-import com.finance.trade_learn.utils.NotificationWorkManager
+import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.viewModel.ViewModelMarket
 import com.finance.trade_learn.viewModel.ViewModelUtils
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.navigation.NavigationBarView
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var controller: NavController
     private lateinit var dataBindingMain: ActivityMainBinding
@@ -38,27 +42,44 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dataBindingMain = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        viewModelMarket = ViewModelProvider(this).get(ViewModelMarket::class.java)
+        dataBindingMain = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(dataBindingMain.root)
+        viewModelMarket = ViewModelProvider(this)[ViewModelMarket::class.java]
         setup()
     }
 
     private fun setup (){
         bottomNavigationItemClickListener()
         isOneEntering()
-        //firebaseSave()
         checkIsAdShowed()
+        showNotificationPermission()
+        //firebaseSave()
      //   Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
-        if (System.currentTimeMillis() > 1664637498802 + 509760000){
-            dataBindingMain.options.visibility = View.VISIBLE
-            dataBindingMain.InfoMessage.visibility = View.GONE
-            findViewById<View>(R.id.fragmentContainerView).visibility = View.VISIBLE
-        }
     }
 
+    private fun showNotificationPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requestPostPermission(delay = 3000)
+           // NotificationPermissionManager.canAskNotificationPermission(this)
+        }
+
+    }
+
+    @SuppressLint("HardwareIds")
     private fun setTestPhone (){
         val androidId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
         if (androidId != "8d1e30b2ef5afa39") 1 else 2
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun requestPostPermission(delay : Long){
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(delay)
+            withContext(Dispatchers.Main){
+                val requestedPermissions = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+                ActivityCompat.requestPermissions(this@MainActivity, requestedPermissions, Constants.POST_NOTIFICATION)
+            }
+        }
     }
 
     // to navigate according click in fragment
@@ -78,12 +99,14 @@ class MainActivity : AppCompatActivity() {
             NotificationWorkManager(3,TimeUnit.DAYS,this)
 
             val deviceId = UUID.randomUUID()
-            sharedPreferencesManager(this).addSharedPreferencesString(
+            SharedPreferencesManager(this).addSharedPreferencesString(
                 "deviceId",
                 deviceId.toString()
             )
 
-
+            if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU){
+                requestPostPermission(delay = 10000)
+            }
         }
     }
     fun firebaseSave() {
@@ -92,7 +115,7 @@ class MainActivity : AppCompatActivity() {
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
 
-        val deviceID = sharedPreferencesManager(this).getSharedPreferencesString("deviceId", "0")
+        val deviceID = SharedPreferencesManager(this).getSharedPreferencesString("deviceId", "0")
         val openAppDetails = hashMapOf(
             "open" to "1",
             "time" to currentDate,
@@ -122,7 +145,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                 interstitialAd.show(this@MainActivity)
-                sharedPreferencesManager(this@MainActivity).addSharedPreferencesLong("interstitialAdLoadedTime",System.currentTimeMillis()+(60*60*1000))
+                SharedPreferencesManager(this@MainActivity).addSharedPreferencesLong("interstitialAdLoadedTime",System.currentTimeMillis()+(60*60*1000))
             }
         })
 
@@ -134,10 +157,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIsAdShowed(){
-        lifecycleScope.launchWhenCreated {
+        if (Constants.SHOULD_SHOW_ADS.not()) return
+        lifecycleScope.launch {
             val currentMillis = System.currentTimeMillis()
-            val updateTime = sharedPreferencesManager(this@MainActivity).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
-            if (currentMillis < updateTime) return@launchWhenCreated
+            val updateTime = SharedPreferencesManager(this@MainActivity).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
+            if (currentMillis < updateTime) return@launch
 
             MobileAds.initialize(this@MainActivity) {}
             setInterstitialAd()
