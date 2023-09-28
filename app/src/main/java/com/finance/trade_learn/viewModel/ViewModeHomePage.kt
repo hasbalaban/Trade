@@ -7,7 +7,7 @@ import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.models.DataForHomePage
-import com.finance.trade_learn.utils.ConverOperation1
+import com.finance.trade_learn.utils.ConvertOperation
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
@@ -25,7 +25,7 @@ class ViewModeHomePage : BaseViewModel() {
     fun getAllCryptoFromApi() {
         isLoading.value = true
         viewModelScope.launch {
-                cryptoService().getCoinGecko(null, 1)
+                cryptoService().getCoinGecko(1)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
@@ -52,7 +52,7 @@ class ViewModeHomePage : BaseViewModel() {
     }
 
     fun convertCryptoList(t: List<CoinDetail>): DataForHomePage {
-        return ConverOperation1(t, lastCrypoList).convertDataToUse()
+        return ConvertOperation(t, lastCrypoList).convertDataToUse()
     }
 
     private fun convertPopularCoinList(list: ArrayList<CoinsHome>?): ArrayList<CoinsHome>? {

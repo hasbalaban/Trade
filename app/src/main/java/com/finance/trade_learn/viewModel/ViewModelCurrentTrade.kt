@@ -71,11 +71,10 @@ class ViewModelCurrentTrade @Inject constructor(
                         selectedCoinToTradeDetails.value = t
                     }
 
-                    override fun onError(e: Throwable) {
+                    override fun onError(e: Throwable) {}
+
                     }
-
-
-                })
+                )
         )
 
     }

@@ -476,7 +476,7 @@ class CurrentTrade @Inject constructor() : BaseFragmentViewModel<FragmentCurrent
             SelectedPercent.Percent25 -> {
                 binding.apply {
                     binding.Total.setText((percentCoinController().first *0.25).toString())
-                    percentOptions.forEach {
+                    percentOptions.forEach { _ ->
                         percent25Image.setImageResource(R.drawable.buy)
 
                         arrayOf(percent50Image, percent75Image, percent100Image).forEach {

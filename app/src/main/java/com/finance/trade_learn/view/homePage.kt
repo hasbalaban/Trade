@@ -126,7 +126,9 @@ class Home : BaseFragmentViewModel<FragmentHomeBinding, ViewModeHomePage>(Fragme
                     }
 
                 ) {
-                    HomePageItems(){
+
+                    val listOfItems = viewModel.listOfCrypto.observeAsState()
+                    HomePageItems(coinsHome = listOfItems.value){
                         Navigation.findNavController(binding.root).navigate(it)
                     }
                 }
@@ -140,7 +142,6 @@ class Home : BaseFragmentViewModel<FragmentHomeBinding, ViewModeHomePage>(Fragme
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
                     .background(color = colorResource(id = R.color.light_grey))
                     .padding(horizontal = 6.dp)
             ) {

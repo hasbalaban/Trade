@@ -10,6 +10,7 @@
     <string name="Trade" >Trade</string>
     <string name="Wallet" >Wallet</string>
     <string name="hintSearch" >Search Coin</string>
+    <string name="filter_coin" >Filter Coin</string>
     <string name="name">Name:</string>
     <string name="lastPrice">last Price:</string>
     <string name="change24">24h change:</string>

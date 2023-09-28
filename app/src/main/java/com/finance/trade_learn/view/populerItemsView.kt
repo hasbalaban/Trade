@@ -14,12 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.finance.trade_learn.Adapters.SolveCoinName
+import com.finance.trade_learn.Adapters.solveCoinName
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.viewModel.ViewModeHomePage
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @Composable
@@ -38,7 +37,7 @@ fun PopularItemsView (
             first?.let {
                 Column (modifier = Modifier
                     .clickable {
-                        val coinName = SolveCoinName(it.CoinName)
+                        val coinName = solveCoinName(it.CoinName)
                         clickedItem.invoke(coinName.lowercase(Locale.getDefault()))
                     }
                     .padding(start = 6.dp)
@@ -49,7 +48,7 @@ fun PopularItemsView (
             second?.let {
                 Column (modifier = Modifier
                     .clickable {
-                        val coinName = SolveCoinName(it.CoinName)
+                        val coinName = solveCoinName(it.CoinName)
                         clickedItem.invoke(coinName.lowercase(Locale.getDefault()))
                     }
                     .padding(start = 6.dp)
@@ -60,7 +59,7 @@ fun PopularItemsView (
             third?.let {
                 Column (modifier = Modifier
                     .clickable {
-                        val coinName = SolveCoinName(it.CoinName)
+                        val coinName = solveCoinName(it.CoinName)
                         clickedItem.invoke(coinName.lowercase(Locale.getDefault()))
                     }
                     .padding(start = 6.dp)

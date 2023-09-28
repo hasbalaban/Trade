@@ -16,7 +16,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import com.finance.trade_learn.R
 import com.finance.trade_learn.ctryptoApi.cryptoService
-import com.finance.trade_learn.models.on_crypto_trade.BaseModelOneCryptoModel
+import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
 import com.finance.trade_learn.view.MainActivity
 import com.finance.trade_learn.viewModel.ViewModelCurrentTrade
@@ -40,7 +40,9 @@ class SendNotificationPer12Hours @Inject constructor(
 
     @Inject
     lateinit var coinDetailRepositoryImp : CoinDetailRepositoryImp
-    val viewModel : ViewModelCurrentTrade = ViewModelCurrentTrade(coinDetailRepositoryImp)
+    val viewModel : ViewModelCurrentTrade by lazy {
+        ViewModelCurrentTrade(coinDetailRepositoryImp)
+    }
 
     fun createNotification(coinName: String, price: String) {
         val channelId = "1"
@@ -79,17 +81,16 @@ class SendNotificationPer12Hours @Inject constructor(
 
     private fun getData() {
         val coinName = SharedPreferencesManager(context).getSharedPreferencesString("coinName")
-        viewModel.getSelectedCoinDetails(coinName)
 
         CoroutineScope(Dispatchers.IO).launch {
             cryptoService().selectedCoinToTrade(coinName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object :
-                    DisposableSingleObserver<List<BaseModelOneCryptoModel>>() {
+                    DisposableSingleObserver<List<CoinDetail>>() {
 
-                    override fun onSuccess(t: List<BaseModelOneCryptoModel>) {
-                        createNotification(t[0].symbol, t[0].price)
+                    override fun onSuccess(t: List<CoinDetail>) {
+                        createNotification(t[0].symbol, t[0].current_price.toString())
                     }
 
                     override fun onError(e: Throwable) {}
