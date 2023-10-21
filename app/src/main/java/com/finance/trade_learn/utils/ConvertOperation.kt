@@ -26,7 +26,7 @@ class ConvertOperation(
 
         for ((position, i) in t.withIndex()) {
             val last = ListOfCryptoforCompare.value?.get(position)?.CoinPrice?.toDouble()
-            val new = i.current_price
+            val new = i.current_price ?: 0.0
 
             //control for state of change
             if (last != null) {

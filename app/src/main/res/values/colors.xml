@@ -24,5 +24,6 @@
     <color name="hint_grey">#A5A5A5</color>
     <color name="search_background">#F1EFEF</color>
     <color name="search_background_border">#D3CACA</color>
+    <color name="red">#FF0000</color>
 
 </resources>

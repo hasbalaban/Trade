@@ -7,6 +7,9 @@ data class TradeState(
     var operationType : TradeType,
     var selectedPercent : SelectedPercent
 )
-enum class SelectedPercent {
-    Percent25,Percent50,Percent75,Percent100
+enum class SelectedPercent (val value : Int){
+    Percent25(1),
+    Percent50(2),
+    Percent75(3),
+    Percent100(4)
 }
