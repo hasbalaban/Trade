@@ -1,10 +1,7 @@
 package com.finance.trade_learn.view
 
-import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import android.view.View
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,205 +36,159 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
 import com.finance.trade_learn.R
-import com.finance.trade_learn.base.BaseFragmentViewModel
-import com.finance.trade_learn.databinding.FragmentMarketPageBinding
 import com.finance.trade_learn.viewModel.ViewModelMarket
-import kotlinx.coroutines.*
 import java.lang.Runnable
 
 
 var firstSet = true
 
-class MarketPage() : BaseFragmentViewModel<FragmentMarketPageBinding, ViewModelMarket>(FragmentMarketPageBinding::inflate) {
-
-    private var viewVisible = true
-    private var job: Job? = null
-
-    private var runnable = Runnable { }
-    private var handler = Handler(Looper.getMainLooper())
-    private var timeLoop = 20000L
-    override val viewModel : ViewModelMarket by viewModels()
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setup()
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    private fun setup () {
-        clickToSearch()
-
-        binding.marketScreenCompose.setContent {
-            ComposeView()
-        }
-    }
 
 
-    private fun update() {
-        job = CoroutineScope(Dispatchers.Main + Job()).launch {
-            runnable = Runnable {
-                viewModel.runGetAllCryptoFromApi()
-                handler.postDelayed(runnable, timeLoop)
-            }
-            handler.post(runnable)
-        }
-    }
+@Composable
+private fun ComposeView(viewModel : ViewModelMarket = androidx.lifecycle.viewmodel.compose.viewModel()){
+    update(viewModel)
 
+    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
 
-    override fun onPause() {
-        viewVisible = false
-        job?.cancel()
-        Log.i("onPause", "onPause")
-        handler.removeCallbacks(runnable)
-        super.onPause()
-    }
-
-    override fun onResume() {
-        update()
-        viewVisible = true
-        super.onResume()
-    }
-
-    private fun clickToSearch() {
-    }
-
-
-    @Composable
-    private fun ComposeView(viewModel : ViewModelMarket = androidx.lifecycle.viewmodel.compose.viewModel()){
-
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-
-            Box(modifier = Modifier.fillMaxSize()) {
-                val isLoading = viewModel.isLoading.observeAsState().value ?: false
-                if (isLoading){
-                    Row(modifier = Modifier.fillMaxSize()) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            CircularProgressIndicator(
-                                color = Color(resources.getColor(R.color.pozitive, null)),
-                            )
-                        }
-                    }
-                }
-                ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-                    val (toolbar, divider1, mainItemsScreen) = createRefs()
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(toolbar) {
-                            top.linkTo(parent.top)
-                        }) {
-                        MainToolbar()
-
-                        Row(modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(color = colorResource(id = R.color.light_grey))) {}
-                    }
-
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(mainItemsScreen) {
-                            top.linkTo(toolbar.bottom)
-                            bottom.linkTo(parent.bottom)
-                            height = Dimension.fillToConstraints
-                        }
-
+        Box(modifier = Modifier.fillMaxSize()) {
+            val isLoading = viewModel.isLoading.observeAsState().value ?: false
+            if (isLoading){
+                Row(modifier = Modifier.fillMaxSize()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        val listOfItems = viewModel.listOfCrypto.observeAsState()
-                        HomePageItems(coinsHome = listOfItems.value){
-                            Navigation.findNavController(binding.root).navigate(it)
-                        }
+                        CircularProgressIndicator(
+                            color = Color(R.color.pozitive),
+                        )
                     }
                 }
             }
+            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                val (toolbar, divider1, mainItemsScreen) = createRefs()
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(toolbar) {
+                        top.linkTo(parent.top)
+                    }) {
+                    MainToolbar()
 
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(color = colorResource(id = R.color.light_grey))) {}
+                }
+
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(mainItemsScreen) {
+                        top.linkTo(toolbar.bottom)
+                        bottom.linkTo(parent.bottom)
+                        height = Dimension.fillToConstraints
+                    }
+
+                ) {
+                    val listOfItems = viewModel.listOfCrypto.observeAsState()
+                    HomePageItems(coinsHome = listOfItems.value){
+                       // Navigation.findNavController(binding.root).navigate(it)
+                    }
+                }
+            }
         }
-    }
 
-    @Composable
-    private fun MainToolbar() {
-        Column(
+    }
+}
+
+private fun update(viewModel: ViewModelMarket) {
+    var runnable = Runnable { }
+    var handler = Handler(Looper.getMainLooper())
+    val timeLoop = 20000L
+    runnable = Runnable {
+        viewModel.runGetAllCryptoFromApi()
+        handler.postDelayed(runnable, timeLoop)
+    }
+    handler.post(runnable)
+}
+
+@Composable
+private fun MainToolbar() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = colorResource(id = R.color.white))
+            .padding(horizontal = 2.dp)
+    ) {
+        OutlinedButton(
+            shape = RoundedCornerShape(40),
+            colors = ButtonDefaults.outlinedButtonColors(
+                colorResource(id = R.color.search_background)
+            ),
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = colorResource(id = R.color.white))
-                .padding(horizontal = 2.dp)
-        ) {
-            OutlinedButton(
-                shape = RoundedCornerShape(40),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    colorResource(id = R.color.search_background)
-                ),
+                .padding(top = 1.dp),
+            contentPadding = PaddingValues(
+                horizontal = 2.dp,
+                vertical = 10.dp
+            ),
+            border = BorderStroke(1.dp, colorResource(id = R.color.search_background_border)),
+            onClick = {
+                //    val directions = MarketPageDirections.actionMarketPageToSearchActivity()
+                //   Navigation.findNavController(binding.root).navigate(directions)
+            }) {
+
+            Image(painter = painterResource(id = R.drawable.search),
+                contentDescription = "Send Email",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 1.dp),
-                contentPadding = PaddingValues(
-                    horizontal = 2.dp,
-                    vertical = 10.dp
-                ),
-                border = BorderStroke(1.dp, colorResource(id = R.color.search_background_border)),
-                onClick = {
-                    val directions = MarketPageDirections.actionMarketPageToSearchActivity()
-                    Navigation.findNavController(binding.root).navigate(directions)
-                }) {
-
-                Image(painter = painterResource(id = R.drawable.search),
-                    contentDescription = "Send Email",
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .padding(start = 3.dp, top = 5.dp, bottom = 2.dp)
-                        .clickable(role = Role.DropdownList) {
-                            val directions = MarketPageDirections.actionMarketPageToSearchActivity()
-                            Navigation
-                                .findNavController(binding.root)
-                                .navigate(directions)
-                        },
+                    .wrapContentSize()
+                    .padding(start = 3.dp, top = 5.dp, bottom = 2.dp)
+                    .clickable(role = Role.DropdownList) {
+                        //  val directions = MarketPageDirections.actionMarketPageToSearchActivity()
+                        //  Navigation
+                        //      .findNavController(binding.root)
+                        //      .navigate(directions)
+                    },
 
                 )
 
-                Text(text = stringResource(id = R.string.hintSearch),
-                    textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.hint_grey),
-                    fontSize = 17.sp,
-                    modifier = Modifier
-                        .padding(start = 3.dp)
-                )
-            }
+            Text(text = stringResource(id = R.string.hintSearch),
+                textAlign = TextAlign.Center,
+                color = colorResource(id = R.color.hint_grey),
+                fontSize = 17.sp,
+                modifier = Modifier
+                    .padding(start = 3.dp)
+            )
+        }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = stringResource(id = R.string.name),
-                    textAlign = TextAlign.Center,
-                    fontSize = 17.sp,
-                    modifier = Modifier
-                        .padding(start = 3.dp)
-                )
-                Text(text = stringResource(id = R.string.lastPrice),
-                    textAlign = TextAlign.Center,
-                    fontSize = 17.sp,
-                    modifier = Modifier
-                        .padding(start = 3.dp)
-                )
-                Text(text = stringResource(id = R.string.change24),
-                    textAlign = TextAlign.Center,
-                    fontSize = 17.sp,
-                    modifier = Modifier
-                        .padding(start = 3.dp)
-                )
-            }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(text = stringResource(id = R.string.name),
+                textAlign = TextAlign.Center,
+                fontSize = 17.sp,
+                modifier = Modifier
+                    .padding(start = 3.dp)
+            )
+            Text(text = stringResource(id = R.string.lastPrice),
+                textAlign = TextAlign.Center,
+                fontSize = 17.sp,
+                modifier = Modifier
+                    .padding(start = 3.dp)
+            )
+            Text(text = stringResource(id = R.string.change24),
+                textAlign = TextAlign.Center,
+                fontSize = 17.sp,
+                modifier = Modifier
+                    .padding(start = 3.dp)
+            )
         }
     }
+}
 
-    @Preview
-    @Composable
-    private fun MarketPagePreview(){
-        ComposeView()
+@Preview
+@Composable
+fun MarketPagePreview(){
+    ComposeView()
 
-    }
-
-    }
+}

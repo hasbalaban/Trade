@@ -37,4 +37,7 @@
     <string name="notification_title">Ücretsiz Bildirimler</string>
     <string name="notification_allow_button">İzin Ver</string>
     <string name="notification_subTitle">Ücretsiz bildirimleri almak için bildirimlere izin ver.</string>
+
+
+    <string name="loading">Yükleniyor...</string>
 </resources>
