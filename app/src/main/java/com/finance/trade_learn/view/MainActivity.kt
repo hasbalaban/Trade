@@ -16,6 +16,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -61,6 +62,10 @@ class MainActivity : AppCompatActivity() {
             // remember navController so it does not
             // get recreated on recomposition
             val navController = rememberNavController()
+
+            LaunchedEffect(Unit){
+                setup()
+            }
 
             Surface(color = Color.White) {
                 // Scaffold Component

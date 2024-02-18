@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,13 +25,17 @@ import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelF
 
 @Composable
 fun WalletItemComposeView(historyList: List<NewModelForItemHistory>, function: (String) -> Unit) {
+
     LazyColumn(modifier = Modifier.fillMaxWidth().background(color = Color(0xFFECD9D9))){
-        items(historyList){item ->
+        itemsIndexed(historyList){index, item ->
             val painter = rememberAsyncImagePainter(model = item.Image, filterQuality = FilterQuality.High)
 
-            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp).clickable {
-                function(item.CoinName)
-            }) {
+            Row(modifier = Modifier.clickable {
+                function.invoke(item.CoinName)
+            }
+                .background(color = if ((index % 2) == 0) Color(0xFFECD9D9) else Color.White )
+                .fillMaxWidth()
+                .padding(vertical = 6.dp)) {
                 Image(painter = painter,
                     modifier = Modifier.weight(1f),
                     contentDescription = null

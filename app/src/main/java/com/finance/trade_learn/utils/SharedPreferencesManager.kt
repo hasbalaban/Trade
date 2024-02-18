@@ -26,6 +26,6 @@ class SharedPreferencesManager(context: Context) {
     }
 
     fun getSharedPreferencesBoolen(keyName: String) =
-        sharedPreferencesManager.getBoolean(keyName, true)
+        sharedPreferencesManager.getBoolean(keyName, false)
 
 }

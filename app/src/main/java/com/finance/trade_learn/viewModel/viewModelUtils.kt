@@ -2,8 +2,10 @@ package com.finance.trade_learn.viewModel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.database.dataBaseEntities.myCoins
 import com.finance.trade_learn.database.dataBaseService
+import com.finance.trade_learn.utils.Secrets
 import com.finance.trade_learn.utils.SharedPreferencesManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,19 +16,19 @@ class ViewModelUtils() : ViewModel() {
 
     fun isOneEntering(context: Context): Boolean {
         val sharedManager = SharedPreferencesManager(context)
-        val shouldGiveGiftDollars = sharedManager.getSharedPreferencesBoolen("shouldGiveGiftDollars")
-        return if (shouldGiveGiftDollars ) {
-            true.also {
-                sharedManager.addSharedPreferencesBoolen("shouldGiveGiftDollars", false)
-                addOneTimeDollars(1000.0,context)
-            }
-        } else false
+        val hasGift = sharedManager.getSharedPreferencesBoolen("hasGift")
+
+        if (!hasGift){
+            sharedManager.addSharedPreferencesBoolen("hasGift", true)
+            addOneTimeDollars(context)
+        }
+        return !hasGift
     }
 
-    private fun addOneTimeDollars(dollars: Double, context: Context) {
-        CoroutineScope(Dispatchers.IO).launch {
+    private fun addOneTimeDollars(context: Context) {
+        viewModelScope.launch {
             val databaseDao = dataBaseService.invoke(context).databaseDao()
-            val myCoins = myCoins("tether", dollars)
+            val myCoins = myCoins("tether", Secrets.GIFT_AMOUNT)
             databaseDao.addCoin(myCoins)
         }
     }

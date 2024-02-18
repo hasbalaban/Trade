@@ -152,17 +152,15 @@ fun WalletScreen(
                 WalletItemComposeView(it) { itemName ->
                     val coinName = solveCoinName(itemName)
                     SharedPreferencesManager(context).addSharedPreferencesString("coinName", coinName)
-                    //Navigation.findNavController(binding.root).navigate(R.id.tradePage)
+                    openTradePage.invoke(itemName)
                 }
             }
         } else {
             val context = LocalContext.current
-            resultItems.let {
-                WalletItemComposeView(it) { itemName ->
-                    val coinName = solveCoinName(itemName)
-                    SharedPreferencesManager(context).addSharedPreferencesString("coinName", coinName)
-                    //Navigation.findNavController(binding.root).navigate(R.id.tradePage)
-                }
+            WalletItemComposeView(resultItems) { itemName ->
+                val coinName = solveCoinName(itemName)
+                SharedPreferencesManager(context).addSharedPreferencesString("coinName", coinName)
+                openTradePage.invoke(itemName)
             }
         }
 

@@ -58,6 +58,7 @@ class ViewModelMyWallet @Inject constructor(
 
 
     private fun getDataFromApi(coinQuery: String) {
+        if (coinQuery.isBlank()) return
         disposable.add(
             cryptoService().getSelectedCoinToTradeCoinGecko(coinQuery.lowercase())
                 .subscribeOn(Schedulers.io())
