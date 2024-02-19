@@ -31,9 +31,10 @@ class ViewModelCurrentTrade @Inject constructor(
     var isSuccess = MutableLiveData<Boolean>()
     val coinAmountLiveData = MutableLiveData<BigDecimal?>()
     val selectedCoinToTradeDetails = MutableLiveData<List<CoinDetail>>()
-    val canChangeAmount = MutableLiveData<Boolean>(true)
+
     private val _tradeType = MutableLiveData<TradeType>(TradeType.Buy)
     val tradeType : LiveData<TradeType> = _tradeType
+
     val selectedPercent =  MutableLiveData<SelectedPercent>()
 
     fun changeTradeType (type : TradeType){
