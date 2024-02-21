@@ -107,7 +107,7 @@ fun HomePageItem(coinsHome: CoinsHome, clickedItem: (String) -> Unit) {
 
                 }) {
                 Text(
-                    color = MaterialTheme.colors.surface,
+                    color = MaterialTheme.colors.onPrimary,
                     modifier = Modifier.padding(top = 8.dp, end = 6.dp),
                     text = coinsHome.coinSymbol
                 )

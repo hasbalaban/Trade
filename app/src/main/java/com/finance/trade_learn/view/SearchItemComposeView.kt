@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,8 +28,10 @@ fun SearchItemComposeView(CoinInfo: CoinInfoList, clickedItem: (String) -> Unit)
             .fillMaxWidth()
             .padding(top = 6.dp, start = 6.dp, end = 6.dp)
 
-        ) {
-        Text(text = CoinInfo.name, fontSize = 16.sp)
+    ) {
+        Text(
+            color = MaterialTheme.colors.onPrimary, text = CoinInfo.name, fontSize = 16.sp
+        )
         Image(painter = painterResource(id = R.drawable.favorite_close), contentDescription = null)
     }
 }
