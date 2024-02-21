@@ -30,7 +30,7 @@ fun SearchScreen(openTradePage : (String) -> Unit, viewModel : SearchCoinViewMod
 }
 
 private fun getItemsList (searchedItems : String, viewModel: SearchCoinViewModel): List<CoinInfoList> {
-    if (searchedItems.isEmpty()) return emptyList()
+    if (searchedItems.isEmpty()) return viewModel.coinListDetail.value ?: emptyList()
 
     val queryList = viewModel.coinListDetail.value?.filter {
         it.name.contains(searchedItems, ignoreCase = true)
@@ -43,6 +43,11 @@ private fun getItemsList (searchedItems : String, viewModel: SearchCoinViewModel
 private fun SearchComposeView (openTradePage : (String) -> Unit, viewModel: SearchCoinViewModel = androidx.lifecycle.viewmodel.compose.viewModel()){
         var searchedItem by remember { mutableStateOf("") }
         var resultItems by remember { mutableStateOf(emptyList<CoinInfoList>()) }
+
+        val items = viewModel.coinListDetail.observeAsState()
+        if (!items.value.isNullOrEmpty()){
+            resultItems = getItemsList(searchedItem, viewModel = viewModel )
+        }
 
         val textChanged : (String) -> Unit =textChangedScope@{
             searchedItem = it
