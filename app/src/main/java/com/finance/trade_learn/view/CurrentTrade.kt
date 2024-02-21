@@ -23,7 +23,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -46,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.finance.trade_learn.R
@@ -73,7 +76,7 @@ private fun getCoinDetail(viewModel: ViewModelCurrentTrade, coinName: String) {
 
     runnable = Runnable { //call this function for update
         viewModel.getSelectedCoinDetails(coinName)
-        handler.postDelayed(runnable, 10000L)
+        handler.postDelayed(runnable, 100000L)
     }
     handler.post(runnable)
 }
@@ -202,10 +205,27 @@ fun TradeScreen(
     modifier: Modifier = Modifier,
     viewModel: ViewModelCurrentTrade,
 ){
+    var runnable by remember {
+        mutableStateOf(Runnable {  })
+    }
+    val handler by remember {
+        mutableStateOf(Handler(Looper.getMainLooper()))
+    }
 
-    LaunchedEffect(key1 = Unit){
-        getCoinDetail(viewModel = viewModel, coinName = coinName)
-        getDetailsOfCoinFromDatabase(viewModel = viewModel)
+    LifeCycleListener {
+        when (it) {
+            Lifecycle.Event.ON_RESUME -> {
+                runnable = Runnable {
+                    viewModel.getSelectedCoinDetails(coinName)
+                    getDetailsOfCoinFromDatabase(viewModel = viewModel)
+                    handler.postDelayed(runnable, 100000L)
+                }
+                handler.post(runnable)            }
+            Lifecycle.Event.ON_PAUSE -> {
+                handler.removeCallbacks(runnable)
+            }
+            else -> {}
+        }
     }
 
     val selectedItemInfoResponse = viewModel.selectedCoinToTradeDetails.observeAsState()
@@ -394,10 +414,9 @@ private fun MainView(tradeType : TradeType,
 
         Row(modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp)
+            .height(64.dp)
             .padding(top = 12.dp)
             .clip(RoundedCornerShape(8f))
-            .background(color = colorResource(id = R.color.all_trade))
 
         ) {
 
@@ -421,7 +440,9 @@ private fun MainView(tradeType : TradeType,
                 .padding(16.dp),
                 painter = painterResource(id = R.drawable.minus), contentDescription = null)
 
-            TextField(modifier = modifier.weight(1f), value = inputAmount.toString(), onValueChange ={
+            TextField(
+                colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.onSecondary),
+                modifier = modifier.weight(1f), value = inputAmount.toString(), onValueChange ={
                 inputAmount = try {
                     it.toDouble()
                 } catch (_ : Exception) {
@@ -474,7 +495,6 @@ private fun MainView(tradeType : TradeType,
             .clip(RoundedCornerShape(8f))
             .background(color = colorResource(id = R.color.SellBack))
             .padding(10.dp),
-            color = androidx.compose.ui.graphics.Color.Black,
             textAlign = TextAlign.Center,
 
             fontSize = 16.sp

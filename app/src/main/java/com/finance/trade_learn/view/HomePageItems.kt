@@ -82,24 +82,6 @@ fun HomePageItem(coinsHome: CoinsHome, clickedItem: (String) -> Unit) {
         else -> Color.Transparent
     }
 
-    val clickedItemImage: @Composable (String) -> Unit= {itemImage ->
-        Column(modifier = Modifier.fillMaxSize()) {
-            val painter =
-                rememberAsyncImagePainter(model = itemImage,
-                    filterQuality = FilterQuality.High,
-                )
-            Image(
-                painter = painter,
-                modifier = Modifier
-                    .size(160.dp)
-                    .clip(CircleShape)
-                ,
-                contentDescription = null
-            )
-
-        }
-    }
-
     Row(modifier = Modifier
         .height(60.dp)
         .fillMaxWidth()
@@ -131,8 +113,6 @@ fun HomePageItem(coinsHome: CoinsHome, clickedItem: (String) -> Unit) {
                 val painter =
                     rememberAsyncImagePainter(model = coinsHome.CoinImage,
                         filterQuality = FilterQuality.High,
-
-
                         )
 
                 Image(

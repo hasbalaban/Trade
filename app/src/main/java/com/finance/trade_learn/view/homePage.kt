@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -62,12 +65,13 @@ private fun MainToolbar(openSearch : () -> Unit) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = colorResource(id = R.color.light_grey))
+            .background(color = MaterialTheme.colors.primary)
             .padding(horizontal = 6.dp)
     ) {
         val context = LocalContext.current
         val (composeEmail, appName, search) = createRefs()
-        Image(painter = painterResource(id = R.drawable.send_mail),
+        Image(
+            painter = painterResource(id = R.drawable.send_mail),
             contentDescription = "Send Email",
             modifier = Modifier
                 .constrainAs(composeEmail) {
@@ -121,7 +125,7 @@ fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) 
         mutableStateOf(Handler(Looper.getMainLooper()))
     }
     val timeLoop by remember {
-        mutableStateOf(30000L)
+        mutableStateOf(60000L)
     }
 
 
@@ -147,15 +151,13 @@ fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) 
     Box(modifier = Modifier.fillMaxSize()) {
         val isLoading = viewModel.isLoading.observeAsState().value ?: false
         if (isLoading){
-            Row(modifier = Modifier.fillMaxSize()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = colorResource(id = R.color.pozitive),
-                    )
-                }
+            Row(modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center) {
+
+                CircularProgressIndicator(
+                    color = colorResource(id = R.color.pozitive),
+                )
             }
         }
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {

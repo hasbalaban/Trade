@@ -25,7 +25,7 @@ class ViewModeHomePage : BaseViewModel() {
     fun getAllCryptoFromApi(page : Int) {
         isLoading.value = true
         viewModelScope.launch {
-                cryptoService().getCoinGecko(2)
+                cryptoService().getCoinGecko(page)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {

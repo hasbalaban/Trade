@@ -30,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
 import com.finance.trade_learn.viewModel.ViewModelCurrentTrade
@@ -55,29 +56,24 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         setContent {
 
-            // remember navController so it does not
-            // get recreated on recomposition
-            val navController = rememberNavController()
+            FinanceAppTheme{
+                val navController = rememberNavController()
 
-            LaunchedEffect(Unit){
-                setup()
-            }
+                LaunchedEffect(Unit){
+                    setup()
+                }
 
-            Surface(color = Color.White) {
-                // Scaffold Component
-                Scaffold(
-                    // Bottom navigation
-                    bottomBar = {
-                        BottomNavigationBar(navController = navController)
+                Surface(color = Color.White) {
+                    Scaffold(
+                        bottomBar = { BottomNavigationBar(navController = navController) }
+                    ){_ ->
+                        MainScreen(navController)
                     }
-                ){padding ->
-                    MainScreen(navController)
                 }
             }
+
         }
     }
 
@@ -273,9 +269,7 @@ class MainActivity : AppCompatActivity() {
     @Composable
     fun BottomNavigationBar(navController: NavHostController) {
 
-        BottomNavigation(
-            backgroundColor = Color.White
-        ) {
+        BottomNavigation() {
 
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
@@ -289,6 +283,7 @@ class MainActivity : AppCompatActivity() {
                         navController.navigate(navItem.route){
                             launchSingleTop = true
                             restoreState = true
+                            popUpTo(Constants.BottomNavItems.first().route)
                         }
                     },
 
@@ -298,7 +293,7 @@ class MainActivity : AppCompatActivity() {
                     label = {
                         Text(text = navItem.label)
                     },
-                    alwaysShowLabel = false
+                    alwaysShowLabel = true
                 )
             }
         }
