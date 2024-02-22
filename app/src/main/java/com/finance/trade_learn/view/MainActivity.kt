@@ -4,11 +4,11 @@ package com.finance.trade_learn.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -253,15 +253,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIsAdShowed(){
-        if (Constants.SHOULD_SHOW_ADS.not()) return
-        lifecycleScope.launch {
-            val currentMillis = System.currentTimeMillis()
-            val updateTime = SharedPreferencesManager(this@MainActivity).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
-            if (currentMillis < updateTime) return@launch
+        val isAndroidIdAvailable = Settings.Secure.getString(
+            contentResolver,
+            Settings.Secure.ANDROID_ID
+        ) != "4e79e81765cb66e7"
 
-            MobileAds.initialize(this@MainActivity) {}
-            setInterstitialAd()
+        if (Constants.SHOULD_SHOW_ADS && isAndroidIdAvailable){
+            lifecycleScope.launch {
+                val currentMillis = System.currentTimeMillis()
+                val updateTime = SharedPreferencesManager(this@MainActivity).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
+                if (currentMillis < updateTime) return@launch
+
+                MobileAds.initialize(this@MainActivity) {}
+                setInterstitialAd()
+            }
         }
+
     }
 
 
@@ -297,6 +304,17 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    private fun isEmulator(): Boolean {
+        return (Build.FINGERPRINT.startsWith("generic")
+                || Build.FINGERPRINT.startsWith("unknown")
+                || Build.MODEL.contains("google_sdk")
+                || Build.MODEL.contains("Emulator")
+                || Build.MODEL.contains("Android SDK built for x86")
+                || Build.MANUFACTURER.contains("Genymotion") || Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith(
+            "generic"
+        )) || "google_sdk" == Build.PRODUCT
     }
 
 }
