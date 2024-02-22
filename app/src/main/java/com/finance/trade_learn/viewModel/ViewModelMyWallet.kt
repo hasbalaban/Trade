@@ -7,6 +7,7 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.Adapters.solveCoinName
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.ctryptoApi.cryptoService
@@ -77,8 +78,10 @@ class ViewModelMyWallet @Inject constructor(
                             val id = solveCoinName(it.id)
                             coinQuery.split(",").contains(id)
                         }
-                        myBaseModelOneCryptoModel.value = cachedItems
-                        createNewModel()
+                        viewModelScope.launch(Dispatchers.Main){
+                            myBaseModelOneCryptoModel.postValue(cachedItems)
+                            createNewModel()
+                        }
                     }
 
                 })
