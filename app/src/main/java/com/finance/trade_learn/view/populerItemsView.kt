@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -80,14 +81,14 @@ fun PopularItems (coinsHome : CoinsHome){
     val color1 = when (coinsHome.CoinChangePercente.subSequence(0, 1)) {
         "-" -> Color(0xffF6465D)
         "+" -> Color(0xff2ebd85)
-        else -> Color(0xff000000)
+        else -> MaterialTheme.colors.onPrimary
 
     }
 
     val color2 = when (coinsHome.raise) {
         enumPriceChange.pozitive -> Color(0xff2ebd85)
         enumPriceChange.negative -> Color(0xffF6465D)
-        enumPriceChange.notr -> Color(0xff000000)
+        enumPriceChange.notr -> MaterialTheme.colors.onPrimary
     }
 
     Column(){
@@ -102,7 +103,7 @@ fun PopularItems (coinsHome : CoinsHome){
                     .padding(3.dp, 5.dp)
                 ,
                 text = coinsHome.coinSymbol,
-                color = Color.Black,
+                color = MaterialTheme.colors.onPrimary,
                 fontSize = 13.sp,
             )
             Text(
