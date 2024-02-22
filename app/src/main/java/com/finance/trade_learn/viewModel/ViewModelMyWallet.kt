@@ -1,6 +1,5 @@
 package com.finance.trade_learn.viewModel
 
-import android.util.Log
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
@@ -69,7 +68,7 @@ class ViewModelMyWallet @Inject constructor(
 
                     override fun onSuccess(t: List<CoinDetail>) {
                         myBaseModelOneCryptoModel.value = t
-                        createNewModel()
+                        createNewModel(itemList = t)
                     }
 
                     override fun onError(e: Throwable) {
@@ -79,8 +78,8 @@ class ViewModelMyWallet @Inject constructor(
                             coinQuery.split(",").contains(id)
                         }
                         viewModelScope.launch(Dispatchers.Main){
-                            myBaseModelOneCryptoModel.postValue(cachedItems)
-                            createNewModel()
+                            myBaseModelOneCryptoModel.value = cachedItems
+                            createNewModel(itemList = cachedItems)
                         }
                     }
 
@@ -89,7 +88,7 @@ class ViewModelMyWallet @Inject constructor(
     }
 
 
-    fun createNewModel() {
+    fun createNewModel(itemList: List<CoinDetail>) {
 
         var total = BigDecimal.ZERO
         val newModelForCoins = ArrayList<NewModelForItemHistory>()
@@ -99,8 +98,7 @@ class ViewModelMyWallet @Inject constructor(
 
             CoroutineScope(Dispatchers.IO).launch {
                 var j = 0
-                myBaseModelOneCryptoModel.value?.let {
-                    for (i in it){
+                    for (i in itemList){
                         myCoinsDatabaseModel.value?.let {
                             for (z in myCoinsDatabaseModel.value!!) {
                                 if (i.id.lowercase() == z.CoinName.lowercase()) {
@@ -108,9 +106,7 @@ class ViewModelMyWallet @Inject constructor(
                                     val price = i.current_price?.toBigDecimal() ?: BigDecimal.ZERO
 
                                     val amount =
-                                        coinDetailRepositoryImp.getSelectedItemDetail(i.id.lowercase(Locale.getDefault()))?.CoinAmount?.toBigDecimal() ?:
-                                        coinDetailRepositoryImp.getSelectedItemDetail(i.id.uppercase(Locale.getDefault()))?.CoinAmount?.toBigDecimal() ?:
-                                        BigDecimal.ZERO
+                                        coinDetailRepositoryImp.getSelectedItemDetail(i.id.lowercase(Locale.getDefault()))?.CoinAmount?.toBigDecimal() ?: coinDetailRepositoryImp.getSelectedItemDetail(i.id.uppercase(Locale.getDefault()))?.CoinAmount?.toBigDecimal() ?: BigDecimal.ZERO
                                     val image = i.image
 
                                     total += (price * amount)
@@ -136,7 +132,6 @@ class ViewModelMyWallet @Inject constructor(
                         }
 
                     }
-                }
             }
         }
     }
