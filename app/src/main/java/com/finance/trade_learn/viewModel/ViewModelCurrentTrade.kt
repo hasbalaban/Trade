@@ -3,6 +3,7 @@ package com.finance.trade_learn.viewModel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.finance.trade_learn.Adapters.solveCoinName
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.database.dataBaseEntities.myCoins
@@ -72,7 +73,14 @@ class ViewModelCurrentTrade @Inject constructor(
                         selectedCoinToTradeDetails.value = t
                     }
 
-                    override fun onError(e: Throwable) {}
+                    override fun onError(e: Throwable) {
+                        val cachedItem = ViewModeHomePage.cachedData.firstOrNull {
+                            solveCoinName(it.id) == coinName
+                        }
+                        cachedItem?.let {
+                            selectedCoinToTradeDetails.value = listOf(it)
+                        }
+                    }
 
                     }
                 )

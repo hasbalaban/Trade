@@ -67,19 +67,6 @@ import kotlinx.coroutines.*
 import java.lang.Runnable
 import java.math.BigDecimal
 import java.util.*
-
-private fun getCoinDetail(viewModel: ViewModelCurrentTrade, coinName: String) {
-
-     var runnable = Runnable { }
-     val handler = Handler(Looper.getMainLooper())
-
-
-    runnable = Runnable { //call this function for update
-        viewModel.getSelectedCoinDetails(coinName)
-        handler.postDelayed(runnable, 100000L)
-    }
-    handler.post(runnable)
-}
 private fun getDetailsOfCoinFromDatabase(
     coinName: String = "tether",
     viewModel: ViewModelCurrentTrade

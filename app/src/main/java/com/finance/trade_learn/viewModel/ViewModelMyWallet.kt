@@ -7,6 +7,7 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
 import androidx.lifecycle.MutableLiveData
+import com.finance.trade_learn.Adapters.solveCoinName
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.database.dataBaseEntities.myCoins
@@ -71,7 +72,13 @@ class ViewModelMyWallet @Inject constructor(
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.i("hatahataprice", e.message.toString())
+
+                        val cachedItems = ViewModeHomePage.cachedData.filter {
+                            val id = solveCoinName(it.id)
+                            coinQuery.split(",").contains(id)
+                        }
+                        myBaseModelOneCryptoModel.value = cachedItems
+                        createNewModel()
                     }
 
                 })

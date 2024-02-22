@@ -39,6 +39,8 @@ class ViewModeHomePage : BaseViewModel() {
 
                                     currentItems =  data.ListOfCrypto
                                     lastItems =  data.lastCrypoList
+
+                                    cachedData = t
                                     listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
                                 }
 
@@ -85,6 +87,7 @@ class ViewModeHomePage : BaseViewModel() {
     }
 
     companion object {
+        var cachedData : List<CoinDetail> = emptyList()
         var currentItems : List<CoinsHome> = emptyList()
         var lastItems : List<CoinsHome> = emptyList()
     }
