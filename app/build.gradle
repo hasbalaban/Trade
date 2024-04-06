@@ -36,10 +36,6 @@ android {
         multiDexEnabled true
 
     }
-    buildFeatures {
-        compose true
-        viewBinding = true
-    }
 
     composeOptions{
         kotlinCompilerExtensionVersion = "1.4.4"
@@ -73,6 +69,12 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    buildFeatures {
+        compose true
+        viewBinding = true
+    }
+
 }
 
 dependencies {
