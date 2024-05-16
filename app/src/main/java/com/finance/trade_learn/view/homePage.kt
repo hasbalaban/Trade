@@ -130,7 +130,7 @@ fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) 
             Lifecycle.Event.ON_RESUME -> {
                 runnable = Runnable {
                     runBlocking {
-                        viewModel.getAllCryptoFromApi(page)
+                        viewModel.getAllCryptoFromLocalApi(page)
                     }
                     handler.postDelayed(runnable, timeLoop)
                 }

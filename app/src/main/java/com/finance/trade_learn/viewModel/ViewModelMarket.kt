@@ -32,7 +32,7 @@ class ViewModelMarket @Inject constructor() : BaseViewModel() {
         isLoading.value = true
         CoroutineScope(Dispatchers.IO).launch {
             disposable.add(
-                cryptoService().getCoinGecko(page = 2)
+                cryptoService().getCoinList(page = 2)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {

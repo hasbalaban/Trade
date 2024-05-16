@@ -16,6 +16,14 @@ interface CryptoOperationInterface {
         @Query("sparkline") sparkline: Boolean = false,
     ): Single<List<CoinDetail>>
 
+    @GET("market/allMarket")
+    fun getLocalCoinList(
+        @Query("vs_currency") vsCurrency: String = "usd",
+        @Query("per_page") perPage: Int = 250,
+        @Query("page") page: Int = 1,
+        @Query("sparkline") sparkline: Boolean = false,
+    ): Single<List<CoinDetail>>
+
 
     @GET("coins/markets")
     fun getSelectedCoinToTradeCoinGecko(

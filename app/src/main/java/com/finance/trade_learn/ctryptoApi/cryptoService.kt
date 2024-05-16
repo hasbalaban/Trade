@@ -16,13 +16,27 @@ class cryptoService() {
         .build()
         .create(CryptoOperationInterface::class.java)
 
+
+    val localBaseUrl = "http://10.0.2.2:3000"
+    var localRetrofit = Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .baseUrl(localBaseUrl)
+        .build()
+        .create(CryptoOperationInterface::class.java)
+
     fun selectedCoinToTrade(coinName: String): Single<List<CoinDetail>> {
         return retrofit.getSelectedCoinToTradeCoinGecko(ids = coinName.lowercase())
     }
 
-    fun getCoinGecko(page: Int): Single<List<CoinDetail>> {
-        return retrofit.getCoinGeckoData(page = page)
+    fun getCoinList(page: Int): Single<List<CoinDetail>> {
+        val shouldBeLocalRequest = true
+        return if (shouldBeLocalRequest)
+            localRetrofit.getLocalCoinList(page = page)
+        else
+            retrofit.getCoinGeckoData(page = page)
     }
+
 
     fun getSelectedCoinToTradeCoinGecko(ids : String): Single<List<CoinDetail>> {
         return retrofit.getSelectedCoinToTradeCoinGecko(ids = ids)
@@ -31,5 +45,6 @@ class cryptoService() {
     fun getCoinList(): Single<List<CoinInfoList>> {
         return retrofit.getCoinList()
     }
+
 
 }

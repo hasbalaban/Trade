@@ -25,7 +25,7 @@ class ViewModeHomePage : BaseViewModel() {
     fun getAllCryptoFromApi(page : Int) {
         isLoading.value = true
         viewModelScope.launch {
-                cryptoService().getCoinGecko(2)
+                cryptoService().getCoinList(2)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
@@ -40,6 +40,36 @@ class ViewModeHomePage : BaseViewModel() {
                                 }
 
                             } catch (_: Exception) {
+                                isLoading.value = false
+                            }
+                        }
+
+                        override fun onError(e: Throwable) {
+                            isLoading.value = false
+                        }
+                    })
+        }
+    }
+
+    fun getAllCryptoFromLocalApi(page : Int) {
+        isLoading.value = true
+        viewModelScope.launch {
+                cryptoService().getLocalCoinDetailList(2)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
+                        override fun onSuccess(t: List<CoinDetail>) {
+                            isLoading.value = false
+                            try {
+                                val data = convertCryptoList(t)
+                                if (data.ListOfCrypto.isNotEmpty()){
+                                    listOfCrypto.value = data.ListOfCrypto
+                                    lastCrypoList.value = data.lastCrypoList
+                                    listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
+                                }
+
+                            } catch (e: Exception) {
+                                println(e.localizedMessage)
                                 isLoading.value = false
                             }
                         }
