@@ -10,6 +10,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,66 +19,68 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.finance.trade_learn.R
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.coin_gecko.CoinInfoList
+import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
+import com.finance.trade_learn.viewModel.ViewModeHomePage
 import java.util.*
 
 
 @Composable
-fun SearchScreen(openTradePage : (String) -> Unit, viewModel : SearchCoinViewModel){
-    viewModel.getCoinList()
+fun SearchScreen(openTradePage: (String) -> Unit, viewModel: SearchCoinViewModel) {
+    val baseViewModel = LocalBaseViewModel.current
+
+    LaunchedEffect(Unit) {
+        baseViewModel.getCoinList()
+    }
     SearchComposeView(openTradePage)
 }
 
-private fun getItemsList (searchedItems : String, viewModel: SearchCoinViewModel): List<CoinInfoList> {
+private fun getItemsList(searchedItems: String, viewModel: BaseViewModel): List<CoinsHome> {
     if (searchedItems.isEmpty()) return emptyList()
 
     val queryList = viewModel.coinListDetail.value?.filter {
         it.name.contains(searchedItems, ignoreCase = true)
-    }
-    return queryList ?: emptyList()
+    } ?: emptyList()
+
+    return viewModel.listOfCrypto.value?.filter { listItem ->
+        queryList.any {queryItem -> queryItem.symbol == listItem.coinSymbol }
+    } ?: emptyList()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SearchComposeView (openTradePage : (String) -> Unit, viewModel: SearchCoinViewModel = androidx.lifecycle.viewmodel.compose.viewModel()){
-        var searchedItem by remember { mutableStateOf("") }
-        var resultItems by remember { mutableStateOf(emptyList<CoinInfoList>()) }
+private fun SearchComposeView(
+    openTradePage: (String) -> Unit,
+    viewModel: SearchCoinViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+    val baseViewModel = LocalBaseViewModel.current
+    var searchedItem by remember { mutableStateOf("") }
+    var resultItems by remember { mutableStateOf(emptyList<CoinsHome>()) }
 
-        val textChanged : (String) -> Unit =textChangedScope@{
-            searchedItem = it
-            resultItems = getItemsList(searchedItem, viewModel = viewModel )
+    val textChanged: (String) -> Unit = textChangedScope@{
+        searchedItem = it
+        resultItems = getItemsList(searchedItem, viewModel = baseViewModel)
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+
+        TextField(
+            modifier = Modifier
+                .padding(top = 1.dp, start = 2.dp, end = 2.dp)
+                .fillMaxWidth(),
+            value = searchedItem, onValueChange = { value -> textChanged(value) },
+            placeholder = {
+                Text(text = stringResource(id = R.string.hintSearch))
+            },
+            maxLines = 1,
+            singleLine = true
+        )
+
+        HomePageItems(coinsHome = resultItems) { selectedItemName ->
+            openTradePage.invoke(selectedItemName)
         }
 
-        Column(modifier = Modifier.fillMaxSize()) {
-
-            TextField(
-                modifier = Modifier
-                    .padding(top = 1.dp, start = 2.dp, end = 2.dp)
-                    .fillMaxWidth(),
-                value = searchedItem, onValueChange = {value -> textChanged(value) },
-                placeholder = {
-                    Text(text = stringResource(id = R.string.hintSearch))
-                },
-                maxLines = 1,
-                singleLine = true
-            )
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                items(
-                    items = resultItems,
-                    key = {
-                        it.coinId
-                    }
-                ) {
-                    SearchItemComposeView(CoinInfo = it){itemId ->
-                        openTradePage(itemId)
-                    }
-                }
-            }
-
-        }
+    }
 }

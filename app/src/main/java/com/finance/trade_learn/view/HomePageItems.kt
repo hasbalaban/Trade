@@ -33,7 +33,7 @@ import java.util.Locale
 
 @Composable
 fun HomePageItems (
-    coinsHome: ArrayList<CoinsHome>?,
+    coinsHome: List<CoinsHome>?,
     onViewClick : (String) -> Unit
 ) {
     coinsHome?.let {item ->
@@ -52,8 +52,6 @@ fun HomePageItems (
             }
         }
     }
-
-
 }
 
 

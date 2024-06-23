@@ -87,8 +87,7 @@ fun PopularCoinCard(
 
             Column(
                 modifier = Modifier
-                    .weight(3f)
-                    .padding(end = 8.dp),
+                    .weight(3f),
 
                 ) {
                 Text(

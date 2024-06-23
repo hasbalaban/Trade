@@ -43,6 +43,7 @@ import androidx.lifecycle.Lifecycle
 import com.finance.trade_learn.R
 import com.finance.trade_learn.view.HomePageItems
 import com.finance.trade_learn.view.LifeCycleListener
+import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.PopularItemsView
 import com.finance.trade_learn.view.coin.PopularCoinCard
 import com.finance.trade_learn.viewModel.ViewModeHomePage
@@ -126,6 +127,8 @@ fun MainView(
     openTradePage: (String) -> Unit,
     viewModel: ViewModeHomePage = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
+    val baseViewModel = LocalBaseViewModel.current
+
     var runnable by remember {
         mutableStateOf(Runnable {  })
     }
@@ -136,7 +139,7 @@ fun MainView(
         mutableStateOf(30000L)
     }
 
-    val popularItems = viewModel.listOfCryptoForPopular.observeAsState().value
+    val popularItems = baseViewModel.listOfCryptoForPopular.observeAsState().value
 
 
     LifeCycleListener {
@@ -144,8 +147,8 @@ fun MainView(
             Lifecycle.Event.ON_RESUME -> {
                 runnable = Runnable {
                     runBlocking {
-                        if (false) viewModel.getAllCryptoFromLocalApi(page)
-                        else viewModel.getAllCryptoFromApi(page)
+                        if (false) baseViewModel.getAllCryptoFromLocalApi(page)
+                        else baseViewModel.getAllCryptoFromApi(page)
                     }
                     handler.postDelayed(runnable, timeLoop)
                 }
@@ -160,7 +163,7 @@ fun MainView(
 
 
     Box(modifier = Modifier.fillMaxSize()) {
-        val isLoading = viewModel.isLoading.observeAsState().value ?: false
+        val isLoading = baseViewModel.isLoading.observeAsState().value ?: false
         if (isLoading){
             Row(modifier = Modifier.fillMaxSize()) {
                 Row(
@@ -234,7 +237,7 @@ fun MainView(
 
             ) {
 
-                val listOfItems = viewModel.listOfCrypto.observeAsState()
+                val listOfItems = baseViewModel.listOfCrypto.observeAsState()
                 HomePageItems(coinsHome = listOfItems.value){selectedItemName->
                     openTradePage.invoke(selectedItemName)
                 }
