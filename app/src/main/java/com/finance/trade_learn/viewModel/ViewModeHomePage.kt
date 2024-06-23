@@ -54,7 +54,7 @@ class ViewModeHomePage : BaseViewModel() {
     fun getAllCryptoFromLocalApi(page : Int) {
         isLoading.value = true
         viewModelScope.launch {
-                cryptoService().getLocalCoinDetailList(2)
+                cryptoService().getCoinList(2)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
