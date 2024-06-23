@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity() {
         NavHost(navController = navController, startDestination = "home" ){
             composable(Screens.Home.route) {
                 com.finance.trade_learn.view.home.MainView(
+                    shouldShowPopularCoins = true,
                     openSearch = {
                         navController.navigate(Screens.SearchScreen.route)
                     },

@@ -66,7 +66,7 @@ private fun ComposeView(viewModel : ViewModelMarket = androidx.lifecycle.viewmod
                 }
             }
             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-                val (toolbar, divider1, mainItemsScreen) = createRefs()
+                val (toolbar, mainItemsScreen) = createRefs()
                 Column(modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(toolbar) {

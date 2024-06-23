@@ -119,7 +119,13 @@ private fun MainToolbar(openSearch : () -> Unit) {
     }
 }
 @Composable
-fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) -> Unit, viewModel : ViewModeHomePage = androidx.lifecycle.viewmodel.compose.viewModel()){
+fun MainView(
+    page: Int = 1,
+    shouldShowPopularCoins : Boolean = false,
+    openSearch: () -> Unit,
+    openTradePage: (String) -> Unit,
+    viewModel: ViewModeHomePage = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     var runnable by remember {
         mutableStateOf(Runnable {  })
     }
@@ -181,33 +187,32 @@ fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) 
                     .height(1.dp)
                     .background(color = colorResource(id = R.color.light_grey))) {}
 
-
-                Column(modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                ) {
-                    Text(
-                        text = "Popular Coins",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 16.dp, top = 8.dp)
-                    )
-
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
+                if (shouldShowPopularCoins){
+                    Column(modifier = Modifier
+                        .verticalScroll(rememberScrollState())
                     ) {
-                        popularItems?.forEach { coin ->
-                            PopularCoinCard(coin, Modifier.weight(1f)){selectedItemName ->
-                                openTradePage.invoke(selectedItemName)
+                        Text(
+                            text = "Popular Coins",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+                        )
+
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                        ) {
+                            popularItems?.forEach { coin ->
+                                PopularCoinCard(coin, Modifier.weight(1f)){selectedItemName ->
+                                    openTradePage.invoke(selectedItemName)
+                                }
                             }
                         }
+
                     }
-
                 }
-
-
 
             }
             Row(modifier = Modifier
