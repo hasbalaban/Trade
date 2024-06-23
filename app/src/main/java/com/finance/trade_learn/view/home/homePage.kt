@@ -1,4 +1,4 @@
-package com.finance.trade_learn.view
+package com.finance.trade_learn.view.home
 
 import android.content.Context
 import android.content.Intent
@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
@@ -39,6 +38,9 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.Lifecycle
 import com.finance.trade_learn.R
+import com.finance.trade_learn.view.HomePageItems
+import com.finance.trade_learn.view.LifeCycleListener
+import com.finance.trade_learn.view.PopularItemsView
 import com.finance.trade_learn.viewModel.ViewModeHomePage
 import kotlinx.coroutines.*
 import java.lang.Runnable
@@ -124,13 +126,13 @@ fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) 
         mutableStateOf(30000L)
     }
 
-
     LifeCycleListener {
         when (it) {
             Lifecycle.Event.ON_RESUME -> {
                 runnable = Runnable {
                     runBlocking {
-                        viewModel.getAllCryptoFromLocalApi(page)
+                        if (false) viewModel.getAllCryptoFromLocalApi(page)
+                        else viewModel.getAllCryptoFromApi(page)
                     }
                     handler.postDelayed(runnable, timeLoop)
                 }

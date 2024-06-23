@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
 
         NavHost(navController = navController, startDestination = "home" ){
             composable(Screens.Home.route) {
-                MainView(
+                com.finance.trade_learn.view.home.MainView(
                     openSearch = {
                         navController.navigate(Screens.SearchScreen.route)
                     },
@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                 )
             }
             composable(Screens.Market.route) {
-                MainView(
+                com.finance.trade_learn.view.home.MainView(
                     page = 2,
                     openSearch = {
                         navController.navigate(Screens.SearchScreen.route)
