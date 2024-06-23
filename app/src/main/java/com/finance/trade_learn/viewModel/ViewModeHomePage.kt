@@ -19,7 +19,7 @@ class ViewModeHomePage : BaseViewModel() {
     private var disposable: CompositeDisposable = CompositeDisposable()
     var isLoading = MutableLiveData<Boolean>(false)
     var listOfCrypto = MutableLiveData<ArrayList<CoinsHome>>()
-    var listOfCryptoForPopular = MutableLiveData<ArrayList<CoinsHome>>()
+    var listOfCryptoForPopular = MutableLiveData<List<CoinsHome>>()
     private var lastCrypoList = MutableLiveData<List<CoinsHome>>()
 
     fun getAllCryptoFromApi(page : Int) {
@@ -85,6 +85,7 @@ class ViewModeHomePage : BaseViewModel() {
         return ConvertOperation(t, lastCrypoList).convertDataToUse()
     }
 
+    /*
     private fun convertPopularCoinList(list: ArrayList<CoinsHome>?): ArrayList<CoinsHome>? {
         val popList = arrayListOf<CoinsHome>()
         val populerlist = mutableListOf("bit", "bnb", "eth", "sol", "gate", "avax")
@@ -98,6 +99,14 @@ class ViewModeHomePage : BaseViewModel() {
             }
         }
         return popList
+    }
+
+     */
+
+    private fun convertPopularCoinList(list: ArrayList<CoinsHome>?): List<CoinsHome>? {
+        return list?.sortedBy {
+            it.total_volume
+        }?.take(3)
     }
 
     override fun onCleared() {

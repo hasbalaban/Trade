@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +32,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,6 +44,7 @@ import com.finance.trade_learn.R
 import com.finance.trade_learn.view.HomePageItems
 import com.finance.trade_learn.view.LifeCycleListener
 import com.finance.trade_learn.view.PopularItemsView
+import com.finance.trade_learn.view.coin.PopularCoinCard
 import com.finance.trade_learn.viewModel.ViewModeHomePage
 import kotlinx.coroutines.*
 import java.lang.Runnable
@@ -126,6 +130,9 @@ fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) 
         mutableStateOf(30000L)
     }
 
+    val popularItems = viewModel.listOfCryptoForPopular.observeAsState().value
+
+
     LifeCycleListener {
         when (it) {
             Lifecycle.Event.ON_RESUME -> {
@@ -175,10 +182,29 @@ fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) 
                     .background(color = colorResource(id = R.color.light_grey))) {}
 
 
-                Column(modifier = Modifier.padding(top = 3.dp)) {
-                    PopularItemsView(){selectedItemName ->
-                        openTradePage.invoke(selectedItemName)
+                Column(modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                ) {
+                    Text(
+                        text = "Popular Coins",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+                    )
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        popularItems?.forEach { coin ->
+                            PopularCoinCard(coin, Modifier.weight(1f)){selectedItemName ->
+                                openTradePage.invoke(selectedItemName)
+                            }
+                        }
                     }
+
                 }
 
 
@@ -188,7 +214,6 @@ fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) 
                 .fillMaxWidth()
                 .background(color = colorResource(id = R.color.light_grey))
                 .height(1.dp)
-                .padding(top = 3.dp, bottom = 3.dp)
                 .constrainAs(divider1) {
                     top.linkTo(toolbar.bottom)
                 }

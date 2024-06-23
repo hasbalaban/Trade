@@ -49,7 +49,16 @@ class ConvertOperation(
             val coinPercenteChange = percenteChange.raise + (percenteChange.percentChange
                 .toString() + "0000").subSequence(0, 4).toString() + "%"
 
-            val item = CoinsHome(coinName, coinSymbol,  coinPrice, coinPercenteChange, coinImage, change, i.market_cap)
+            val item = CoinsHome(
+                coinName,
+                coinSymbol,
+                coinPrice,
+                coinPercenteChange,
+                coinImage,
+                change,
+                i.market_cap,
+                total_volume = i.total_volume)
+
             val coinPercenteChangeCompare = percenteChange.percentChange
             val coinPriceCompare = i.current_price.toString()
             val itemCompare =
@@ -60,7 +69,8 @@ class ConvertOperation(
                     coinPercenteChangeCompare.toString(),
                     coinImage,
                     enumPriceChange.notr,
-                    marketCap = i.market_cap
+                    marketCap = i.market_cap,
+                    total_volume = i.total_volume
                 )
             ListItemForCompare.add(itemCompare)
             ListItem.add(item)

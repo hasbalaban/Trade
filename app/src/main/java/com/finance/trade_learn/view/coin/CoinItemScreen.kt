@@ -13,87 +13,111 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 
 @Composable
-fun CoinDetailScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
-    Card(
+fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val onPrimaryColor = MaterialTheme.colorScheme.onPrimary
+    val surfaceColor = MaterialTheme.colorScheme.surface
+    val onSurfaceColor = MaterialTheme.colorScheme.onSurface
+
+    Column(
         modifier = Modifier
-            .clickable {
-                clickedItem.invoke(coin.CoinName)
-            }
-            .padding(16.dp)
+            .background(surfaceColor)
+            .clickable { clickedItem.invoke(coin.CoinName) }
             .fillMaxWidth()
-            .background(Color.White),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.elevatedCardElevation(8.dp)
     ) {
-        Column(
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 6.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Absolute.SpaceAround,
-                modifier = Modifier.fillMaxWidth()
+            Image(
+                painter = rememberAsyncImagePainter(coin.CoinImage),
+                contentDescription = coin.CoinName,
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(Color.Transparent, shape = RoundedCornerShape(6.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .weight(1f)
             ) {
-                Image(
-                    painter = rememberAsyncImagePainter(coin.CoinImage),
-                    contentDescription = coin.CoinName,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .background(Color.Gray, shape = RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
+                Text(
+                    text = coin.CoinName,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = onSurfaceColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
-
-                Column(modifier = Modifier.padding(16.dp).weight(1f)) {
-                    Text(
-                        text = coin.CoinName,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-
-                    Text(
-                        text = coin.coinSymbol.uppercase(),
-                        fontSize = 16.sp,
-                        color = Color.Gray
-                    )
-                }
-
 
                 Text(
-                    text = coin.CoinPrice.let { "$${it}" },
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    text = coin.coinSymbol.uppercase(),
+                    fontSize = 14.sp,
+                    color = onSurfaceColor.copy(alpha = 0.6f)
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                modifier = Modifier.height(40.dp),
+                text = coin.CoinPrice.let { "$${it}" },
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = onSurfaceColor
+            )
+        }
 
-            Divider(color = Color.Gray)
-
-            Spacer(modifier = Modifier.height(8.dp))
-
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+        ) {
             Text(
                 text = "Market Cap: ${coin.marketCap}",
-                fontSize = 14.sp,
-                color = Color.Black
+                fontSize = 12.sp,
+                color = onSurfaceColor
             )
             Text(
-                text = "24h Change: ${coin.CoinChangePercente.let { "${it}%" }}",
+                text = "24h Change: ${coin.CoinChangePercente}",
                 fontSize = 14.sp,
-                color = if (coin.CoinChangePercente >= 0.0.toString())
-                    Color.Green else Color.Red
+                color = if (coin.CoinChangePercente.contains("+"))
+                    Color(0xFF0BB600) else Color(0xFF2ebd85)
             )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+        Divider(color = Color.LightGray)
+    }
+}
+
+@Preview
+@Composable
+private fun CoinItemScreenPreview() {
+    MaterialTheme {
+        Surface(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            val coinItem = CoinsHome(
+                CoinName = "FLUX / USD",
+                coinSymbol = "FLUX / USD",
+                CoinPrice = "0.636005",
+                CoinChangePercente = "+1.10",
+                CoinImage = "https://coin-images.coingecko.com/coins/images/5163/large/Flux_symbol_blue-white.png?1696505679",
+                raise = enumPriceChange.notr,
+                marketCap = "221975378",
+                total_volume = "221975378"
+            )
+            CoinItemScreen(coinItem) {}
         }
     }
 }
