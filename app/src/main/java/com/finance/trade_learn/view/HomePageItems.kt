@@ -32,6 +32,7 @@ import com.finance.trade_learn.R
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.utils.SharedPreferencesManager
+import com.finance.trade_learn.view.coin.CoinDetailScreen
 import java.util.Locale
 
 @Composable
@@ -49,9 +50,11 @@ fun HomePageItems (
                     it.CoinName
                 }
             ){
-                HomePageItem(it){selectedItemName ->
+
+                CoinDetailScreen(it){selectedItemName ->
                     onViewClick.invoke(selectedItemName)
                 }
+
             }
         }
     }
@@ -178,7 +181,7 @@ fun HomePageItem(coinsHome: CoinsHome, clickedItem: (String) -> Unit) {
 @Composable
 fun APreview (){
     Surface(modifier = Modifier.background(Color.White)) {
-        HomePageItem(CoinsHome("w", "ww", "1", "2", "w", enumPriceChange.negative )){
+        HomePageItem(CoinsHome("w", "ww", "1", "2", "w", enumPriceChange.negative, "" )){
 
         }
     }
