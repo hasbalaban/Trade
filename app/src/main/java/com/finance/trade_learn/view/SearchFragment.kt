@@ -39,9 +39,9 @@ fun SearchScreen(openTradePage: (String) -> Unit, viewModel: SearchCoinViewModel
 }
 
 private fun getItemsList(searchedItems: String, viewModel: BaseViewModel): List<CoinsHome> {
-    if (searchedItems.isEmpty()) return viewModel.listOfCrypto.value ?: emptyList()
+    if (searchedItems.isEmpty()) return viewModel.currentItemsLiveData.value ?: emptyList()
 
-    val filteredList = viewModel.listOfCrypto.value?.filter {
+    val filteredList = viewModel.currentItemsLiveData.value?.filter {
         it.CoinName.contains(searchedItems, ignoreCase = true) || it.coinSymbol.contains(searchedItems, ignoreCase = true)
     } ?: emptyList()
 

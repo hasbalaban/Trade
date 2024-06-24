@@ -23,13 +23,13 @@ import javax.inject.Inject
 @HiltViewModel
 open class BaseViewModel @Inject constructor() : ViewModel() {
     private var baseDisposable: CompositeDisposable = CompositeDisposable()
+
     val coinListDetail = MutableLiveData<List<CoinInfoList>>()
 
-
     var isLoading = MutableLiveData<Boolean>(false)
-    var listOfCrypto = MutableLiveData<ArrayList<CoinsHome>>()
+
+    var currentItemsLiveData = MutableLiveData<List<CoinsHome>>()
     var listOfCryptoForPopular = MutableLiveData<List<CoinsHome>>()
-    private var lastCrypoList = MutableLiveData<List<CoinsHome>>()
 
     fun getCoinList(){
         CoroutineScope(Dispatchers.IO).launch {
@@ -51,69 +51,45 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-
-
-    fun getAllCryptoFromApi(page : Int) {
+    fun getAllCrypto(page : Int) {
         isLoading.value = true
         viewModelScope.launch {
-            cryptoService().getCoinList(2)
+            cryptoService().getCoinList(page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
                     override fun onSuccess(t: List<CoinDetail>) {
                         isLoading.value = false
                         try {
+
                             val data = convertCryptoList(t)
                             if (data.ListOfCrypto.isNotEmpty()){
-                                listOfCrypto.value = data.ListOfCrypto
-                                lastCrypoList.value = data.lastCrypoList
+                                currentItemsLiveData.value = data.ListOfCrypto
+
                                 listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
+
+                                currentItems = data.ListOfCrypto
+                                lastItems = data.lastCrypoList
                             }
 
                         } catch (_: Exception) {
                             isLoading.value = false
+
                         }
                     }
 
                     override fun onError(e: Throwable) {
                         isLoading.value = false
-                    }
-                })
-        }
-    }
 
-    fun getAllCryptoFromLocalApi(page : Int) {
-        isLoading.value = true
-        viewModelScope.launch {
-            cryptoService().getCoinList(2)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
-                    override fun onSuccess(t: List<CoinDetail>) {
-                        isLoading.value = false
-                        try {
-                            val data = convertCryptoList(t)
-                            if (data.ListOfCrypto.isNotEmpty()){
-                                listOfCrypto.value = data.ListOfCrypto
-                                lastCrypoList.value = data.lastCrypoList
-                                listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
-                            }
-
-                        } catch (e: Exception) {
-                            println(e.localizedMessage)
-                            isLoading.value = false
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        isLoading.value = false
+                        currentItemsLiveData.value = currentItems
+                        listOfCryptoForPopular.value = convertPopularCoinList(currentItems)
                     }
                 })
         }
     }
 
     fun convertCryptoList(t: List<CoinDetail>): DataForHomePage {
-        return ConvertOperation(t, lastCrypoList).convertDataToUse()
+        return ConvertOperation(t, lastItems).convertDataToUse()
     }
 
 
@@ -123,7 +99,7 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
         }?.take(3)
     }
 
-    private fun convertPopularCoinList(list: ArrayList<CoinsHome>?): ArrayList<CoinsHome>? {
+    private fun convertPopularCoinList(list: List<CoinsHome>?): ArrayList<CoinsHome> {
         val popList = arrayListOf<CoinsHome>()
         val populerlist = mutableListOf("bit", "bnb", "eth", "sol", "gate", "avax")
         list?.let{
@@ -143,6 +119,12 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         baseDisposable.clear()
+    }
+
+    companion object {
+        var cachedData : List<CoinDetail> = emptyList()
+        var currentItems : List<CoinsHome> = emptyList()
+        var lastItems : List<CoinsHome> = emptyList()
     }
 
 }

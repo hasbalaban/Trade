@@ -21,7 +21,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -29,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -42,12 +40,9 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat.startActivity
-import androidx.lifecycle.Lifecycle
 import com.finance.trade_learn.R
 import com.finance.trade_learn.view.HomePageItems
-import com.finance.trade_learn.view.LifeCycleListener
 import com.finance.trade_learn.view.LocalBaseViewModel
-import com.finance.trade_learn.view.PopularItemsView
 import com.finance.trade_learn.view.coin.PopularCoinCard
 import com.finance.trade_learn.viewModel.ViewModeHomePage
 import kotlinx.coroutines.*
@@ -147,8 +142,8 @@ fun MainView(
     DisposableEffect(Unit) {
         runnable = Runnable {
             runBlocking {
-                if (false) baseViewModel.getAllCryptoFromLocalApi(page)
-                else baseViewModel.getAllCryptoFromApi(page)
+                if (false) baseViewModel.getAllCrypto(page)
+                else baseViewModel.getAllCrypto(page)
             }
             handler.postDelayed(runnable, timeLoop)
         }
@@ -234,7 +229,7 @@ fun MainView(
 
             ) {
 
-                val listOfItems = baseViewModel.listOfCrypto.observeAsState()
+                val listOfItems = baseViewModel.currentItemsLiveData.observeAsState()
                 HomePageItems(coinsHome = listOfItems.value){selectedItemName->
                     openTradePage.invoke(selectedItemName)
                 }
