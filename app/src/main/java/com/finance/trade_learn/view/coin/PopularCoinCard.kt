@@ -47,7 +47,7 @@ fun PopularCoinCard(
 ) {
     Card(
         modifier = modifier
-            .clickable { clickedItem.invoke(coin.CoinName) }
+            .clickable { clickedItem.invoke(coin.id) }
             .height(110.dp)
             .padding(horizontal = 6.dp),
         shape = RoundedCornerShape(8.dp),
@@ -141,6 +141,7 @@ private fun PopularCoinScreenPreview() {
     MaterialTheme {
 
         val coinItem = CoinsHome(
+            id = "1",
             CoinName = "FLUX / USD",
             coinSymbol = "FLUX / USD",
             CoinPrice = "0.636005",

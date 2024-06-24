@@ -31,7 +31,7 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
     Column(
         modifier = Modifier
             .background(Color.White)
-            .clickable { clickedItem.invoke(coin.CoinName) }
+            .clickable { clickedItem.invoke(coin.id) }
             .fillMaxWidth()
     ) {
         Row(
@@ -121,6 +121,7 @@ private fun CoinItemScreenPreview() {
     MaterialTheme {
         Surface(modifier = Modifier.background(Color.White)) {
             val coinItem = CoinsHome(
+                id = "1",
                 CoinName = "FLUX / USD",
                 coinSymbol = "FLUX / USD",
                 CoinPrice = "0.636005",

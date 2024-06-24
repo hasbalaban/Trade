@@ -50,6 +50,7 @@ class ConvertOperation(
                 .toString() + "0000").subSequence(0, 4).toString() + "%"
 
             val item = CoinsHome(
+                id = i.id,
                 coinName,
                 coinSymbol,
                 coinPrice,
@@ -63,6 +64,7 @@ class ConvertOperation(
             val coinPriceCompare = i.current_price.toString()
             val itemCompare =
                 CoinsHome(
+                    id = i.id,
                     coinName,
                     coinSymbol,
                     coinPriceCompare,
