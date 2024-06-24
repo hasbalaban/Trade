@@ -18,10 +18,15 @@ import kotlin.collections.ArrayList
 class ViewModeHomePage : BaseViewModel() {
     private var disposable: CompositeDisposable = CompositeDisposable()
 
-
     override fun onCleared() {
         disposable.clear()
         super.onCleared()
+    }
+
+    companion object {
+        var cachedData : List<CoinDetail> = emptyList()
+        var currentItems : List<CoinsHome> = emptyList()
+        var lastItems : List<CoinsHome> = emptyList()
     }
 
 

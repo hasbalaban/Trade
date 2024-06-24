@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,11 +45,12 @@ fun HistoryItemComposeView(saveCoins : ArrayList<SaveCoin>) {
                     }
                     val df = DecimalFormat("#.######")
                     val coinAmount by remember { mutableStateOf(df.format(item.coinAmount.toDouble())) }
-                    HistoryItem(modifier = Modifier.weight(1f), text = item.coinName, textColor = Color.Unspecified)
-                    HistoryItem(modifier = Modifier.weight(1f), text = coinAmount, textColor = Color.Unspecified)
-                    HistoryItem(modifier = Modifier.weight(1f), text = item.coinPrice, textColor = Color.Unspecified)
-                    HistoryItem(modifier = Modifier.weight(1f), text = item.total, textColor = colorResource(id = totalColor))
-                    HistoryItem(modifier = Modifier.weight(1f), text = item.date, textColor = Color.Unspecified)
+                    val coinTotal by remember { mutableStateOf(df.format(item.total.toDouble())) }
+                    HistoryItem(modifier = Modifier.weight(1f), text = item.coinName, textColor = MaterialTheme.colors.onPrimary)
+                    HistoryItem(modifier = Modifier.weight(1f), text = coinAmount, textColor = MaterialTheme.colors.onPrimary)
+                    HistoryItem(modifier = Modifier.weight(1f), text = item.coinPrice, textColor = MaterialTheme.colors.onPrimary)
+                    HistoryItem(modifier = Modifier.weight(1f), text = coinTotal, textColor = colorResource(id = totalColor))
+                    HistoryItem(modifier = Modifier.weight(1f), text = item.date, textColor = MaterialTheme.colors.onPrimary)
                     HistoryItem(modifier = Modifier.weight(1f), text = item.tradeOperation, textColor = colorResource(id = statusColor))
                 }
                 

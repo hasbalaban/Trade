@@ -4,11 +4,11 @@ package com.finance.trade_learn.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -33,6 +33,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.finance.trade_learn.base.BaseViewModel
+import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
 import com.finance.trade_learn.viewModel.ViewModelCurrentTrade
@@ -60,29 +61,22 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         setContent {
 
-            // remember navController so it does not
-            // get recreated on recomposition
-            val navController = rememberNavController()
+            FinanceAppTheme{
+                val navController = rememberNavController()
 
-            LaunchedEffect(Unit){
-                setup()
-            }
-
-            Surface(color = Color.White) {
-                // Scaffold Component
-                Scaffold(
-                    // Bottom navigation
-                    bottomBar = {
-                        BottomNavigationBar(navController = navController)
-                    }
-                ){padding ->
-                    MainScreen(navController)
+                LaunchedEffect(Unit){
+                    setup()
                 }
-            }
+
+                Surface(color = Color.White) {
+                    Scaffold(
+                        bottomBar = { BottomNavigationBar(navController = navController) }
+                    ){padding ->
+                        MainScreen(navController)
+                    }
+                }
         }
     }
 
@@ -161,11 +155,8 @@ class MainActivity : AppCompatActivity() {
                         viewModel = viewModel
                     )
                 }
-
-
             }
         }
-
     }
 
     private fun setup (){
@@ -266,15 +257,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIsAdShowed(){
-        if (Constants.SHOULD_SHOW_ADS.not()) return
-        lifecycleScope.launch {
-            val currentMillis = System.currentTimeMillis()
-            val updateTime = SharedPreferencesManager(this@MainActivity).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
-            if (currentMillis < updateTime) return@launch
+        val isAndroidIdAvailable = Settings.Secure.getString(
+            contentResolver,
+            Settings.Secure.ANDROID_ID
+        ) != "4e79e81765cb66e7"
 
-            MobileAds.initialize(this@MainActivity) {}
-            setInterstitialAd()
+        if (Constants.SHOULD_SHOW_ADS && isAndroidIdAvailable){
+            lifecycleScope.launch {
+                val currentMillis = System.currentTimeMillis()
+                val updateTime = SharedPreferencesManager(this@MainActivity).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
+                if (currentMillis < updateTime) return@launch
+
+                MobileAds.initialize(this@MainActivity) {}
+                setInterstitialAd()
+            }
         }
+
     }
 
 
@@ -282,9 +280,7 @@ class MainActivity : AppCompatActivity() {
     @Composable
     fun BottomNavigationBar(navController: NavHostController) {
 
-        BottomNavigation(
-            backgroundColor = Color.White
-        ) {
+        BottomNavigation() {
 
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
@@ -298,6 +294,7 @@ class MainActivity : AppCompatActivity() {
                         navController.navigate(navItem.route){
                             launchSingleTop = true
                             restoreState = true
+                            popUpTo(Constants.BottomNavItems.first().route)
                         }
                     },
 
@@ -307,10 +304,21 @@ class MainActivity : AppCompatActivity() {
                     label = {
                         Text(text = navItem.label)
                     },
-                    alwaysShowLabel = false
+                    alwaysShowLabel = true
                 )
             }
         }
+    }
+
+    private fun isEmulator(): Boolean {
+        return (Build.FINGERPRINT.startsWith("generic")
+                || Build.FINGERPRINT.startsWith("unknown")
+                || Build.MODEL.contains("google_sdk")
+                || Build.MODEL.contains("Emulator")
+                || Build.MODEL.contains("Android SDK built for x86")
+                || Build.MANUFACTURER.contains("Genymotion") || Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith(
+            "generic"
+        )) || "google_sdk" == Build.PRODUCT
     }
 
 }

@@ -3,6 +3,7 @@ package com.finance.trade_learn.viewModel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.finance.trade_learn.Adapters.solveCoinName
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.database.dataBaseEntities.myCoins
@@ -31,9 +32,10 @@ class ViewModelCurrentTrade @Inject constructor(
     var isSuccess = MutableLiveData<Boolean>()
     val coinAmountLiveData = MutableLiveData<BigDecimal?>()
     val selectedCoinToTradeDetails = MutableLiveData<List<CoinDetail>>()
-    val canChangeAmount = MutableLiveData<Boolean>(true)
+
     private val _tradeType = MutableLiveData<TradeType>(TradeType.Buy)
     val tradeType : LiveData<TradeType> = _tradeType
+
     val selectedPercent =  MutableLiveData<SelectedPercent>()
 
     fun changeTradeType (type : TradeType){
@@ -71,7 +73,14 @@ class ViewModelCurrentTrade @Inject constructor(
                         selectedCoinToTradeDetails.value = t
                     }
 
-                    override fun onError(e: Throwable) {}
+                    override fun onError(e: Throwable) {
+                        val cachedItem = ViewModeHomePage.cachedData.firstOrNull {
+                            solveCoinName(it.id) == coinName
+                        }
+                        cachedItem?.let {
+                            selectedCoinToTradeDetails.value = listOf(it)
+                        }
+                    }
 
                     }
                 )
