@@ -23,22 +23,18 @@ android {
             keyPassword KEY_PASSWORD
         }
     }
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.finance.trade_learn"
         minSdk 23
-        targetSdk 33
-        versionCode 72
-        versionName "2.2.2"
+        targetSdk 34
+        versionCode 84
+        versionName "2.4.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
 
-    }
-    buildFeatures {
-        compose true
-        viewBinding = true
     }
 
     composeOptions{
@@ -73,6 +69,12 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    buildFeatures {
+        compose true
+        viewBinding = true
+    }
+
 }
 
 dependencies {

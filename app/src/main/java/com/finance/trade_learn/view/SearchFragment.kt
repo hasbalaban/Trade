@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -20,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import com.finance.trade_learn.R
 import com.finance.trade_learn.models.coin_gecko.CoinInfoList
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
-import java.util.*
 
 
 @Composable
@@ -30,7 +30,7 @@ fun SearchScreen(openTradePage : (String) -> Unit, viewModel : SearchCoinViewMod
 }
 
 private fun getItemsList (searchedItems : String, viewModel: SearchCoinViewModel): List<CoinInfoList> {
-    if (searchedItems.isEmpty()) return emptyList()
+    if (searchedItems.isEmpty()) return viewModel.coinListDetail.value ?: emptyList()
 
     val queryList = viewModel.coinListDetail.value?.filter {
         it.name.contains(searchedItems, ignoreCase = true)
@@ -43,6 +43,11 @@ private fun getItemsList (searchedItems : String, viewModel: SearchCoinViewModel
 private fun SearchComposeView (openTradePage : (String) -> Unit, viewModel: SearchCoinViewModel = androidx.lifecycle.viewmodel.compose.viewModel()){
         var searchedItem by remember { mutableStateOf("") }
         var resultItems by remember { mutableStateOf(emptyList<CoinInfoList>()) }
+
+        val items = viewModel.coinListDetail.observeAsState()
+        if (!items.value.isNullOrEmpty()){
+            resultItems = getItemsList(searchedItem, viewModel = viewModel )
+        }
 
         val textChanged : (String) -> Unit =textChangedScope@{
             searchedItem = it

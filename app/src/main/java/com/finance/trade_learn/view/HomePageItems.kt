@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +37,7 @@ import java.util.Locale
 
 @Composable
 fun HomePageItems (
-    coinsHome: ArrayList<CoinsHome>?,
+    coinsHome: List<CoinsHome>?,
     onViewClick : (String) -> Unit
 ) {
     val context = LocalContext.current
@@ -82,24 +83,6 @@ fun HomePageItem(coinsHome: CoinsHome, clickedItem: (String) -> Unit) {
         else -> Color.Transparent
     }
 
-    val clickedItemImage: @Composable (String) -> Unit= {itemImage ->
-        Column(modifier = Modifier.fillMaxSize()) {
-            val painter =
-                rememberAsyncImagePainter(model = itemImage,
-                    filterQuality = FilterQuality.High,
-                )
-            Image(
-                painter = painter,
-                modifier = Modifier
-                    .size(160.dp)
-                    .clip(CircleShape)
-                ,
-                contentDescription = null
-            )
-
-        }
-    }
-
     Row(modifier = Modifier
         .height(60.dp)
         .fillMaxWidth()
@@ -124,15 +107,14 @@ fun HomePageItem(coinsHome: CoinsHome, clickedItem: (String) -> Unit) {
 
                 }) {
                 Text(
+                    color = MaterialTheme.colors.onPrimary,
                     modifier = Modifier.padding(top = 8.dp, end = 6.dp),
-                    text = coinsHome.coinSymbol, color = Color.Black
+                    text = coinsHome.coinSymbol
                 )
 
                 val painter =
                     rememberAsyncImagePainter(model = coinsHome.CoinImage,
                         filterQuality = FilterQuality.High,
-
-
                         )
 
                 Image(
