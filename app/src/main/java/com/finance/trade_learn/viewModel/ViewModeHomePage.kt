@@ -22,11 +22,10 @@ class ViewModeHomePage : BaseViewModel() {
     var listOfCryptoForPopular = MutableLiveData<ArrayList<CoinsHome>>()
     private var lastCrypoList = MutableLiveData<List<CoinsHome>>()
 
-    fun getAllCryptoFromApi(page : Int) {
+    fun getAllCrypto(page : Int) {
         isLoading.value = true
         viewModelScope.launch {
-                cryptoService().getCoinGecko(page)
-                cryptoService().getCoinList(2)
+                cryptoService().getCoinList(page)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
@@ -50,34 +49,6 @@ class ViewModeHomePage : BaseViewModel() {
 
                                 listOfCrypto.value = currentItems
                                 lastCrypoList.value = lastItems
-                               // listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
-                            }
-                        }
-
-                    })
-        }
-    }
-
-    fun getAllCryptoFromLocalApi(page : Int) {
-        isLoading.value = true
-        viewModelScope.launch {
-                cryptoService().getLocalCoinDetailList(2)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
-                        override fun onSuccess(t: List<CoinDetail>) {
-                            isLoading.value = false
-                            try {
-                                val data = convertCryptoList(t)
-                                if (data.ListOfCrypto.isNotEmpty()){
-                                    listOfCrypto.value = data.ListOfCrypto
-                                    lastCrypoList.value = data.lastCrypoList
-                                    listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
-                                }
-
-                            } catch (e: Exception) {
-                                println(e.localizedMessage)
-                                isLoading.value = false
                             }
                         }
 
@@ -86,6 +57,7 @@ class ViewModeHomePage : BaseViewModel() {
                             listOfCrypto.value = currentItems
                             lastCrypoList.value = lastItems
                         }
+
                     })
         }
     }
