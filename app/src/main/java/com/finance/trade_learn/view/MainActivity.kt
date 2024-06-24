@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Scaffold
@@ -20,6 +21,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.core.app.ActivityCompat
@@ -63,25 +65,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 
-            FinanceAppTheme{
+            FinanceAppTheme {
                 val navController = rememberNavController()
 
-                LaunchedEffect(Unit){
+                LaunchedEffect(Unit) {
                     setup()
                 }
 
                 Surface(color = Color.White) {
                     Scaffold(
                         bottomBar = { BottomNavigationBar(navController = navController) }
-                    ){padding ->
-                        MainScreen(navController)
+                    ) { padding ->
+                        MainScreen(navController, Modifier.padding(paddingValues = padding))
                     }
                 }
+            }
         }
     }
 
     @Composable
-    private fun MainScreen(navController: NavHostController) {
+    private fun MainScreen(navController: NavHostController, modifier: Modifier = Modifier) {
         val baseViewModel = hiltViewModel<BaseViewModel>()
 
         CompositionLocalProvider(LocalBaseViewModel provides baseViewModel) {
@@ -212,6 +215,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     fun firebaseSave() {
 
       //  firestore = Firebase.firestore
