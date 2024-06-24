@@ -2,6 +2,7 @@ package com.finance.trade_learn.ctryptoApi
 
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.coin_gecko.CoinInfoList
+import com.finance.trade_learn.utils.Constants
 import io.reactivex.Single
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -30,8 +31,7 @@ class cryptoService() {
     }
 
     fun getCoinList(page: Int): Single<List<CoinDetail>> {
-        val shouldBeLocalRequest = true
-        return if (shouldBeLocalRequest)
+        return if (Constants.SHOULD_BE_LOCAL_REQUEST)
             localRetrofit.getLocalCoinList(page = page)
         else
             retrofit.getCoinGeckoData(page = page)

@@ -28,7 +28,6 @@ data class CoinDetail(
     val atl_change_percentage: String,
     val atl_date: String,
     val last_updated: String
-
 )
 
 

@@ -22,17 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberAsyncImagePainter
 import com.finance.trade_learn.Adapters.solveCoinName
-import com.finance.trade_learn.R
-import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
-import com.finance.trade_learn.utils.SharedPreferencesManager
+import com.finance.trade_learn.view.coin.CoinItemScreen
 import java.util.Locale
 
 @Composable
@@ -40,7 +37,6 @@ fun HomePageItems (
     coinsHome: List<CoinsHome>?,
     onViewClick : (String) -> Unit
 ) {
-    val context = LocalContext.current
     coinsHome?.let {item ->
 
         LazyColumn(modifier = Modifier){
@@ -50,14 +46,13 @@ fun HomePageItems (
                     it.CoinName
                 }
             ){
-                HomePageItem(it){selectedItemName ->
+                CoinItemScreen(it){ selectedItemName ->
                     onViewClick.invoke(selectedItemName)
                 }
+
             }
         }
     }
-
-
 }
 
 
@@ -159,9 +154,5 @@ fun HomePageItem(coinsHome: CoinsHome, clickedItem: (String) -> Unit) {
 @Preview
 @Composable
 fun APreview (){
-    Surface(modifier = Modifier.background(Color.White)) {
-        HomePageItem(CoinsHome("w", "ww", "1", "2", "w", enumPriceChange.negative )){
-
-        }
-    }
+    Surface(modifier = Modifier.background(Color.White)) {}
 }

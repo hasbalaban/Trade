@@ -13,31 +13,5 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SearchCoinViewModel: BaseViewModel() {
-    private var disposable: CompositeDisposable = CompositeDisposable()
-    val coinListDetail = MutableLiveData<List<CoinInfoList>>()
 
-    fun getCoinList(){
-        CoroutineScope(Dispatchers.IO).launch {
-            disposable.add(
-                cryptoService().getCoinList()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(object : DisposableSingleObserver<List<CoinInfoList>>() {
-                        override fun onSuccess(t: List<CoinInfoList>) {
-                            coinListDetail.value = t
-                            try {
-                            } catch (_: Exception) { }
-                        }
-
-                        override fun onError(e: Throwable) {
-                        }
-                    })
-            )
-        }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        disposable.clear()
-    }
 }

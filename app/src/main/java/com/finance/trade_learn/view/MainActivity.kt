@@ -10,14 +10,18 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.core.app.ActivityCompat
@@ -30,6 +34,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
@@ -46,6 +51,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+val LocalBaseViewModel = compositionLocalOf<BaseViewModel> { error("No BaseViewModel found") }
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -58,101 +65,101 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 
-            FinanceAppTheme{
+            FinanceAppTheme {
                 val navController = rememberNavController()
 
-                LaunchedEffect(Unit){
+                LaunchedEffect(Unit) {
                     setup()
                 }
 
                 Surface(color = Color.White) {
                     Scaffold(
                         bottomBar = { BottomNavigationBar(navController = navController) }
-                    ){_ ->
-                        MainScreen(navController)
+                    ) { padding ->
+                        MainScreen(navController, Modifier.padding(paddingValues = padding))
                     }
                 }
             }
-
         }
     }
 
     @Composable
-    private fun MainScreen(navController: NavHostController) {
+    private fun MainScreen(navController: NavHostController, modifier: Modifier = Modifier) {
+        val baseViewModel = hiltViewModel<BaseViewModel>()
 
-        NavHost(navController = navController, startDestination = "home" ){
-            composable(Screens.Home.route) {
-                MainView(
-                    openSearch = {
-                        navController.navigate(Screens.SearchScreen.route)
-                    },
-                    openTradePage = {
-                        navController.navigate(Screens.Trade(it).route)
-                    }
-                )
-            }
-            composable(Screens.Market.route) {
-                MainView(
-                    page = 2,
-                    openSearch = {
-                        navController.navigate(Screens.SearchScreen.route)
-                    },
-                    openTradePage = {
-                        navController.navigate(Screens.Trade(it).route)
-                    }
-                )
-            }
-
-            composable("trade?coinName={coinName}", arguments = listOf(navArgument("coinName") {
-                type = NavType.StringType
-                defaultValue = "bitcoin"
-            })
-            ){backStackEntry->
-                val coinName = backStackEntry.arguments?.getString("coinName") ?: "TETHER"
-                val viewModel = hiltViewModel<ViewModelCurrentTrade>()
-
-                TradeScreen(
-                    openHistoryScreen = {
-                        navController.navigate(Screens.HistoryScreen.route)
-                    },
-                    viewModel = viewModel,
-                    coinName = coinName,
-
+        CompositionLocalProvider(LocalBaseViewModel provides baseViewModel) {
+            NavHost(navController = navController, startDestination = "home" ){
+                composable(Screens.Home.route) {
+                    com.finance.trade_learn.view.home.MainView(
+                        shouldShowPopularCoins = true,
+                        openSearch = {
+                            navController.navigate(Screens.SearchScreen.route)
+                        },
+                        openTradePage = {
+                            navController.navigate(Screens.Trade(it).route)
+                        }
                     )
+                }
+                composable(Screens.Market.route) {
+                    com.finance.trade_learn.view.home.MainView(
+                        page = 2,
+                        openSearch = {
+                            navController.navigate(Screens.SearchScreen.route)
+                        },
+                        openTradePage = {
+                            navController.navigate(Screens.Trade(it).route)
+                        }
+                    )
+                }
+
+                composable("trade?coinName={coinName}", arguments = listOf(navArgument("coinName") {
+                    type = NavType.StringType
+                    defaultValue = "bitcoin"
+                })
+                ){backStackEntry->
+                    val coinName = backStackEntry.arguments?.getString("coinName") ?: "TETHER"
+                    val viewModel = hiltViewModel<ViewModelCurrentTrade>()
+
+                    TradeScreen(
+                        openHistoryScreen = {
+                            navController.navigate(Screens.HistoryScreen.route)
+                        },
+                        viewModel = viewModel,
+                        coinName = coinName,
+
+                        )
+                }
+                composable(Screens.Wallet.route) {
+                    val viewModel = hiltViewModel<ViewModelMyWallet>()
+
+                    WalletScreen(
+                        openSearch = {
+                            navController.navigate(Screens.SearchScreen.route)
+                        },
+                        openTradePage = {
+                            navController.navigate(Screens.Trade(it).route)
+                        },
+                        viewModel = viewModel
+                    )
+                }
+
+                composable(Screens.HistoryScreen.route) {
+                    val viewModel = hiltViewModel<ViewModelHistoryTrade>()
+                    HistoryScreen(viewModel)
+                }
+
+                composable(Screens.SearchScreen.route) {
+                    val viewModel = hiltViewModel<SearchCoinViewModel>()
+
+                    SearchScreen(
+                        openTradePage = {
+                            navController.navigate(Screens.Trade(it).route)
+                        },
+                        viewModel = viewModel
+                    )
+                }
             }
-            composable(Screens.Wallet.route) {
-                val viewModel = hiltViewModel<ViewModelMyWallet>()
-
-                WalletScreen(
-                    openSearch = {
-                        navController.navigate(Screens.SearchScreen.route)
-                    },
-                    openTradePage = {
-                        navController.navigate(Screens.Trade(it).route)
-                    },
-                    viewModel = viewModel
-                )
-            }
-
-            composable(Screens.HistoryScreen.route) {
-                val viewModel = hiltViewModel<ViewModelHistoryTrade>()
-                HistoryScreen(viewModel)
-            }
-
-            composable(Screens.SearchScreen.route) {
-                val viewModel = hiltViewModel<SearchCoinViewModel>()
-
-                SearchScreen(
-                    openTradePage = {
-                        navController.navigate(Screens.Trade(it).route)
-                    },
-                    viewModel = viewModel
-                )
-            }
-
-
         }
-
     }
 
     private fun setup (){
@@ -208,6 +215,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     fun firebaseSave() {
 
       //  firestore = Firebase.firestore

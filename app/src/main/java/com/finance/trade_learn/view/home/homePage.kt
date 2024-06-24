@@ -1,4 +1,4 @@
-package com.finance.trade_learn.view
+package com.finance.trade_learn.view.home
 
 import android.content.Context
 import android.content.Intent
@@ -17,12 +17,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
@@ -34,6 +35,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,6 +44,11 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.Lifecycle
 import com.finance.trade_learn.R
+import com.finance.trade_learn.view.HomePageItems
+import com.finance.trade_learn.view.LifeCycleListener
+import com.finance.trade_learn.view.LocalBaseViewModel
+import com.finance.trade_learn.view.PopularItemsView
+import com.finance.trade_learn.view.coin.PopularCoinCard
 import com.finance.trade_learn.viewModel.ViewModeHomePage
 import kotlinx.coroutines.*
 import java.lang.Runnable
@@ -70,8 +77,7 @@ private fun MainToolbar(openSearch : () -> Unit) {
     ) {
         val context = LocalContext.current
         val (composeEmail, appName, search) = createRefs()
-        Image(
-            painter = painterResource(id = R.drawable.send_mail),
+        Image(painter = painterResource(id = R.drawable.send_mail),
             contentDescription = "Send Email",
             modifier = Modifier
                 .constrainAs(composeEmail) {
@@ -117,7 +123,15 @@ private fun MainToolbar(openSearch : () -> Unit) {
     }
 }
 @Composable
-fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) -> Unit, viewModel : ViewModeHomePage = androidx.lifecycle.viewmodel.compose.viewModel()){
+fun MainView(
+    page: Int = 1,
+    shouldShowPopularCoins : Boolean = false,
+    openSearch: () -> Unit,
+    openTradePage: (String) -> Unit,
+    viewModel: ViewModeHomePage = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+    val baseViewModel = LocalBaseViewModel.current
+
     var runnable by remember {
         mutableStateOf(Runnable {  })
     }
@@ -128,36 +142,35 @@ fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) 
         mutableStateOf(60000L)
     }
 
+    val popularItems = baseViewModel.listOfCryptoForPopular.observeAsState().value
 
-    LifeCycleListener {
-        when (it) {
-            Lifecycle.Event.ON_RESUME -> {
-                runnable = Runnable {
-                    runBlocking {
-                        viewModel.getAllCrypto(page)
-                    }
-                    handler.postDelayed(runnable, timeLoop)
-                }
-                handler.post(runnable)            }
-            Lifecycle.Event.ON_PAUSE -> {
-                handler.removeCallbacks(runnable)
+    DisposableEffect(Unit) {
+        runnable = Runnable {
+            runBlocking {
+                if (false) baseViewModel.getAllCryptoFromLocalApi(page)
+                else baseViewModel.getAllCryptoFromApi(page)
             }
-            else -> {}
+            handler.postDelayed(runnable, timeLoop)
+        }
+        handler.post(runnable)
+
+        onDispose {
+            handler.removeCallbacks(runnable)
         }
     }
 
-
-
     Box(modifier = Modifier.fillMaxSize()) {
-        val isLoading = viewModel.isLoading.observeAsState().value ?: false
+        val isLoading = baseViewModel.isLoading.observeAsState().value ?: false
         if (isLoading){
-            Row(modifier = Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center) {
-
-                CircularProgressIndicator(
-                    color = colorResource(id = R.color.pozitive),
-                )
+            Row(modifier = Modifier.fillMaxSize()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = colorResource(id = R.color.pozitive),
+                    )
+                }
             }
         }
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
@@ -174,21 +187,38 @@ fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) 
                     .height(1.dp)
                     .background(color = colorResource(id = R.color.light_grey))) {}
 
+                if (shouldShowPopularCoins){
+                    Column(modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                    ) {
+                        Text(
+                            text = "Popular Coins",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
 
-                Column(modifier = Modifier.padding(top = 3.dp)) {
-                    PopularItemsView(){selectedItemName ->
-                        openTradePage.invoke(selectedItemName)
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp, top = 4.dp)
+                        ) {
+                            popularItems?.forEach { coin ->
+                                PopularCoinCard(coin, Modifier.weight(1f)){selectedItemName ->
+                                    openTradePage.invoke(selectedItemName)
+                                }
+                            }
+                        }
+
                     }
                 }
-
-
 
             }
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .background(color = colorResource(id = R.color.light_grey))
                 .height(1.dp)
-                .padding(top = 3.dp, bottom = 3.dp)
                 .constrainAs(divider1) {
                     top.linkTo(toolbar.bottom)
                 }
@@ -204,7 +234,7 @@ fun MainView (page : Int = 1, openSearch : () -> Unit, openTradePage : (String) 
 
             ) {
 
-                val listOfItems = viewModel.listOfCrypto.observeAsState()
+                val listOfItems = baseViewModel.listOfCrypto.observeAsState()
                 HomePageItems(coinsHome = listOfItems.value){selectedItemName->
                     openTradePage.invoke(selectedItemName)
                 }

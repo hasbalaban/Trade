@@ -34,8 +34,8 @@ import com.finance.trade_learn.Adapters.solveCoinName
 import com.finance.trade_learn.R
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.utils.SharedPreferencesManager
+import com.finance.trade_learn.view.wallet.WalletItemComposeView
 import com.finance.trade_learn.viewModel.ViewModelMyWallet
-import kotlinx.coroutines.*
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)

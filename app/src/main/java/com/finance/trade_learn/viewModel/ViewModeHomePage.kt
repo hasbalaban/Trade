@@ -17,69 +17,6 @@ import kotlin.collections.ArrayList
 
 class ViewModeHomePage : BaseViewModel() {
     private var disposable: CompositeDisposable = CompositeDisposable()
-    var isLoading = MutableLiveData<Boolean>(false)
-    var listOfCrypto = MutableLiveData<List<CoinsHome>>()
-    var listOfCryptoForPopular = MutableLiveData<ArrayList<CoinsHome>>()
-    private var lastCrypoList = MutableLiveData<List<CoinsHome>>()
-
-    fun getAllCrypto(page : Int) {
-        isLoading.value = true
-        viewModelScope.launch {
-                cryptoService().getCoinList(page)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
-                        override fun onSuccess(t: List<CoinDetail>) {
-                            isLoading.value = false
-                            try {
-                                val data = convertCryptoList(t)
-                                if (data.ListOfCrypto.isNotEmpty()){
-                                    listOfCrypto.value = data.ListOfCrypto
-                                    lastCrypoList.value = data.lastCrypoList
-
-                                    currentItems =  data.ListOfCrypto
-                                    lastItems =  data.lastCrypoList
-
-                                    cachedData = t
-                                    listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
-                                }
-
-                            } catch (_: Exception) {
-                                isLoading.value = false
-
-                                listOfCrypto.value = currentItems
-                                lastCrypoList.value = lastItems
-                            }
-                        }
-
-                        override fun onError(e: Throwable) {
-                            isLoading.value = false
-                            listOfCrypto.value = currentItems
-                            lastCrypoList.value = lastItems
-                        }
-
-                    })
-        }
-    }
-
-    fun convertCryptoList(t: List<CoinDetail>): DataForHomePage {
-        return ConvertOperation(t, lastCrypoList).convertDataToUse()
-    }
-
-    private fun convertPopularCoinList(list: ArrayList<CoinsHome>?): ArrayList<CoinsHome>? {
-        val popList = arrayListOf<CoinsHome>()
-        val populerlist = mutableListOf("bit", "bnb", "eth", "sol", "gate", "avax")
-        list?.let{
-            for (i in list) {
-                if (popList.size == 3) return@let
-                if (populerlist.contains(i.CoinName.subSequence(0, 3).toString().lowercase())) {
-                    popList.add(i)
-                    populerlist.remove(i.CoinName.subSequence(0, 3))
-                }
-            }
-        }
-        return popList
-    }
 
     override fun onCleared() {
         disposable.clear()
