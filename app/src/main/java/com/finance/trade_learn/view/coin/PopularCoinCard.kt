@@ -23,6 +23,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -122,6 +123,13 @@ fun PopularCoinCard(
                         overflow = TextOverflow.Ellipsis
                     )
                     Image(
+                        modifier = modifier.rotate(
+                            if (coin.CoinChangePercente.contains("+"))
+                                0.0f
+                            else if (coin.CoinChangePercente.contains("-"))
+                                90.0f
+                            else  0.0f
+                        ),
                         painter = painterResource(id = R.drawable.arrow_outward),
                         contentDescription = "price raised",
                         colorFilter = ColorFilter.tint(

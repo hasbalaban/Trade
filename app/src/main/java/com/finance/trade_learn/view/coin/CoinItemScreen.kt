@@ -9,11 +9,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,25 +41,25 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 6.dp)
+                .padding(horizontal = 12.dp)
         ) {
             Image(
                 painter = rememberAsyncImagePainter(coin.CoinImage),
                 contentDescription = coin.CoinName,
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(24.dp)
                     .background(Color.Transparent, shape = RoundedCornerShape(6.dp)),
                 contentScale = ContentScale.Crop
             )
 
             Column(
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(horizontal = 8.dp)
                     .weight(1f)
             ) {
                 Text(
                     text = coin.CoinName,
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = onSurfaceColor,
                     maxLines = 1,
@@ -66,15 +68,14 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
 
                 Text(
                     text = coin.coinSymbol.uppercase(),
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
                     color = onSurfaceColor.copy(alpha = 0.6f)
                 )
             }
 
             Text(
-                modifier = Modifier.height(40.dp),
                 text = coin.CoinPrice.let { "$${it}" },
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = onSurfaceColor
             )
@@ -84,33 +85,45 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+
+            Text(
+                text = "Market Cap: ${coin.marketCap}",
+                fontSize = 12.sp,
+                color = onSurfaceColor
+            )
+
+
+            Row (horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically){
                 Text(
-                    text = "Market Cap: ${coin.marketCap}",
+                    text = "24h: ${coin.CoinChangePercente}",
                     fontSize = 12.sp,
-                    color = onSurfaceColor
-                )
-                Text(
-                    text = "24h Change: ${coin.CoinChangePercente}",
-                    fontSize = 14.sp,
                     color = if (coin.CoinChangePercente.contains("+"))
                         Color(0xFF2ebd85) else Color(0xFFFF0000)
                 )
+
+                Image(
+                    modifier = Modifier.padding(start = 10.dp).rotate(
+                        if (coin.CoinChangePercente.contains("+"))
+                            0.0f
+                        else if (coin.CoinChangePercente.contains("-"))
+                            90.0f
+                        else  0.0f
+                    ),
+                    painter = painterResource(id = R.drawable.arrow_outward),
+                    contentDescription = "price raised",
+                    colorFilter = ColorFilter.tint(
+                        if (coin.CoinChangePercente.contains("+"))
+                            Color(0xFF2ebd85) else Color(0xFFFF0000)
+                    )
+                )
             }
 
-            Image(
-                painter = painterResource(id = R.drawable.arrow_outward),
-                contentDescription = "price raised",
-                colorFilter = ColorFilter.tint(
-                    if (coin.CoinChangePercente.contains("+"))
-                        Color(0xFF2ebd85) else Color(0xFFFF0000)
-                )
-            )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(6.dp))
         Divider(color = Color.LightGray)
     }
 }
