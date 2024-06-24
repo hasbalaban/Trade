@@ -38,15 +38,13 @@ fun SearchScreen(openTradePage: (String) -> Unit, viewModel: SearchCoinViewModel
 }
 
 private fun getItemsList(searchedItems: String, viewModel: BaseViewModel): List<CoinsHome> {
-    if (searchedItems.isEmpty()) return emptyList()
+    if (searchedItems.isEmpty()) return viewModel.listOfCrypto.value ?: emptyList()
 
-    val queryList = viewModel.coinListDetail.value?.filter {
-        it.name.contains(searchedItems, ignoreCase = true)
+    val filteredList = viewModel.listOfCrypto.value?.filter {
+        it.CoinName.contains(searchedItems, ignoreCase = true) || it.coinSymbol.contains(searchedItems, ignoreCase = true)
     } ?: emptyList()
 
-    return viewModel.listOfCrypto.value?.filter { listItem ->
-        queryList.any {queryItem -> queryItem.symbol == listItem.coinSymbol }
-    } ?: emptyList()
+    return filteredList
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,7 +55,7 @@ private fun SearchComposeView(
 ) {
     val baseViewModel = LocalBaseViewModel.current
     var searchedItem by remember { mutableStateOf("") }
-    var resultItems by remember { mutableStateOf(emptyList<CoinsHome>()) }
+    var resultItems by remember { mutableStateOf(getItemsList(searchedItem, viewModel = baseViewModel)) }
 
     val textChanged: (String) -> Unit = textChangedScope@{
         searchedItem = it

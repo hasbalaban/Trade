@@ -141,26 +141,20 @@ fun MainView(
 
     val popularItems = baseViewModel.listOfCryptoForPopular.observeAsState().value
 
-
-    LifeCycleListener {
-        when (it) {
-            Lifecycle.Event.ON_RESUME -> {
-                runnable = Runnable {
-                    runBlocking {
-                        if (false) baseViewModel.getAllCryptoFromLocalApi(page)
-                        else baseViewModel.getAllCryptoFromApi(page)
-                    }
-                    handler.postDelayed(runnable, timeLoop)
-                }
-                handler.post(runnable)            }
-            Lifecycle.Event.ON_PAUSE -> {
-                handler.removeCallbacks(runnable)
+    DisposableEffect(Unit) {
+        runnable = Runnable {
+            runBlocking {
+                if (false) baseViewModel.getAllCryptoFromLocalApi(page)
+                else baseViewModel.getAllCryptoFromApi(page)
             }
-            else -> {}
+            handler.postDelayed(runnable, timeLoop)
+        }
+        handler.post(runnable)
+
+        onDispose {
+            handler.removeCallbacks(runnable)
         }
     }
-
-
 
     Box(modifier = Modifier.fillMaxSize()) {
         val isLoading = baseViewModel.isLoading.observeAsState().value ?: false
@@ -196,16 +190,16 @@ fun MainView(
                     ) {
                         Text(
                             text = "Popular Coins",
-                            fontSize = 24.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+                            modifier = Modifier.padding(start = 16.dp)
                         )
 
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp)
+                                .padding(bottom = 8.dp, top = 4.dp)
                         ) {
                             popularItems?.forEach { coin ->
                                 PopularCoinCard(coin, Modifier.weight(1f)){selectedItemName ->
