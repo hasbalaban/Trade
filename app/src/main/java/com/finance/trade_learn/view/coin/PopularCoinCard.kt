@@ -79,7 +79,7 @@ fun PopularCoinCard(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = if (coin.CoinChangePercente.contains("+"))
-                        Color(0xFF0BB600) else Color(0xFF2ebd85),
+                        Color(0xFF2ebd85) else Color(0xFFFF0000),
                     textAlign = TextAlign.Start,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
