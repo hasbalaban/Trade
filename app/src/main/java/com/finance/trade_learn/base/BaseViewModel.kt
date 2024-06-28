@@ -103,12 +103,16 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
         val popList = arrayListOf<CoinsHome>()
         val populerlist = mutableListOf("bit", "bnb", "eth", "sol", "gate", "avax")
         list?.let{
-            for (i in list) {
-                if (popList.size == 3) return@let
+            for (i in list){
+                if (popList.size == 3) break
                 if (populerlist.contains(i.CoinName.subSequence(0, 3).toString().lowercase())) {
                     popList.add(i)
                     populerlist.remove(i.CoinName.subSequence(0, 3))
                 }
+            }
+
+            for (i in list.sortedBy { it.total_volume }) {
+                if (!popList.contains(i)) popList.add(i)
             }
         }
         return popList
