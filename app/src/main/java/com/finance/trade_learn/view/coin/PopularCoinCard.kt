@@ -1,5 +1,6 @@
 package com.finance.trade_learn.view.coin
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,14 +20,14 @@ import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,17 +40,23 @@ import com.finance.trade_learn.R
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 
-
 @Composable
 fun PopularCoinCard(
     coin: CoinsHome,
     modifier: Modifier = Modifier,
     clickedItem: (String) -> Unit
 ) {
+
+    val configuration = LocalConfiguration.current
+    val cardWidth = remember {
+        ((configuration.screenWidthDp.dp) / 2.5.dp)
+    }
+
     Card(
         modifier = modifier
             .clickable { clickedItem.invoke(coin.id) }
             .height(110.dp)
+            .width(cardWidth.dp)
             .padding(horizontal = 6.dp),
         shape = RoundedCornerShape(8.dp),
         elevation = 4.dp
@@ -173,6 +180,12 @@ private fun PopularCoinScreenPreview() {
 
 
     }
+}
+
+
+fun Context.pxToDp(px: Float): Float {
+    val metrics = resources.displayMetrics
+    return px / (metrics.densityDpi / 160f)
 }
 
 
