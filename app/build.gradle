@@ -27,7 +27,7 @@ android {
 
     defaultConfig {
         applicationId "com.finance.trade_learn"
-        minSdk 23
+        minSdk 30
         targetSdk 34
         versionCode 84
         versionName "2.4.4"
