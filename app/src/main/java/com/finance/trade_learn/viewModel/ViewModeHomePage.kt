@@ -23,11 +23,4 @@ class ViewModeHomePage : BaseViewModel() {
         super.onCleared()
     }
 
-    companion object {
-        var cachedData : List<CoinDetail> = emptyList()
-        var currentItems : List<CoinsHome> = emptyList()
-        var lastItems : List<CoinsHome> = emptyList()
-    }
-
-
 }

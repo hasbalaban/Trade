@@ -73,7 +73,7 @@ class ViewModelMyWallet @Inject constructor(
 
                     override fun onError(e: Throwable) {
 
-                        val cachedItems = ViewModeHomePage.cachedData.filter {
+                        val cachedItems = cachedData.filter {
                             val id = solveCoinName(it.id)
                             coinQuery.split(",").contains(id)
                         }

@@ -74,7 +74,7 @@ class ViewModelCurrentTrade @Inject constructor(
                     }
 
                     override fun onError(e: Throwable) {
-                        val cachedItem = ViewModeHomePage.cachedData.firstOrNull {
+                        val cachedItem = cachedData.firstOrNull {
                             solveCoinName(it.id) == coinName
                         }
                         cachedItem?.let {

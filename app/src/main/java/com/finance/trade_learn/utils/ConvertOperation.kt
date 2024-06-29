@@ -13,7 +13,7 @@ import kotlin.collections.ArrayList
 
 class ConvertOperation(
     val t: List<CoinDetail>,
-    val ListOfCryptoforCompare: MutableLiveData<List<CoinsHome>>
+    var lastItems: List<CoinsHome>?
 ){
 
     var change = enumPriceChange.notr
@@ -25,7 +25,7 @@ class ConvertOperation(
         val ListItemForCompare = arrayListOf<CoinsHome>()
 
         for ((position, i) in t.withIndex()) {
-            val last = ListOfCryptoforCompare.value?.get(position)?.CoinPrice?.toDouble()
+            val last = lastItems?.getOrNull(position)?.CoinPrice?.toDouble()
             val new = i.current_price ?: 0.0
 
             //control for state of change
@@ -50,6 +50,7 @@ class ConvertOperation(
                 .toString() + "0000").subSequence(0, 4).toString() + "%"
 
             val item = CoinsHome(
+                id = i.id,
                 coinName,
                 coinSymbol,
                 coinPrice,
@@ -63,6 +64,7 @@ class ConvertOperation(
             val coinPriceCompare = i.current_price.toString()
             val itemCompare =
                 CoinsHome(
+                    id = i.id,
                     coinName,
                     coinSymbol,
                     coinPriceCompare,
@@ -77,8 +79,8 @@ class ConvertOperation(
         }
 
         ListOfCrypto.value = ListItem
-        ListOfCryptoforCompare.value = ListItemForCompare
-        return DataForHomePage(ListOfCryptoforCompare.value ?: listOf(), ListOfCrypto.value ?: ArrayList(), change)
+        lastItems = ListItemForCompare
+        return DataForHomePage(lastItems ?: emptyList(), ListOfCrypto.value ?: ArrayList())
     }
 
     private fun percenteChange(coinPrice: String): Percent {
