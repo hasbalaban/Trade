@@ -111,7 +111,8 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
                 }
             }
 
-            for (i in list.sortedBy { it.total_volume }) {
+            val maxItemSize = if (list.isEmpty()) 0 else minOf(list.size, 12)
+            for (i in list.sortedBy { it.total_volume }.subList(0, maxItemSize)) {
                 if (!popList.contains(i)) popList.add(i)
             }
         }
