@@ -38,7 +38,7 @@ fun PopularCoinCard(
 
     val configuration = LocalConfiguration.current
     val cardWidth = remember {
-        (configuration.screenWidthDp / 2.2).dp
+        (configuration.screenWidthDp / 2.7).dp
     }
 
     Card(
@@ -47,7 +47,7 @@ fun PopularCoinCard(
             .width(cardWidth)
             .clip(RoundedCornerShape(16.dp))
             .padding(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFFFF)),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(

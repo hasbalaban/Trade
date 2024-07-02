@@ -1,6 +1,7 @@
 package com.finance.trade_learn.view
 
 
+import TradePage
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Build
@@ -11,16 +12,11 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -51,13 +47,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.finance.trade_learn.base.BaseViewModel
-import com.finance.trade_learn.enums.enumPriceChange
-import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
-import com.finance.trade_learn.view.coin.PopularCoinCard
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
-import com.finance.trade_learn.viewModel.ViewModelCurrentTrade
 import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
 import com.finance.trade_learn.viewModel.ViewModelMyWallet
 import com.finance.trade_learn.viewModel.ViewModelUtils
@@ -140,16 +132,7 @@ class MainActivity : AppCompatActivity() {
                     })
                 ) { backStackEntry ->
                     val coinName = backStackEntry.arguments?.getString("coinName") ?: "TETHER"
-                    val viewModel = hiltViewModel<ViewModelCurrentTrade>()
-
-                    TradeScreen(
-                        openHistoryScreen = {
-                            navController.navigate(Screens.HistoryScreen.route)
-                        },
-                        viewModel = viewModel,
-                        coinName = coinName,
-
-                        )
+                    TradePage(itemName = coinName,)
                 }
                 composable(Screens.Wallet.route) {
                     val viewModel = hiltViewModel<ViewModelMyWallet>()

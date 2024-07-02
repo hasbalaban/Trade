@@ -1,23 +1,24 @@
 package com.finance.trade_learn.repository
 
+import androidx.lifecycle.LiveData
 import com.finance.trade_learn.database.DatabaseDao
 import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
-import com.finance.trade_learn.database.dataBaseEntities.myCoins
+import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import java.util.*
 import javax.inject.Inject
 
 interface UserLocalWalletDatabase{
-    suspend fun getAllItems() :  List<myCoins>
+    suspend fun getAllItems() :  List<MyCoins>
 
-    suspend fun getSelectedItemDetail(selectedItem : String) :  myCoins?
+    fun getSelectedItemDetail(selectedItem : String) :  LiveData<MyCoins?>
 
-    suspend fun updateSelectedItem(item : myCoins) :  Unit
+    suspend fun updateSelectedItem(item : MyCoins) :  Unit
 
     suspend fun addProgressToTradeHistory(item : SaveCoin) :  Unit
 
-    suspend fun buyNewItem(item : myCoins) :  Unit
+    suspend fun buyNewItem(item : MyCoins) :  Unit
 
-    suspend fun getFilteredItems(filter : String) :  List<myCoins>
+    suspend fun getFilteredItems(filter : String) :  List<MyCoins>
 
 }
 
@@ -26,36 +27,29 @@ interface UserLocalWalletDatabase{
 class CoinDetailRepositoryImp @Inject constructor(
     private val dataBaseService : DatabaseDao
     ) : UserLocalWalletDatabase {
-    override suspend fun getAllItems(): List<myCoins> {
+    override suspend fun getAllItems(): List<MyCoins> {
         return dataBaseService.getAllCoins().map {
             it.copy(CoinName = it.CoinName.lowercase(Locale.getDefault()))
         }
     }
 
-    override suspend fun getSelectedItemDetail(selectedItem : String): myCoins? {
-        return  dataBaseService.getSelectedCoinInfo(selectedItem.lowercase(Locale.getDefault())) ?:  dataBaseService.getSelectedCoinInfo(selectedItem.uppercase(Locale.getDefault()))?.apply {
-            CoinName = this.CoinName.lowercase(Locale.getDefault())
-        }
+    override fun getSelectedItemDetail(selectedItem : String): LiveData<MyCoins?> {
+        return  dataBaseService.getSelectedCoinInfo(selectedItem.lowercase(Locale.getDefault()))
     }
 
-    override suspend fun updateSelectedItem(item : myCoins) {
-        dataBaseService.updateCoin(item.copy(CoinName = item.CoinName.lowercase(
-            Locale.getDefault())))
+    override suspend fun updateSelectedItem(item : MyCoins) {
         dataBaseService.updateCoin(item)
     }
 
     override suspend fun addProgressToTradeHistory(item: SaveCoin) {
-        val itemNameLowercase = item.coinName.lowercase(Locale.getDefault())
-        dataBaseService.addTrade(item.copy(
-            coinName = itemNameLowercase
-        ))
+        dataBaseService.addTrade(item)
     }
 
-    override suspend fun buyNewItem(item: myCoins) {
+    override suspend fun buyNewItem(item: MyCoins) {
         dataBaseService.addCoin(item)
     }
 
-    override suspend fun getFilteredItems(filter: String): List<myCoins> {
+    override suspend fun getFilteredItems(filter: String): List<MyCoins> {
         return dataBaseService.getFilteredItems(filter.lowercase(Locale.getDefault()))
     }
 

@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "myCoins")
-data class myCoins(
+data class MyCoins(
 
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "CoinName")
