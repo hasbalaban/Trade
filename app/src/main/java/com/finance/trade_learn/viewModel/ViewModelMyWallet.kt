@@ -106,7 +106,7 @@ class ViewModelMyWallet @Inject constructor(
                                     val price = i.current_price?.toBigDecimal() ?: BigDecimal.ZERO
 
                                     val amount =
-                                        coinDetailRepositoryImp.getSelectedItemDetail(i.id.lowercase(Locale.getDefault()))?.CoinAmount?.toBigDecimal() ?: coinDetailRepositoryImp.getSelectedItemDetail(i.id.uppercase(Locale.getDefault()))?.CoinAmount?.toBigDecimal() ?: BigDecimal.ZERO
+                                        coinDetailRepositoryImp.getSelectedItemDetail(i.id.lowercase(Locale.getDefault()))?.value?.CoinAmount?.toBigDecimal() ?: coinDetailRepositoryImp.getSelectedItemDetail(i.id.uppercase(Locale.getDefault()))?.value?.CoinAmount?.toBigDecimal() ?: BigDecimal.ZERO
                                     val image = i.image
 
                                     total += (price * amount)
