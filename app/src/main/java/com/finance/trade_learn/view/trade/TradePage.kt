@@ -144,8 +144,8 @@ private fun TradeMainScreen(
 
 
         Spacer(modifier = Modifier.height(6.dp))
-        TotalCostSection(
-            totalCost = userBalance
+        BalanceSection(
+            totalBalance = userBalance
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -249,7 +249,8 @@ fun ItemDetailSection(
             is TradePageUiState.Data -> {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Mevcut Adet: ${item.data?.CoinAmount}",
+                    text = "Mevcut Adet:  %.6f USD".format(item.data?.CoinAmount)
+                           ,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -338,24 +339,7 @@ fun TradeAmountInput(
 
 @Composable
 fun TotalCostSection(
-    totalCost: Double
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Total Balance: %.2f USD".format(totalCost),
-            style = MaterialTheme.typography.bodyMedium,
-        )
-    }
-}
-
-
-@Composable
-fun BalanceSection(
-    totalBalance: Double
+   totalCost: Double
 ) {
     Column(
         modifier = Modifier
@@ -370,7 +354,23 @@ fun BalanceSection(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "Toplam Maliyet: %.6f USD".format(totalBalance),
+            text = "Toplam Maliyet: %.4f USD".format(totalCost),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+}
+
+@Composable
+fun BalanceSection(
+    totalBalance: Double
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Total Balance: %.4 USD".format(totalBalance),
             style = MaterialTheme.typography.bodyMedium,
         )
     }
