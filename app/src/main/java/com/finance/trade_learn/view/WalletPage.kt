@@ -38,10 +38,8 @@ import com.finance.trade_learn.view.wallet.WalletItemComposeView
 import com.finance.trade_learn.viewModel.ViewModelMyWallet
 import java.util.*
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WalletScreen(
-    openSearch: () -> Unit,
     openTradePage: (String) -> Unit,
     viewModel: ViewModelMyWallet,
 ) {

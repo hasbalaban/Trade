@@ -138,9 +138,6 @@ class MainActivity : AppCompatActivity() {
                     val viewModel = hiltViewModel<ViewModelMyWallet>()
 
                     WalletScreen(
-                        openSearch = {
-                            navController.navigate(Screens.SearchScreen.route)
-                        },
                         openTradePage = {
                             navController.navigate(Screens.Trade(it).route)
                         },

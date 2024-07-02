@@ -1,5 +1,6 @@
 package com.finance.trade_learn.viewModel
 
+import androidx.compose.runtime.livedata.observeAsState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
@@ -14,8 +15,10 @@ import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
+import com.finance.trade_learn.view.trade.TradePageUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.math.BigDecimal
 import java.util.*
 import javax.inject.Inject
@@ -105,23 +108,24 @@ class ViewModelMyWallet @Inject constructor(
                                     val name = i.id.lowercase(Locale.getDefault())
                                     val price = i.current_price?.toBigDecimal() ?: BigDecimal.ZERO
 
-                                    val amount =
-                                        coinDetailRepositoryImp.getSelectedItemDetail(i.id.lowercase(Locale.getDefault()))?.value?.CoinAmount?.toBigDecimal() ?: coinDetailRepositoryImp.getSelectedItemDetail(i.id.uppercase(Locale.getDefault()))?.value?.CoinAmount?.toBigDecimal() ?: BigDecimal.ZERO
+
+                                    val amount = z.CoinAmount.toBigDecimal()
                                     val image = i.image
 
                                     total += (price * amount)
 
+                                    val totalItemBalance = amount * price
                                     newModelForCoins.add(
                                         NewModelForItemHistory(
-                                            name, amount.toString(),
-                                            (amount * price).toString(), image
+                                            name,
+                                            amount.toString(),
+                                            totalItemBalance.toString(),
+                                            image
                                         )
                                     )
                                     j++
                                     break
                                 }
-
-
                             }
                         }
 
