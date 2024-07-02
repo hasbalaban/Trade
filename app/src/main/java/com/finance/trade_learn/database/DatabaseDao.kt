@@ -1,5 +1,6 @@
 package com.finance.trade_learn.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -20,15 +21,15 @@ interface DatabaseDao {
 
     // this fun will return that it  constraint
     @Query("select * from myCoins where CoinName LIKE '%' || :firstName || '%'")
-    suspend fun getFilteredItems(firstName: String): List<myCoins>
+    suspend fun getFilteredItems(firstName: String): List<MyCoins>
 
 
     @Query("select * from myCoins where CoinName=:coinName ")
-    suspend fun getSelectedCoinInfo(coinName: String): myCoins?
+    fun getSelectedCoinInfo(coinName: String): LiveData<MyCoins?>
 
 
     @Update
-    suspend fun updateCoin(myCoins: myCoins)
+    suspend fun updateCoin(myCoins: MyCoins)
 
 
     // ------ operations of save of trade
