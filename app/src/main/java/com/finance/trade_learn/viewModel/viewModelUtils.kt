@@ -3,12 +3,10 @@ package com.finance.trade_learn.viewModel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finance.trade_learn.database.dataBaseEntities.myCoins
+import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.database.dataBaseService
 import com.finance.trade_learn.utils.Secrets
 import com.finance.trade_learn.utils.SharedPreferencesManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ViewModelUtils() : ViewModel() {
@@ -28,7 +26,7 @@ class ViewModelUtils() : ViewModel() {
     private fun addOneTimeDollars(context: Context) {
         viewModelScope.launch {
             val databaseDao = dataBaseService.invoke(context).databaseDao()
-            val myCoins = myCoins("tether", Secrets.GIFT_AMOUNT)
+            val myCoins = MyCoins("tether", Secrets.GIFT_AMOUNT)
             databaseDao.addCoin(myCoins)
         }
     }

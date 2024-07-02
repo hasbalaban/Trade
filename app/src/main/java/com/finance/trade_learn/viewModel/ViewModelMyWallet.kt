@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.Adapters.solveCoinName
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.ctryptoApi.cryptoService
-import com.finance.trade_learn.database.dataBaseEntities.myCoins
+import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
@@ -25,7 +25,7 @@ import kotlin.collections.ArrayList
 class ViewModelMyWallet @Inject constructor(
     private val coinDetailRepositoryImp : CoinDetailRepositoryImp
 ) : BaseViewModel() {
-    private val myCoinsDatabaseModel = MutableLiveData<List<myCoins>>()
+    private val myCoinsDatabaseModel = MutableLiveData<List<MyCoins>>()
     val myCoinsNewModel = MutableLiveData<ArrayList<NewModelForItemHistory>>()
     val myBaseModelOneCryptoModel = MutableLiveData<List<CoinDetail>>()
     var disposable = CompositeDisposable()
@@ -45,7 +45,7 @@ class ViewModelMyWallet @Inject constructor(
         }
     }
 
-    private fun checkDatabaseData(myCoinsDatabaseModel: MutableLiveData<List<myCoins>>) {
+    private fun checkDatabaseData(myCoinsDatabaseModel: MutableLiveData<List<MyCoins>>) {
 
         myCoinsDatabaseModel.let {
             var coinQuery = ""

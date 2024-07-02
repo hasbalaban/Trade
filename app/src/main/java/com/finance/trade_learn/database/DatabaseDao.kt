@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.finance.trade_learn.database.dataBaseEntities.myCoins
+import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
 
 @Dao
@@ -12,11 +12,11 @@ interface DatabaseDao {
 
     // ------ operations of sell and buy
     @Insert
-    suspend fun addCoin(myCoins: myCoins)
+    suspend fun addCoin(myCoins: MyCoins)
 
 
     @Query("select * from myCoins where CoinAmount>0.0")
-    suspend fun getAllCoins(): List<myCoins>
+    suspend fun getAllCoins(): List<MyCoins>
 
     // this fun will return that it  constraint
     @Query("select * from myCoins where CoinName LIKE '%' || :firstName || '%'")
