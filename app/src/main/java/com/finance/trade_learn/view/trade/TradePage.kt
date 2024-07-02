@@ -370,7 +370,7 @@ fun BalanceSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Total Balance: %.4 USD".format(totalBalance),
+            text = "Total Balance: %.4f USD".format(totalBalance),
             style = MaterialTheme.typography.bodyMedium,
         )
     }
