@@ -19,7 +19,7 @@ import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
 import com.finance.trade_learn.view.MainActivity
-import com.finance.trade_learn.viewModel.ViewModelCurrentTrade
+import com.finance.trade_learn.viewModel.TradeViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
@@ -40,8 +40,8 @@ class SendNotificationPer12Hours @Inject constructor(
 
     @Inject
     lateinit var coinDetailRepositoryImp : CoinDetailRepositoryImp
-    val viewModel : ViewModelCurrentTrade by lazy {
-        ViewModelCurrentTrade(coinDetailRepositoryImp)
+    val viewModel : TradeViewModel by lazy {
+        TradeViewModel(coinDetailRepositoryImp)
     }
 
     fun createNotification(coinName: String, price: String) {
