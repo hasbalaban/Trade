@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
@@ -118,15 +119,15 @@ fun WalletContent(modifier: Modifier) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("Coin", style = MaterialTheme.typography.bodySmall)
-                    Text("Amount", style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
-                    Text("Value", style = MaterialTheme.typography.bodySmall)
+                    Text("Amount", style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                    Text("Value", style = MaterialTheme.typography.bodySmall, modifier = Modifier.fillMaxWidth(0.3f), textAlign = TextAlign.End)
                 }
                 Spacer(modifier = Modifier.height(4.dp))
             }
 
             // Kripto itemlerin listesi
             items(cryptoItems.value.filter {
-                it.CoinName.contains(searchQuery.value.text, ignoreCase = true)
+                searchQuery.value.text.isBlank() || it.CoinName.contains(searchQuery.value.text, ignoreCase = true)
             }) { item ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -134,8 +135,8 @@ fun WalletContent(modifier: Modifier) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(item.CoinName, style = MaterialTheme.typography.bodyMedium)
-                    Text(item.CoinAmount.toString(), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
-                    Text("\$${(item.CoinAmount * item.Total).toDouble().format(2)}", style = MaterialTheme.typography.bodyMedium)
+                    Text(item.CoinAmount.toDouble().format(6), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                    Text("\$${(item.Total).toDouble().format(2)}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.fillMaxWidth(0.3f), textAlign = TextAlign.End)
                 }
                 Spacer(modifier = Modifier.height(4.dp))
             }

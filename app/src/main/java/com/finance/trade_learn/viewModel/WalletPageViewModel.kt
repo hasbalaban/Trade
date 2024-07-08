@@ -125,14 +125,13 @@ class WalletPageViewModel @Inject constructor(
                                 }
                             }
                         }
-
-
-                        withContext(Dispatchers.Main) {
-                            totalValue.value = total
-                            myCoinsNewModel.value = newModelForCoins
-                        }
-
                     }
+
+                withContext(Dispatchers.Main) {
+                    totalValue.value = total
+                    myCoinsNewModel.value = newModelForCoins
+                }
+
             }
         }
     }
