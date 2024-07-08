@@ -29,7 +29,6 @@ class WalletPageViewModel @Inject constructor(
     val myCoinsNewModel = MutableLiveData<ArrayList<NewModelForItemHistory>>()
     val myBaseModelOneCryptoModel = MutableLiveData<List<CoinDetail>>()
     var disposable = CompositeDisposable()
-
     // this function fot get coins that i have
     fun getMyCoinsDetails(constraint: String? = null) {
 

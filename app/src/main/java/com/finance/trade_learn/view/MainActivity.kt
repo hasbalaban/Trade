@@ -65,6 +65,7 @@ import java.util.concurrent.TimeUnit
 
 val LocalBaseViewModel = compositionLocalOf<BaseViewModel> { error("No BaseViewModel found") }
 val LocalWalletPageViewModel = compositionLocalOf<WalletPageViewModel> { error("No LocalWalletPageViewModel found") }
+val LocalViewModelHistoryTrade = compositionLocalOf<ViewModelHistoryTrade> { error("No ViewModelHistoryTrade found") }
 
 
 @AndroidEntryPoint
@@ -149,7 +150,10 @@ class MainActivity : AppCompatActivity() {
 
                 composable(Screens.HistoryScreen.route) {
                     val viewModel = hiltViewModel<ViewModelHistoryTrade>()
-                    HistoryScreen(viewModel)
+                    CompositionLocalProvider(LocalViewModelHistoryTrade provides viewModel) {
+                        TradeScreen()
+                    }
+
                 }
 
                 composable(Screens.SearchScreen.route) {

@@ -70,6 +70,8 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
 
                                 currentItems = data.ListOfCrypto
                                 lastItems = data.lastCrypoList
+
+                                cachedData = t
                             }
 
                         } catch (_: Exception) {
