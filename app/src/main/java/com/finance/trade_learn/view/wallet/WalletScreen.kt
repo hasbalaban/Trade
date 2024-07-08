@@ -1,6 +1,7 @@
 package com.finance.trade_learn.view.wallet
 
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -39,10 +40,11 @@ import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelF
 import com.finance.trade_learn.view.LocalWalletPageViewModel
 import java.util.Locale
 
-
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WalletScreen(
-    navigateToHistoryPage : () -> Unit
+    modifier: Modifier,
+    navigateToHistoryPage : () -> Unit,
 ) {
     val viewModel = LocalWalletPageViewModel.current
     LaunchedEffect(Unit) {
@@ -51,8 +53,8 @@ fun WalletScreen(
 
     Scaffold(
         topBar = { WalletTopBar() },
-        content = {paddingValue ->
-            WalletContent(modifier = Modifier.padding(paddingValue), navigateToHistoryPage = navigateToHistoryPage)
+        content = {
+            WalletContent(modifier = modifier, navigateToHistoryPage = navigateToHistoryPage)
         }
 
     )
@@ -140,7 +142,7 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(item.CoinName, style = MaterialTheme.typography.bodyMedium)
-                    Text(item.CoinAmount.toDouble().format(6), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                    Text(item.CoinAmount.toDouble().format(6), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
                     Text("\$${(item.Total).toDouble().format(2)}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.fillMaxWidth(0.3f), textAlign = TextAlign.End)
                 }
                 Spacer(modifier = Modifier.height(4.dp))
@@ -171,23 +173,12 @@ private fun WalletScreenPreview(){
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            WalletScreen{
+            WalletScreen(modifier = Modifier){
 
             }
         }
     }
 }
-
-
-// Veri modeli
-data class CryptoItem(val name: String, val amount: Double, val usdValue: Double)
-
-// Veri kaynağı (örnek veriler)
-val cryptoItems = listOf(
-    CryptoItem("Bitcoin", 1.5, 45000.0),
-    CryptoItem("Ethereum", 10.0, 2500.0),
-    CryptoItem("Litecoin", 20.0, 150.0)
-)
 
 fun Double.format(digits: Int) = "%.${digits}f".format(this)
 

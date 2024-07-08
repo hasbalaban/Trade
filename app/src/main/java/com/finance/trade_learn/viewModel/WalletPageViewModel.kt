@@ -71,7 +71,7 @@ class WalletPageViewModel @Inject constructor(
 
                     override fun onError(e: Throwable) {
 
-                        val cachedItems = cachedData.filter {
+                        val cachedItems = allCryptoItems.filter {
                             val id = solveCoinName(it.id)
                             coinQuery.split(",").contains(id)
                         }

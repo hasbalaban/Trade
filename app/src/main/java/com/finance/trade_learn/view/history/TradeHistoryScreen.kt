@@ -1,16 +1,13 @@
-package com.finance.trade_learn.view
+package com.finance.trade_learn.view.history
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
@@ -26,15 +23,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.finance.trade_learn.Adapters.solveCoinName
 import com.finance.trade_learn.R
-import com.finance.trade_learn.base.BaseViewModel.Companion.cachedData
+import com.finance.trade_learn.base.BaseViewModel.Companion.allCryptoItems
 import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
+import com.finance.trade_learn.view.LocalViewModelHistoryTrade
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun TradeScreen() {
+fun TradeScreen(modifier: Modifier) {
     val viewModel = LocalViewModelHistoryTrade.current
 
     val context = LocalContext.current
@@ -43,11 +40,12 @@ fun TradeScreen() {
     }
 
     val trades = viewModel.listOfTrade.observeAsState(emptyList()).value
-    MainContent(trades = trades)
+    MainContent(trades = trades, modifier = modifier)
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-private fun MainContent(trades: List<SaveCoin>) {
+private fun MainContent(trades: List<SaveCoin>, modifier: Modifier) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -55,14 +53,12 @@ private fun MainContent(trades: List<SaveCoin>) {
                 backgroundColor = MaterialTheme.colors.primary
             )
         }
-    ) { paddingValues ->
+    ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .background(color = Color.LightGray)
+                .background(color = Color(0xFFF5F5F5))
                 .padding(8.dp)
-                .clip(shape = RoundedCornerShape(16.dp))
         ) {
             LazyColumn(
                 modifier = Modifier
@@ -78,14 +74,11 @@ private fun MainContent(trades: List<SaveCoin>) {
     }
 }
 
-
 @Composable
 fun TradeItem(trade: SaveCoin) {
-
-    val imageUrl = cachedData.firstOrNull {
+    val imageUrl = allCryptoItems.firstOrNull {
         it.name.contains(trade.coinName, ignoreCase = true)
     }?.image
-
 
     Card(
         modifier = Modifier
@@ -97,7 +90,7 @@ fun TradeItem(trade: SaveCoin) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(8.dp)
                 .fillMaxWidth()
         ) {
             val painter =
@@ -116,60 +109,67 @@ fun TradeItem(trade: SaveCoin) {
                 painter = painter,
                 contentDescription = null, // Opsiyonel içerik açıklaması
                 modifier = Modifier
-                    .size(50.dp)
+                    .size(40.dp)
                     .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop // İçeriği sınırlar içine sığdır
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(12.dp))
 
-            // Metin içeriği
-            Column {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
                     text = trade.coinName,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primary // Başlık rengi
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Amount: ${trade.coinAmount.toDouble().formatAmount()}",
-                    fontSize = 16.sp,
-                    color = Color.DarkGray // Metin rengi
-                )
-                Text(
-                    text = "Price: ${trade.coinPrice.toDouble().formatPrice()}",
-                    fontSize = 16.sp,
-                    color = Color.DarkGray // Metin rengi
-                )
-                Text(
-                    text = "Total Cost: ${trade.total.toDouble().formatTotalCost()}",
-                    fontSize = 16.sp,
-                    color = Color.DarkGray // Metin rengi
-                )
-
-                // Date formatını burada düzeltelim
-                val formattedDate = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(
-                    SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).parse(trade.date)
-                )
-
-
-                Text(
-                    text = "Date: $formattedDate",
-                    fontSize = 14.sp,
-                    color = Color.DarkGray // Metin rengi
-                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Amount: ${trade.coinAmount.toDouble().formatAmount()}",
+                        fontSize = 14.sp,
+                        color = Color.DarkGray // Metin rengi
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Price: ${trade.coinPrice.toDouble().formatPrice()}",
+                        fontSize = 14.sp,
+                        color = Color.DarkGray // Metin rengi
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Total: ${trade.total.toDouble().formatTotalCost()}",
+                        fontSize = 14.sp,
+                        color = Color.DarkGray // Metin rengi
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Date: ${trade.date.formatDate()}",
+                        fontSize = 14.sp,
+                        color = Color.DarkGray // Metin rengi
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Operation: ${
-                        if (trade.tradeOperation.equals(
-                                "Buy",
-                                ignoreCase = true
-                            )
-                        ) "Alış" else "Satış"
+                        if (trade.tradeOperation.equals("Buy", ignoreCase = true))
+                            "Alış" else "Satış"
                     }",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.DarkGray // Metin rengi
+                    color = MaterialTheme.colors.primary // Metin rengi
                 )
             }
         }
@@ -180,6 +180,12 @@ fun TradeItem(trade: SaveCoin) {
 fun Double.formatAmount(): String = "%.6f".format(this)
 fun Double.formatPrice(): String = "%.6f".format(this)
 fun Double.formatTotalCost(): String = "%.3f".format(this)
+fun String.formatDate(): String {
+    val inputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+    val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+    val date = inputFormat.parse(this)
+    return outputFormat.format(date)
+}
 
 @Preview(showBackground = true)
 @Composable
@@ -191,7 +197,7 @@ fun PreviewTradeScreen() {
             "0.5",
             "35000.0",
             "17500.0",
-            System.currentTimeMillis().toString(),
+            SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date()),
             "Buy"
         ),
         SaveCoin(
@@ -200,9 +206,9 @@ fun PreviewTradeScreen() {
             "10.0",
             "2300.0",
             "23000.0",
-            (System.currentTimeMillis() - 86400000).toString(),
+            SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date(System.currentTimeMillis() - 86400000)),
             "sell"
         )
     )
-    MainContent(sampleTradeData)
+    MainContent(sampleTradeData, modifier = Modifier)
 }

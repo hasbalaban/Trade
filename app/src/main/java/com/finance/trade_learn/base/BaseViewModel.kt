@@ -62,16 +62,18 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
                         isLoading.value = false
                         try {
 
-                            val data = convertCryptoList(t)
+                            val newList = t.filter {newItem->
+                                !allCryptoItems.any {oldItem -> oldItem.id == newItem.id }
+                            }
+                            allCryptoItems.addAll(newList)
+
+                            val data = convertCryptoList(allCryptoItems)
                             if (data.ListOfCrypto.isNotEmpty()){
                                 currentItemsLiveData.value = data.ListOfCrypto
-
                                 listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
 
                                 currentItems = data.ListOfCrypto
                                 lastItems = data.lastCrypoList
-
-                                cachedData = t
                             }
 
                         } catch (_: Exception) {
@@ -129,9 +131,10 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
     }
 
     companion object {
-        var cachedData : List<CoinDetail> = emptyList()
         var currentItems : List<CoinsHome> = emptyList()
         var lastItems : List<CoinsHome> = emptyList()
+
+        var allCryptoItems = ArrayList<CoinDetail>()
     }
 
 }

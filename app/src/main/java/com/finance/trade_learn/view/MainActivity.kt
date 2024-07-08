@@ -49,6 +49,7 @@ import androidx.navigation.navArgument
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
+import com.finance.trade_learn.view.history.TradeScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
 import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
@@ -141,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                     val viewModel = hiltViewModel<WalletPageViewModel>()
 
                     CompositionLocalProvider(LocalWalletPageViewModel provides viewModel) {
-                        WalletScreen{
+                        WalletScreen(modifier = modifier){
                             navController.navigate(Screens.HistoryScreen.route)
                         }
                     }
@@ -151,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                 composable(Screens.HistoryScreen.route) {
                     val viewModel = hiltViewModel<ViewModelHistoryTrade>()
                     CompositionLocalProvider(LocalViewModelHistoryTrade provides viewModel) {
-                        TradeScreen()
+                        TradeScreen(modifier = modifier)
                     }
 
                 }
