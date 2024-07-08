@@ -41,7 +41,9 @@ import java.util.Locale
 
 
 @Composable
-fun WalletScreen() {
+fun WalletScreen(
+    navigateToHistoryPage : () -> Unit
+) {
     val viewModel = LocalWalletPageViewModel.current
     LaunchedEffect(Unit) {
         viewModel.getMyCoinsDetails()
@@ -50,7 +52,7 @@ fun WalletScreen() {
     Scaffold(
         topBar = { WalletTopBar() },
         content = {paddingValue ->
-            WalletContent(modifier = Modifier.padding(paddingValue))
+            WalletContent(modifier = Modifier.padding(paddingValue), navigateToHistoryPage = navigateToHistoryPage)
         }
 
     )
@@ -66,7 +68,7 @@ fun WalletTopBar() {
 }
 
 @Composable
-fun WalletContent(modifier: Modifier) {
+fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
     val viewModel = LocalWalletPageViewModel.current
 
 
@@ -147,7 +149,9 @@ fun WalletContent(modifier: Modifier) {
 
         // İşlem geçmişi butonu
         Button(
-            onClick = { /* İşlem geçmişi ekranına git */ },
+            onClick = {
+                navigateToHistoryPage.invoke()
+            },
             modifier = Modifier.align(Alignment.End)
         ) {
             Text("İşlem Geçmişi")
@@ -167,7 +171,9 @@ private fun WalletScreenPreview(){
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            WalletScreen()
+            WalletScreen{
+
+            }
         }
     }
 }
