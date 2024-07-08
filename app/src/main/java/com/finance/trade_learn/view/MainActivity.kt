@@ -49,9 +49,10 @@ import androidx.navigation.navArgument
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
+import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
 import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
-import com.finance.trade_learn.viewModel.ViewModelMyWallet
+import com.finance.trade_learn.viewModel.WalletPageViewModel
 import com.finance.trade_learn.viewModel.ViewModelUtils
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
@@ -63,6 +64,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 val LocalBaseViewModel = compositionLocalOf<BaseViewModel> { error("No BaseViewModel found") }
+val LocalWalletPageViewModel = compositionLocalOf<WalletPageViewModel> { error("No LocalWalletPageViewModel found") }
 
 
 @AndroidEntryPoint
@@ -135,14 +137,12 @@ class MainActivity : AppCompatActivity() {
                     TradePage(itemName = coinName,)
                 }
                 composable(Screens.Wallet.route) {
-                    val viewModel = hiltViewModel<ViewModelMyWallet>()
+                    val viewModel = hiltViewModel<WalletPageViewModel>()
 
-                    WalletScreen(
-                        openTradePage = {
-                            navController.navigate(Screens.Trade(it).route)
-                        },
-                        viewModel = viewModel
-                    )
+                    CompositionLocalProvider(LocalWalletPageViewModel provides viewModel) {
+                        WalletScreen()
+                    }
+
                 }
 
                 composable(Screens.HistoryScreen.route) {

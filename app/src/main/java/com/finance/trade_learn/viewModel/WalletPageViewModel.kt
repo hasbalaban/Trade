@@ -1,6 +1,5 @@
 package com.finance.trade_learn.viewModel
 
-import androidx.compose.runtime.livedata.observeAsState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
@@ -15,17 +14,15 @@ import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
-import com.finance.trade_learn.view.trade.TradePageUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableStateFlow
 import java.math.BigDecimal
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 @HiltViewModel
-class ViewModelMyWallet @Inject constructor(
+class WalletPageViewModel @Inject constructor(
     private val coinDetailRepositoryImp : CoinDetailRepositoryImp
 ) : BaseViewModel() {
     private val myCoinsDatabaseModel = MutableLiveData<List<MyCoins>>()
@@ -118,8 +115,8 @@ class ViewModelMyWallet @Inject constructor(
                                     newModelForCoins.add(
                                         NewModelForItemHistory(
                                             name,
-                                            amount.toString(),
-                                            totalItemBalance.toString(),
+                                            amount,
+                                            totalItemBalance,
                                             image
                                         )
                                     )
