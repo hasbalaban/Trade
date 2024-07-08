@@ -118,7 +118,7 @@ fun WalletContent(modifier: Modifier) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("Coin", style = MaterialTheme.typography.bodySmall)
-                    Text("Amount", style = MaterialTheme.typography.bodySmall)
+                    Text("Amount", style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
                     Text("Value", style = MaterialTheme.typography.bodySmall)
                 }
                 Spacer(modifier = Modifier.height(4.dp))
@@ -134,7 +134,7 @@ fun WalletContent(modifier: Modifier) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(item.CoinName, style = MaterialTheme.typography.bodyMedium)
-                    Text(item.CoinAmount.toString(), style = MaterialTheme.typography.bodyMedium)
+                    Text(item.CoinAmount.toString(), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
                     Text("\$${(item.CoinAmount * item.Total).toDouble().format(2)}", style = MaterialTheme.typography.bodyMedium)
                 }
                 Spacer(modifier = Modifier.height(4.dp))

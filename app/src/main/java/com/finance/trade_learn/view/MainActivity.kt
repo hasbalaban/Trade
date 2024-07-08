@@ -324,7 +324,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     // Renk paleti
     val selectedColor = Color(0xFF00BFA5) // Turkuaz (seçilen durumda)
     val unselectedColor = Color(0xFFFFFFFF) // Gri (seçilmeyen durumda)
-    val backgroundColor = Color(0xFF130909) // Koyu gri (arka plan)
+    val backgroundColor = Color(0xFF636060) // Koyu gri (arka plan)
 
     NavigationBar(
         containerColor = backgroundColor,
