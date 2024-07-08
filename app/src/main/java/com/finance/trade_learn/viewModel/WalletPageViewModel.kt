@@ -29,7 +29,6 @@ class WalletPageViewModel @Inject constructor(
     val myCoinsNewModel = MutableLiveData<ArrayList<NewModelForItemHistory>>()
     val myBaseModelOneCryptoModel = MutableLiveData<List<CoinDetail>>()
     var disposable = CompositeDisposable()
-    var totalValue = MutableLiveData<BigDecimal>()
 
     // this function fot get coins that i have
     fun getMyCoinsDetails(constraint: String? = null) {
@@ -128,7 +127,6 @@ class WalletPageViewModel @Inject constructor(
                     }
 
                 withContext(Dispatchers.Main) {
-                    totalValue.value = total
                     myCoinsNewModel.value = newModelForCoins
                 }
 

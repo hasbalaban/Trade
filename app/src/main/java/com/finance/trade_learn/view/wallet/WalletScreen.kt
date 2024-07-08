@@ -1,8 +1,17 @@
 package com.finance.trade_learn.view.wallet
 
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
@@ -19,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.view.LocalWalletPageViewModel
-import java.util.ArrayList
 import java.util.Locale
 
 
@@ -65,16 +72,13 @@ fun WalletContent(modifier: Modifier) {
 
     val cryptoItems = viewModel.myCoinsNewModel.observeAsState(emptyList())
 
-
-    var searchedItem by remember { mutableStateOf("") }
-    var resultItems by remember { mutableStateOf(emptyList<NewModelForItemHistory>()) }
-
-    val textChanged : (String) -> Unit =textChangedScope@{
-        searchedItem = it
-        resultItems = getSearchedList(searchedItem, itemList = viewModel.myCoinsNewModel.value )
-    }
-
-
+    val animatedBalance by animateFloatAsState(
+        targetValue = cryptoItems.value?.sumOf { it.Total.toDouble() }?.toFloat() ?: 0.0f ,
+        animationSpec = tween(
+            durationMillis = 2000,
+            easing = FastOutSlowInEasing
+        ), label = ""
+    )
 
     Column(modifier = Modifier.padding(16.dp)) {
         // Başlık ve çizgi
@@ -86,14 +90,13 @@ fun WalletContent(modifier: Modifier) {
         Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 16.dp))
 
         // Toplam bakiye gösterimi
-        val totalBalance = cryptoItems.value?.sumOf { it.Total.toDouble() }
         Text(
             text = "Toplam Bakiye",
             style = MaterialTheme.typography.displaySmall,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
-            text = "\$${totalBalance?.format(2)}",
+            text = "\$${animatedBalance.toDouble()?.format(2)}",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(bottom = 16.dp)
         )
