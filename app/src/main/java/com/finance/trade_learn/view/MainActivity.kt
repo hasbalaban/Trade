@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -358,11 +359,14 @@ fun BottomNavigationBar(navController: NavHostController) {
                 icon = {
                     Image(
                         painter = painterResource(id = navItem.icon),
-                        contentDescription = navItem.label,
+                        contentDescription = stringResource(id = navItem.label),
                         modifier = Modifier
                             .size(28.dp)
                             .shadow(4.dp, CircleShape)
-                            .background(if (isSelected) selectedColor else backgroundColor, CircleShape)
+                            .background(
+                                if (isSelected) selectedColor else backgroundColor,
+                                CircleShape
+                            )
                             .padding(4.dp),
                         colorFilter = ColorFilter.tint(
                             if (isSelected) Color.White else unselectedColor
@@ -371,7 +375,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                 },
                 label = {
                     Text(
-                        text = navItem.label,
+                        text = stringResource(id = navItem.label),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
