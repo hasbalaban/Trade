@@ -27,6 +27,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -94,10 +95,15 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val baseViewModel = hiltViewModel<BaseViewModel>()
+                val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(true)
 
                 CompositionLocalProvider(LocalBaseViewModel provides baseViewModel) {
                     Scaffold(
-                        bottomBar = { BottomNavigationBar(navController = navController) }
+                        bottomBar = {
+                            if(shouldShowBottomNavigationBar){
+                                BottomNavigationBar(navController = navController)
+                            }
+ }
                     ) { padding ->
                         Surface(color = androidx.compose.material.MaterialTheme.colors.secondaryVariant) {
                             MainScreen(navController, Modifier.padding(paddingValues = padding))
@@ -115,6 +121,8 @@ class MainActivity : AppCompatActivity() {
 
             NavHost(navController = navController, startDestination = "home") {
                 composable(Screens.Home.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+
                     com.finance.trade_learn.view.home.MainView(
                         shouldShowPopularCoins = true,
                         openSearch = {
@@ -126,6 +134,8 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
                 composable(Screens.Market.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+
                     com.finance.trade_learn.view.home.MainView(
                         page = marketPageNumber,
                         openSearch = {
@@ -145,10 +155,13 @@ class MainActivity : AppCompatActivity() {
                         defaultValue = "bitcoin"
                     })
                 ) { backStackEntry ->
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+
                     val coinName = backStackEntry.arguments?.getString("coinName") ?: "TETHER"
                     TradePage(itemName = coinName,)
                 }
                 composable(Screens.Wallet.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
                     val viewModel = hiltViewModel<WalletPageViewModel>()
 
                     CompositionLocalProvider(LocalWalletPageViewModel provides viewModel) {
@@ -160,14 +173,19 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 composable(Screens.HistoryScreen.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
+
                     val viewModel = hiltViewModel<ViewModelHistoryTrade>()
                     CompositionLocalProvider(LocalViewModelHistoryTrade provides viewModel) {
-                        TradeHistoryScreen(modifier = modifier)
+                        TradeHistoryScreen(modifier = modifier, goBack = {
+                            navController.popBackStack()
+                        })
                     }
 
                 }
 
                 composable(Screens.SearchScreen.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
                     val viewModel = hiltViewModel<SearchCoinViewModel>()
 
                     SearchScreen(
@@ -364,8 +382,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                             .size(28.dp)
                             .shadow(4.dp, CircleShape)
                             .background(
-                                if (isSelected) selectedColor else backgroundColor,
-                                CircleShape
+                                if (isSelected) selectedColor else backgroundColor, CircleShape
                             )
                             .padding(4.dp),
                         colorFilter = ColorFilter.tint(

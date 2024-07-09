@@ -99,7 +99,7 @@ fun WalletContent(navigateToHistoryPage: () -> Unit) {
     val animatedBalance by animateFloatAsState(
         targetValue = cryptoItems.value.sumOf { it.Total.toDouble() }.toFloat(),
         animationSpec = tween(
-            durationMillis = 2000,
+            durationMillis = 1200,
             easing = FastOutSlowInEasing
         ), label = ""
     )

@@ -1,6 +1,8 @@
 package com.finance.trade_learn.base
 
 
+import androidx.compose.runtime.compositionLocalOf
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,6 +32,13 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
 
     var currentItemsLiveData = MutableLiveData<List<CoinsHome>>()
     var listOfCryptoForPopular = MutableLiveData<List<CoinsHome>>()
+
+    private val _shouldShowBottomNavigationBar = MutableLiveData<Boolean>()
+    val shouldShowBottomNavigationBar : LiveData<Boolean> get() = _shouldShowBottomNavigationBar
+
+    fun setBottomNavigationBarStatus(shouldShow : Boolean){
+        _shouldShowBottomNavigationBar.value = shouldShow
+    }
 
     fun getCoinList(){
         CoroutineScope(Dispatchers.IO).launch {
