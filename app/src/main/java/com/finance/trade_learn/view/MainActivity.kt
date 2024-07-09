@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                     val viewModel = hiltViewModel<WalletPageViewModel>()
 
                     CompositionLocalProvider(LocalWalletPageViewModel provides viewModel) {
-                        WalletScreen(modifier = modifier){
+                        WalletScreen(){
                             navController.navigate(Screens.HistoryScreen.route)
                         }
                     }

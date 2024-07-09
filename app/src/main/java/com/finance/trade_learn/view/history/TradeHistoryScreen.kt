@@ -1,9 +1,7 @@
 package com.finance.trade_learn.view.history
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
