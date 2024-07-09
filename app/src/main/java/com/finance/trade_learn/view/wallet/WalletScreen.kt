@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -77,7 +78,7 @@ fun WalletTopBar() {
     TopAppBar(
         title = {
             Text(
-                "Kripto Cüzdan",
+                stringResource(id = R.string.cripto_wallet),
                 color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
                 fontSize = 22.sp,
                 fontFamily = FontFamily.SansSerif
@@ -98,7 +99,7 @@ fun WalletContent(navigateToHistoryPage: () -> Unit) {
     val animatedBalance by animateFloatAsState(
         targetValue = cryptoItems.value.sumOf { it.Total.toDouble() }.toFloat(),
         animationSpec = tween(
-            durationMillis = 2000,
+            durationMillis = 1200,
             easing = FastOutSlowInEasing
         ), label = ""
     )
@@ -110,7 +111,7 @@ fun WalletContent(navigateToHistoryPage: () -> Unit) {
             .padding(16.dp)
     ) {
         Text(
-            text = "Kripto Cüzdan",
+            text = stringResource(id = R.string.cripto_wallet),
             style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colors.onPrimary,
             modifier = Modifier.padding(bottom = 8.dp)
@@ -122,7 +123,7 @@ fun WalletContent(navigateToHistoryPage: () -> Unit) {
         )
 
         Text(
-            text = "Toplam Bakiye",
+            text = stringResource(id = R.string.total_balance),
             style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colors.onPrimary,
             modifier = Modifier.padding(vertical = 8.dp)
@@ -150,7 +151,7 @@ fun WalletContent(navigateToHistoryPage: () -> Unit) {
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text("İşlem Geçmişleri")
+                Text(stringResource(id = R.string.transactions))
             }
         }
 
@@ -158,7 +159,7 @@ fun WalletContent(navigateToHistoryPage: () -> Unit) {
         OutlinedTextField(
             value = searchQuery.value,
             onValueChange = { searchQuery.value = it },
-            label = { Text("Arama yapın...", color = MaterialTheme.colors.onPrimary) },
+            label = { Text(stringResource(id = R.string.Search), color = MaterialTheme.colors.onPrimary) },
             modifier = Modifier
                 .padding(bottom = 16.dp)
                 .fillMaxWidth(),
@@ -180,8 +181,8 @@ fun WalletContent(navigateToHistoryPage: () -> Unit) {
                 ) {
                     Spacer(modifier = Modifier.width(48.dp))
                     Text("Coin", style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), overflow = TextOverflow.Ellipsis)
-                    Text("Miktar", style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
-                    Text("Değer", style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                    Text(stringResource(id = R.string.amount), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                    Text(stringResource(id = R.string.value), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
                 }
                 Spacer(modifier = Modifier.height(4.dp))
             }

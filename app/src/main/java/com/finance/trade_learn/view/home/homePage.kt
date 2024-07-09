@@ -51,7 +51,6 @@ import com.finance.trade_learn.R
 import com.finance.trade_learn.view.HomePageItems
 import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.coin.PopularCoinCard
-import com.finance.trade_learn.viewModel.ViewModeHomePage
 import kotlinx.coroutines.runBlocking
 
 
@@ -129,10 +128,9 @@ private fun MainToolbar(openSearch: () -> Unit) {
 @Composable
 fun MainView(
     page: Int = 1,
-    shouldShowPopularCoins : Boolean = false,
+    shouldShowPopularCoins: Boolean = false,
     openSearch: () -> Unit,
-    openTradePage: (String) -> Unit,
-    viewModel: ViewModeHomePage = androidx.lifecycle.viewmodel.compose.viewModel()
+    openTradePage: (String) -> Unit
 ) {
     val baseViewModel = LocalBaseViewModel.current
 
@@ -196,7 +194,7 @@ fun MainView(
                         .verticalScroll(rememberScrollState())
                     ) {
                         Text(
-                            text = "Popular Coins",
+                            text = stringResource(id = R.string.popular_coins),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 6.dp, start = 12.dp),

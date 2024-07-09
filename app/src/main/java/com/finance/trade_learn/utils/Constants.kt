@@ -12,22 +12,22 @@ object Constants {
 
     val BottomNavItems = listOf(
         BottomNavItem(
-            label = "Home",
+            label = R.string.home,
             icon = R.drawable.home,
             route = "home"
         ),
         BottomNavItem(
-            label = "Market",
+            label = R.string.Market,
             icon = R.drawable.market,
             route = "market"
         ),
         BottomNavItem(
-            label = "Trade",
+            label = R.string.Trade,
             icon = R.drawable.trade,
             route = "trade?coinName={coinName}"
         ),
         BottomNavItem(
-            label = "Wallet",
+            label = R.string.Wallet,
             icon = R.drawable.wallet,
             route = "wallet"
         )
@@ -46,7 +46,7 @@ sealed class Screens(val label: String? = null,val icon : Int, val route: String
 
 
 data class BottomNavItem(
-    val label: String,
+    val label: Int,
     val icon: Int,
     val route:String,
 )

@@ -35,56 +35,57 @@ fun PopularCoinCard(
 ) {
     Card(
         modifier = modifier
-            .padding(4.dp)
-            .width(150.dp)
+            .width(160.dp)
+            .padding(6.dp)
             .clickable { clickedItem(coin.CoinName) },
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(2.dp)
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = androidx.compose.material.MaterialTheme.colors.surface,
+            contentColor = androidx.compose.material.MaterialTheme.colors.onSurface
+        )
     ) {
         Column(
             modifier = Modifier
-                .padding(2.dp)
-                .background(MaterialTheme.colorScheme.background)
-                .padding(6.dp),
+                .background(androidx.compose.material.MaterialTheme.colors.surface)
+                .padding(vertical = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(4.dp))
             Image(
                 painter = rememberAsyncImagePainter(model = coin.CoinImage),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(48.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = coin.CoinName,
-                fontSize = 14.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSurface
+                color = androidx.compose.material.MaterialTheme.colors.onSurface
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = "$${coin.CoinPrice}",
-                fontSize = 12.sp,
+                fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                color = androidx.compose.material.MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             val priceChangeColor = if (coin.CoinChangePercente.contains("+")) Color(0xFF4CAF50) else Color(0xFFF44336)
 
@@ -96,20 +97,15 @@ fun PopularCoinCard(
                 Image(
                     painter = painterResource(id = R.drawable.arrow_outward),
                     contentDescription = null,
-                    modifier = Modifier.size(14.dp)
-                        .rotate(
-                            if (coin.CoinChangePercente.contains("+"))
-                                0.0f
-                            else if (coin.CoinChangePercente.contains("-"))
-                                90.0f
-                            else 0.0f
-                        ),
+                    modifier = Modifier
+                        .size(16.dp)
+                        .rotate(if (coin.CoinChangePercente.contains("+")) 0.0f else 90.0f),
                     colorFilter = ColorFilter.tint(priceChangeColor)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = "${coin.CoinChangePercente}%",
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     color = priceChangeColor,
                     textAlign = TextAlign.Center
                 )

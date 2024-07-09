@@ -1,14 +1,13 @@
 package com.finance.trade_learn.view.coin
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,17 +17,33 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.finance.trade_learn.R
 import com.finance.trade_learn.enums.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 
 @Composable
 fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
+
+    val painter = rememberAsyncImagePainter(
+        ImageRequest.Builder(LocalContext.current)
+            .data(coin.CoinImage)
+            .apply {
+                crossfade(true)
+                placeholder(R.drawable.placeholder)
+                error(R.drawable.error)
+            }
+            .build()
+    )
+
     Card(
         modifier = Modifier
             .clickable { clickedItem.invoke(coin.id) }
@@ -36,8 +51,8 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
             .padding(horizontal = 12.dp, vertical = 5.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.onSurface
+            containerColor = MaterialTheme.colors.surface,
+            contentColor = MaterialTheme.colors.onSurface
         )
     ) {
         Row(
@@ -47,12 +62,11 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = rememberImagePainter(coin.CoinImage),
+                painter = painter,
                 contentDescription = coin.CoinName,
                 modifier = Modifier
                     .size(56.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface),
+                    .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
 
@@ -65,18 +79,18 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
                     text = coin.CoinName,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = MaterialTheme.colors.onSurface,
                     maxLines = 1
                 )
                 Text(
                     text = coin.coinSymbol.uppercase(),
                     fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
                 )
                 Text(
-                    text = "Market Cap: ${coin.marketCap}",
+                    text = stringResource(id = R.string.market_cap) +" $" + coin.marketCap,
                     fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
                 )
             }
 
@@ -89,7 +103,7 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
                     text = "$${coin.CoinPrice}",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colors.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -114,7 +128,7 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
                             )
                             .size(16.dp),
                         painter = painterResource(id = R.drawable.arrow_outward),
-                        contentDescription = "price change",
+                        contentDescription = stringResource(id = R.string.change24) ,
                         colorFilter = ColorFilter.tint(
                             if (coin.CoinChangePercente.contains("+"))
                                 Color(0xFF4CAF50) else Color(0xFFF44336)
@@ -126,6 +140,7 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
     }
 }
 
+@Preview
 @Composable
 fun PreviewCoinItemScreen() {
     val coinItem = CoinsHome(

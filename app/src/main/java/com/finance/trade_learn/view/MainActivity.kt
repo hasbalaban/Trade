@@ -27,6 +27,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,6 +37,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -93,12 +95,17 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val baseViewModel = hiltViewModel<BaseViewModel>()
+                val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(true)
 
                 CompositionLocalProvider(LocalBaseViewModel provides baseViewModel) {
-                    Surface(color = Color.White) {
-                        Scaffold(
-                            bottomBar = { BottomNavigationBar(navController = navController) }
-                        ) { padding ->
+                    Scaffold(
+                        bottomBar = {
+                            if(shouldShowBottomNavigationBar){
+                                BottomNavigationBar(navController = navController)
+                            }
+ }
+                    ) { padding ->
+                        Surface(color = androidx.compose.material.MaterialTheme.colors.secondaryVariant) {
                             MainScreen(navController, Modifier.padding(paddingValues = padding))
                         }
                     }
@@ -114,6 +121,8 @@ class MainActivity : AppCompatActivity() {
 
             NavHost(navController = navController, startDestination = "home") {
                 composable(Screens.Home.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+
                     com.finance.trade_learn.view.home.MainView(
                         shouldShowPopularCoins = true,
                         openSearch = {
@@ -125,6 +134,8 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
                 composable(Screens.Market.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+
                     com.finance.trade_learn.view.home.MainView(
                         page = marketPageNumber,
                         openSearch = {
@@ -144,10 +155,13 @@ class MainActivity : AppCompatActivity() {
                         defaultValue = "bitcoin"
                     })
                 ) { backStackEntry ->
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+
                     val coinName = backStackEntry.arguments?.getString("coinName") ?: "TETHER"
                     TradePage(itemName = coinName,)
                 }
                 composable(Screens.Wallet.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
                     val viewModel = hiltViewModel<WalletPageViewModel>()
 
                     CompositionLocalProvider(LocalWalletPageViewModel provides viewModel) {
@@ -159,14 +173,19 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 composable(Screens.HistoryScreen.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
+
                     val viewModel = hiltViewModel<ViewModelHistoryTrade>()
                     CompositionLocalProvider(LocalViewModelHistoryTrade provides viewModel) {
-                        TradeHistoryScreen(modifier = modifier)
+                        TradeHistoryScreen(modifier = modifier, goBack = {
+                            navController.popBackStack()
+                        })
                     }
 
                 }
 
                 composable(Screens.SearchScreen.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
                     val viewModel = hiltViewModel<SearchCoinViewModel>()
 
                     SearchScreen(
@@ -358,11 +377,13 @@ fun BottomNavigationBar(navController: NavHostController) {
                 icon = {
                     Image(
                         painter = painterResource(id = navItem.icon),
-                        contentDescription = navItem.label,
+                        contentDescription = stringResource(id = navItem.label),
                         modifier = Modifier
                             .size(28.dp)
                             .shadow(4.dp, CircleShape)
-                            .background(if (isSelected) selectedColor else backgroundColor, CircleShape)
+                            .background(
+                                if (isSelected) selectedColor else backgroundColor, CircleShape
+                            )
                             .padding(4.dp),
                         colorFilter = ColorFilter.tint(
                             if (isSelected) Color.White else unselectedColor
@@ -371,7 +392,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                 },
                 label = {
                     Text(
-                        text = navItem.label,
+                        text = stringResource(id = navItem.label),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
