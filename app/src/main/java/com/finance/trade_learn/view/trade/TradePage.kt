@@ -47,25 +47,15 @@ private val LocalTradePageViewModel = compositionLocalOf<TradeViewModel> { error
 fun TradePage(itemName: String) {
     val viewModel = hiltViewModel<TradeViewModel>()
 
-
     val detailOfItem = viewModel.getItemInfo(itemName).observeAsState()
     val userBalance = viewModel.getItemInfo("tether").observeAsState()
 
-
     userBalance.value?.let {
         viewModel.setUserBalance(it)
-        println(it)
-        println(it)
-        println(it)
-        println(it)
     }
 
     detailOfItem.value?.let {
         viewModel.setDetailsOfCoinFromDatabase(it)
-        println(it)
-        println(it)
-        println(it)
-        println(it)
     }
 
     LaunchedEffect(key1 = Unit) {
@@ -93,7 +83,6 @@ private fun TradeMainScreen(
         else -> {}
     }
 
-
     var availableAmount by remember { mutableDoubleStateOf(0.0) }
     val availableItemInfo by viewModel.availableItemInfo.collectAsState()
     when (val item = availableItemInfo) {
@@ -112,12 +101,11 @@ private fun TradeMainScreen(
         else -> {}
     }
 
-
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Text(
             text = "Kripto Satın Alma / Satma",
@@ -142,7 +130,6 @@ private fun TradeMainScreen(
             totalCost = amountToTrade * price
         )
 
-
         Spacer(modifier = Modifier.height(6.dp))
         BalanceSection(
             totalBalance = userBalance
@@ -163,13 +150,13 @@ private fun TradeMainScreen(
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 8.dp),
-                colors = ButtonDefaults.buttonColors(Color.Green),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
                     text = "Al",
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
             Button(
@@ -181,13 +168,13 @@ private fun TradeMainScreen(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 8.dp),
-                colors = ButtonDefaults.buttonColors(Color.Red),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
                     text = "Sat",
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onError
                 )
             }
         }
@@ -250,7 +237,7 @@ fun ItemDetailSection(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Mevcut Adet:  %.6f USD".format(item.data?.CoinAmount)
-                           ,
+                    ,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -339,7 +326,7 @@ fun TradeAmountInput(
 
 @Composable
 fun TotalCostSection(
-   totalCost: Double
+    totalCost: Double
 ) {
     Column(
         modifier = Modifier
@@ -370,7 +357,7 @@ fun BalanceSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Total Balance: %.4f USD".format(totalBalance),
+            text = "Toplam Bakiye: %.4f USD".format(totalBalance),
             style = MaterialTheme.typography.bodyMedium,
         )
     }

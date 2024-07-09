@@ -1,28 +1,15 @@
 package com.finance.trade_learn.view.wallet
 
-
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
 import androidx.compose.material.TabRowDefaults.Divider
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,7 +29,7 @@ import java.util.Locale
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WalletScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     navigateToHistoryPage : () -> Unit,
 ) {
     val viewModel = LocalWalletPageViewModel.current
@@ -56,24 +42,21 @@ fun WalletScreen(
         content = {
             WalletContent(modifier = modifier, navigateToHistoryPage = navigateToHistoryPage)
         }
-
     )
 }
 
 @Composable
 fun WalletTopBar() {
-    TopAppBar(
-        title = { Text("Crypto Wallet") },
-        backgroundColor = Color.Blue,
-        contentColor = Color.White
+    androidx.compose.material.TopAppBar(
+        title = { Text("Crypto Wallet", color = MaterialTheme.colorScheme.onPrimary) },
+        backgroundColor = MaterialTheme.colorScheme.primary
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
     val viewModel = LocalWalletPageViewModel.current
-
-
     val cryptoItems = viewModel.myCoinsNewModel.observeAsState(emptyList())
 
     val animatedBalance by animateFloatAsState(
@@ -89,19 +72,22 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
         Text(
             text = "Crypto Wallet",
             style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 16.dp))
+        Divider(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f), thickness = 1.dp, modifier = Modifier.padding(bottom = 16.dp))
 
         // Toplam bakiye gösterimi
         Text(
             text = "Toplam Bakiye",
             style = MaterialTheme.typography.displaySmall,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
-            text = "\$${animatedBalance.toDouble()?.format(2)}",
+            text = "\$${animatedBalance.toDouble().format(2)}",
             style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
@@ -110,10 +96,15 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
         OutlinedTextField(
             value = searchQuery.value,
             onValueChange = { searchQuery.value = it },
-            label = { Text("Arama yapın...") },
+            label = { Text("Arama yapın...", color = MaterialTheme.colorScheme.onBackground) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
+                .padding(bottom = 16.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                cursorColor = MaterialTheme.colorScheme.primary
+            )
         )
 
         // Kripto item listesi
@@ -125,9 +116,9 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Coin", style = MaterialTheme.typography.bodySmall)
-                    Text("Amount", style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
-                    Text("Value", style = MaterialTheme.typography.bodySmall, modifier = Modifier.fillMaxWidth(0.3f), textAlign = TextAlign.End)
+                    Text("Coin", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onBackground)
+                    Text("Amount", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                    Text("Value", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.fillMaxWidth(0.3f), textAlign = TextAlign.End)
                 }
                 Spacer(modifier = Modifier.height(4.dp))
             }
@@ -141,9 +132,9 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(item.CoinName, style = MaterialTheme.typography.bodyMedium)
-                    Text(item.CoinAmount.toDouble().format(6), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
-                    Text("\$${(item.Total).toDouble().format(2)}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.fillMaxWidth(0.3f), textAlign = TextAlign.End)
+                    Text(item.CoinName, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground)
+                    Text(item.CoinAmount.toDouble().format(6), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                    Text("\$${(item.Total).toDouble().format(2)}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.fillMaxWidth(0.3f), textAlign = TextAlign.End)
                 }
                 Spacer(modifier = Modifier.height(4.dp))
             }
@@ -154,18 +145,20 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
             onClick = {
                 navigateToHistoryPage.invoke()
             },
-            modifier = Modifier.align(Alignment.End)
+            modifier = Modifier.align(Alignment.End),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
         ) {
             Text("İşlem Geçmişi")
         }
     }
 }
 
-
-
 @Composable
 @Preview
-private fun WalletScreenPreview(){
+private fun WalletScreenPreview() {
     Surface(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
         Column(
             modifier = Modifier
@@ -173,17 +166,14 @@ private fun WalletScreenPreview(){
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            WalletScreen(modifier = Modifier){
-
-            }
+            WalletScreen(modifier = Modifier) {}
         }
     }
 }
 
 fun Double.format(digits: Int) = "%.${digits}f".format(this)
 
-
-private fun getSearchedList (searchedItem: String, itemList: ArrayList<NewModelForItemHistory>?): List<NewModelForItemHistory> {
+private fun getSearchedList(searchedItem: String, itemList: ArrayList<NewModelForItemHistory>?): List<NewModelForItemHistory> {
     val queryCoin = searchedItem.uppercase(Locale.getDefault())
 
     if (queryCoin.isEmpty()) return itemList?.map { it } ?: emptyList()

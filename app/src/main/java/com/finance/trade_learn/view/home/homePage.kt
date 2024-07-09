@@ -233,7 +233,11 @@ fun MainView(
             ) {
 
                 val listOfItems = baseViewModel.currentItemsLiveData.observeAsState()
-                HomePageItems(coinsHome = listOfItems.value){selectedItemName->
+                val updateList = if(shouldShowPopularCoins) listOfItems.value else listOfItems.value?.sortedBy {
+                    it.total_volume
+                }
+
+                HomePageItems(coinsHome = updateList){selectedItemName->
                     openTradePage.invoke(selectedItemName)
                 }
             }
