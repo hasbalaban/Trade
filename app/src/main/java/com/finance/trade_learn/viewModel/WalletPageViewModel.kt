@@ -22,15 +22,13 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 @HiltViewModel
-class ViewModelMyWallet @Inject constructor(
+class WalletPageViewModel @Inject constructor(
     private val coinDetailRepositoryImp : CoinDetailRepositoryImp
 ) : BaseViewModel() {
     private val myCoinsDatabaseModel = MutableLiveData<List<MyCoins>>()
     val myCoinsNewModel = MutableLiveData<ArrayList<NewModelForItemHistory>>()
     val myBaseModelOneCryptoModel = MutableLiveData<List<CoinDetail>>()
     var disposable = CompositeDisposable()
-    var totalValue = MutableLiveData<BigDecimal>()
-
     // this function fot get coins that i have
     fun getMyCoinsDetails(constraint: String? = null) {
 
@@ -73,7 +71,7 @@ class ViewModelMyWallet @Inject constructor(
 
                     override fun onError(e: Throwable) {
 
-                        val cachedItems = cachedData.filter {
+                        val cachedItems = allCryptoItems.filter {
                             val id = solveCoinName(it.id)
                             coinQuery.split(",").contains(id)
                         }
@@ -105,33 +103,32 @@ class ViewModelMyWallet @Inject constructor(
                                     val name = i.id.lowercase(Locale.getDefault())
                                     val price = i.current_price?.toBigDecimal() ?: BigDecimal.ZERO
 
-                                    val amount =
-                                        coinDetailRepositoryImp.getSelectedItemDetail(i.id.lowercase(Locale.getDefault()))?.value?.CoinAmount?.toBigDecimal() ?: coinDetailRepositoryImp.getSelectedItemDetail(i.id.uppercase(Locale.getDefault()))?.value?.CoinAmount?.toBigDecimal() ?: BigDecimal.ZERO
+
+                                    val amount = z.CoinAmount.toBigDecimal()
                                     val image = i.image
 
                                     total += (price * amount)
 
+                                    val totalItemBalance = amount * price
                                     newModelForCoins.add(
                                         NewModelForItemHistory(
-                                            name, amount.toString(),
-                                            (amount * price).toString(), image
+                                            name,
+                                            amount,
+                                            totalItemBalance,
+                                            image
                                         )
                                     )
                                     j++
                                     break
                                 }
-
-
                             }
                         }
-
-
-                        withContext(Dispatchers.Main) {
-                            totalValue.value = total
-                            myCoinsNewModel.value = newModelForCoins
-                        }
-
                     }
+
+                withContext(Dispatchers.Main) {
+                    myCoinsNewModel.value = newModelForCoins
+                }
+
             }
         }
     }

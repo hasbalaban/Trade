@@ -74,7 +74,7 @@ class TradeViewModel @Inject constructor(
                     }
 
                     override fun onError(e: Throwable) {
-                        val cachedItem = cachedData.firstOrNull {
+                        val cachedItem = allCryptoItems.firstOrNull {
                             solveCoinName(it.id) == coinName
                         }
                         cachedItem?.let {
