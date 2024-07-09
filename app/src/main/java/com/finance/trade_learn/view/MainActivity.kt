@@ -26,6 +26,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -49,7 +52,7 @@ import androidx.navigation.navArgument
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
-import com.finance.trade_learn.view.history.TradeScreen
+import com.finance.trade_learn.view.history.TradeHistoryScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
 import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
@@ -105,6 +108,8 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun MainScreen(navController: NavHostController, modifier: Modifier = Modifier) {
+        var marketPageNumber by remember { mutableIntStateOf(2) }
+
             NavHost(navController = navController, startDestination = "home") {
                 composable(Screens.Home.route) {
                     com.finance.trade_learn.view.home.MainView(
@@ -119,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 composable(Screens.Market.route) {
                     com.finance.trade_learn.view.home.MainView(
-                        page = 2,
+                        page = marketPageNumber,
                         openSearch = {
                             navController.navigate(Screens.SearchScreen.route)
                         },
@@ -127,6 +132,8 @@ class MainActivity : AppCompatActivity() {
                             navController.navigate(Screens.Trade(it).route)
                         }
                     )
+
+                    marketPageNumber++
                 }
 
                 composable(
@@ -152,7 +159,7 @@ class MainActivity : AppCompatActivity() {
                 composable(Screens.HistoryScreen.route) {
                     val viewModel = hiltViewModel<ViewModelHistoryTrade>()
                     CompositionLocalProvider(LocalViewModelHistoryTrade provides viewModel) {
-                        TradeScreen(modifier = modifier)
+                        TradeHistoryScreen(modifier = modifier)
                     }
 
                 }
@@ -331,7 +338,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     // Renk paleti
     val selectedColor = Color(0xFF00BFA5) // Turkuaz (seçilen durumda)
     val unselectedColor = Color(0xFFFFFFFF) // Gri (seçilmeyen durumda)
-    val backgroundColor = Color(0xFF636060) // Koyu gri (arka plan)
+    val backgroundColor = Color(0xB3636060) // Koyu gri (arka plan)
 
     NavigationBar(
         containerColor = backgroundColor,

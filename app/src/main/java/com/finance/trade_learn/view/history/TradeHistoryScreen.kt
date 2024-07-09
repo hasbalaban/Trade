@@ -1,13 +1,28 @@
 package com.finance.trade_learn.view.history
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
@@ -28,10 +43,11 @@ import com.finance.trade_learn.base.BaseViewModel.Companion.allCryptoItems
 import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
 import com.finance.trade_learn.view.LocalViewModelHistoryTrade
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 @Composable
-fun TradeScreen(modifier: Modifier) {
+fun TradeHistoryScreen(modifier: Modifier) {
     val viewModel = LocalViewModelHistoryTrade.current
 
     val context = LocalContext.current
@@ -49,7 +65,7 @@ private fun MainContent(trades: List<SaveCoin>, modifier: Modifier) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Alım Satım İşlemleri") },
+                title = { Text(text = "Alım Satım İşlemleri", color = MaterialTheme.colors.onPrimary) },
                 backgroundColor = MaterialTheme.colors.primary
             )
         }
@@ -57,7 +73,7 @@ private fun MainContent(trades: List<SaveCoin>, modifier: Modifier) {
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(color = Color(0xFFF5F5F5))
+                .background(color = Color(0xFFADA8A8))
                 .padding(8.dp)
         ) {
             LazyColumn(
@@ -82,10 +98,12 @@ fun TradeItem(trade: SaveCoin) {
 
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(16.dp)), // Yuvarlatılmış kenarlar
-        elevation = 4.dp,
-        backgroundColor = Color.White // Card arka plan rengi
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colors.surface,
+            contentColor = MaterialTheme.colors.onSurface
+        )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -93,25 +111,24 @@ fun TradeItem(trade: SaveCoin) {
                 .padding(8.dp)
                 .fillMaxWidth()
         ) {
-            val painter =
-                rememberAsyncImagePainter(
-                    ImageRequest.Builder
-                        (LocalContext.current).data(
-                        data = imageUrl
-                    ).apply(block = fun ImageRequest.Builder.() {
+            val painter = rememberAsyncImagePainter(
+                ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .apply {
                         crossfade(true)
                         placeholder(R.drawable.placeholder)
                         error(R.drawable.error)
-                    }).build()
-                )
+                    }
+                    .build()
+            )
 
             Image(
                 painter = painter,
-                contentDescription = null, // Opsiyonel içerik açıklaması
+                contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop // İçeriği sınırlar içine sığdır
+                contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -123,7 +140,7 @@ fun TradeItem(trade: SaveCoin) {
                     text = trade.coinName,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.primary // Başlık rengi
+                    color = MaterialTheme.colors.onPrimary // Title color
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(
@@ -134,13 +151,13 @@ fun TradeItem(trade: SaveCoin) {
                     Text(
                         text = "Amount: ${trade.coinAmount.toDouble().formatAmount()}",
                         fontSize = 14.sp,
-                        color = Color.DarkGray // Metin rengi
+                        color = MaterialTheme.colors.onSurface // Text color
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Price: ${trade.coinPrice.toDouble().formatPrice()}",
                         fontSize = 14.sp,
-                        color = Color.DarkGray // Metin rengi
+                        color = MaterialTheme.colors.onSurface // Text color
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
@@ -152,29 +169,47 @@ fun TradeItem(trade: SaveCoin) {
                     Text(
                         text = "Total: ${trade.total.toDouble().formatTotalCost()}",
                         fontSize = 14.sp,
-                        color = Color.DarkGray // Metin rengi
+                        color = MaterialTheme.colors.onSurface // Text color
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Date: ${trade.date.formatDate()}",
                         fontSize = 14.sp,
-                        color = Color.DarkGray // Metin rengi
+                        color = MaterialTheme.colors.onSurface // Text color
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Operation: ${
+
+                Row {
+
+                    Text(
+                        text = "Operation: ",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.onPrimary // Default text color
+                    )
+                    Text(
+                        text = if (trade.tradeOperation.equals("Buy", ignoreCase = true)) {
+                            "Alış"
+                        } else {
+                            "Satış"
+                        },
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color =
                         if (trade.tradeOperation.equals("Buy", ignoreCase = true))
-                            "Alış" else "Satış"
-                    }",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.primary // Metin rengi
-                )
+                            Color(0xFF4CAF50)
+                        else
+                            Color(0xFFF44336)
+                    )
+                }
+
+
             }
         }
     }
 }
+
 
 // Extensions for formatting
 fun Double.formatAmount(): String = "%.6f".format(this)

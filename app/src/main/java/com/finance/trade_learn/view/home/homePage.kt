@@ -30,11 +30,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -86,12 +89,15 @@ private fun MainToolbar(openSearch : () -> Unit) {
                 .clickable {
                     clickSendEmailButton(context)
                 }
-                .padding(start = 3.dp, top = 5.dp, bottom = 2.dp)
+                .padding(start = 3.dp, top = 5.dp, bottom = 2.dp),
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onPrimary)
         )
         Text(text = stringResource(id = R.string.app_name),
             textAlign = TextAlign.Center,
-            color = colorResource(id = R.color.pozitive),
-            fontSize = 17.sp,
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 20.sp,
+            fontStyle = FontStyle.Italic,
+            fontFamily = FontFamily.SansSerif,
             modifier = Modifier
                 .constrainAs(appName) {
                     start.linkTo(composeEmail.end)
@@ -115,7 +121,8 @@ private fun MainToolbar(openSearch : () -> Unit) {
                 .clickable(role = Role.DropdownList) {
                     openSearch()
                 }
-                .padding(start = 3.dp, top = 5.dp, bottom = 2.dp)
+                .padding(start = 3.dp, top = 5.dp, bottom = 2.dp),
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onPrimary)
         )
     }
 }
@@ -192,14 +199,15 @@ fun MainView(
                             text = "Popular Coins",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(start = 16.dp)
+                            modifier = Modifier.padding(top = 6.dp, start = 12.dp),
+                            color = MaterialTheme.colors.onPrimary
                         )
 
                         if (popularItems != null){
                             LazyRow(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(bottom = 8.dp, top = 4.dp)
+                                    .padding(vertical = 4.dp)
                             ) {
                                 items(popularItems) { item ->
                                     PopularCoinCard(item, Modifier.weight(1f)){selectedItemName ->

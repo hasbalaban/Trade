@@ -1,28 +1,53 @@
-import android.annotation.SuppressLint
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.finance.trade_learn.enums.TradeType
@@ -94,80 +119,88 @@ private fun TradeMainScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .background(MaterialTheme.colorScheme.background)
+            .background(androidx.compose.material.MaterialTheme.colors.primary)
     ) {
         Text(
             text = "Kripto Satın Alma / Satma",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primary)
+                .padding(vertical = 16.dp),
+            color = MaterialTheme.colorScheme.onPrimary,
+            fontSize = 20.sp,
+            fontFamily = FontFamily.SansSerif
         )
 
-        ItemDetailSection()
+        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+            ItemDetailSection()
 
-        Spacer(modifier = Modifier.height(16.dp))
-        TradeAmountInput(
-            amountToTrade = amountToTrade,
-            totalCost = amountToTrade * price,
-            onAmountChange = {
-                amountToTrade = it
-            }
-        )
+            Spacer(modifier = Modifier.height(16.dp))
+            TradeAmountInput(
+                amountToTrade = amountToTrade,
+                totalCost = amountToTrade * price,
+                onAmountChange = {
+                    amountToTrade = it
+                }
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
-        TotalCostSection(
-            totalCost = amountToTrade * price
-        )
+            Spacer(modifier = Modifier.height(16.dp))
+            TotalCostSection(
+                totalCost = amountToTrade * price
+            )
 
-        Spacer(modifier = Modifier.height(6.dp))
-        BalanceSection(
-            totalBalance = userBalance
-        )
+            Spacer(modifier = Modifier.height(6.dp))
+            BalanceSection(
+                totalBalance = userBalance
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(
-                onClick = {
-                    if (amountToTrade > 0) {
-                        performBuyAction(amountToTrade, viewModel = viewModel)
-                    }
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-                shape = RoundedCornerShape(8.dp)
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Al",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
+                Button(
+                    onClick = {
+                        if (amountToTrade > 0) {
+                            performBuyAction(amountToTrade, viewModel = viewModel)
+                        }
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Al",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+                Button(
+                    onClick = {
+                        if (amountToTrade > 0) {
+                            performSellAction(amountToTrade, viewModel = viewModel)
+                        }
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp),
+                    colors = ButtonDefaults.buttonColors(androidx.compose.material.MaterialTheme.colors.error),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Sat",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onError
+                    )
+                }
+
             }
-            Button(
-                onClick = {
-                    if (amountToTrade > 0) {
-                        performSellAction(amountToTrade, viewModel = viewModel)
-                    }
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = "Sat",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onError
-                )
-            }
-        }
+    }
     }
 }
 
@@ -203,18 +236,20 @@ fun ItemDetailSection(
                 Text(
                     text = item.data.name,
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = androidx.compose.material.MaterialTheme.colors.onPrimary
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Günlük Değişim: %.2f%%".format(item.data.price_change_percentage_24h),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = if ((item.data.price_change_percentage_24h ?: 0.0) >= 0.0) Color.Green else Color.Red,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Fiyat: ${item.data.current_price} USD",
                     style = MaterialTheme.typography.bodyMedium,
+                    color = androidx.compose.material.MaterialTheme.colors.onPrimary
                 )
             }
         }
@@ -229,6 +264,7 @@ fun ItemDetailSection(
                     text = "Mevcut Adet:  %.6f USD".format(item.data?.CoinAmount)
                     ,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = androidx.compose.material.MaterialTheme.colors.onPrimary
                 )
             }
             is TradePageUiState.Error -> {
@@ -238,6 +274,7 @@ fun ItemDetailSection(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TradeAmountInput(
     viewModel: TradeViewModel = LocalTradePageViewModel.current,
@@ -267,7 +304,8 @@ fun TradeAmountInput(
         Text(
             text = "İşlem Miktarı",
             style = MaterialTheme.typography.bodySmall,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = androidx.compose.material.MaterialTheme.colors.onPrimary
         )
         Spacer(modifier = Modifier.height(8.dp))
         Row(
@@ -283,7 +321,7 @@ fun TradeAmountInput(
                     onAmountChange(textFieldValue)
                 }
             ) {
-                Icon(Icons.Default.Remove, contentDescription = "Azalt")
+                Icon(Icons.Default.Remove, contentDescription = "Azalt", tint = androidx.compose.material.MaterialTheme.colors.onPrimary)
             }
             Spacer(modifier = Modifier.width(16.dp))
             OutlinedTextField(
@@ -292,12 +330,18 @@ fun TradeAmountInput(
                     textFieldValue = it.toDoubleOrNull() ?: 0.0
                     onAmountChange(textFieldValue)
                 },
-                label = { Text(text = "Miktar") },
+                label = { Text(text = "Miktar", color = androidx.compose.material.MaterialTheme.colors.onPrimary) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
                 ),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedTextColor = androidx.compose.material.MaterialTheme.colors.onPrimary,
+                    unfocusedTextColor = androidx.compose.material.MaterialTheme.colors.onPrimary,
+                    focusedBorderColor = androidx.compose.material.MaterialTheme.colors.onPrimary,
+                    unfocusedBorderColor = androidx.compose.material.MaterialTheme.colors.onPrimary,
+                )
             )
             Spacer(modifier = Modifier.width(16.dp))
             IconButton(
@@ -308,7 +352,7 @@ fun TradeAmountInput(
                     onAmountChange(textFieldValue)
                 }
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Artır")
+                Icon(Icons.Default.Add, contentDescription = "Artır", tint = androidx.compose.material.MaterialTheme.colors.onPrimary)
             }
         }
     }
@@ -327,12 +371,14 @@ fun TotalCostSection(
         Text(
             text = "Toplam İşlem Maliyeti",
             style = MaterialTheme.typography.bodySmall,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = androidx.compose.material.MaterialTheme.colors.onPrimary
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = "Toplam Maliyet: %.4f USD".format(totalCost),
             style = MaterialTheme.typography.bodyMedium,
+            color = androidx.compose.material.MaterialTheme.colors.onPrimary
         )
     }
 }
@@ -349,6 +395,7 @@ fun BalanceSection(
         Text(
             text = "Toplam Bakiye: %.4f USD".format(totalBalance),
             style = MaterialTheme.typography.bodyMedium,
+            color = androidx.compose.material.MaterialTheme.colors.onPrimary
         )
     }
 }
@@ -386,7 +433,7 @@ private fun performSellAction(amountToTrade: Double, viewModel: TradeViewModel) 
 @Composable
 private fun CoinItemScreenPreview() {
     MaterialTheme {
-        Surface(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        Surface(modifier = Modifier.background(androidx.compose.material.MaterialTheme.colors.background)) {
             TradePage(itemName = "btc")
         }
     }
