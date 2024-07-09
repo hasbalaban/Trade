@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -87,7 +88,7 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
                 )
                 Text(
-                    text = "Market Cap: ${coin.marketCap}",
+                    text = stringResource(id = R.string.market_cap) +" $" + coin.marketCap,
                     fontSize = 12.sp,
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
                 )
@@ -127,7 +128,7 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
                             )
                             .size(16.dp),
                         painter = painterResource(id = R.drawable.arrow_outward),
-                        contentDescription = "price change",
+                        contentDescription = stringResource(id = R.string.change24) ,
                         colorFilter = ColorFilter.tint(
                             if (coin.CoinChangePercente.contains("+"))
                                 Color(0xFF4CAF50) else Color(0xFFF44336)

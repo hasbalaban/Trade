@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,7 +66,7 @@ private fun MainContent(trades: List<SaveCoin>, modifier: Modifier) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Alım Satım İşlemleri", color = MaterialTheme.colors.onPrimary) },
+                title = { Text(text = stringResource(id = R.string.buy_sel_operations_text), color = MaterialTheme.colors.onPrimary) },
                 backgroundColor = MaterialTheme.colors.primary
             )
         }
@@ -82,7 +83,9 @@ private fun MainContent(trades: List<SaveCoin>, modifier: Modifier) {
             ) {
                 items(trades) { trade ->
                     TradeItem(trade)
-                    HorizontalDivider(modifier = Modifier.alpha(0.5f).padding(vertical = 8.dp))
+                    HorizontalDivider(modifier = Modifier
+                        .alpha(0.5f)
+                        .padding(vertical = 8.dp))
                 }
             }
         }
@@ -147,13 +150,13 @@ fun TradeItem(trade: SaveCoin) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Amount: ${trade.coinAmount.toDouble().formatAmount()}",
+                        text = stringResource(id = R.string.amount) + trade.coinAmount.toDouble().formatAmount(),
                         fontSize = 14.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Price: ${trade.coinPrice.toDouble().formatPrice()}",
+                        text = stringResource(id = R.string.price) + ": ${trade.coinPrice.toDouble().formatPrice()}",
                         fontSize = 14.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
@@ -165,13 +168,13 @@ fun TradeItem(trade: SaveCoin) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Total: ${trade.total.toDouble().formatTotalCost()}",
+                        text = stringResource(id = R.string.total) + ": ${trade.total.toDouble().formatTotalCost()}",
                         fontSize = 14.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Date: ${trade.date.formatDate()}",
+                        text = stringResource(id = R.string.date) + ": ${trade.date.formatDate()}",
                         fontSize = 14.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
@@ -181,21 +184,21 @@ fun TradeItem(trade: SaveCoin) {
                 Row {
 
                     Text(
-                        text = "Operation: ",
+                        text = stringResource(id = R.string.operation_text),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colors.onPrimary // Default text color
                     )
                     Text(
-                        text = if (trade.tradeOperation.equals("Buy", ignoreCase = true)) {
-                            "Alış"
+                        text = if (trade.tradeOperation.equals(stringResource(id = R.string.buy), ignoreCase = true)) {
+                            stringResource(id = R.string.buy)
                         } else {
-                            "Satış"
+                            stringResource(id = R.string.sell)
                         },
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color =
-                        if (trade.tradeOperation.equals("Buy", ignoreCase = true))
+                        if (trade.tradeOperation.equals(stringResource(id = R.string.buy), ignoreCase = true))
                             Color(0xFF4CAF50)
                         else
                             Color(0xFFF44336)

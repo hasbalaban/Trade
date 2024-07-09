@@ -40,7 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.finance.trade_learn.R
 import com.finance.trade_learn.enums.TradeType
 import com.finance.trade_learn.view.CoinProgress
 import com.finance.trade_learn.view.trade.TradePageUiState
@@ -86,7 +87,6 @@ fun TradePage(itemName: String) {
 private fun TradeMainScreen(
     viewModel: TradeViewModel = LocalTradePageViewModel.current,
 ) {
-    val context = LocalContext.current
     var amountToTrade by remember { mutableDoubleStateOf(0.0) }
 
     var price by remember { mutableDoubleStateOf(0.0) }
@@ -122,7 +122,7 @@ private fun TradeMainScreen(
             .background(androidx.compose.material.MaterialTheme.colors.primary)
     ) {
         Text(
-            text = "Kripto Satın Alma / Satma",
+            text = stringResource(id = R.string.cripto_buy_sel) ,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -140,7 +140,6 @@ private fun TradeMainScreen(
             Spacer(modifier = Modifier.height(16.dp))
             TradeAmountInput(
                 amountToTrade = amountToTrade,
-                totalCost = amountToTrade * price,
                 onAmountChange = {
                     amountToTrade = it
                 }
@@ -175,7 +174,7 @@ private fun TradeMainScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Al",
+                        text = stringResource(id = R.string.textBuy),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
@@ -193,7 +192,7 @@ private fun TradeMainScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Sat",
+                        text = stringResource(id = R.string.textSell),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onError
                     )
@@ -227,7 +226,7 @@ fun ItemDetailSection(
             is TradePageUiState.Data -> {
                 Image(
                     painter = rememberAsyncImagePainter(item.data.image),
-                    contentDescription = "Crypto Image",
+                    contentDescription = stringResource(id = R.string.cripto_image),
                     modifier = Modifier
                         .size(60.dp)
                         .clip(shape = CircleShape)
@@ -244,13 +243,13 @@ fun ItemDetailSection(
                 val priceChangeColor = if ((item.data.price_change_percentage_24h ?: 0.0) >= 0.0) Color(0xFF4CAF50) else Color(0xFFF44336)
 
                 Text(
-                    text = "Günlük Değişim: %.2f%%".format(item.data.price_change_percentage_24h),
+                    text = stringResource(id = R.string.daily_change) + "%.2f%%".format(item.data.price_change_percentage_24h),
                     style = MaterialTheme.typography.bodyLarge,
                     color = priceChangeColor,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Fiyat: ${item.data.current_price} USD",
+                    text = stringResource(id = R.string.price) + ": ${item.data.current_price} USD",
                     style = MaterialTheme.typography.bodyMedium,
                     color = androidx.compose.material.MaterialTheme.colors.onPrimary
                 )
@@ -264,8 +263,7 @@ fun ItemDetailSection(
             is TradePageUiState.Data -> {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Mevcut Adet:  %.6f USD".format(item.data?.CoinAmount)
-                    ,
+                    text = stringResource(id = R.string.available_amount) + "%.6f USD".format(item.data?.CoinAmount),
                     style = MaterialTheme.typography.bodyMedium,
                     color = androidx.compose.material.MaterialTheme.colors.onPrimary
                 )
@@ -282,7 +280,6 @@ fun ItemDetailSection(
 fun TradeAmountInput(
     viewModel: TradeViewModel = LocalTradePageViewModel.current,
     amountToTrade: Double,
-    totalCost: Double,
     onAmountChange: (Double) -> Unit
 ) {
     var textFieldValue by remember { mutableDoubleStateOf(0.0) }
@@ -305,7 +302,7 @@ fun TradeAmountInput(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "İşlem Miktarı",
+            text = stringResource(id = R.string.Amount),
             style = MaterialTheme.typography.bodySmall,
             fontWeight = FontWeight.Bold,
             color = androidx.compose.material.MaterialTheme.colors.onPrimary
@@ -324,7 +321,7 @@ fun TradeAmountInput(
                     onAmountChange(textFieldValue)
                 }
             ) {
-                Icon(Icons.Default.Remove, contentDescription = "Azalt", tint = androidx.compose.material.MaterialTheme.colors.onPrimary)
+                Icon(Icons.Default.Remove, contentDescription = stringResource(id = R.string.Decrease), tint = androidx.compose.material.MaterialTheme.colors.onPrimary)
             }
             Spacer(modifier = Modifier.width(16.dp))
             OutlinedTextField(
@@ -333,7 +330,7 @@ fun TradeAmountInput(
                     textFieldValue = it.toDoubleOrNull() ?: 0.0
                     onAmountChange(textFieldValue)
                 },
-                label = { Text(text = "Miktar", color = androidx.compose.material.MaterialTheme.colors.onPrimary) },
+                label = { Text(text = stringResource(id = R.string.Amount) , color = androidx.compose.material.MaterialTheme.colors.onPrimary) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
@@ -355,7 +352,7 @@ fun TradeAmountInput(
                     onAmountChange(textFieldValue)
                 }
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Artır", tint = androidx.compose.material.MaterialTheme.colors.onPrimary)
+                Icon(Icons.Default.Add, contentDescription = stringResource(id = R.string.increase), tint = androidx.compose.material.MaterialTheme.colors.onPrimary)
             }
         }
     }
@@ -372,14 +369,14 @@ fun TotalCostSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Toplam İşlem Maliyeti",
+            text = stringResource(id = R.string.total_cost_text),
             style = MaterialTheme.typography.bodySmall,
             fontWeight = FontWeight.Bold,
             color = androidx.compose.material.MaterialTheme.colors.onPrimary
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "Toplam Maliyet: %.4f USD".format(totalCost),
+            text = stringResource(id = R.string.total_cost) + "%.4f USD".format(totalCost),
             style = MaterialTheme.typography.bodyMedium,
             color = androidx.compose.material.MaterialTheme.colors.onPrimary
         )
@@ -396,7 +393,7 @@ fun BalanceSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Toplam Bakiye: %.4f USD".format(totalBalance),
+            text = stringResource(id = R.string.total_balance) +  "%.4f USD".format(totalBalance),
             style = MaterialTheme.typography.bodyMedium,
             color = androidx.compose.material.MaterialTheme.colors.onPrimary
         )

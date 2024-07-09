@@ -194,7 +194,7 @@ fun MainView(
                         .verticalScroll(rememberScrollState())
                     ) {
                         Text(
-                            text = "Popular Coins",
+                            text = stringResource(id = R.string.popular_coins),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 6.dp, start = 12.dp),

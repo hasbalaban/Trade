@@ -19,7 +19,7 @@
     <string name="TotalValue">Toplam Değer ( $ )</string>
     <string name="Search">Ara</string>
     <string name="Symbol">Coin</string>
-    <string name="Amount">Adet</string>
+    <string name="Amount">İşlem Miktarı</string>
     <string name="Value">Değer ($)</string>
     <string name="price">Fiyat</string>
     <string name="total">Toplam</string>
@@ -40,4 +40,26 @@
 
 
     <string name="loading">Yükleniyor...</string>
+
+    <string name="popular_coins">Popüler Kripto Paralar</string>
+    <string name="market_cap">Piyasa Değeri:</string>
+    <string name="cripto_buy_sel">Kripto Alış/Satış</string>
+    <string name="cripto_image">Kripto Görseli</string>
+    <string name="daily_change">Günlük Değişim: </string>
+    <string name="available_amount">Mevcut Miktar: </string>
+    <string name="amount">Miktar: </string>
+    <string name="Decrease">Azalt</string>
+    <string name="increase">Artır</string>
+    <string name="total_cost_text">Toplam İşlem Maliyeti</string>
+    <string name="total_cost">Toplam Maliyet: </string>
+    <string name="total_balance">Toplam Bakiye: </string>
+    <string name="buy_sel_operations_text">Alış/Satış İşlemleri</string>
+
+    <string name="buy">Al</string>
+    <string name="sell">Sat</string>
+    <string name="operation_text">İşlem: </string>
+    <string name="cripto_wallet">Kripto Cüzdan</string>
+    <string name="transactions">İşlem Geçmişi</string>
+    <string name="value">Değer</string>
+
 </resources>

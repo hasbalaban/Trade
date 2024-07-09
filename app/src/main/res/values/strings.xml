@@ -42,6 +42,27 @@
 
     <string name="loading">Loading</string>
 
+    <string name="popular_coins">Popular Coins</string>
+    <string name="market_cap">Market Cap:</string>
+    <string name="cripto_buy_sel">Crypto Buy/Sell</string>
+    <string name="cripto_image">Crypto Image</string>
+    <string name="daily_change">Daily Change: </string>
+    <string name="available_amount">Available Amount: </string>
+    <string name="amount">Amount: </string>
+    <string name="Decrease">Decrease</string>
+    <string name="increase">Increase</string>
+    <string name="total_cost_text">Total Transaction Cost</string>
+    <string name="total_cost">Total Cost: </string>
+    <string name="total_balance">Total Balance: </string>
+    <string name="buy_sel_operations_text">Buy/Sell Operations</string>
+
+    <string name="buy">Buy</string>
+    <string name="sell">Sell</string>
+    <string name="operation_text">Operation: </string>
+    <string name="cripto_wallet">Crypto Wallet</string>
+    <string name="transactions">Transaction History</string>
+    <string name="value">Value</string>
+
 
 
 </resources>
