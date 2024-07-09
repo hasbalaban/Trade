@@ -17,7 +17,9 @@ private val LightColorPalette = lightColors(
     onSecondary = Color.Black, // text color
 
     surface = Color.White,
-    onSurface = Color.Black
+    onSurface = Color.Black,
+
+    secondaryVariant = Color.White
 )
 
 private val DarkColorPalette = darkColors(
@@ -28,7 +30,9 @@ private val DarkColorPalette = darkColors(
     onSecondary = Color.White,
 
     surface = Color.Black,
-    onSurface = Color.White
+    onSurface = Color.White,
+
+    secondaryVariant = Color(0xFF222020)
 )
 
 @Composable

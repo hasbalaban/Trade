@@ -95,10 +95,10 @@ class MainActivity : AppCompatActivity() {
                 val baseViewModel = hiltViewModel<BaseViewModel>()
 
                 CompositionLocalProvider(LocalBaseViewModel provides baseViewModel) {
-                    Surface(color = Color.White) {
-                        Scaffold(
-                            bottomBar = { BottomNavigationBar(navController = navController) }
-                        ) { padding ->
+                    Scaffold(
+                        bottomBar = { BottomNavigationBar(navController = navController) }
+                    ) { padding ->
+                        Surface(color = androidx.compose.material.MaterialTheme.colors.secondaryVariant) {
                             MainScreen(navController, Modifier.padding(paddingValues = padding))
                         }
                     }
