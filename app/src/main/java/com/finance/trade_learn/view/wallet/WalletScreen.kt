@@ -8,7 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.TabRowDefaults.Divider
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,11 +45,14 @@ fun WalletScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WalletTopBar() {
-    androidx.compose.material.TopAppBar(
+    TopAppBar(
         title = { Text("Crypto Wallet", color = MaterialTheme.colorScheme.onPrimary) },
-        backgroundColor = MaterialTheme.colorScheme.primary
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        )
     )
 }
 
@@ -67,7 +70,12 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
         ), label = ""
     )
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         // Başlık ve çizgi
         Text(
             text = "Crypto Wallet",
@@ -88,7 +96,7 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
             text = "\$${animatedBalance.toDouble().format(2)}",
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(start = 6.dp, bottom = 16.dp)
         )
 
         // Arama kısmı
@@ -108,7 +116,9 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
         )
 
         // Kripto item listesi
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             // Başlık satırı
             item {
                 Row(
@@ -127,33 +137,40 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
             items(cryptoItems.value.filter {
                 searchQuery.value.text.isBlank() || it.CoinName.contains(searchQuery.value.text, ignoreCase = true)
             }) { item ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(item.CoinName, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground)
-                    Text(item.CoinAmount.toDouble().format(6), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
-                    Text("\$${(item.Total).toDouble().format(2)}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.fillMaxWidth(0.3f), textAlign = TextAlign.End)
-                }
-                Spacer(modifier = Modifier.height(4.dp))
+                CryptoItem(item = item)
             }
         }
 
         // İşlem geçmişi butonu
         Button(
-            onClick = {
-                navigateToHistoryPage.invoke()
-            },
-            modifier = Modifier.align(Alignment.End),
+            onClick = navigateToHistoryPage,
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(top = 16.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
-            )
+            ),
+            shape = RoundedCornerShape(8.dp)
         ) {
             Text("İşlem Geçmişi")
         }
     }
+}
+
+
+@Composable
+private fun CryptoItem(item: NewModelForItemHistory) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(item.CoinName, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground)
+        Text(item.CoinAmount.toDouble().format(6), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(1f).wrapContentWidth(unbounded = true), textAlign = TextAlign.End)
+        Text("\$${item.Total.toDouble().format(2)}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.fillMaxWidth(0.3f), textAlign = TextAlign.End)
+    }
+    Spacer(modifier = Modifier.height(4.dp))
 }
 
 @Composable
