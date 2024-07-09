@@ -45,7 +45,8 @@ fun PopularCoinCard(
         Column(
             modifier = Modifier
                 .padding(2.dp)
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background)
+                .padding(6.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
