@@ -128,7 +128,7 @@ private fun TradeMainScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(vertical = 16.dp),
+                .padding(vertical = 16.dp, horizontal = 16.dp),
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 20.sp,
             fontFamily = FontFamily.SansSerif
@@ -240,10 +240,13 @@ fun ItemDetailSection(
                     color = androidx.compose.material.MaterialTheme.colors.onPrimary
                 )
                 Spacer(modifier = Modifier.height(4.dp))
+
+                val priceChangeColor = if ((item.data.price_change_percentage_24h ?: 0.0) >= 0.0) Color(0xFF4CAF50) else Color(0xFFF44336)
+
                 Text(
                     text = "Günlük Değişim: %.2f%%".format(item.data.price_change_percentage_24h),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = if ((item.data.price_change_percentage_24h ?: 0.0) >= 0.0) Color.Green else Color.Red,
+                    color = priceChangeColor,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(

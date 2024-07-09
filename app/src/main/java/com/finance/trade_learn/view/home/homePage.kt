@@ -52,6 +52,11 @@ import com.finance.trade_learn.view.coin.PopularCoinCard
 import com.finance.trade_learn.viewModel.ViewModeHomePage
 import kotlinx.coroutines.*
 import java.lang.Runnable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Search
 
 
 private fun clickSendEmailButton( context: Context) {
@@ -68,64 +73,63 @@ private fun composeEmail(addresses: Array<String>, subject: String, context: Con
 }
 
 @Composable
-private fun MainToolbar(openSearch : () -> Unit) {
+private fun MainToolbar(openSearch: () -> Unit) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colors.primary)
-            .padding(horizontal = 6.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         val context = LocalContext.current
         val (composeEmail, appName, search) = createRefs()
-        Image(painter = painterResource(id = R.drawable.send_mail),
+
+        Icon(
+            imageVector = Icons.Default.Email,
             contentDescription = "Send Email",
             modifier = Modifier
                 .constrainAs(composeEmail) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                 }
-                .height(36.dp)
-                .width(36.dp)
-                .clickable {
-                    clickSendEmailButton(context)
-                }
-                .padding(start = 3.dp, top = 5.dp, bottom = 2.dp),
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onPrimary)
+                .size(36.dp)
+                .clickable { clickSendEmailButton(context) },
+            tint = MaterialTheme.colors.onPrimary
         )
-        Text(text = stringResource(id = R.string.app_name),
+
+        Text(
+            text = stringResource(id = R.string.app_name),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colors.onPrimary,
             fontSize = 20.sp,
-            fontStyle = FontStyle.Italic,
-            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Default,
             modifier = Modifier
                 .constrainAs(appName) {
                     start.linkTo(composeEmail.end)
                     end.linkTo(search.start)
                     top.linkTo(parent.top)
-                    bottom.linkTo(composeEmail.bottom)
+                    bottom.linkTo(parent.bottom)
                     width = Dimension.fillToConstraints
                 }
-                .padding(start = 3.dp, top = 5.dp)
+                .padding(horizontal = 8.dp)
         )
 
-        Image(painter = painterResource(id = R.drawable.search),
-            contentDescription = "Send Email",
+        Icon(
+            imageVector = Icons.Default.Search,
+            contentDescription = "Search",
             modifier = Modifier
                 .constrainAs(search) {
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)
                 }
-                .height(40.dp)
-                .width(40.dp)
-                .clickable(role = Role.DropdownList) {
-                    openSearch()
-                }
-                .padding(start = 3.dp, top = 5.dp, bottom = 2.dp),
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onPrimary)
+                .size(36.dp)
+                .clickable { openSearch() },
+            tint = MaterialTheme.colors.onPrimary
         )
     }
 }
+
+
 @Composable
 fun MainView(
     page: Int = 1,

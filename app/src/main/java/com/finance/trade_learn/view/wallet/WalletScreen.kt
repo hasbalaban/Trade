@@ -4,23 +4,14 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,6 +20,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -36,15 +29,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import com.finance.trade_learn.R
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.view.LocalWalletPageViewModel
-import java.util.Locale
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WalletScreen(
     modifier: Modifier = Modifier,
-    navigateToHistoryPage : () -> Unit,
+    navigateToHistoryPage: () -> Unit,
 ) {
     val viewModel = LocalWalletPageViewModel.current
     LaunchedEffect(Unit) {
@@ -63,8 +58,15 @@ fun WalletScreen(
 @Composable
 fun WalletTopBar() {
     TopAppBar(
-        title = { Text("Crypto Wallet", color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary, fontSize = 20.sp, fontFamily = FontFamily.SansSerif) },
-        colors = TopAppBarDefaults.topAppBarColors(
+        title = {
+            Text(
+                "Kripto Cüzdan",
+                color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
+                fontSize = 22.sp,
+                fontFamily = FontFamily.SansSerif
+            )
+        },
+        colors = TopAppBarDefaults.smallTopAppBarColors(
             containerColor = androidx.compose.material3.MaterialTheme.colorScheme.primary
         )
     )
@@ -77,7 +79,7 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
     val cryptoItems = viewModel.myCoinsNewModel.observeAsState(emptyList())
 
     val animatedBalance by animateFloatAsState(
-        targetValue = cryptoItems.value?.sumOf { it.Total.toDouble() }?.toFloat() ?: 0.0f ,
+        targetValue = cryptoItems.value.sumOf { it.Total.toDouble() }.toFloat(),
         animationSpec = tween(
             durationMillis = 2000,
             easing = FastOutSlowInEasing
@@ -90,37 +92,51 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
             .background(MaterialTheme.colors.primary)
             .padding(16.dp)
     ) {
-        // Başlık ve çizgi
         Text(
-            text = "Crypto Wallet",
-            style = MaterialTheme.typography.subtitle1,
+            text = "Kripto Cüzdan",
+            style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colors.onPrimary,
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
         HorizontalDivider(
             modifier = Modifier.padding(bottom = 16.dp),
-            thickness = 1.dp,
             color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f)
         )
 
-        // Toplam bakiye gösterimi
         Text(
             text = "Toplam Bakiye",
-            style = MaterialTheme.typography.h4,
+            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colors.onPrimary,
-            fontSize = 24.sp,
             modifier = Modifier.padding(vertical = 8.dp)
         )
-        Text(
-            text = "\$${animatedBalance.toDouble().format(2)}",
-            style = MaterialTheme.typography.subtitle2,
-            color = MaterialTheme.colors.onPrimary,
-            fontSize = 24.sp,
-            modifier = Modifier.padding(start = 6.dp, bottom = 4.dp)
-        )
 
-        // Arama kısmı
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Text(
+                text = "\$${animatedBalance.toDouble().format(2)}",
+                style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.padding(start = 6.dp, bottom = 4.dp)
+            )
+
+            Button(
+                onClick = navigateToHistoryPage,
+                modifier = Modifier,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                    contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
+                ),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text("İşlem Geçmişleri")
+            }
+        }
+
         val searchQuery = remember { mutableStateOf(TextFieldValue()) }
         OutlinedTextField(
             value = searchQuery.value,
@@ -136,87 +152,71 @@ fun WalletContent(modifier: Modifier, navigateToHistoryPage: () -> Unit) {
             )
         )
 
-        // Kripto item listesi
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Başlık satırı
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Coin", style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), overflow = TextOverflow.Ellipsis)
-                    Text("Amount", style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
-                    Text("Value", style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                    Spacer(modifier = Modifier.width(48.dp))
+                    Text("Coin", style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), overflow = TextOverflow.Ellipsis)
+                    Text("Miktar", style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                    Text("Değer", style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
                 }
                 Spacer(modifier = Modifier.height(4.dp))
             }
 
-            // Kripto itemlerin listesi
             items(cryptoItems.value.filter {
                 searchQuery.value.text.isBlank() || it.CoinName.contains(searchQuery.value.text, ignoreCase = true)
             }) { item ->
                 CryptoItem(item = item)
+                HorizontalDivider(modifier = Modifier
+                    .alpha(0.5f)
+                    .padding(vertical = 8.dp))
             }
-        }
-
-        // İşlem geçmişi butonu
-        Button(
-            onClick = navigateToHistoryPage,
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(top = 16.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
-                contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
-            ),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text("İşlem Geçmişi")
         }
     }
 }
-
 
 @Composable
 private fun CryptoItem(item: NewModelForItemHistory) {
+
+    val painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current)
+        .data(item.Image)
+        .apply {
+            crossfade(true)
+            placeholder(R.drawable.placeholder)
+            error(R.drawable.error)
+        }.build()
+    )
+
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(item.CoinName, style = MaterialTheme.typography.body1, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), overflow = TextOverflow.Ellipsis)
-        Text(item.CoinAmount.toDouble().format(6), style = MaterialTheme.typography.body1, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
-        Text("\$${item.Total.toDouble().format(2)}", style = MaterialTheme.typography.body1, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+        Image(
+            painter = painter,
+            contentDescription = item.CoinName,
+            modifier = Modifier.size(36.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(item.CoinName, style = androidx.compose.material3.MaterialTheme.typography.bodyMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), overflow = TextOverflow.Ellipsis)
+        Text(item.CoinAmount.toDouble().format(6), style = androidx.compose.material3.MaterialTheme.typography.bodyMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+        Text("\$${item.Total.toDouble().format(2)}", style = androidx.compose.material3.MaterialTheme.typography.bodyMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
     }
-    Spacer(modifier = Modifier.height(4.dp))
 }
+
+
+fun Double.format(digits: Int) = "%.${digits}f".format(this)
 
 @Composable
 @Preview
 private fun WalletScreenPreview() {
-    Surface(modifier = Modifier.background(MaterialTheme.colors.background)) {
-        Column(
-            modifier = Modifier
-                .padding(20.dp)
-                .fillMaxWidth()
-                .background(MaterialTheme.colors.background)
-        ) {
-            WalletScreen(modifier = Modifier) {}
-        }
-    }
-}
-
-fun Double.format(digits: Int) = "%.${digits}f".format(this)
-
-private fun getSearchedList(searchedItem: String, itemList: ArrayList<NewModelForItemHistory>?): List<NewModelForItemHistory> {
-    val queryCoin = searchedItem.uppercase(Locale.getDefault())
-
-    if (queryCoin.isEmpty()) return itemList?.map { it } ?: emptyList()
-
-    return itemList?.filter { item ->
-        item.CoinName.contains(queryCoin, ignoreCase = true)
-    } ?: emptyList()
+    WalletScreen(modifier = Modifier) {}
 }

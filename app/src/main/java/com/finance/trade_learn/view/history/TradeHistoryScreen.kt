@@ -23,11 +23,13 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -73,7 +75,6 @@ private fun MainContent(trades: List<SaveCoin>, modifier: Modifier) {
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(color = Color(0xFFADA8A8))
                 .padding(8.dp)
         ) {
             LazyColumn(
@@ -83,7 +84,7 @@ private fun MainContent(trades: List<SaveCoin>, modifier: Modifier) {
             ) {
                 items(trades) { trade ->
                     TradeItem(trade)
-                    Spacer(modifier = Modifier.height(8.dp)) // İtemlar arasına boşluk ekleyelim
+                    HorizontalDivider(modifier = Modifier.alpha(0.5f).padding(vertical = 8.dp))
                 }
             }
         }
@@ -99,7 +100,6 @@ fun TradeItem(trade: SaveCoin) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colors.surface,
             contentColor = MaterialTheme.colors.onSurface
