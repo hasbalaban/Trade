@@ -14,6 +14,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -31,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -337,13 +339,14 @@ fun BottomNavigationBar(navController: NavHostController) {
 
     // Renk paleti
     val selectedColor = Color(0xFF00BFA5) // Turkuaz (seçilen durumda)
-    val unselectedColor = Color(0xFFFFFFFF) // Gri (seçilmeyen durumda)
-    val backgroundColor = Color(0xB3636060) // Koyu gri (arka plan)
+    val unselectedColor = Color(0xFFB0BEC5) // Açık gri (seçilmeyen durumda)
+    val backgroundColor = Color(0xFF263238) // Koyu mavi-gri (arka plan)
+    val indicatorColor = Color(0xFF4DB6AC) // Seçim göstergesi rengi
 
     NavigationBar(
         containerColor = backgroundColor,
         contentColor = Color.White,
-        tonalElevation = 4.dp,
+        tonalElevation = 8.dp,
         modifier = Modifier
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .background(backgroundColor)
@@ -356,9 +359,13 @@ fun BottomNavigationBar(navController: NavHostController) {
                     Image(
                         painter = painterResource(id = navItem.icon),
                         contentDescription = navItem.label,
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier
+                            .size(28.dp)
+                            .shadow(4.dp, CircleShape)
+                            .background(if (isSelected) selectedColor else backgroundColor, CircleShape)
+                            .padding(4.dp),
                         colorFilter = ColorFilter.tint(
-                            if (isSelected) selectedColor else unselectedColor
+                            if (isSelected) Color.White else unselectedColor
                         )
                     )
                 },
@@ -366,7 +373,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                     Text(
                         text = navItem.label,
                         fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                         color = if (isSelected) selectedColor else unselectedColor
                     )
@@ -374,22 +381,26 @@ fun BottomNavigationBar(navController: NavHostController) {
                 selected = isSelected,
                 onClick = {
                     navController.navigate(navItem.route) {
-                        popUpTo(navController.graph.startDestinationId)
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        restoreState = true
                         launchSingleTop = true
                     }
                 },
-                alwaysShowLabel = true,
+                alwaysShowLabel = false, // Etiketi sadece seçildiğinde göster
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = selectedColor,
+                    selectedIconColor = Color.White,
                     unselectedIconColor = unselectedColor,
                     selectedTextColor = selectedColor,
                     unselectedTextColor = unselectedColor,
-                    indicatorColor = Color.White
+                    indicatorColor = indicatorColor
                 )
             )
         }
     }
 }
+
 
 
 
