@@ -32,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -60,7 +61,9 @@ import androidx.core.content.ContextCompat.startActivity
 import com.finance.trade_learn.R
 import com.finance.trade_learn.view.HomePageItems
 import com.finance.trade_learn.view.LocalBaseViewModel
+import com.finance.trade_learn.view.LocalHomeViewModel
 import com.finance.trade_learn.view.coin.PopularCoinCard
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
 
@@ -86,12 +89,10 @@ private fun MainToolbar(openSearch: () -> Unit) {
     val scrollBehavior = LocalHomePageScrollBehavior.current
 
     TopAppBar(
-        modifier = Modifier.padding(top = 6.dp),
         title = {
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = MaterialTheme.colors.primary)
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 val context = LocalContext.current
@@ -107,13 +108,13 @@ private fun MainToolbar(openSearch: () -> Unit) {
                         }
                         .size(36.dp)
                         .clickable { clickSendEmailButton(context) },
-                    tint = MaterialTheme.colors.onPrimary
+                    tint = MaterialTheme.colors.onBackground
                 )
 
                 Text(
                     text = stringResource(id = R.string.app_name),
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colors.onPrimary,
+                    color = MaterialTheme.colors.onBackground,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Default,
@@ -138,11 +139,14 @@ private fun MainToolbar(openSearch: () -> Unit) {
                         }
                         .size(36.dp)
                         .clickable { openSearch() },
-                    tint = MaterialTheme.colors.onPrimary
+                    tint = MaterialTheme.colors.onBackground
                 )
             }
         },
-        colors = TopAppBarDefaults.smallTopAppBarColors(),
+        colors = topAppBarColors(
+            containerColor = MaterialTheme.colors.background,
+            scrolledContainerColor = MaterialTheme.colors.background
+        ),
         scrollBehavior = scrollBehavior
     )
 
@@ -161,6 +165,7 @@ fun MainView(
     openTradePage: (String) -> Unit
 ) {
     val baseViewModel = LocalBaseViewModel.current
+    val viewModel = LocalHomeViewModel.current
 
     var runnable by remember {
         mutableStateOf(Runnable {  })
@@ -227,7 +232,9 @@ fun MainView(
                     }
                 }
             }
-            ConstraintLayout(modifier = Modifier.padding(it).fillMaxSize()) {
+            ConstraintLayout(modifier = Modifier
+                .padding(it)
+                .fillMaxSize()) {
                 val (toolbar, divider1, mainItemsScreen) = createRefs()
                 Column(modifier = Modifier
                     .fillMaxWidth()

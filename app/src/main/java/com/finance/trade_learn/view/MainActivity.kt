@@ -65,6 +65,7 @@ import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.view.history.TradeHistoryScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
+import com.finance.trade_learn.viewModel.HomeViewModel
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
 import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
 import com.finance.trade_learn.viewModel.WalletPageViewModel
@@ -81,6 +82,7 @@ import java.util.concurrent.TimeUnit
 val LocalBaseViewModel = compositionLocalOf<BaseViewModel> { error("No BaseViewModel found") }
 val LocalWalletPageViewModel = compositionLocalOf<WalletPageViewModel> { error("No LocalWalletPageViewModel found") }
 val LocalViewModelHistoryTrade = compositionLocalOf<ViewModelHistoryTrade> { error("No ViewModelHistoryTrade found") }
+val LocalHomeViewModel = compositionLocalOf<HomeViewModel> { error("No ViewModelHistoryTrade found") }
 @OptIn(ExperimentalMaterial3Api::class)
 private val LocalMainScrollBehavior = compositionLocalOf<BottomAppBarScrollBehavior> { error("No BottomAppBarScrollBehavior found") }
 
@@ -136,29 +138,36 @@ class MainActivity : AppCompatActivity() {
             NavHost(navController = navController, startDestination = "home") {
                 composable(Screens.Home.route) {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+                    val viewModel = hiltViewModel<HomeViewModel>()
 
-                    com.finance.trade_learn.view.home.MainView(
-                        shouldShowPopularCoins = true,
-                        openSearch = {
-                            navController.navigate(Screens.SearchScreen.route)
-                        },
-                        openTradePage = {
-                            navController.navigate(Screens.Trade(it).route)
-                        }
-                    )
+                    CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
+                        com.finance.trade_learn.view.home.MainView(
+                            shouldShowPopularCoins = true,
+                            openSearch = {
+                                navController.navigate(Screens.SearchScreen.route)
+                            },
+                            openTradePage = {
+                                navController.navigate(Screens.Trade(it).route)
+                            }
+                        )
+                    }
                 }
                 composable(Screens.Market.route) {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+                    val viewModel = hiltViewModel<HomeViewModel>()
 
-                    com.finance.trade_learn.view.home.MainView(
-                        page = marketPageNumber,
-                        openSearch = {
-                            navController.navigate(Screens.SearchScreen.route)
-                        },
-                        openTradePage = {
-                            navController.navigate(Screens.Trade(it).route)
-                        }
-                    )
+                    CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
+                        com.finance.trade_learn.view.home.MainView(
+                            page = marketPageNumber,
+                            openSearch = {
+                                navController.navigate(Screens.SearchScreen.route)
+                            },
+                            openTradePage = {
+                                navController.navigate(Screens.Trade(it).route)
+                            }
+                        )
+                    }
+
 
                     marketPageNumber++
                 }
