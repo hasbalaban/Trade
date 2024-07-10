@@ -33,7 +33,7 @@ fun HomePageItems (
                     onViewClick.invoke(selectedItemName)
                 }
 
-                HorizontalDivider(modifier = Modifier.alpha(0.5f).padding(vertical = 4.dp))
+                HorizontalDivider(modifier = Modifier.alpha(0.5f))
 
             }
         }
