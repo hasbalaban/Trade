@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
@@ -35,6 +36,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -171,10 +173,20 @@ fun MainView(
     }
 
 
+    val popularItemListState = rememberLazyListState()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
     val popularItems = baseViewModel.listOfCryptoForPopular.observeAsState().value
+
+    LaunchedEffect(Unit) {
+        while (true){
+            delay(3000)
+            val newPosition =
+                if (popularItemListState.canScrollForward) popularItemListState.layoutInfo.visibleItemsInfo.first().index + 1
+                else 0
+            popularItemListState.animateScrollToItem(newPosition)
+        }
+    }
 
     DisposableEffect(Unit) {
         runnable = Runnable {
@@ -193,10 +205,13 @@ fun MainView(
 
 
     CompositionLocalProvider(LocalHomePageScrollBehavior provides scrollBehavior) {
-        Scaffold(modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
+        Scaffold(modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 MainToolbar(openSearch)
-            }
+            },
+            containerColor = MaterialTheme.colors.primary
         ) {
 
             val isLoading = baseViewModel.isLoading.observeAsState().value ?: false
@@ -241,6 +256,7 @@ fun MainView(
 
                             if (popularItems != null) {
                                 LazyRow(
+                                    state = popularItemListState ,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(vertical = 4.dp)
