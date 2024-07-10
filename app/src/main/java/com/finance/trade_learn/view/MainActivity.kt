@@ -18,10 +18,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.BottomAppBarScrollBehavior
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -58,6 +65,7 @@ import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.view.history.TradeHistoryScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
+import com.finance.trade_learn.viewModel.HomeViewModel
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
 import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
 import com.finance.trade_learn.viewModel.WalletPageViewModel
@@ -74,6 +82,9 @@ import java.util.concurrent.TimeUnit
 val LocalBaseViewModel = compositionLocalOf<BaseViewModel> { error("No BaseViewModel found") }
 val LocalWalletPageViewModel = compositionLocalOf<WalletPageViewModel> { error("No LocalWalletPageViewModel found") }
 val LocalViewModelHistoryTrade = compositionLocalOf<ViewModelHistoryTrade> { error("No ViewModelHistoryTrade found") }
+val LocalHomeViewModel = compositionLocalOf<HomeViewModel> { error("No ViewModelHistoryTrade found") }
+@OptIn(ExperimentalMaterial3Api::class)
+private val LocalMainScrollBehavior = compositionLocalOf<BottomAppBarScrollBehavior> { error("No BottomAppBarScrollBehavior found") }
 
 
 @AndroidEntryPoint
@@ -83,6 +94,7 @@ class MainActivity : AppCompatActivity() {
     //   private lateinit var firestore: FirebaseFirestore
     private var mInterstitialAd: InterstitialAd? = null
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -97,8 +109,12 @@ class MainActivity : AppCompatActivity() {
                 val baseViewModel = hiltViewModel<BaseViewModel>()
                 val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(true)
 
-                CompositionLocalProvider(LocalBaseViewModel provides baseViewModel) {
+
+                val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
+
+                CompositionLocalProvider(LocalBaseViewModel provides baseViewModel, LocalMainScrollBehavior provides scrollBehavior) {
                     Scaffold(
+                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                         bottomBar = {
                             if(shouldShowBottomNavigationBar){
                                 BottomNavigationBar(navController = navController)
@@ -122,29 +138,36 @@ class MainActivity : AppCompatActivity() {
             NavHost(navController = navController, startDestination = "home") {
                 composable(Screens.Home.route) {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+                    val viewModel = hiltViewModel<HomeViewModel>()
 
-                    com.finance.trade_learn.view.home.MainView(
-                        shouldShowPopularCoins = true,
-                        openSearch = {
-                            navController.navigate(Screens.SearchScreen.route)
-                        },
-                        openTradePage = {
-                            navController.navigate(Screens.Trade(it).route)
-                        }
-                    )
+                    CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
+                        com.finance.trade_learn.view.home.MainView(
+                            shouldShowPopularCoins = true,
+                            openSearch = {
+                                navController.navigate(Screens.SearchScreen.route)
+                            },
+                            openTradePage = {
+                                navController.navigate(Screens.Trade(it).route)
+                            }
+                        )
+                    }
                 }
                 composable(Screens.Market.route) {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+                    val viewModel = hiltViewModel<HomeViewModel>()
 
-                    com.finance.trade_learn.view.home.MainView(
-                        page = marketPageNumber,
-                        openSearch = {
-                            navController.navigate(Screens.SearchScreen.route)
-                        },
-                        openTradePage = {
-                            navController.navigate(Screens.Trade(it).route)
-                        }
-                    )
+                    CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
+                        com.finance.trade_learn.view.home.MainView(
+                            page = marketPageNumber,
+                            openSearch = {
+                                navController.navigate(Screens.SearchScreen.route)
+                            },
+                            openTradePage = {
+                                navController.navigate(Screens.Trade(it).route)
+                            }
+                        )
+                    }
+
 
                     marketPageNumber++
                 }
@@ -350,8 +373,10 @@ private fun isEmulator(): Boolean {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
+    val scrollBehavior = LocalMainScrollBehavior.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -362,7 +387,8 @@ fun BottomNavigationBar(navController: NavHostController) {
     val backgroundColor = Color(0xFF263238) // Koyu mavi-gri (arka plan)
     val indicatorColor = Color(0xFF4DB6AC) // Seçim göstergesi rengi
 
-    NavigationBar(
+    BottomAppBar(
+        scrollBehavior = scrollBehavior,
         containerColor = backgroundColor,
         contentColor = Color.White,
         tonalElevation = 8.dp,
@@ -372,7 +398,6 @@ fun BottomNavigationBar(navController: NavHostController) {
     ) {
         Constants.BottomNavItems.forEach { navItem ->
             val isSelected = currentRoute == navItem.route
-
             NavigationBarItem(
                 icon = {
                     Image(
@@ -419,6 +444,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                 )
             )
         }
+
     }
 }
 

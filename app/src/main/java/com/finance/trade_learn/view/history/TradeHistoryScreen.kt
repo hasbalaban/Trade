@@ -152,7 +152,7 @@ fun TradeItem(trade: SaveCoin) {
             ) {
                 Text(
                     text = trade.coinName,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.onPrimary // Title color
                 )
@@ -164,13 +164,13 @@ fun TradeItem(trade: SaveCoin) {
                 ) {
                     Text(
                         text = stringResource(id = R.string.amount) + trade.coinAmount.toDouble().formatAmount(),
-                        fontSize = 14.sp,
+                        fontSize = 13.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(id = R.string.price) + ": ${trade.coinPrice.toDouble().formatPrice()}",
-                        fontSize = 14.sp,
+                        fontSize = 13.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
                 }
@@ -182,13 +182,13 @@ fun TradeItem(trade: SaveCoin) {
                 ) {
                     Text(
                         text = stringResource(id = R.string.total) + ": ${trade.total.toDouble().formatTotalCost()}",
-                        fontSize = 14.sp,
+                        fontSize = 13.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(id = R.string.date) + ": ${trade.date.formatDate()}",
-                        fontSize = 14.sp,
+                        fontSize = 13.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
                 }
@@ -198,7 +198,7 @@ fun TradeItem(trade: SaveCoin) {
 
                     Text(
                         text = stringResource(id = R.string.operation_text),
-                        fontSize = 14.sp,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colors.onPrimary // Default text color
                     )
@@ -208,7 +208,7 @@ fun TradeItem(trade: SaveCoin) {
                         } else {
                             stringResource(id = R.string.sell)
                         },
-                        fontSize = 14.sp,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         color =
                         if (trade.tradeOperation.equals(stringResource(id = R.string.buy), ignoreCase = true))

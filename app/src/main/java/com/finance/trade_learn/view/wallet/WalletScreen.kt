@@ -80,7 +80,7 @@ fun WalletTopBar() {
             Text(
                 stringResource(id = R.string.cripto_wallet),
                 color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
-                fontSize = 22.sp,
+                fontSize = 20.sp,
                 fontFamily = FontFamily.SansSerif
             )
         },

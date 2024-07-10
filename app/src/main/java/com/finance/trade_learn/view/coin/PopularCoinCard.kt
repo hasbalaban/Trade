@@ -56,7 +56,7 @@ fun PopularCoinCard(
                 painter = rememberAsyncImagePainter(model = coin.CoinImage),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(36.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
                 contentScale = ContentScale.Crop
@@ -66,7 +66,7 @@ fun PopularCoinCard(
 
             Text(
                 text = coin.CoinName,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
@@ -79,7 +79,7 @@ fun PopularCoinCard(
 
             Text(
                 text = "$${coin.CoinPrice}",
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
                 color = androidx.compose.material.MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
@@ -105,7 +105,7 @@ fun PopularCoinCard(
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = "${coin.CoinChangePercente}%",
-                    fontSize = 14.sp,
+                    fontSize = 13.sp,
                     color = priceChangeColor,
                     textAlign = TextAlign.Center
                 )

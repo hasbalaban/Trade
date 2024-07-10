@@ -65,7 +65,7 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
                 painter = painter,
                 contentDescription = coin.CoinName,
                 modifier = Modifier
-                    .size(56.dp)
+                    .size(36.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
@@ -77,14 +77,14 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
             ) {
                 Text(
                     text = coin.CoinName,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.onSurface,
                     maxLines = 1
                 )
                 Text(
                     text = coin.coinSymbol.uppercase(),
-                    fontSize = 14.sp,
+                    fontSize = 13.sp,
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
                 )
                 Text(
@@ -101,7 +101,7 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
             ) {
                 Text(
                     text = "$${coin.CoinPrice}",
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colors.onSurface
                 )
