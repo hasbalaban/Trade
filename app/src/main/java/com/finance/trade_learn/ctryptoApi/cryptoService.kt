@@ -1,9 +1,12 @@
 package com.finance.trade_learn.ctryptoApi
 
+import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.coin_gecko.CoinInfoList
+import com.finance.trade_learn.models.handleResponse
 import com.finance.trade_learn.utils.Constants
 import io.reactivex.Single
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -30,11 +33,9 @@ class cryptoService() {
         return retrofit.getSelectedCoinToTradeCoinGecko(ids = coinName.lowercase())
     }
 
-    fun getCoinList(page: Int): Single<List<CoinDetail>> {
-        return if (Constants.SHOULD_BE_LOCAL_REQUEST)
-            localRetrofit.getLocalCoinList()
-        else
-            retrofit.getCoinGeckoData(page = page)
+    suspend fun getCoinList(page: Int): Response<WrapResponse<List<CoinDetail>?>> {
+        return if (Constants.SHOULD_BE_LOCAL_REQUEST) localRetrofit.getLocalCoinList()
+        else Response.success(retrofit.getCoinGeckoData(page = page).body().handleResponse())
     }
 
 
