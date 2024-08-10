@@ -18,7 +18,7 @@ class cryptoService() {
         .create(CryptoOperationInterface::class.java)
 
 
-    val localBaseUrl = "http://10.0.2.2:3000"
+    val localBaseUrl = "http://10.0.2.2:8080"
     var localRetrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -32,7 +32,7 @@ class cryptoService() {
 
     fun getCoinList(page: Int): Single<List<CoinDetail>> {
         return if (Constants.SHOULD_BE_LOCAL_REQUEST)
-            localRetrofit.getLocalCoinList(page = page)
+            localRetrofit.getLocalCoinList()
         else
             retrofit.getCoinGeckoData(page = page)
     }
