@@ -7,7 +7,7 @@ object Constants {
 
     const val SHOULD_SHOW_ADS = false
 
-    const val SHOULD_BE_LOCAL_REQUEST = false
+    const val SHOULD_BE_LOCAL_REQUEST = true
 
 
     val BottomNavItems = listOf(

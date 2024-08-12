@@ -63,41 +63,37 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
     fun getAllCrypto(page : Int) {
         isLoading.value = true
         viewModelScope.launch {
-            cryptoService().getCoinList(page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
-                    override fun onSuccess(t: List<CoinDetail>) {
-                        isLoading.value = false
-                        try {
+            val response = cryptoService().getCoinList(page)
+            when(response.isSuccessful){
+                true -> {
 
-                            val newList = t.filter {newItem->
-                                !allCryptoItems.any {oldItem -> oldItem.id == newItem.id }
-                            }
-                            allCryptoItems.addAll(newList)
+                    isLoading.value = false
 
-                            val data = convertCryptoList(allCryptoItems)
-                            if (data.ListOfCrypto.isNotEmpty()){
-                                currentItemsLiveData.value = data.ListOfCrypto
-                                listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
+                    response.body()?.data?.let {
+                        val newList = it.filter {newItem->
+                            !allCryptoItems.any {oldItem -> oldItem.id == newItem.id }
+                        }
+                        allCryptoItems.addAll(newList)
 
-                                currentItems = data.ListOfCrypto
-                                lastItems = data.lastCrypoList
-                            }
+                        val data = convertCryptoList(allCryptoItems)
+                        if (data.ListOfCrypto.isNotEmpty()){
+                            currentItemsLiveData.value = data.ListOfCrypto
+                            listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
 
-                        } catch (_: Exception) {
-                            isLoading.value = false
-
+                            currentItems = data.ListOfCrypto
+                            lastItems = data.lastCrypoList
                         }
                     }
+                }
+                false -> {
 
-                    override fun onError(e: Throwable) {
-                        isLoading.value = false
+                    isLoading.value = false
 
-                        currentItemsLiveData.value = currentItems
-                        listOfCryptoForPopular.value = convertPopularCoinList(currentItems)
-                    }
-                })
+                    currentItemsLiveData.value = currentItems
+                    listOfCryptoForPopular.value = convertPopularCoinList(currentItems)
+                }
+            }
+
         }
     }
 
