@@ -12,6 +12,7 @@ import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.coin_gecko.CoinInfoList
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.utils.ConvertOperation
+import com.finance.trade_learn.utils.RemoteConfigs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -86,6 +87,7 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
                     }
                 }
                 false -> {
+                    RemoteConfigs.SHOULD_BE_LOCAL_REQUEST = !RemoteConfigs.SHOULD_BE_LOCAL_REQUEST
 
                     isLoading.value = false
 
