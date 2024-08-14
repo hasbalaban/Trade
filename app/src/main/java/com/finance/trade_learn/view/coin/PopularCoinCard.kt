@@ -99,7 +99,7 @@ fun PopularCoinCard(
                     contentDescription = null,
                     modifier = Modifier
                         .size(16.dp)
-                        .rotate(if (coin.CoinChangePercente.contains("+")) 0.0f else 90.0f),
+                        .rotate(if (coin.CoinChangePercente.contains("+")) 0.0f else 180.0f),
                     colorFilter = ColorFilter.tint(priceChangeColor)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
