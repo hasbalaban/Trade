@@ -32,9 +32,6 @@ fun HomePageItems (
                 CoinItemScreen(it){ selectedItemName ->
                     onViewClick.invoke(selectedItemName)
                 }
-
-                HorizontalDivider(modifier = Modifier.alpha(0.5f))
-
             }
         }
     }

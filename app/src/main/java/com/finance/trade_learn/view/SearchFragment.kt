@@ -29,51 +29,14 @@ fun SearchScreen(openTradePage: (String) -> Unit, viewModel: SearchCoinViewModel
     LaunchedEffect(Unit) {
         baseViewModel.getCoinList()
     }
-    SearchComposeView(openTradePage)
 }
 
-private fun getItemsList(searchedItems: String, viewModel: BaseViewModel): List<CoinsHome> {
-    if (searchedItems.isEmpty()) return viewModel.currentItemsLiveData.value ?: emptyList()
+fun filterList(filteredText: String, list : List<CoinsHome>) : List<CoinsHome> {
+    if (filteredText.isEmpty()) return list
 
-    val filteredList = viewModel.currentItemsLiveData.value?.filter {
-        it.CoinName.contains(searchedItems, ignoreCase = true) || it.coinSymbol.contains(searchedItems, ignoreCase = true)
-    } ?: emptyList()
+    val filteredList = list.filter {
+        it.CoinName.contains(filteredText, ignoreCase = true) || it.coinSymbol.contains(filteredText, ignoreCase = true)
+    }
 
     return filteredList
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun SearchComposeView(
-    openTradePage: (String) -> Unit,
-    viewModel: SearchCoinViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-) {
-    val baseViewModel = LocalBaseViewModel.current
-    var searchedItem by remember { mutableStateOf("") }
-    var resultItems by remember { mutableStateOf(getItemsList(searchedItem, viewModel = baseViewModel)) }
-
-    val textChanged: (String) -> Unit = textChangedScope@{
-        searchedItem = it
-        resultItems = getItemsList(searchedItem, viewModel = baseViewModel)
-    }
-
-    Column(modifier = Modifier.fillMaxSize()) {
-
-        TextField(
-            modifier = Modifier
-                .padding(top = 1.dp, start = 2.dp, end = 2.dp)
-                .fillMaxWidth(),
-            value = searchedItem, onValueChange = { value -> textChanged(value) },
-            placeholder = {
-                Text(text = stringResource(id = R.string.hintSearch))
-            },
-            maxLines = 1,
-            singleLine = true
-        )
-
-        HomePageItems(coinsHome = resultItems) { selectedItemName ->
-            openTradePage.invoke(selectedItemName)
-        }
-
-    }
 }

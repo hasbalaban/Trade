@@ -5,9 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.view.ViewTreeObserver
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,10 +25,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Search
@@ -42,6 +48,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -50,8 +58,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -62,11 +78,15 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.finance.trade_learn.R
+import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.view.HomePageItems
 import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.LocalHomeViewModel
 import com.finance.trade_learn.view.coin.PopularCoinCard
+import com.finance.trade_learn.view.filterList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
@@ -93,64 +113,14 @@ private fun MainToolbar(openSearch: () -> Unit) {
     val scrollBehavior = LocalHomePageScrollBehavior.current
 
     TopAppBar(
-        title = {
-            ConstraintLayout(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                val context = LocalContext.current
-                val (composeEmail, appName, search) = createRefs()
-
-                Icon(
-                    imageVector = Icons.Default.Email,
-                    contentDescription = "Send Email",
-                    modifier = Modifier
-                        .constrainAs(composeEmail) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        }
-                        .size(36.dp)
-                        .clickable { clickSendEmailButton(context) },
-                    tint = MaterialTheme.colors.onBackground
-                )
-
-                Text(
-                    text = stringResource(id = R.string.app_name),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colors.onBackground,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Default,
-                    modifier = Modifier
-                        .constrainAs(appName) {
-                            start.linkTo(composeEmail.end)
-                            end.linkTo(search.start)
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                            width = Dimension.fillToConstraints
-                        }
-                        .padding(horizontal = 8.dp)
-                )
-
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search",
-                    modifier = Modifier
-                        .constrainAs(search) {
-                            end.linkTo(parent.end)
-                            top.linkTo(parent.top)
-                        }
-                        .size(36.dp)
-                        .clickable { openSearch() },
-                    tint = MaterialTheme.colors.onBackground
-                )
-            }
-        },
         colors = topAppBarColors(
-            containerColor = MaterialTheme.colors.background,
-            scrolledContainerColor = MaterialTheme.colors.background
+            containerColor = Color.White,
+            scrolledContainerColor = Color.White
         ),
+        title = {},
+        actions = {
+            SearchBar()
+        },
         scrollBehavior = scrollBehavior
     )
 
@@ -159,6 +129,65 @@ private fun MainToolbar(openSearch: () -> Unit) {
 
 }
 
+
+@Composable
+fun SearchBar() {
+    val viewModel = LocalHomeViewModel.current
+    val searchBarViewState by viewModel.searchBarViewState.collectAsState()
+
+    val isKeyboardOpen by keyboardAsState()
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+
+    LaunchedEffect(isKeyboardOpen){
+        if (!isKeyboardOpen) focusManager.clearFocus()
+    }
+
+    LaunchedEffect(searchBarViewState.isFocused){
+        if (!searchBarViewState.isFocused){
+            keyboardController?.hide()
+        }
+    }
+
+    TextField(
+        value = searchBarViewState.text,
+        onValueChange = { newText ->
+            viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(text = newText))
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = Color.Black
+            )
+        },
+        modifier = Modifier
+            .onFocusChanged { focusState ->
+                viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(isFocused = focusState.isFocused))
+            }
+            .fillMaxWidth()
+            .padding(16.dp),
+        shape = RoundedCornerShape(20),
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color(0xffF9FAFC),
+            cursorColor = Color.Gray,
+
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+
+            focusedLabelColor = Color.Transparent,
+            textColor = Color.Gray
+        ),
+        placeholder = {
+            Text(
+                fontSize = 16.sp,
+                text = "Search Coin"
+            )
+        }
+
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -186,6 +215,13 @@ fun MainView(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(snapAnimationSpec = spring(stiffness = Spring.StiffnessLow))
     val popularItems = baseViewModel.listOfCryptoForPopular.observeAsState().value
+
+
+    LaunchedEffect(scrollBehavior.state.collapsedFraction){
+        if (viewModel.searchBarViewState.value.isFocused) {
+            viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(isFocused = false))
+        }
+    }
 
     LaunchedEffect(Unit) {
         while (true){
@@ -245,13 +281,6 @@ fun MainView(
                     .constrainAs(toolbar) {
                         top.linkTo(parent.top)
                     }) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(color = colorResource(id = R.color.light_grey))
-                    ) {}
-
                     if (shouldShowPopularCoins) {
                         Column(
                             modifier = Modifier
@@ -307,12 +336,17 @@ fun MainView(
                 ) {
 
                     val listOfItems = baseViewModel.currentItemsLiveData.observeAsState()
+                    val searchBarViewState = viewModel.searchBarViewState.collectAsState()
+
                     val updateList =
                         if (shouldShowPopularCoins) listOfItems.value else listOfItems.value?.sortedBy {
                             it.total_volume
                         }
 
-                    HomePageItems(coinsHome = updateList) { selectedItemName ->
+
+                    val filterList = filterList(filteredText = searchBarViewState.value.text, list = updateList ?: emptyList())
+
+                    HomePageItems(coinsHome = filterList) { selectedItemName ->
                         openTradePage.invoke(selectedItemName)
                     }
                 }
@@ -321,4 +355,20 @@ fun MainView(
     }
 
 
+}
+
+@Composable
+fun keyboardAsState(): State<Boolean> {
+    val keyboardState = remember { mutableStateOf(false) }
+    val view = LocalView.current
+    val viewTreeObserver = view.viewTreeObserver
+    DisposableEffect(viewTreeObserver) {
+        val listener = ViewTreeObserver.OnGlobalLayoutListener {
+            keyboardState.value = ViewCompat.getRootWindowInsets(view)
+                ?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
+        }
+        viewTreeObserver.addOnGlobalLayoutListener(listener)
+        onDispose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
+    }
+    return keyboardState
 }
