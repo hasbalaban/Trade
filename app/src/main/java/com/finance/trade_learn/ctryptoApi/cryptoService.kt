@@ -22,8 +22,8 @@ class cryptoService() {
         .create(CryptoOperationInterface::class.java)
 
 
-    val localBaseUrl = "http://10.0.2.2:8080"
-    //val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
+    //val localBaseUrl = "http://10.0.2.2:8080"
+    val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
     var localRetrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
