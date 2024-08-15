@@ -5,10 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,18 +33,6 @@ import com.finance.trade_learn.models.modelsConvector.CoinsHome
 
 @Composable
 fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
-
-    val painter = rememberAsyncImagePainter(
-        ImageRequest.Builder(LocalContext.current)
-            .data(coin.CoinImage)
-            .apply {
-                crossfade(true)
-                placeholder(R.drawable.placeholder)
-                error(R.drawable.error)
-            }
-            .build()
-    )
-
     Row(
 
         modifier = Modifier
@@ -60,29 +45,14 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
         ,
         verticalAlignment = Alignment.CenterVertically
     ) {
-
-
-        Image(
-            painter = painter,
-            contentDescription = coin.CoinName,
-            modifier = Modifier
-                .size(48.dp)
-                .drawBehind {
-                    drawCircle(
-                        color = Color.Gray,
-                        radius = size.minDimension / 2,
-                        style = Stroke(width = 1.dp.toPx()) // Çizgi kalınlığı
-                    )
-                }
-                .padding(6.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.FillBounds,
-            alignment = Alignment.CenterStart
-        )
+        ItemIcon(item = coin, modifier = Modifier.size(48.dp))
 
 
         Column(
-            modifier = Modifier.fillMaxHeight().weight(1f).padding(start = 10.dp),
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1f)
+                .padding(start = 10.dp),
             verticalArrangement = Arrangement.Center,
 
             ) {
@@ -128,7 +98,8 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
                         .rotate(
                             if (coin.CoinChangePercente.contains("+")) 0.0f
                             else 180.0f
-                        ).padding(end = 2.dp),
+                        )
+                        .padding(end = 2.dp),
                     painter = painterResource(id = R.drawable.arrow),
                     contentDescription = stringResource(id = R.string.change24),
                     colorFilter = ColorFilter.tint(
@@ -153,6 +124,38 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
         }
 
     }
+}
+
+@Composable
+fun ItemIcon(item: CoinsHome, modifier: Modifier = Modifier) {
+
+    val painter = rememberAsyncImagePainter(
+        ImageRequest.Builder(LocalContext.current)
+            .data(item.CoinImage)
+            .apply {
+                crossfade(true)
+                placeholder(R.drawable.placeholder)
+                error(R.drawable.error)
+            }
+            .build()
+    )
+
+    Image(
+        painter = painter,
+        contentDescription = item.CoinName,
+        modifier = modifier
+            .drawBehind {
+                drawCircle(
+                    color = Color(0xff3B82F6),
+                    radius = size.minDimension / 2,
+                    style = Stroke(width = 1.dp.toPx()) // Çizgi kalınlığı
+                )
+            }
+            .padding(4.dp)
+            .clip(CircleShape),
+        contentScale = ContentScale.FillBounds,
+        alignment = Alignment.CenterStart
+    )
 }
 
 @Preview
