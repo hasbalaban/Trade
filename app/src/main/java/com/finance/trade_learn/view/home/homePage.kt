@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.view.ViewTreeObserver
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -47,6 +48,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
@@ -57,10 +59,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -71,6 +78,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.finance.trade_learn.R
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.view.HomePageItems
@@ -124,11 +133,25 @@ private fun MainToolbar(openSearch: () -> Unit) {
 @Composable
 fun SearchBar() {
     val viewModel = LocalHomeViewModel.current
-    val text by viewModel.searchBarViewState.collectAsState()
+    val searchBarViewState by viewModel.searchBarViewState.collectAsState()
 
+    val isKeyboardOpen by keyboardAsState()
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+
+    LaunchedEffect(isKeyboardOpen){
+        if (!isKeyboardOpen) focusManager.clearFocus()
+    }
+
+    LaunchedEffect(searchBarViewState.isFocused){
+        if (!searchBarViewState.isFocused){
+            keyboardController?.hide()
+        }
+    }
 
     TextField(
-        value = text.text,
+        value = searchBarViewState.text,
         onValueChange = { newText ->
             viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(text = newText))
         },
@@ -192,6 +215,13 @@ fun MainView(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(snapAnimationSpec = spring(stiffness = Spring.StiffnessLow))
     val popularItems = baseViewModel.listOfCryptoForPopular.observeAsState().value
+
+
+    LaunchedEffect(scrollBehavior.state.collapsedFraction){
+        if (viewModel.searchBarViewState.value.isFocused) {
+            viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(isFocused = false))
+        }
+    }
 
     LaunchedEffect(Unit) {
         while (true){
@@ -325,4 +355,20 @@ fun MainView(
     }
 
 
+}
+
+@Composable
+fun keyboardAsState(): State<Boolean> {
+    val keyboardState = remember { mutableStateOf(false) }
+    val view = LocalView.current
+    val viewTreeObserver = view.viewTreeObserver
+    DisposableEffect(viewTreeObserver) {
+        val listener = ViewTreeObserver.OnGlobalLayoutListener {
+            keyboardState.value = ViewCompat.getRootWindowInsets(view)
+                ?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
+        }
+        viewTreeObserver.addOnGlobalLayoutListener(listener)
+        onDispose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
+    }
+    return keyboardState
 }
