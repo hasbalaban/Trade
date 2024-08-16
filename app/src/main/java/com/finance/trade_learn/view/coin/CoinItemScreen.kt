@@ -94,7 +94,7 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
 
                 Image(
                     modifier = Modifier
-                        .size(height = 7.dp, width = 10.dp)
+                        .size(height = 7.dp, width = 12.dp)
                         .rotate(
                             if (coin.CoinChangePercente.contains("+")) 0.0f
                             else 180.0f

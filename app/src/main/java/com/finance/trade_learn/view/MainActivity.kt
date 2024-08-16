@@ -382,19 +382,17 @@ fun BottomNavigationBar(navController: NavHostController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     // Renk paleti
-    val selectedColor = Color(0xFF00BFA5) // Turkuaz (seçilen durumda)
-    val unselectedColor = Color(0xFFB0BEC5) // Açık gri (seçilmeyen durumda)
-    val backgroundColor = Color(0xFF263238) // Koyu mavi-gri (arka plan)
-    val indicatorColor = Color(0xFF4DB6AC) // Seçim göstergesi rengi
+    val selectedColor = Color(0xff3B82F6) // Turkuaz (seçilen durumda)
+    val unselectedColor = Color(0xFFABAFB2) // Açık gri (seçilmeyen durumda)
 
     BottomAppBar(
         scrollBehavior = scrollBehavior,
-        containerColor = backgroundColor,
+        containerColor = Color.White,
         contentColor = Color.White,
         tonalElevation = 8.dp,
         modifier = Modifier
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            .background(backgroundColor)
+
     ) {
         Constants.BottomNavItems.forEach { navItem ->
             val isSelected = currentRoute == navItem.route
@@ -404,14 +402,9 @@ fun BottomNavigationBar(navController: NavHostController) {
                         painter = painterResource(id = navItem.icon),
                         contentDescription = stringResource(id = navItem.label),
                         modifier = Modifier
-                            .size(28.dp)
-                            .shadow(4.dp, CircleShape)
-                            .background(
-                                if (isSelected) selectedColor else backgroundColor, CircleShape
-                            )
-                            .padding(4.dp),
+                            .size(28.dp),
                         colorFilter = ColorFilter.tint(
-                            if (isSelected) Color.White else unselectedColor
+                            if (isSelected) selectedColor else unselectedColor
                         )
                     )
                 },
@@ -434,13 +427,13 @@ fun BottomNavigationBar(navController: NavHostController) {
                         launchSingleTop = true
                     }
                 },
-                alwaysShowLabel = false, // Etiketi sadece seçildiğinde göster
+                alwaysShowLabel = true, // Etiketi sadece seçildiğinde göster
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = Color.White,
                     unselectedIconColor = unselectedColor,
                     selectedTextColor = selectedColor,
                     unselectedTextColor = unselectedColor,
-                    indicatorColor = indicatorColor
+                    indicatorColor = Color.Transparent
                 )
             )
         }
