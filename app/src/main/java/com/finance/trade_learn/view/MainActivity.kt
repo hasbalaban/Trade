@@ -7,6 +7,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -43,6 +44,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -60,10 +62,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.view.history.TradeHistoryScreen
+import com.finance.trade_learn.view.loginscreen.ForgotPasswordScreen
+import com.finance.trade_learn.view.loginscreen.LoginScreen
+import com.finance.trade_learn.view.loginscreen.SignUpScreen
+import com.finance.trade_learn.view.profile.ProfileScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.HomeViewModel
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
@@ -135,6 +142,8 @@ class MainActivity : AppCompatActivity() {
     private fun MainScreen(navController: NavHostController, modifier: Modifier = Modifier) {
         var marketPageNumber by remember { mutableIntStateOf(2) }
 
+        val context = LocalContext.current
+
             NavHost(navController = navController, startDestination = "home") {
                 composable(Screens.Home.route) {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
@@ -143,9 +152,6 @@ class MainActivity : AppCompatActivity() {
                     CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
                         com.finance.trade_learn.view.home.MainView(
                             shouldShowPopularCoins = true,
-                            openSearch = {
-                                navController.navigate(Screens.SearchScreen.route)
-                            },
                             openTradePage = {
                                 navController.navigate(Screens.Trade(it).route)
                             }
@@ -159,9 +165,6 @@ class MainActivity : AppCompatActivity() {
                     CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
                         com.finance.trade_learn.view.home.MainView(
                             page = marketPageNumber,
-                            openSearch = {
-                                navController.navigate(Screens.SearchScreen.route)
-                            },
                             openTradePage = {
                                 navController.navigate(Screens.Trade(it).route)
                             }
@@ -207,15 +210,61 @@ class MainActivity : AppCompatActivity() {
 
                 }
 
-                composable(Screens.SearchScreen.route) {
-                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
-                    val viewModel = hiltViewModel<SearchCoinViewModel>()
-
-                    SearchScreen(
-                        openTradePage = {
-                            navController.navigate(Screens.Trade(it).route)
+                composable(Screens.Profile.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
+                    val isLogin = false
+                    if (isLogin) ProfileScreen()
+                    else LoginScreen(
+                        onLogin = {
+                            Toast.makeText(context, "login completed", Toast.LENGTH_LONG).show()
                         },
-                        viewModel = viewModel
+                        onSignUp = {
+                            navController.navigate(Screens.SingUp.route)
+                        },
+                        onForgotPassword = {
+                            navController.navigate(Screens.ForgotPassword.route)
+                        }
+                    )
+                }
+
+                composable(Screens.Login.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
+                    val isLogin = false
+                    if (isLogin) ProfileScreen()
+                    else LoginScreen(
+                        onLogin = {
+                                  navController.popBackStack()
+                        },
+                        onSignUp = {
+                            navController.navigate(Screens.Profile.route)
+                        },
+                        onForgotPassword = {
+
+                            navController.navigate(Screens.Profile.route)
+                        }
+                    )
+                }
+
+                composable(Screens.ForgotPassword.route) {
+                    ForgotPasswordScreen(
+                        onResetPassword = {
+                            Toast.makeText(context, "on Reset Password completed", Toast.LENGTH_LONG).show()
+                        },
+                        onBackToLogin = {
+                            navController.popBackStack()
+                        }
+
+                    )
+                }
+
+                composable(Screens.SingUp.route) {
+                    SignUpScreen(
+                        onSignUp = {
+                            Toast.makeText(context, "on Sign Up completed", Toast.LENGTH_LONG).show()
+                        },
+                        onBackToLogin = {
+                            navController.popBackStack()
+                        }
                     )
                 }
             }
@@ -382,36 +431,40 @@ fun BottomNavigationBar(navController: NavHostController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     // Renk paleti
-    val selectedColor = Color(0xFF00BFA5) // Turkuaz (seçilen durumda)
+    val selectedColor = Color(0xff3B82F6) // Turkuaz (seçilen durumda)
     val unselectedColor = Color(0xFFB0BEC5) // Açık gri (seçilmeyen durumda)
-    val backgroundColor = Color(0xFF263238) // Koyu mavi-gri (arka plan)
-    val indicatorColor = Color(0xFF4DB6AC) // Seçim göstergesi rengi
 
     BottomAppBar(
         scrollBehavior = scrollBehavior,
-        containerColor = backgroundColor,
+        containerColor = Color.White,
         contentColor = Color.White,
         tonalElevation = 8.dp,
         modifier = Modifier
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            .background(backgroundColor)
+
     ) {
         Constants.BottomNavItems.forEach { navItem ->
             val isSelected = currentRoute == navItem.route
+
+            val otherModifier =
+                if (navItem.label == R.string.Trade) Modifier
+                    .clip(CircleShape)
+                    .background(selectedColor)
+                else Modifier
+
             NavigationBarItem(
                 icon = {
                     Image(
-                        painter = painterResource(id = navItem.icon),
+                        imageVector = navItem.icon,
                         contentDescription = stringResource(id = navItem.label),
                         modifier = Modifier
-                            .size(28.dp)
-                            .shadow(4.dp, CircleShape)
-                            .background(
-                                if (isSelected) selectedColor else backgroundColor, CircleShape
-                            )
-                            .padding(4.dp),
+                            .size(36.dp)
+                            .padding(2.dp)
+                            .then(otherModifier),
                         colorFilter = ColorFilter.tint(
-                            if (isSelected) Color.White else unselectedColor
+                            if (isSelected && navItem.label != R.string.Trade) selectedColor
+                            else if (navItem.label == R.string.Trade) Color.White
+                            else Color.LightGray
                         )
                     )
                 },
@@ -434,13 +487,13 @@ fun BottomNavigationBar(navController: NavHostController) {
                         launchSingleTop = true
                     }
                 },
-                alwaysShowLabel = false, // Etiketi sadece seçildiğinde göster
+                alwaysShowLabel = true, // Etiketi sadece seçildiğinde göster
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = Color.White,
                     unselectedIconColor = unselectedColor,
                     selectedTextColor = selectedColor,
                     unselectedTextColor = unselectedColor,
-                    indicatorColor = indicatorColor
+                    indicatorColor = Color.Transparent
                 )
             )
         }

@@ -1,5 +1,17 @@
 package com.finance.trade_learn.utils
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Money
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.filled.Wallet
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.finance.trade_learn.R
 
 object Constants {
@@ -10,23 +22,28 @@ object Constants {
     val BottomNavItems = listOf(
         BottomNavItem(
             label = R.string.home,
-            icon = R.drawable.home,
+            icon = Icons.Filled.Home,
             route = "home"
         ),
         BottomNavItem(
             label = R.string.Market,
-            icon = R.drawable.market,
+            icon = Icons.Filled.Search,
             route = "market"
         ),
         BottomNavItem(
             label = R.string.Trade,
-            icon = R.drawable.trade,
+            icon = Icons.Filled.SwapHoriz,
             route = "trade?coinName={coinName}"
         ),
         BottomNavItem(
             label = R.string.Wallet,
-            icon = R.drawable.wallet,
+            icon = Icons.Filled.Wallet,
             route = "wallet"
+        ),
+        BottomNavItem(
+            label = R.string.profile,
+            icon = Icons.Filled.AccountCircle,
+            route = "profile"
         )
     )
 }
@@ -36,7 +53,10 @@ sealed class Screens(val label: String? = null,val icon : Int, val route: String
     object Market : Screens("market",R.drawable.home,"market" )
     class Trade(val item: String) : Screens("trade", R.drawable.home, "trade?coinName=$item")
     object Wallet : Screens("Wallet",R.drawable.home,"wallet")
-    object SearchScreen : Screens("searchScreen",R.drawable.home,"searchScreen")
+    object Profile : Screens("Profile",R.drawable.home,"profile")
+    object Login : Screens("Login",R.drawable.home,"login")
+    object ForgotPassword : Screens("forgot_password",R.drawable.home,"forgot_password")
+    object SingUp : Screens("Profile",R.drawable.home,"sign_up")
     object HistoryScreen : Screens("historyScreen",R.drawable.home,"historyScreen")
 }
 
@@ -44,6 +64,6 @@ sealed class Screens(val label: String? = null,val icon : Int, val route: String
 
 data class BottomNavItem(
     val label: Int,
-    val icon: Int,
+    val icon: ImageVector,
     val route:String,
 )
