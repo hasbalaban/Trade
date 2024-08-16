@@ -54,7 +54,9 @@ sealed class Screens(val label: String? = null,val icon : Int, val route: String
     class Trade(val item: String) : Screens("trade", R.drawable.home, "trade?coinName=$item")
     object Wallet : Screens("Wallet",R.drawable.home,"wallet")
     object Profile : Screens("Profile",R.drawable.home,"profile")
-    object SearchScreen : Screens("searchScreen",R.drawable.home,"searchScreen")
+    object Login : Screens("Login",R.drawable.home,"login")
+    object ForgotPassword : Screens("forgot_password",R.drawable.home,"forgot_password")
+    object SingUp : Screens("Profile",R.drawable.home,"sign_up")
     object HistoryScreen : Screens("historyScreen",R.drawable.home,"historyScreen")
 }
 

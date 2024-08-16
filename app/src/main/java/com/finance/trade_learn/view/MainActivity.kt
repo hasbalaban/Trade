@@ -44,6 +44,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -66,6 +67,10 @@ import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.view.history.TradeHistoryScreen
+import com.finance.trade_learn.view.loginscreen.ForgotPasswordScreen
+import com.finance.trade_learn.view.loginscreen.LoginScreen
+import com.finance.trade_learn.view.loginscreen.SignUpScreen
+import com.finance.trade_learn.view.profile.ProfileScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.HomeViewModel
 import com.finance.trade_learn.viewModel.SearchCoinViewModel
@@ -137,6 +142,8 @@ class MainActivity : AppCompatActivity() {
     private fun MainScreen(navController: NavHostController, modifier: Modifier = Modifier) {
         var marketPageNumber by remember { mutableIntStateOf(2) }
 
+        val context = LocalContext.current
+
             NavHost(navController = navController, startDestination = "home") {
                 composable(Screens.Home.route) {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
@@ -145,9 +152,6 @@ class MainActivity : AppCompatActivity() {
                     CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
                         com.finance.trade_learn.view.home.MainView(
                             shouldShowPopularCoins = true,
-                            openSearch = {
-                                navController.navigate(Screens.SearchScreen.route)
-                            },
                             openTradePage = {
                                 navController.navigate(Screens.Trade(it).route)
                             }
@@ -161,9 +165,6 @@ class MainActivity : AppCompatActivity() {
                     CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
                         com.finance.trade_learn.view.home.MainView(
                             page = marketPageNumber,
-                            openSearch = {
-                                navController.navigate(Screens.SearchScreen.route)
-                            },
                             openTradePage = {
                                 navController.navigate(Screens.Trade(it).route)
                             }
@@ -209,20 +210,62 @@ class MainActivity : AppCompatActivity() {
 
                 }
 
-                composable(Screens.SearchScreen.route) {
-                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
-                    val viewModel = hiltViewModel<SearchCoinViewModel>()
-
-                    SearchScreen(
-                        openTradePage = {
-                            navController.navigate(Screens.Trade(it).route)
+                composable(Screens.Profile.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
+                    val isLogin = false
+                    if (isLogin) ProfileScreen()
+                    else LoginScreen(
+                        onLogin = {
+                            Toast.makeText(context, "login completed", Toast.LENGTH_LONG).show()
                         },
-                        viewModel = viewModel
+                        onSignUp = {
+                            navController.navigate(Screens.SingUp.route)
+                        },
+                        onForgotPassword = {
+                            navController.navigate(Screens.ForgotPassword.route)
+                        }
                     )
                 }
 
-                composable(Screens.Profile.route) {
+                composable(Screens.Login.route) {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
+                    val isLogin = false
+                    if (isLogin) ProfileScreen()
+                    else LoginScreen(
+                        onLogin = {
+                                  navController.popBackStack()
+                        },
+                        onSignUp = {
+                            navController.navigate(Screens.Profile.route)
+                        },
+                        onForgotPassword = {
+
+                            navController.navigate(Screens.Profile.route)
+                        }
+                    )
+                }
+
+                composable(Screens.ForgotPassword.route) {
+                    ForgotPasswordScreen(
+                        onResetPassword = {
+                            Toast.makeText(context, "on Reset Password completed", Toast.LENGTH_LONG).show()
+                        },
+                        onBackToLogin = {
+                            navController.popBackStack()
+                        }
+
+                    )
+                }
+
+                composable(Screens.SingUp.route) {
+                    SignUpScreen(
+                        onSignUp = {
+                            Toast.makeText(context, "on Sign Up completed", Toast.LENGTH_LONG).show()
+                        },
+                        onBackToLogin = {
+                            navController.popBackStack()
+                        }
+                    )
                 }
             }
 
