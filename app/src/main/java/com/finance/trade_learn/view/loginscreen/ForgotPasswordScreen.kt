@@ -1,5 +1,6 @@
 package com.finance.trade_learn.view.loginscreen
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,10 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,9 +52,21 @@ fun ForgotPasswordScreen(onResetPassword: () -> Unit, onBackToLogin: () -> Unit)
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email Address") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            placeholder = { Text("Email Address") },
+            modifier = Modifier.fillMaxWidth().border(1.dp, Color.Gray, RoundedCornerShape(6.dp)),
+            singleLine = true,
+
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
+                cursorColor = Color.Gray,
+                focusedLabelColor = Color.LightGray,
+                unfocusedLabelColor = Color.Gray,
+                textColor = Color.Gray,
+                focusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
+                unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için,
+
+                placeholderColor = Color.Gray
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))

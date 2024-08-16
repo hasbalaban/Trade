@@ -1,7 +1,10 @@
 package com.finance.trade_learn.view.loginscreen
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -12,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -43,11 +47,29 @@ fun LoginScreen(onLogin: () -> Unit, onSignUp: () -> Unit, onForgotPassword: () 
         Spacer(modifier = Modifier.height(32.dp))
 
         OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, Color.Gray, RoundedCornerShape(6.dp)),
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email Address") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            placeholder = { Text("Email Address") },
+            singleLine = true,
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
+                cursorColor = Color.Gray,
+                focusedLabelColor = Color.LightGray,
+                unfocusedLabelColor = Color.Gray,
+                textColor = Color.Gray,
+                focusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
+                unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için,
+
+                placeholderColor = Color.Gray
+            ),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next
+            )
+
+
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -55,8 +77,8 @@ fun LoginScreen(onLogin: () -> Unit, onSignUp: () -> Unit, onForgotPassword: () 
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Password") },
+            modifier = Modifier.fillMaxWidth().border(1.dp, Color.Gray, RoundedCornerShape(6.dp)),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 val image = if (passwordVisible) Icons.Default.Visibility
@@ -66,7 +88,20 @@ fun LoginScreen(onLogin: () -> Unit, onSignUp: () -> Unit, onForgotPassword: () 
                     Icon(imageVector = image, contentDescription = null)
                 }
             },
-            singleLine = true
+            singleLine = true,
+
+
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
+                cursorColor = Color.Gray,
+                focusedLabelColor = Color.LightGray,
+                unfocusedLabelColor = Color.Gray,
+                textColor = Color.Gray,
+                focusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
+                unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için,
+
+                placeholderColor = Color.Gray
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
