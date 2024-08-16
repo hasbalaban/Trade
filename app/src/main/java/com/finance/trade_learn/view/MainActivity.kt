@@ -223,6 +223,9 @@ class MainActivity : AppCompatActivity() {
                         },
                         onForgotPassword = {
                             navController.navigate(Screens.ForgotPassword.route)
+                        },
+                        goBack = {
+                            navController.popBackStack()
                         }
                     )
                 }
@@ -233,7 +236,7 @@ class MainActivity : AppCompatActivity() {
                     if (isLogin) ProfileScreen()
                     else LoginScreen(
                         onLogin = {
-                                  navController.popBackStack()
+                            navController.popBackStack()
                         },
                         onSignUp = {
                             navController.navigate(Screens.Profile.route)
@@ -241,6 +244,9 @@ class MainActivity : AppCompatActivity() {
                         onForgotPassword = {
 
                             navController.navigate(Screens.Profile.route)
+                        },
+                        goBack = {
+                            navController.popBackStack()
                         }
                     )
                 }
