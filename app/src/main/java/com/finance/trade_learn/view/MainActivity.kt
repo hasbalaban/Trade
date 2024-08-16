@@ -7,6 +7,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -60,6 +61,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
@@ -217,6 +219,10 @@ class MainActivity : AppCompatActivity() {
                         },
                         viewModel = viewModel
                     )
+                }
+
+                composable(Screens.Profile.route) {
+                    LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
                 }
             }
 
@@ -383,7 +389,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 
     // Renk paleti
     val selectedColor = Color(0xff3B82F6) // Turkuaz (seçilen durumda)
-    val unselectedColor = Color(0xFFABAFB2) // Açık gri (seçilmeyen durumda)
+    val unselectedColor = Color(0xFFB0BEC5) // Açık gri (seçilmeyen durumda)
 
     BottomAppBar(
         scrollBehavior = scrollBehavior,
@@ -396,15 +402,26 @@ fun BottomNavigationBar(navController: NavHostController) {
     ) {
         Constants.BottomNavItems.forEach { navItem ->
             val isSelected = currentRoute == navItem.route
+
+            val otherModifier =
+                if (navItem.label == R.string.Trade) Modifier
+                    .clip(CircleShape)
+                    .background(selectedColor)
+                else Modifier
+
             NavigationBarItem(
                 icon = {
                     Image(
-                        painter = painterResource(id = navItem.icon),
+                        imageVector = navItem.icon,
                         contentDescription = stringResource(id = navItem.label),
                         modifier = Modifier
-                            .size(28.dp),
+                            .size(36.dp)
+                            .padding(2.dp)
+                            .then(otherModifier),
                         colorFilter = ColorFilter.tint(
-                            if (isSelected) selectedColor else unselectedColor
+                            if (isSelected && navItem.label != R.string.Trade) selectedColor
+                            else if (navItem.label == R.string.Trade) Color.White
+                            else Color.LightGray
                         )
                     )
                 },
