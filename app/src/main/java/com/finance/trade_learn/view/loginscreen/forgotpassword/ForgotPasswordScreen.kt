@@ -1,4 +1,4 @@
-package com.finance.trade_learn.view.loginscreen
+package com.finance.trade_learn.view.loginscreen.forgotpassword
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

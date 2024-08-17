@@ -1,4 +1,4 @@
-package com.finance.trade_learn.view.loginscreen
+package com.finance.trade_learn.view.loginscreen.signup
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,10 +13,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -24,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,10 +38,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finance.trade_learn.view.LocalSingUpViewModel
 import com.finance.trade_learn.view.commonui.SimpleBackButtonHeader
 
 @Composable
 fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
+    val viewModel = LocalSingUpViewModel.current
+    val signUpViewState by viewModel.signUpViewState.collectAsState()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -76,20 +78,19 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = signUpViewState.email,
+                onValueChange = {
+                    viewModel.changeEmail(it)
+                },
                 placeholder = { Text("Email Address") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, Color.Gray, RoundedCornerShape(6.dp)),
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    .border(1.dp, signUpViewState.emailBorderColor, RoundedCornerShape(6.dp)),
                 singleLine = true,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
                     cursorColor = Color.Gray,
-                    focusedLabelColor = Color.LightGray,
-                    unfocusedLabelColor = Color.Gray,
-                    textColor = Color.Gray,
+                    textColor = Color.Black,
                     focusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
                     unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için,
 
@@ -102,9 +103,14 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
+
+
+
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = signUpViewState.password,
+                onValueChange = {
+                    viewModel.changePasswordText(it)
+                },
                 placeholder = { Text("Password") },
                 trailingIcon = {
                     val image = if (passwordVisible) Icons.Default.Visibility
@@ -116,15 +122,14 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, Color.Gray, RoundedCornerShape(6.dp)),
+                    .border(1.dp, signUpViewState.passwordBorderColor, RoundedCornerShape(6.dp)),
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 singleLine = true,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
                     cursorColor = Color.Gray,
-                    focusedLabelColor = Color.LightGray,
-                    unfocusedLabelColor = Color.Gray,
-                    textColor = Color.Gray,
+
+                    textColor = Color.Black,
                     focusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
                     unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
 
@@ -138,25 +143,26 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
+                value = signUpViewState.confirmPassword,
+                onValueChange = {
+                    viewModel.changeConfirmPasswordText(it)
+                },
                 placeholder = { Text("Confirm Password") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, Color.Gray, RoundedCornerShape(6.dp)),
+                    .border(1.dp, signUpViewState.confirmPasswordBorderColor, RoundedCornerShape(6.dp)),
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 singleLine = true,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
                     cursorColor = Color.Gray,
-                    focusedLabelColor = Color.LightGray,
-                    unfocusedLabelColor = Color.Gray,
-                    textColor = Color.Gray,
-                    focusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
-                    unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
+
+                    textColor = Color.Black,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
 
                     placeholderColor = Color.Gray,
-                ),
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -166,7 +172,11 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF1E88E5)) // Mavi tonunda buton
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF1E88E5),
+                    disabledBackgroundColor = Color(0xFF1E88E5).copy(alpha = 0.5f)
+                    ),
+                enabled = signUpViewState.credentialsIsValid,
             ) {
                 Text("Sign Up", color = Color.White, fontSize = 18.sp)
             }
