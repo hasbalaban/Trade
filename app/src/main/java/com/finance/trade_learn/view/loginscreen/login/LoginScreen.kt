@@ -1,5 +1,6 @@
 package com.finance.trade_learn.view.loginscreen.login
 
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -21,13 +23,41 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finance.trade_learn.view.LocalLoginViewModel
+import com.finance.trade_learn.view.LocalSingUpViewModel
 import com.finance.trade_learn.view.commonui.SimpleBackButtonHeader
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(onLogin: () -> Unit, onSignUp: () -> Unit, onForgotPassword: () -> Unit, goBack : () -> Unit) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun LoginScreen(
+    onLogin: () -> Unit,
+    onSignUp: () -> Unit,
+    onForgotPassword: () -> Unit,
+    goBack: () -> Unit
+) {
+    val context = LocalContext.current
+    val coroutines = rememberCoroutineScope()
+
     var passwordVisible by remember { mutableStateOf(false) }
+
+    val viewModel = LocalLoginViewModel.current
+
+    val loginViewState by viewModel.loginViewState.collectAsState()
+    val userLoginResponse by viewModel.userLoginResponse.collectAsState()
+
+    LaunchedEffect(userLoginResponse.success){
+        if (userLoginResponse.success == true) {
+            Toast.makeText(context, userLoginResponse.message, Toast.LENGTH_LONG).show()
+            coroutines.launch {
+                delay(3000)
+                goBack.invoke()
+            }
+        } else if (userLoginResponse.success == false){
+            Toast.makeText(context, userLoginResponse.message ?: userLoginResponse.error?.message ?: "error", Toast.LENGTH_LONG).show()
+        }
+    }
+
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -61,8 +91,10 @@ fun LoginScreen(onLogin: () -> Unit, onSignUp: () -> Unit, onForgotPassword: () 
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, Color.Gray, RoundedCornerShape(6.dp)),
-                value = email,
-                onValueChange = { email = it },
+                value = loginViewState.email,
+                onValueChange = {
+                    viewModel.changeEmail(it)
+                },
                 placeholder = { Text("Email Address") },
                 singleLine = true,
                 colors = TextFieldDefaults.textFieldColors(
@@ -86,8 +118,10 @@ fun LoginScreen(onLogin: () -> Unit, onSignUp: () -> Unit, onForgotPassword: () 
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = loginViewState.password,
+                onValueChange = {
+                    viewModel.changePasswordText(it)
+                },
                 placeholder = { Text("Password") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -120,11 +154,17 @@ fun LoginScreen(onLogin: () -> Unit, onSignUp: () -> Unit, onForgotPassword: () 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = onLogin,
+                onClick = {
+                    viewModel.login()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF1E88E5)) // Mavi tonunda buton
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF1E88E5),
+                    disabledBackgroundColor = Color(0xFF1E88E5).copy(alpha = 0.5f)
+                ),
+                enabled = loginViewState.credentialsIsValid
             ) {
                 Text("Login", color = Color.White, fontSize = 18.sp)
             }

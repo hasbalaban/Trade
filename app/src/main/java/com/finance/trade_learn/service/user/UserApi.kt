@@ -2,6 +2,7 @@ package com.finance.trade_learn.service.user
 
 import com.finance.trade_learn.models.NewUserRequest
 import com.finance.trade_learn.models.User
+import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.handleResponse
@@ -26,6 +27,10 @@ class UserApi {
 
     suspend fun createNewUser(newUserRequest: NewUserRequest): Response<WrapResponse<User?>> {
         return userService.createNewUser(newUserRequest = newUserRequest)
+    }
+
+    suspend fun login(loginRequest: UserLoginRequest): Response<WrapResponse<User?>> {
+        return userService.login(loginRequest = loginRequest)
     }
 
 }

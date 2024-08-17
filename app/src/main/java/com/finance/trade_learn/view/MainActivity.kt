@@ -68,6 +68,7 @@ import com.finance.trade_learn.view.loginscreen.signup.SignUpScreen
 import com.finance.trade_learn.view.profile.ProfileScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.HomeViewModel
+import com.finance.trade_learn.viewModel.LoginViewModel
 import com.finance.trade_learn.viewModel.SignUpViewModel
 import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
 import com.finance.trade_learn.viewModel.WalletPageViewModel
@@ -90,6 +91,8 @@ val LocalViewModelHistoryTrade = compositionLocalOf<ViewModelHistoryTrade> { err
 val LocalHomeViewModel = compositionLocalOf<HomeViewModel> { error("No ViewModelHistoryTrade found") }
 
 val LocalSingUpViewModel = compositionLocalOf<SignUpViewModel> {error("No SignUpViewModel found")}
+
+val LocalLoginViewModel = compositionLocalOf<LoginViewModel> {error("No LoginViewModel found")}
 
 @OptIn(ExperimentalMaterial3Api::class)
 private val LocalMainScrollBehavior = compositionLocalOf<BottomAppBarScrollBehavior> { error("No BottomAppBarScrollBehavior found") }
@@ -233,23 +236,30 @@ class MainActivity : AppCompatActivity() {
 
                 composable(Screens.Login.route) {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
+
+                    val viewModel = hiltViewModel<LoginViewModel>()
+
                     val isLogin = false
                     if (isLogin) ProfileScreen()
-                    else LoginScreen(
-                        onLogin = {
-                            navController.popBackStack()
-                        },
-                        onSignUp = {
-                            navController.navigate(Screens.Profile.route)
-                        },
-                        onForgotPassword = {
+                    else {
+                        CompositionLocalProvider(LocalLoginViewModel provides viewModel){
+                            LoginScreen(
+                                onLogin = {
+                                    navController.popBackStack()
+                                },
+                                onSignUp = {
+                                    navController.navigate(Screens.Profile.route)
+                                },
+                                onForgotPassword = {
 
-                            navController.navigate(Screens.Profile.route)
-                        },
-                        goBack = {
-                            navController.popBackStack()
+                                    navController.navigate(Screens.Profile.route)
+                                },
+                                goBack = {
+                                    navController.popBackStack()
+                                }
+                            )
                         }
-                    )
+                    }
                 }
 
                 composable(Screens.ForgotPassword.route) {
