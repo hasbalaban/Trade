@@ -45,9 +45,5 @@ class cryptoService() {
         return retrofit.getSelectedCoinToTradeCoinGecko(ids = ids)
     }
 
-    fun getCoinList(): Single<List<CoinInfoList>> {
-        return retrofit.getCoinList()
-    }
-
 
 }

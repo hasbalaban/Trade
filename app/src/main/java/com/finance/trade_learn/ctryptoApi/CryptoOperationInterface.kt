@@ -29,10 +29,4 @@ interface CryptoOperationInterface {
         @Query("sparkline") sparkline: Boolean = false,
     ): Single<List<CoinDetail>>
 
-
-
-    @GET("coins/list")
-    fun getCoinList(): Single<List<CoinInfoList>>
-
-
 }
