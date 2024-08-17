@@ -15,7 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import com.finance.trade_learn.R
-import com.finance.trade_learn.ctryptoApi.cryptoService
+import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
 import com.finance.trade_learn.view.MainActivity

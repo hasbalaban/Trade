@@ -1,5 +1,6 @@
 package com.finance.trade_learn.view.loginscreen.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,14 +23,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -40,12 +44,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.view.LocalSingUpViewModel
 import com.finance.trade_learn.view.commonui.SimpleBackButtonHeader
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
+    val coroutines = rememberCoroutineScope()
+
+
+    val context = LocalContext.current
+
     val viewModel = LocalSingUpViewModel.current
     val signUpViewState by viewModel.signUpViewState.collectAsState()
+    val userSignUpResponse by viewModel.userSignUpResponse.collectAsState()
+
     var passwordVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(userSignUpResponse.success){
+        if (userSignUpResponse.success == true) {
+            Toast.makeText(context, userSignUpResponse.message, Toast.LENGTH_LONG).show()
+            coroutines.launch {
+                delay(3000)
+                onBackToLogin.invoke()
+            }
+        } else if (userSignUpResponse.success == false){
+            Toast.makeText(context, userSignUpResponse.message ?: userSignUpResponse.error?.message ?: "error", Toast.LENGTH_LONG).show()
+        }
+    }
+
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -147,7 +173,11 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                 placeholder = { Text("Confirm Password") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, signUpViewState.confirmPasswordBorderColor, RoundedCornerShape(6.dp)),
+                    .border(
+                        1.dp,
+                        signUpViewState.confirmPasswordBorderColor,
+                        RoundedCornerShape(6.dp)
+                    ),
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 singleLine = true,
                 colors = TextFieldDefaults.textFieldColors(
@@ -174,7 +204,7 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF1E88E5),
                     disabledBackgroundColor = Color(0xFF1E88E5).copy(alpha = 0.5f)
-                    ),
+                ),
                 enabled = signUpViewState.credentialsIsValid && !signUpViewState.isLoading,
             ) {
                 Text("Sign Up", color = Color.White, fontSize = 18.sp)

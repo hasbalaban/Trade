@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.utils.solveCoinName
 import com.finance.trade_learn.base.BaseViewModel
-import com.finance.trade_learn.ctryptoApi.cryptoService
+import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory

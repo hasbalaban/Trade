@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finance.trade_learn.ctryptoApi.cryptoService
+import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.models.DataForHomePage
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.coin_gecko.CoinInfoList

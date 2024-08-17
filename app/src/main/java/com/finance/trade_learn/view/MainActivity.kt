@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
 
         val context = LocalContext.current
 
-            NavHost(navController = navController, startDestination = "home") {
+            NavHost(navController = navController, startDestination = Screens.Home.route) {
                 composable(Screens.Home.route) {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
                     val viewModel = hiltViewModel<HomeViewModel>()
