@@ -45,9 +45,6 @@ import com.finance.trade_learn.view.commonui.SimpleBackButtonHeader
 fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
     val viewModel = LocalSingUpViewModel.current
     val signUpViewState by viewModel.signUpViewState.collectAsState()
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
     Column(
@@ -168,7 +165,9 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = onSignUp,
+                onClick = {
+                    viewModel.signUp()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -176,7 +175,7 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                     backgroundColor = Color(0xFF1E88E5),
                     disabledBackgroundColor = Color(0xFF1E88E5).copy(alpha = 0.5f)
                     ),
-                enabled = signUpViewState.credentialsIsValid,
+                enabled = signUpViewState.credentialsIsValid && !signUpViewState.isLoading,
             ) {
                 Text("Sign Up", color = Color.White, fontSize = 18.sp)
             }
