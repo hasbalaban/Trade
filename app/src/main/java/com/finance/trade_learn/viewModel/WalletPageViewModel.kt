@@ -7,7 +7,7 @@ import io.reactivex.schedulers.Schedulers
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.finance.trade_learn.Adapters.solveCoinName
+import com.finance.trade_learn.utils.solveCoinName
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.ctryptoApi.cryptoService
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins

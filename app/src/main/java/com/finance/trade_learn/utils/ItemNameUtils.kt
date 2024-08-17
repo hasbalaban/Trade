@@ -1,4 +1,4 @@
-package com.finance.trade_learn.Adapters
+package com.finance.trade_learn.utils
 
 
 fun solveCoinName(coinName: String): String {
