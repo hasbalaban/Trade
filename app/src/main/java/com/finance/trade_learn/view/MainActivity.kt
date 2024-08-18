@@ -23,12 +23,9 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.BottomAppBarScrollBehavior
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -40,12 +37,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -67,13 +62,14 @@ import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.view.history.TradeHistoryScreen
-import com.finance.trade_learn.view.loginscreen.ForgotPasswordScreen
-import com.finance.trade_learn.view.loginscreen.LoginScreen
-import com.finance.trade_learn.view.loginscreen.SignUpScreen
+import com.finance.trade_learn.view.loginscreen.forgotpassword.ForgotPasswordScreen
+import com.finance.trade_learn.view.loginscreen.login.LoginScreen
+import com.finance.trade_learn.view.loginscreen.signup.SignUpScreen
 import com.finance.trade_learn.view.profile.ProfileScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.HomeViewModel
-import com.finance.trade_learn.viewModel.SearchCoinViewModel
+import com.finance.trade_learn.viewModel.LoginViewModel
+import com.finance.trade_learn.viewModel.SignUpViewModel
 import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
 import com.finance.trade_learn.viewModel.WalletPageViewModel
 import com.finance.trade_learn.viewModel.ViewModelUtils
@@ -87,9 +83,17 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 val LocalBaseViewModel = compositionLocalOf<BaseViewModel> { error("No BaseViewModel found") }
+
 val LocalWalletPageViewModel = compositionLocalOf<WalletPageViewModel> { error("No LocalWalletPageViewModel found") }
+
 val LocalViewModelHistoryTrade = compositionLocalOf<ViewModelHistoryTrade> { error("No ViewModelHistoryTrade found") }
+
 val LocalHomeViewModel = compositionLocalOf<HomeViewModel> { error("No ViewModelHistoryTrade found") }
+
+val LocalSingUpViewModel = compositionLocalOf<SignUpViewModel> {error("No SignUpViewModel found")}
+
+val LocalLoginViewModel = compositionLocalOf<LoginViewModel> {error("No LoginViewModel found")}
+
 @OptIn(ExperimentalMaterial3Api::class)
 private val LocalMainScrollBehavior = compositionLocalOf<BottomAppBarScrollBehavior> { error("No BottomAppBarScrollBehavior found") }
 
@@ -144,7 +148,7 @@ class MainActivity : AppCompatActivity() {
 
         val context = LocalContext.current
 
-            NavHost(navController = navController, startDestination = "home") {
+            NavHost(navController = navController, startDestination = Screens.Home.route) {
                 composable(Screens.Home.route) {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
                     val viewModel = hiltViewModel<HomeViewModel>()
@@ -214,35 +218,37 @@ class MainActivity : AppCompatActivity() {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
                     val isLogin = false
                     if (isLogin) ProfileScreen()
-                    else LoginScreen(
-                        onLogin = {
-                            Toast.makeText(context, "login completed", Toast.LENGTH_LONG).show()
-                        },
-                        onSignUp = {
-                            navController.navigate(Screens.SingUp.route)
-                        },
-                        onForgotPassword = {
-                            navController.navigate(Screens.ForgotPassword.route)
-                        }
-                    )
+                    else {
+                        navController.navigate(Screens.Login.route)
+                    }
                 }
 
                 composable(Screens.Login.route) {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
+
+                    val viewModel = hiltViewModel<LoginViewModel>()
+
                     val isLogin = false
                     if (isLogin) ProfileScreen()
-                    else LoginScreen(
-                        onLogin = {
-                                  navController.popBackStack()
-                        },
-                        onSignUp = {
-                            navController.navigate(Screens.Profile.route)
-                        },
-                        onForgotPassword = {
+                    else {
+                        CompositionLocalProvider(LocalLoginViewModel provides viewModel){
+                            LoginScreen(
+                                onLogin = {
+                                    navController.popBackStack()
+                                },
+                                onSignUp = {
+                                    navController.navigate(Screens.Profile.route)
+                                },
+                                onForgotPassword = {
 
-                            navController.navigate(Screens.Profile.route)
+                                    navController.navigate(Screens.Profile.route)
+                                },
+                                goBack = {
+                                    navController.popBackStack()
+                                }
+                            )
                         }
-                    )
+                    }
                 }
 
                 composable(Screens.ForgotPassword.route) {
@@ -258,14 +264,19 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 composable(Screens.SingUp.route) {
-                    SignUpScreen(
-                        onSignUp = {
-                            Toast.makeText(context, "on Sign Up completed", Toast.LENGTH_LONG).show()
-                        },
-                        onBackToLogin = {
-                            navController.popBackStack()
-                        }
-                    )
+
+                    val viewModel = hiltViewModel<SignUpViewModel>()
+                    CompositionLocalProvider(LocalSingUpViewModel provides viewModel) {
+                        SignUpScreen(
+                            onSignUp = {
+                                Toast.makeText(context, "on Sign Up completed", Toast.LENGTH_LONG).show()
+                            },
+                            onBackToLogin = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
+
                 }
             }
 

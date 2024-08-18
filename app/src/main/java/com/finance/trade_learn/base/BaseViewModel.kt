@@ -1,12 +1,11 @@
 package com.finance.trade_learn.base
 
 
-import androidx.compose.runtime.compositionLocalOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finance.trade_learn.ctryptoApi.cryptoService
+import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.models.DataForHomePage
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.coin_gecko.CoinInfoList
@@ -27,7 +26,6 @@ import javax.inject.Inject
 open class BaseViewModel @Inject constructor() : ViewModel() {
     private var baseDisposable: CompositeDisposable = CompositeDisposable()
 
-    val coinListDetail = MutableLiveData<List<CoinInfoList>>()
 
     var isLoading = MutableLiveData<Boolean>(false)
 
@@ -39,26 +37,6 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
 
     fun setBottomNavigationBarStatus(shouldShow : Boolean){
         _shouldShowBottomNavigationBar.value = shouldShow
-    }
-
-    fun getCoinList(){
-        CoroutineScope(Dispatchers.IO).launch {
-            baseDisposable.add(
-                cryptoService().getCoinList()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(object : DisposableSingleObserver<List<CoinInfoList>>() {
-                        override fun onSuccess(t: List<CoinInfoList>) {
-                            coinListDetail.value = t
-                            try {
-                            } catch (_: Exception) { }
-                        }
-
-                        override fun onError(e: Throwable) {
-                        }
-                    })
-            )
-        }
     }
 
     fun getAllCrypto(page : Int) {

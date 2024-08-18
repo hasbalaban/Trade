@@ -1,4 +1,4 @@
-package com.finance.trade_learn.ctryptoApi
+package com.finance.trade_learn.service.ctryptoApi
 
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
@@ -28,11 +28,5 @@ interface CryptoOperationInterface {
         @Query("page") page: Int = 1,
         @Query("sparkline") sparkline: Boolean = false,
     ): Single<List<CoinDetail>>
-
-
-
-    @GET("coins/list")
-    fun getCoinList(): Single<List<CoinInfoList>>
-
 
 }

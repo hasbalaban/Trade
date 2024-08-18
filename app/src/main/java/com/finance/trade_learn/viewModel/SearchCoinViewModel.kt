@@ -2,7 +2,7 @@ package com.finance.trade_learn.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.finance.trade_learn.base.BaseViewModel
-import com.finance.trade_learn.ctryptoApi.cryptoService
+import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.models.coin_gecko.CoinInfoList
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

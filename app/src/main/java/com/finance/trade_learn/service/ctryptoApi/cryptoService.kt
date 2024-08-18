@@ -1,4 +1,4 @@
-package com.finance.trade_learn.ctryptoApi
+package com.finance.trade_learn.service.ctryptoApi
 
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
@@ -43,10 +43,6 @@ class cryptoService() {
 
     fun getSelectedCoinToTradeCoinGecko(ids : String): Single<List<CoinDetail>> {
         return retrofit.getSelectedCoinToTradeCoinGecko(ids = ids)
-    }
-
-    fun getCoinList(): Single<List<CoinInfoList>> {
-        return retrofit.getCoinList()
     }
 
 
