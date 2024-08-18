@@ -8,7 +8,7 @@ import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
-import com.finance.trade_learn.enums.TradeType
+import com.finance.trade_learn.models.TradeType
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
 import com.finance.trade_learn.view.CoinProgress
