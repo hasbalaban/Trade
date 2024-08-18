@@ -1,5 +1,6 @@
 package com.finance.trade_learn.service.user
 
+import android.provider.ContactsContract.CommonDataKinds.Email
 import com.finance.trade_learn.models.NewUserRequest
 import com.finance.trade_learn.models.User
 import com.finance.trade_learn.models.UserLoginRequest
@@ -31,6 +32,10 @@ class UserApi {
 
     suspend fun login(loginRequest: UserLoginRequest): Response<WrapResponse<User?>> {
         return userService.login(loginRequest = loginRequest)
+    }
+
+    suspend fun deleteAccount(email: String): Response<WrapResponse<String>> {
+        return userService.deleteAccount(email = email)
     }
 
 }

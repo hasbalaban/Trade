@@ -70,6 +70,7 @@ import com.finance.trade_learn.view.profile.ProfileScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.HomeViewModel
 import com.finance.trade_learn.viewModel.LoginViewModel
+import com.finance.trade_learn.viewModel.ProfileViewModel
 import com.finance.trade_learn.viewModel.SignUpViewModel
 import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
 import com.finance.trade_learn.viewModel.WalletPageViewModel
@@ -95,6 +96,8 @@ val LocalHomeViewModel =
     compositionLocalOf<HomeViewModel> { error("No ViewModelHistoryTrade found") }
 
 val LocalSingUpViewModel = compositionLocalOf<SignUpViewModel> { error("No SignUpViewModel found") }
+
+val LocalProfileViewModel = compositionLocalOf<ProfileViewModel> { error("No ProfileViewModel found") }
 
 val LocalLoginViewModel = compositionLocalOf<LoginViewModel> { error("No LoginViewModel found") }
 
@@ -228,11 +231,17 @@ class MainActivity : AppCompatActivity() {
 
             composable(Screens.Profile.route) {
                 LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
-                ProfileScreen(
-                    onLogOut = {
-                        navController.popBackStack()
-                    }
-                )
+                val viewModel = hiltViewModel<ProfileViewModel>()
+
+
+                CompositionLocalProvider(LocalProfileViewModel provides viewModel) {
+                    ProfileScreen(
+                        onLogOut = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
             }
 
             composable(Screens.Login.route) {
