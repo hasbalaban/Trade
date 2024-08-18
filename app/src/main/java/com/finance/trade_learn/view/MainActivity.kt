@@ -228,7 +228,11 @@ class MainActivity : AppCompatActivity() {
 
             composable(Screens.Profile.route) {
                 LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
-                ProfileScreen()
+                ProfileScreen(
+                    onLogOut = {
+                        navController.popBackStack()
+                    }
+                )
             }
 
             composable(Screens.Login.route) {
@@ -242,11 +246,10 @@ class MainActivity : AppCompatActivity() {
                             navController.popBackStack()
                         },
                         onSignUp = {
-                            navController.navigate(Screens.Profile.route)
+                            navController.navigate(Screens.SingUp.route)
                         },
                         onForgotPassword = {
-
-                            navController.navigate(Screens.Profile.route)
+                            navController.navigate(Screens.ForgotPassword.route)
                         },
                         goBack = {
                             navController.popBackStack()

@@ -18,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -115,13 +116,16 @@ open class BaseViewModel @Inject constructor(
 
 
 
-    suspend fun isLogin(context: Context){
-        val userEmail =  context.readStringPreference(DataStoreKeys.StringKeys.email)
+    fun isLogin(context: Context){
+        viewModelScope.launch {
+            val userEmail =  context.readStringPreference(DataStoreKeys.StringKeys.email)
+            val userpassword = context.readStringPreference(DataStoreKeys.StringKeys.password)
 
-        val userpassword = context.readStringPreference(DataStoreKeys.StringKeys.password)
-
-        userEmail.zip(userpassword){email, password ->
-            //_isLogin.value = email.isNotBlank() && password.isNotBlank()
+            userEmail.zip(userpassword){email, password ->
+                email.isNotBlank() && password.isNotBlank()
+            }.collect{isLogin ->
+                _isLogin.value = isLogin
+            }
         }
     }
 
