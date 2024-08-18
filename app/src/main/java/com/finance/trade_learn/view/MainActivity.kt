@@ -218,20 +218,9 @@ class MainActivity : AppCompatActivity() {
                     LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
                     val isLogin = false
                     if (isLogin) ProfileScreen()
-                    else LoginScreen(
-                        onLogin = {
-                            Toast.makeText(context, "login completed", Toast.LENGTH_LONG).show()
-                        },
-                        onSignUp = {
-                            navController.navigate(Screens.SingUp.route)
-                        },
-                        onForgotPassword = {
-                            navController.navigate(Screens.ForgotPassword.route)
-                        },
-                        goBack = {
-                            navController.popBackStack()
-                        }
-                    )
+                    else {
+                        navController.navigate(Screens.Login.route)
+                    }
                 }
 
                 composable(Screens.Login.route) {
