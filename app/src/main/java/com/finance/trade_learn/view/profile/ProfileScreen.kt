@@ -63,11 +63,15 @@ fun ProfileScreen() {
         // Logout Button
         Button(
             onClick = {
+                /*
                 coroutines.launch {
                     context.clearSpecificPreference(DataStoreKeys.StringKeys.email)
                     context.clearSpecificPreference(DataStoreKeys.StringKeys.password)
                     //onLogOut.invoke()
                 }
+
+                 */
+
             },
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red),
             modifier = Modifier.fillMaxWidth()

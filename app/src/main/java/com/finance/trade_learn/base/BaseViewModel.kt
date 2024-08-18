@@ -1,29 +1,34 @@
 package com.finance.trade_learn.base
 
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.models.DataForHomePage
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
-import com.finance.trade_learn.models.coin_gecko.CoinInfoList
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
+import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.utils.ConvertOperation
+import com.finance.trade_learn.utils.DataStoreKeys
 import com.finance.trade_learn.utils.RemoteConfigs
+import com.finance.trade_learn.utils.readStringPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-open class BaseViewModel @Inject constructor() : ViewModel() {
+open class BaseViewModel @Inject constructor(
+) : ViewModel() {
+
+    //private val _isLogin = MutableStateFlow<Boolean>(false)
+    //val isLogin : StateFlow<Boolean> get() = _isLogin
+
     private var baseDisposable: CompositeDisposable = CompositeDisposable()
 
 
@@ -106,6 +111,18 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
             }
         }
         return popList
+    }
+
+
+
+    suspend fun isLogin(context: Context){
+        val userEmail =  context.readStringPreference(DataStoreKeys.StringKeys.email)
+
+        val userpassword = context.readStringPreference(DataStoreKeys.StringKeys.password)
+
+        userEmail.zip(userpassword){email, password ->
+            //_isLogin.value = email.isNotBlank() && password.isNotBlank()
+        }
     }
 
 
