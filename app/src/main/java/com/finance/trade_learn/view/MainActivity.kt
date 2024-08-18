@@ -29,6 +29,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -115,13 +116,15 @@ class MainActivity : AppCompatActivity() {
         setContent {
 
             FinanceAppTheme {
+                val context = LocalContext.current
                 val navController = rememberNavController()
+                val baseViewModel = hiltViewModel<BaseViewModel>()
 
                 LaunchedEffect(Unit) {
                     setup()
+                    baseViewModel.isLogin(context = context)
                 }
 
-                val baseViewModel = hiltViewModel<BaseViewModel>()
                 val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(
                     true
                 )
@@ -225,11 +228,7 @@ class MainActivity : AppCompatActivity() {
 
             composable(Screens.Profile.route) {
                 LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
-                val isLogin = false
-                if (isLogin) ProfileScreen()
-                else {
-                    navController.navigate(Screens.Login.route)
-                }
+                ProfileScreen()
             }
 
             composable(Screens.Login.route) {
@@ -237,27 +236,24 @@ class MainActivity : AppCompatActivity() {
 
                 val viewModel = hiltViewModel<LoginViewModel>()
 
-                val isLogin = false
-                if (isLogin) ProfileScreen()
-                else {
-                    CompositionLocalProvider(LocalLoginViewModel provides viewModel) {
-                        LoginScreen(
-                            onLogin = {
-                                navController.popBackStack()
-                            },
-                            onSignUp = {
-                                navController.navigate(Screens.Profile.route)
-                            },
-                            onForgotPassword = {
+                CompositionLocalProvider(LocalLoginViewModel provides viewModel) {
+                    LoginScreen(
+                        onLogin = {
+                            navController.popBackStack()
+                        },
+                        onSignUp = {
+                            navController.navigate(Screens.Profile.route)
+                        },
+                        onForgotPassword = {
 
-                                navController.navigate(Screens.Profile.route)
-                            },
-                            goBack = {
-                                navController.popBackStack()
-                            }
-                        )
-                    }
+                            navController.navigate(Screens.Profile.route)
+                        },
+                        goBack = {
+                            navController.popBackStack()
+                        }
+                    )
                 }
+
             }
 
             composable(Screens.ForgotPassword.route) {
@@ -446,6 +442,8 @@ private fun isEmulator(): Boolean {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
+    val mainViewModel = LocalBaseViewModel.current
+    val isLogin by mainViewModel.isLogin.collectAsState()
     val scrollBehavior = LocalMainScrollBehavior.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -500,6 +498,11 @@ fun BottomNavigationBar(navController: NavHostController) {
                 },
                 selected = isSelected,
                 onClick = {
+                    if (navItem.route == Screens.Profile.route && !isLogin){
+                        navController.navigate(Screens.Login.route)
+                        return@NavigationBarItem
+                    }
+
                     navController.navigate(navItem.route) {
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true

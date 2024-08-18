@@ -26,8 +26,8 @@ import javax.inject.Inject
 open class BaseViewModel @Inject constructor(
 ) : ViewModel() {
 
-    //private val _isLogin = MutableStateFlow<Boolean>(false)
-    //val isLogin : StateFlow<Boolean> get() = _isLogin
+    private val _isLogin = MutableStateFlow<Boolean>(false)
+    val isLogin : StateFlow<Boolean> get() = _isLogin
 
     private var baseDisposable: CompositeDisposable = CompositeDisposable()
 
