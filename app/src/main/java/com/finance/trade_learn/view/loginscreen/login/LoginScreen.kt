@@ -23,6 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finance.trade_learn.utils.DataStoreKeys
+import com.finance.trade_learn.utils.saveStringPreference
 import com.finance.trade_learn.view.LocalLoginViewModel
 import com.finance.trade_learn.view.LocalSingUpViewModel
 import com.finance.trade_learn.view.commonui.SimpleBackButtonHeader
@@ -50,6 +52,8 @@ fun LoginScreen(
         if (userLoginResponse.success == true) {
             Toast.makeText(context, userLoginResponse.message, Toast.LENGTH_LONG).show()
             coroutines.launch {
+                context.saveStringPreference(DataStoreKeys.StringKeys.email, loginViewState.email)
+                context.saveStringPreference(DataStoreKeys.StringKeys.password, loginViewState.password)
                 delay(3000)
                 goBack.invoke()
             }
