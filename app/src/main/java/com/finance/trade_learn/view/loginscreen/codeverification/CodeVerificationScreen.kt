@@ -86,8 +86,7 @@ fun CodeVerificationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .background(Color.White), // Arka plan rengi
+                .padding(16.dp), // Arka plan rengi
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
