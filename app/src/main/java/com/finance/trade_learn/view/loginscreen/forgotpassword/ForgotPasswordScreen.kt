@@ -1,5 +1,6 @@
 package com.finance.trade_learn.view.loginscreen.forgotpassword
 
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,23 +17,50 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finance.trade_learn.view.LocalForgotPasswordViewModel
+import com.finance.trade_learn.view.LocalSingUpViewModel
 import com.finance.trade_learn.view.commonui.SimpleBackButtonHeader
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ForgotPasswordScreen(onResetPassword: () -> Unit, onBackToLogin: () -> Unit) {
-    var email by remember { mutableStateOf("") }
+
+    val coroutines = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val viewModel = LocalForgotPasswordViewModel.current
+    val forgotPasswordViewState by viewModel.forgotPasswordViewState.collectAsState()
+    val sendCodeResponse by viewModel.sendCodeResponse.collectAsState()
+
+
+    LaunchedEffect(sendCodeResponse.success){
+        if (sendCodeResponse.success == true) {
+            Toast.makeText(context, sendCodeResponse.message, Toast.LENGTH_LONG).show()
+            coroutines.launch {
+                delay(3000)
+                onResetPassword.invoke()
+            }
+        } else if (sendCodeResponse.success == false){
+            Toast.makeText(context, sendCodeResponse.message ?: sendCodeResponse.error?.message ?: "error", Toast.LENGTH_LONG).show()
+        }
+    }
 
 
     Column(
@@ -63,10 +91,14 @@ fun ForgotPasswordScreen(onResetPassword: () -> Unit, onBackToLogin: () -> Unit)
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = forgotPasswordViewState.email,
+                onValueChange = {
+                    viewModel.changeEmailText(it)
+                },
                 placeholder = { Text("Email Address") },
-                modifier = Modifier.fillMaxWidth().border(1.dp, Color.Gray, RoundedCornerShape(6.dp)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, Color.Gray, RoundedCornerShape(6.dp)),
                 singleLine = true,
 
                 colors = TextFieldDefaults.textFieldColors(
@@ -85,7 +117,9 @@ fun ForgotPasswordScreen(onResetPassword: () -> Unit, onBackToLogin: () -> Unit)
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = onResetPassword,
+                onClick = {
+                    viewModel.sendResetPasswordCode()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),

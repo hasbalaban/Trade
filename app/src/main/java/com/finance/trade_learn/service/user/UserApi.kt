@@ -38,4 +38,8 @@ class UserApi {
         return userService.deleteAccount(email = email)
     }
 
+    suspend fun sendResetPasswordCode(email: String): Response<WrapResponse<String>>  {
+        return userService.sendResetPasswordCode(email = email)
+    }
+
 }

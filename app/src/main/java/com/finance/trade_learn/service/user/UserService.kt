@@ -23,5 +23,8 @@ interface UserService {
         @Query("email") email: String
     ): Response<WrapResponse<String>>
 
+    @POST("/code/request-password-reset")
+    suspend fun sendResetPasswordCode(@Query("email") email: String): Response<WrapResponse<String>>
+
 
 }

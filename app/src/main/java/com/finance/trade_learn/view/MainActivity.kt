@@ -68,6 +68,7 @@ import com.finance.trade_learn.view.loginscreen.login.LoginScreen
 import com.finance.trade_learn.view.loginscreen.signup.SignUpScreen
 import com.finance.trade_learn.view.profile.ProfileScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
+import com.finance.trade_learn.viewModel.ForgotPasswordViewModel
 import com.finance.trade_learn.viewModel.HomeViewModel
 import com.finance.trade_learn.viewModel.LoginViewModel
 import com.finance.trade_learn.viewModel.ProfileViewModel
@@ -100,6 +101,8 @@ val LocalSingUpViewModel = compositionLocalOf<SignUpViewModel> { error("No SignU
 val LocalProfileViewModel = compositionLocalOf<ProfileViewModel> { error("No ProfileViewModel found") }
 
 val LocalLoginViewModel = compositionLocalOf<LoginViewModel> { error("No LoginViewModel found") }
+
+val LocalForgotPasswordViewModel = compositionLocalOf<ForgotPasswordViewModel> { error("No LoginViewModel found") }
 
 @OptIn(ExperimentalMaterial3Api::class)
 private val LocalMainScrollBehavior =
@@ -269,16 +272,18 @@ class MainActivity : AppCompatActivity() {
             }
 
             composable(Screens.ForgotPassword.route) {
-                ForgotPasswordScreen(
-                    onResetPassword = {
-                        Toast.makeText(context, "on Reset Password completed", Toast.LENGTH_LONG)
-                            .show()
-                    },
-                    onBackToLogin = {
-                        navController.popBackStack()
-                    }
+                val viewModel = hiltViewModel<ForgotPasswordViewModel>()
+                CompositionLocalProvider(LocalForgotPasswordViewModel provides viewModel) {
+                    ForgotPasswordScreen(
+                        onResetPassword = {
+                            navController.navigate(Screens.Login.route)
+                        },
+                        onBackToLogin = {
+                            navController.popBackStack()
+                        }
 
-                )
+                    )
+                }
             }
 
             composable(Screens.SingUp.route) {
