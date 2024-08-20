@@ -1,6 +1,7 @@
 package com.finance.trade_learn.service.user
 
 import com.finance.trade_learn.models.NewUserRequest
+import com.finance.trade_learn.models.ResetPasswordRequest
 import com.finance.trade_learn.models.User
 import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
@@ -25,6 +26,8 @@ interface UserService {
 
     @POST("/code/request-password-reset")
     suspend fun sendResetPasswordCode(@Query("email") email: String): Response<WrapResponse<String>>
+    @POST("/reset-password")
+    suspend fun resetPassword(@Body resetPasswordRequest : ResetPasswordRequest): Response<WrapResponse<String>>
 
 
 }

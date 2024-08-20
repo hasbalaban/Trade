@@ -63,11 +63,13 @@ import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.view.history.TradeHistoryScreen
+import com.finance.trade_learn.view.loginscreen.codeverification.CodeVerificationScreen
 import com.finance.trade_learn.view.loginscreen.forgotpassword.ForgotPasswordScreen
 import com.finance.trade_learn.view.loginscreen.login.LoginScreen
 import com.finance.trade_learn.view.loginscreen.signup.SignUpScreen
 import com.finance.trade_learn.view.profile.ProfileScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
+import com.finance.trade_learn.viewModel.CodeVerificationViewModel
 import com.finance.trade_learn.viewModel.ForgotPasswordViewModel
 import com.finance.trade_learn.viewModel.HomeViewModel
 import com.finance.trade_learn.viewModel.LoginViewModel
@@ -103,6 +105,8 @@ val LocalProfileViewModel = compositionLocalOf<ProfileViewModel> { error("No Pro
 val LocalLoginViewModel = compositionLocalOf<LoginViewModel> { error("No LoginViewModel found") }
 
 val LocalForgotPasswordViewModel = compositionLocalOf<ForgotPasswordViewModel> { error("No LoginViewModel found") }
+
+val LocalCodeVerificationViewModel = compositionLocalOf<CodeVerificationViewModel> { error("No CodeVerificationViewModel found") }
 
 @OptIn(ExperimentalMaterial3Api::class)
 private val LocalMainScrollBehavior =
@@ -271,21 +275,6 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-            composable(Screens.ForgotPassword.route) {
-                val viewModel = hiltViewModel<ForgotPasswordViewModel>()
-                CompositionLocalProvider(LocalForgotPasswordViewModel provides viewModel) {
-                    ForgotPasswordScreen(
-                        onResetPassword = {
-                            navController.navigate(Screens.Login.route)
-                        },
-                        onBackToLogin = {
-                            navController.popBackStack()
-                        }
-
-                    )
-                }
-            }
-
             composable(Screens.SingUp.route) {
 
                 val viewModel = hiltViewModel<SignUpViewModel>()
@@ -302,6 +291,44 @@ class MainActivity : AppCompatActivity() {
                 }
 
             }
+
+            composable(Screens.ForgotPassword.route) {
+                val viewModel = hiltViewModel<ForgotPasswordViewModel>()
+                CompositionLocalProvider(LocalForgotPasswordViewModel provides viewModel) {
+                    ForgotPasswordScreen(
+                        onResetPassword = {
+                            navController.navigate(Screens.VerificationCode.route)
+                        },
+                        onBackToLogin = {
+                            navController.popBackStack()
+                        }
+
+                    )
+                }
+            }
+
+            composable(Screens.VerificationCode.route) {
+                val viewModel = hiltViewModel<CodeVerificationViewModel>()
+                CompositionLocalProvider(LocalCodeVerificationViewModel provides viewModel) {
+                    CodeVerificationScreen(
+                        userEmail = "hasan-balaban@hotmail.com",
+                        onVerifyCode = {
+                            navController.navigate(Screens.Login.route){
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                restoreState = true
+                                launchSingleTop = true
+                            }
+                        },
+                        onResendCode = {
+                            navController.popBackStack()
+                        }
+
+                    )
+                }
+            }
+
         }
 
     }
