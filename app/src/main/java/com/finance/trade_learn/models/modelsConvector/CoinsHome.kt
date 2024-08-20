@@ -1,6 +1,6 @@
 package com.finance.trade_learn.models.modelsConvector
 
-import com.finance.trade_learn.enums.enumPriceChange
+import com.finance.trade_learn.models.enumPriceChange
 
 data class CoinsHome(
     val id : String,

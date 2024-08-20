@@ -29,6 +29,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -62,13 +63,17 @@ import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.view.history.TradeHistoryScreen
+import com.finance.trade_learn.view.loginscreen.codeverification.CodeVerificationScreen
 import com.finance.trade_learn.view.loginscreen.forgotpassword.ForgotPasswordScreen
 import com.finance.trade_learn.view.loginscreen.login.LoginScreen
 import com.finance.trade_learn.view.loginscreen.signup.SignUpScreen
 import com.finance.trade_learn.view.profile.ProfileScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
+import com.finance.trade_learn.viewModel.CodeVerificationViewModel
+import com.finance.trade_learn.viewModel.ForgotPasswordViewModel
 import com.finance.trade_learn.viewModel.HomeViewModel
 import com.finance.trade_learn.viewModel.LoginViewModel
+import com.finance.trade_learn.viewModel.ProfileViewModel
 import com.finance.trade_learn.viewModel.SignUpViewModel
 import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
 import com.finance.trade_learn.viewModel.WalletPageViewModel
@@ -84,18 +89,28 @@ import java.util.concurrent.TimeUnit
 
 val LocalBaseViewModel = compositionLocalOf<BaseViewModel> { error("No BaseViewModel found") }
 
-val LocalWalletPageViewModel = compositionLocalOf<WalletPageViewModel> { error("No LocalWalletPageViewModel found") }
+val LocalWalletPageViewModel =
+    compositionLocalOf<WalletPageViewModel> { error("No LocalWalletPageViewModel found") }
 
-val LocalViewModelHistoryTrade = compositionLocalOf<ViewModelHistoryTrade> { error("No ViewModelHistoryTrade found") }
+val LocalViewModelHistoryTrade =
+    compositionLocalOf<ViewModelHistoryTrade> { error("No ViewModelHistoryTrade found") }
 
-val LocalHomeViewModel = compositionLocalOf<HomeViewModel> { error("No ViewModelHistoryTrade found") }
+val LocalHomeViewModel =
+    compositionLocalOf<HomeViewModel> { error("No ViewModelHistoryTrade found") }
 
-val LocalSingUpViewModel = compositionLocalOf<SignUpViewModel> {error("No SignUpViewModel found")}
+val LocalSingUpViewModel = compositionLocalOf<SignUpViewModel> { error("No SignUpViewModel found") }
 
-val LocalLoginViewModel = compositionLocalOf<LoginViewModel> {error("No LoginViewModel found")}
+val LocalProfileViewModel = compositionLocalOf<ProfileViewModel> { error("No ProfileViewModel found") }
+
+val LocalLoginViewModel = compositionLocalOf<LoginViewModel> { error("No LoginViewModel found") }
+
+val LocalForgotPasswordViewModel = compositionLocalOf<ForgotPasswordViewModel> { error("No LoginViewModel found") }
+
+val LocalCodeVerificationViewModel = compositionLocalOf<CodeVerificationViewModel> { error("No CodeVerificationViewModel found") }
 
 @OptIn(ExperimentalMaterial3Api::class)
-private val LocalMainScrollBehavior = compositionLocalOf<BottomAppBarScrollBehavior> { error("No BottomAppBarScrollBehavior found") }
+private val LocalMainScrollBehavior =
+    compositionLocalOf<BottomAppBarScrollBehavior> { error("No BottomAppBarScrollBehavior found") }
 
 
 @AndroidEntryPoint
@@ -111,26 +126,33 @@ class MainActivity : AppCompatActivity() {
         setContent {
 
             FinanceAppTheme {
+                val context = LocalContext.current
                 val navController = rememberNavController()
+                val baseViewModel = hiltViewModel<BaseViewModel>()
 
                 LaunchedEffect(Unit) {
                     setup()
+                    baseViewModel.isLogin(context = context)
                 }
 
-                val baseViewModel = hiltViewModel<BaseViewModel>()
-                val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(true)
+                val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(
+                    true
+                )
 
 
                 val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
 
-                CompositionLocalProvider(LocalBaseViewModel provides baseViewModel, LocalMainScrollBehavior provides scrollBehavior) {
+                CompositionLocalProvider(
+                    LocalBaseViewModel provides baseViewModel,
+                    LocalMainScrollBehavior provides scrollBehavior
+                ) {
                     Scaffold(
                         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                         bottomBar = {
-                            if(shouldShowBottomNavigationBar){
+                            if (shouldShowBottomNavigationBar) {
                                 BottomNavigationBar(navController = navController)
                             }
- }
+                        }
                     ) { padding ->
                         Surface(color = androidx.compose.material.MaterialTheme.colors.secondaryVariant) {
                             MainScreen(navController, Modifier.padding(paddingValues = padding))
@@ -148,113 +170,134 @@ class MainActivity : AppCompatActivity() {
 
         val context = LocalContext.current
 
-            NavHost(navController = navController, startDestination = Screens.Home.route) {
-                composable(Screens.Home.route) {
-                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
-                    val viewModel = hiltViewModel<HomeViewModel>()
+        NavHost(navController = navController, startDestination = Screens.Home.route) {
+            composable(Screens.Home.route) {
+                LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+                val viewModel = hiltViewModel<HomeViewModel>()
 
-                    CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
-                        com.finance.trade_learn.view.home.MainView(
-                            shouldShowPopularCoins = true,
-                            openTradePage = {
-                                navController.navigate(Screens.Trade(it).route)
-                            }
-                        )
-                    }
+                CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
+                    com.finance.trade_learn.view.home.MainView(
+                        shouldShowPopularCoins = true,
+                        openTradePage = {
+                            navController.navigate(Screens.Trade(it).route)
+                        }
+                    )
                 }
-                composable(Screens.Market.route) {
-                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
-                    val viewModel = hiltViewModel<HomeViewModel>()
+            }
+            composable(Screens.Market.route) {
+                LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+                val viewModel = hiltViewModel<HomeViewModel>()
 
-                    CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
-                        com.finance.trade_learn.view.home.MainView(
-                            page = marketPageNumber,
-                            openTradePage = {
-                                navController.navigate(Screens.Trade(it).route)
-                            }
-                        )
-                    }
-
-
-                    marketPageNumber++
+                CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
+                    com.finance.trade_learn.view.home.MainView(
+                        page = marketPageNumber,
+                        openTradePage = {
+                            navController.navigate(Screens.Trade(it).route)
+                        }
+                    )
                 }
 
-                composable(
-                    "trade?coinName={coinName}", arguments = listOf(navArgument("coinName") {
-                        type = NavType.StringType
-                        defaultValue = "bitcoin"
+
+                marketPageNumber++
+            }
+
+            composable(
+                "trade?coinName={coinName}", arguments = listOf(navArgument("coinName") {
+                    type = NavType.StringType
+                    defaultValue = "bitcoin"
+                })
+            ) { backStackEntry ->
+                LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+
+                val coinName = backStackEntry.arguments?.getString("coinName") ?: "TETHER"
+                TradePage(itemName = coinName)
+            }
+            composable(Screens.Wallet.route) {
+                LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
+                val viewModel = hiltViewModel<WalletPageViewModel>()
+
+                CompositionLocalProvider(LocalWalletPageViewModel provides viewModel) {
+                    WalletScreen() {
+                        navController.navigate(Screens.HistoryScreen.route)
+                    }
+                }
+
+            }
+
+            composable(Screens.HistoryScreen.route) {
+                LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
+
+                val viewModel = hiltViewModel<ViewModelHistoryTrade>()
+                CompositionLocalProvider(LocalViewModelHistoryTrade provides viewModel) {
+                    TradeHistoryScreen(modifier = modifier, goBack = {
+                        navController.popBackStack()
                     })
-                ) { backStackEntry ->
-                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
-
-                    val coinName = backStackEntry.arguments?.getString("coinName") ?: "TETHER"
-                    TradePage(itemName = coinName,)
-                }
-                composable(Screens.Wallet.route) {
-                    LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
-                    val viewModel = hiltViewModel<WalletPageViewModel>()
-
-                    CompositionLocalProvider(LocalWalletPageViewModel provides viewModel) {
-                        WalletScreen(){
-                            navController.navigate(Screens.HistoryScreen.route)
-                        }
-                    }
-
                 }
 
-                composable(Screens.HistoryScreen.route) {
-                    LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
+            }
 
-                    val viewModel = hiltViewModel<ViewModelHistoryTrade>()
-                    CompositionLocalProvider(LocalViewModelHistoryTrade provides viewModel) {
-                        TradeHistoryScreen(modifier = modifier, goBack = {
+            composable(Screens.Profile.route) {
+                LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
+                val viewModel = hiltViewModel<ProfileViewModel>()
+
+
+                CompositionLocalProvider(LocalProfileViewModel provides viewModel) {
+                    ProfileScreen(
+                        onLogOut = {
                             navController.popBackStack()
-                        })
-                    }
-
-                }
-
-                composable(Screens.Profile.route) {
-                    LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
-                    val isLogin = false
-                    if (isLogin) ProfileScreen()
-                    else {
-                        navController.navigate(Screens.Login.route)
-                    }
-                }
-
-                composable(Screens.Login.route) {
-                    LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
-
-                    val viewModel = hiltViewModel<LoginViewModel>()
-
-                    val isLogin = false
-                    if (isLogin) ProfileScreen()
-                    else {
-                        CompositionLocalProvider(LocalLoginViewModel provides viewModel){
-                            LoginScreen(
-                                onLogin = {
-                                    navController.popBackStack()
-                                },
-                                onSignUp = {
-                                    navController.navigate(Screens.Profile.route)
-                                },
-                                onForgotPassword = {
-
-                                    navController.navigate(Screens.Profile.route)
-                                },
-                                goBack = {
-                                    navController.popBackStack()
-                                }
-                            )
                         }
-                    }
+                    )
                 }
 
-                composable(Screens.ForgotPassword.route) {
+            }
+
+            composable(Screens.Login.route) {
+                LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
+
+                val viewModel = hiltViewModel<LoginViewModel>()
+
+                CompositionLocalProvider(LocalLoginViewModel provides viewModel) {
+                    LoginScreen(
+                        onLogin = {
+                            navController.popBackStack()
+                        },
+                        onSignUp = {
+                            navController.navigate(Screens.SingUp.route)
+                        },
+                        onForgotPassword = {
+                            navController.navigate(Screens.ForgotPassword.route)
+                        },
+                        goBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+            }
+
+            composable(Screens.SingUp.route) {
+
+                val viewModel = hiltViewModel<SignUpViewModel>()
+                CompositionLocalProvider(LocalSingUpViewModel provides viewModel) {
+                    SignUpScreen(
+                        onSignUp = {
+                            Toast.makeText(context, "on Sign Up completed", Toast.LENGTH_LONG)
+                                .show()
+                        },
+                        onBackToLogin = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+            }
+
+            composable(Screens.ForgotPassword.route) {
+                val viewModel = hiltViewModel<ForgotPasswordViewModel>()
+                CompositionLocalProvider(LocalForgotPasswordViewModel provides viewModel) {
                     ForgotPasswordScreen(
                         onResetPassword = {
-                            Toast.makeText(context, "on Reset Password completed", Toast.LENGTH_LONG).show()
+                            navController.navigate(Screens.VerificationCode.route)
                         },
                         onBackToLogin = {
                             navController.popBackStack()
@@ -262,23 +305,31 @@ class MainActivity : AppCompatActivity() {
 
                     )
                 }
+            }
 
-                composable(Screens.SingUp.route) {
-
-                    val viewModel = hiltViewModel<SignUpViewModel>()
-                    CompositionLocalProvider(LocalSingUpViewModel provides viewModel) {
-                        SignUpScreen(
-                            onSignUp = {
-                                Toast.makeText(context, "on Sign Up completed", Toast.LENGTH_LONG).show()
-                            },
-                            onBackToLogin = {
-                                navController.popBackStack()
+            composable(Screens.VerificationCode.route) {
+                val viewModel = hiltViewModel<CodeVerificationViewModel>()
+                CompositionLocalProvider(LocalCodeVerificationViewModel provides viewModel) {
+                    CodeVerificationScreen(
+                        userEmail = "hasan-balaban@hotmail.com",
+                        onVerifyCode = {
+                            navController.navigate(Screens.Login.route){
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                restoreState = true
+                                launchSingleTop = true
                             }
-                        )
-                    }
+                        },
+                        onResendCode = {
+                            navController.popBackStack()
+                        }
 
+                    )
                 }
             }
+
+        }
 
     }
 
@@ -418,7 +469,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
 }
 
 private fun isEmulator(): Boolean {
@@ -436,6 +486,8 @@ private fun isEmulator(): Boolean {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
+    val mainViewModel = LocalBaseViewModel.current
+    val isLogin by mainViewModel.isLogin.collectAsState()
     val scrollBehavior = LocalMainScrollBehavior.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -490,6 +542,11 @@ fun BottomNavigationBar(navController: NavHostController) {
                 },
                 selected = isSelected,
                 onClick = {
+                    if (navItem.route == Screens.Profile.route && !isLogin){
+                        navController.navigate(Screens.Login.route)
+                        return@NavigationBarItem
+                    }
+
                     navController.navigate(navItem.route) {
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true
@@ -511,8 +568,6 @@ fun BottomNavigationBar(navController: NavHostController) {
 
     }
 }
-
-
 
 
 @Preview

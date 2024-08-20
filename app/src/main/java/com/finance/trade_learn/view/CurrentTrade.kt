@@ -4,24 +4,14 @@ import android.app.Activity
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.finance.trade_learn.enums.TradeType
-import com.finance.trade_learn.models.TradeState
 import com.finance.trade_learn.utils.Constants
 import com.finance.trade_learn.utils.SharedPreferencesManager
-import com.finance.trade_learn.viewModel.TradeViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import kotlinx.coroutines.Job
-import java.util.Locale
-
-
-
-
-
 
 
 enum class CoinProgress (){ SUM,MINUS }

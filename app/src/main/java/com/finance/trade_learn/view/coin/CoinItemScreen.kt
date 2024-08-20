@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.finance.trade_learn.R
-import com.finance.trade_learn.enums.enumPriceChange
+import com.finance.trade_learn.models.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 
 @Composable

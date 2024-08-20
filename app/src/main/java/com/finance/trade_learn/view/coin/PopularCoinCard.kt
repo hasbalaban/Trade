@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
-import com.finance.trade_learn.enums.enumPriceChange
+import com.finance.trade_learn.models.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 
 @Composable

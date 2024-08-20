@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.finance.trade_learn.R
-import com.finance.trade_learn.enums.TradeType
+import com.finance.trade_learn.models.TradeType
 import com.finance.trade_learn.view.CoinProgress
 import com.finance.trade_learn.view.trade.TradePageUiState
 import com.finance.trade_learn.viewModel.TradeViewModel

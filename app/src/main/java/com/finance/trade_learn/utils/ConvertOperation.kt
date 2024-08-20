@@ -1,7 +1,7 @@
 package com.finance.trade_learn.utils
 
 import androidx.lifecycle.MutableLiveData
-import com.finance.trade_learn.enums.enumPriceChange
+import com.finance.trade_learn.models.enumPriceChange
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.models.modelsConvector.Percent
