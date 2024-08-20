@@ -137,7 +137,7 @@ fun ProfileScreen(
         if (signUpViewState.isAccountDeleting){
             CircularProgressIndicator(
                 color = Color(0xff3B82F6),
-                strokeWidth = 6.dp
+                strokeWidth = 4.dp
             )
         }
     }

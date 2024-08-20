@@ -4,6 +4,7 @@ import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.coin_gecko.CoinInfoList
 import com.finance.trade_learn.models.handleResponse
+import com.finance.trade_learn.service.user.client
 import com.finance.trade_learn.utils.Constants
 import com.finance.trade_learn.utils.RemoteConfigs
 import io.reactivex.Single
@@ -25,6 +26,7 @@ class cryptoService() {
     val localBaseUrl = "http://10.0.2.2:8080"
     //val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
     var localRetrofit = Retrofit.Builder()
+        .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .baseUrl(localBaseUrl)
