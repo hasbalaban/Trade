@@ -8,7 +8,9 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
@@ -51,6 +53,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -123,21 +127,28 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
 
+        enableEdgeToEdge()
+
+        setContent {
             FinanceAppTheme {
                 val context = LocalContext.current
                 val navController = rememberNavController()
+
                 val baseViewModel = hiltViewModel<BaseViewModel>()
+                val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(
+                    true
+                )
+
+                navController.addOnDestinationChangedListener { controller, destination, arguments ->
+                    val bottomNavigationIsVisible = destination.route in Constants.BottomNavItems.map { it.route }
+                    baseViewModel.setBottomNavigationBarStatus(bottomNavigationIsVisible)
+                }
 
                 LaunchedEffect(Unit) {
                     setup()
                     baseViewModel.isLogin(context = context)
                 }
-
-                val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(
-                    true
-                )
 
 
                 val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
@@ -170,9 +181,8 @@ class MainActivity : AppCompatActivity() {
 
         val context = LocalContext.current
 
-        NavHost(navController = navController, startDestination = Screens.Home.route) {
+        NavHost(modifier = modifier, navController = navController, startDestination = Screens.Home.route) {
             composable(Screens.Home.route) {
-                LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
                 val viewModel = hiltViewModel<HomeViewModel>()
 
                 CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
@@ -185,7 +195,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             composable(Screens.Market.route) {
-                LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
                 val viewModel = hiltViewModel<HomeViewModel>()
 
                 CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
@@ -207,13 +216,11 @@ class MainActivity : AppCompatActivity() {
                     defaultValue = "bitcoin"
                 })
             ) { backStackEntry ->
-                LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
 
                 val coinName = backStackEntry.arguments?.getString("coinName") ?: "TETHER"
                 TradePage(itemName = coinName)
             }
             composable(Screens.Wallet.route) {
-                LocalBaseViewModel.current.setBottomNavigationBarStatus(true)
                 val viewModel = hiltViewModel<WalletPageViewModel>()
 
                 CompositionLocalProvider(LocalWalletPageViewModel provides viewModel) {
@@ -225,11 +232,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             composable(Screens.HistoryScreen.route) {
-                LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
-
                 val viewModel = hiltViewModel<TransactionViewModel>()
                 CompositionLocalProvider(LocalViewModelHistoryTrade provides viewModel) {
-                    TradeHistoryScreen(modifier = modifier, goBack = {
+                    TradeHistoryScreen(goBack = {
                         navController.popBackStack()
                     })
                 }
@@ -237,7 +242,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             composable(Screens.Profile.route) {
-                LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
                 val viewModel = hiltViewModel<ProfileViewModel>()
 
 
@@ -252,8 +256,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             composable(Screens.Login.route) {
-                LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
-
                 val viewModel = hiltViewModel<LoginViewModel>()
 
                 CompositionLocalProvider(LocalLoginViewModel provides viewModel) {

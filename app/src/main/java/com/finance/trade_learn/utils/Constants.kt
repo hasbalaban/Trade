@@ -33,7 +33,8 @@ object Constants {
         BottomNavItem(
             label = R.string.Trade,
             icon = Icons.Filled.SwapHoriz,
-            route = "trade?coinName={coinName}"
+            route = Screens.HistoryScreen.route
+          //  route = "trade?coinName={coinName}"
         ),
         BottomNavItem(
             label = R.string.Wallet,
