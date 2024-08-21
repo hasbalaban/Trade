@@ -2,7 +2,7 @@ package com.finance.trade_learn.repository
 
 import androidx.lifecycle.LiveData
 import com.finance.trade_learn.database.DatabaseDao
-import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
+import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import java.util.*
 import javax.inject.Inject
@@ -14,7 +14,7 @@ interface UserLocalWalletDatabase{
 
     suspend fun updateSelectedItem(item : MyCoins) :  Unit
 
-    suspend fun addProgressToTradeHistory(item : SaveCoin) :  Unit
+    suspend fun addProgressToTradeHistory(item : UserTransactions) :  Unit
 
     suspend fun buyNewItem(item : MyCoins) :  Unit
 
@@ -41,7 +41,7 @@ class CoinDetailRepositoryImp @Inject constructor(
         dataBaseService.updateCoin(item)
     }
 
-    override suspend fun addProgressToTradeHistory(item: SaveCoin) {
+    override suspend fun addProgressToTradeHistory(item: UserTransactions) {
         dataBaseService.addTrade(item)
     }
 

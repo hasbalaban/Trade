@@ -5,22 +5,28 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "SaveCoin")
-data class SaveCoin(
+data class UserTransactions(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "tradeId")
-    val tradeId: Int = 0,
+    val id: Int = 0,
+
     @ColumnInfo(name = "coinName")
-    val coinName: String,
+    val transactionItemName: String,
+
     @ColumnInfo(name = "coinAmount")
-    val coinAmount: String,
+    val amount: String,
+
     @ColumnInfo(name = "coinPrice")
-    val coinPrice: String,
+    val price: String,
+
     @ColumnInfo(name = "total")
-    val total: String,
-    @ColumnInfo(name = "date")
-    val date: String,
+    val transactionTotalPrice: String,
+
     // tradeEnum: tradeEnum
     @ColumnInfo(name = "tradeOperation")
-    val tradeOperation: String
+    val transactionType: String,
+
+    @ColumnInfo(name = "date")
+    val date: String,
 
 )
