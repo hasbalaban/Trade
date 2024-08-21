@@ -32,7 +32,7 @@ class ViewModelHistoryTrade : BaseViewModel() {
             val state = i.transactionType
             val itemOfHistory = UserTransactions(
                 i.id, name, amount.toString(),
-                price.toString(), total.toString(), date, state
+                price.toString(), total.toString(), state, date
             )
             newModel.add(itemOfHistory)
 

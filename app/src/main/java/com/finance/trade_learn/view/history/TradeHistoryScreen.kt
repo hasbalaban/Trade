@@ -246,8 +246,9 @@ fun PreviewTradeScreen() {
             "0.5",
             "35000.0",
             "17500.0",
+            "Buy",
             SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date()),
-            "Buy"
+
         ),
         UserTransactions(
             2,
@@ -255,8 +256,11 @@ fun PreviewTradeScreen() {
             "10.0",
             "2300.0",
             "23000.0",
-            SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date(System.currentTimeMillis() - 86400000)),
-            "sell"
+            "sell",
+            SimpleDateFormat(
+                "dd/MM/yyyy HH:mm:ss",
+                Locale.getDefault()
+            ).format(Date(System.currentTimeMillis() - 86400000)),
         )
     )
     MainContent(sampleTradeData, modifier = Modifier, goBack = {
