@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
-import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
+import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 
 @Dao
 interface DatabaseDao {
@@ -34,10 +34,10 @@ interface DatabaseDao {
 
     // ------ operations of save of trade
     @Insert
-    suspend fun addTrade(trade: SaveCoin)
+    suspend fun addTrade(trade: UserTransactions)
 
     @Query("select * from SaveCoin")
-    suspend fun getAllTrades(): List<SaveCoin>
+    suspend fun getAllTrades(): List<UserTransactions>
 
 
 }

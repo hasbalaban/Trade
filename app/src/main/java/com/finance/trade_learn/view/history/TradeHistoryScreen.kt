@@ -45,7 +45,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel.Companion.allCryptoItems
-import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
+import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.view.LocalViewModelHistoryTrade
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -66,7 +66,7 @@ fun TradeHistoryScreen(modifier: Modifier, goBack : () -> Unit) {
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-private fun MainContent(trades: List<SaveCoin>, modifier: Modifier, goBack: () -> Unit) {
+private fun MainContent(trades: List<UserTransactions>, modifier: Modifier, goBack: () -> Unit) {
     Scaffold(
         topBar = {
 
@@ -106,9 +106,9 @@ private fun MainContent(trades: List<SaveCoin>, modifier: Modifier, goBack: () -
 }
 
 @Composable
-fun TradeItem(trade: SaveCoin) {
+fun TradeItem(trade: UserTransactions) {
     val imageUrl = allCryptoItems.firstOrNull {
-        it.name.contains(trade.coinName, ignoreCase = true)
+        it.name.contains(trade.transactionItemName, ignoreCase = true)
     }?.image
 
     Card(
@@ -151,7 +151,7 @@ fun TradeItem(trade: SaveCoin) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = trade.coinName,
+                    text = trade.transactionItemName,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.onPrimary // Title color
@@ -163,13 +163,13 @@ fun TradeItem(trade: SaveCoin) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stringResource(id = R.string.amount) + trade.coinAmount.toDouble().formatAmount(),
+                        text = stringResource(id = R.string.amount) + trade.amount.toDouble().formatAmount(),
                         fontSize = 13.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = stringResource(id = R.string.price) + ": ${trade.coinPrice.toDouble().formatPrice()}",
+                        text = stringResource(id = R.string.price) + ": ${trade.price.toDouble().formatPrice()}",
                         fontSize = 13.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
@@ -181,7 +181,7 @@ fun TradeItem(trade: SaveCoin) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stringResource(id = R.string.total) + ": ${trade.total.toDouble().formatTotalCost()}",
+                        text = stringResource(id = R.string.total) + ": ${trade.transactionTotalPrice.toDouble().formatTotalCost()}",
                         fontSize = 13.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
@@ -203,7 +203,7 @@ fun TradeItem(trade: SaveCoin) {
                         color = MaterialTheme.colors.onPrimary // Default text color
                     )
                     Text(
-                        text = if (trade.tradeOperation.equals(stringResource(id = R.string.buy), ignoreCase = true)) {
+                        text = if (trade.transactionType.equals(stringResource(id = R.string.buy), ignoreCase = true)) {
                             stringResource(id = R.string.buy)
                         } else {
                             stringResource(id = R.string.sell)
@@ -211,7 +211,7 @@ fun TradeItem(trade: SaveCoin) {
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         color =
-                        if (trade.tradeOperation.equals(stringResource(id = R.string.buy), ignoreCase = true))
+                        if (trade.transactionType.equals(stringResource(id = R.string.buy), ignoreCase = true))
                             Color(0xFF4CAF50)
                         else
                             Color(0xFFF44336)
@@ -240,7 +240,7 @@ fun String.formatDate(): String {
 @Composable
 fun PreviewTradeScreen() {
     val sampleTradeData = listOf(
-        SaveCoin(
+        UserTransactions(
             1,
             "Bitcoin",
             "0.5",
@@ -249,7 +249,7 @@ fun PreviewTradeScreen() {
             SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date()),
             "Buy"
         ),
-        SaveCoin(
+        UserTransactions(
             2,
             "Ethereum",
             "10.0",

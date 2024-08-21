@@ -5,9 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
-import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
+import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 
-@Database(entities = arrayOf(MyCoins::class, SaveCoin::class), exportSchema = false, version = 1)
+@Database(entities = arrayOf(MyCoins::class, UserTransactions::class), exportSchema = false, version = 1)
 abstract class dataBaseService : RoomDatabase() {
 
     abstract fun databaseDao(): DatabaseDao

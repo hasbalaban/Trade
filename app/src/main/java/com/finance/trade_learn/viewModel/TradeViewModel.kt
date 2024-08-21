@@ -7,7 +7,7 @@ import com.finance.trade_learn.utils.solveCoinName
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
-import com.finance.trade_learn.database.dataBaseEntities.SaveCoin
+import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.models.TradeType
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
@@ -113,6 +113,8 @@ class TradeViewModel @Inject constructor(
                     sellCoin(item.name.lowercase(Locale.getDefault()), itemAmount, total, item.current_price)
                 }
             }
+
+            else -> {}
         }
     }
 
@@ -235,13 +237,13 @@ class TradeViewModel @Inject constructor(
         Log.i("timetime", sdf.format(Date()))
         val currentTime = sdf.format(Date())
 
-        val newTrade = SaveCoin(
-            coinName = coinName,
-            coinPrice = coinPrice.toBigDecimal().toString(),
-            coinAmount = coinAmount.toBigDecimal().toString(),
-            total = total.toBigDecimal().toString(),
+        val newTrade = UserTransactions(
+            transactionItemName = coinName,
+            price = coinPrice.toBigDecimal().toString(),
+            amount = coinAmount.toBigDecimal().toString(),
+            transactionTotalPrice = total.toBigDecimal().toString(),
             date = currentTime,
-            tradeOperation = tradeOperation.toString()
+            transactionType = tradeOperation.toString()
         )
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -288,6 +290,8 @@ class TradeViewModel @Inject constructor(
                 TradeType.Sell -> {
                     ((availableAmount >= amount) && (availableAmount > 0.0) && (totalCost > 0.0) && (amount > 0.0))
                 }
+
+                else -> {false}
             }
 
         } catch (e: Exception) {
