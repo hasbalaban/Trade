@@ -1,5 +1,6 @@
 package com.finance.trade_learn.service.user
 
+import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.models.NewUserRequest
 import com.finance.trade_learn.models.ResetPasswordRequest
 import com.finance.trade_learn.models.User
@@ -8,6 +9,7 @@ import com.finance.trade_learn.models.WrapResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -26,8 +28,19 @@ interface UserService {
 
     @POST("/code/request-password-reset")
     suspend fun sendResetPasswordCode(@Query("email") email: String): Response<WrapResponse<String>>
+
     @POST("/reset-password")
     suspend fun resetPassword(@Body resetPasswordRequest : ResetPasswordRequest): Response<WrapResponse<String>>
+
+    @GET("/transaction")
+    suspend fun getTransactionHistory(
+        @Query("email") email: String
+    ): Response<WrapResponse<List<UserTransactions>>>
+
+    @POST("/transaction")
+    suspend fun addTransactionHistory(
+        @Body userTransactions: UserTransactions
+    ): Response<WrapResponse<String>>
 
 
 }

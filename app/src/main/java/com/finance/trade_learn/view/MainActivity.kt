@@ -75,7 +75,7 @@ import com.finance.trade_learn.viewModel.HomeViewModel
 import com.finance.trade_learn.viewModel.LoginViewModel
 import com.finance.trade_learn.viewModel.ProfileViewModel
 import com.finance.trade_learn.viewModel.SignUpViewModel
-import com.finance.trade_learn.viewModel.ViewModelHistoryTrade
+import com.finance.trade_learn.viewModel.TransactionViewModel
 import com.finance.trade_learn.viewModel.WalletPageViewModel
 import com.finance.trade_learn.viewModel.ViewModelUtils
 import com.google.android.gms.ads.*
@@ -93,7 +93,7 @@ val LocalWalletPageViewModel =
     compositionLocalOf<WalletPageViewModel> { error("No LocalWalletPageViewModel found") }
 
 val LocalViewModelHistoryTrade =
-    compositionLocalOf<ViewModelHistoryTrade> { error("No ViewModelHistoryTrade found") }
+    compositionLocalOf<TransactionViewModel> { error("No ViewModelHistoryTrade found") }
 
 val LocalHomeViewModel =
     compositionLocalOf<HomeViewModel> { error("No ViewModelHistoryTrade found") }
@@ -227,7 +227,7 @@ class MainActivity : AppCompatActivity() {
             composable(Screens.HistoryScreen.route) {
                 LocalBaseViewModel.current.setBottomNavigationBarStatus(false)
 
-                val viewModel = hiltViewModel<ViewModelHistoryTrade>()
+                val viewModel = hiltViewModel<TransactionViewModel>()
                 CompositionLocalProvider(LocalViewModelHistoryTrade provides viewModel) {
                     TradeHistoryScreen(modifier = modifier, goBack = {
                         navController.popBackStack()
