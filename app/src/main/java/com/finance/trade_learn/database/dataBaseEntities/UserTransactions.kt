@@ -31,5 +31,17 @@ data class UserTransactions(
     val date: String,
 
 
-
     )
+
+
+data class UserTransactionsRequest(
+    val email: String,
+    val id: Int = 0,
+    val transactionItemName: String,
+    val amount: String,
+    val price: String,
+
+    val transactionTotalPrice: String,
+    val transactionType: String,
+    val date: String,
+)

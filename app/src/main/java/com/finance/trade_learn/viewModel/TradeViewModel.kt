@@ -3,14 +3,17 @@ package com.finance.trade_learn.viewModel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.utils.solveCoinName
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
+import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 import com.finance.trade_learn.models.TradeType
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
+import com.finance.trade_learn.service.user.UserApi
 import com.finance.trade_learn.view.CoinProgress
 import com.finance.trade_learn.view.trade.TradePageUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -237,17 +240,59 @@ class TradeViewModel @Inject constructor(
         Log.i("timetime", sdf.format(Date()))
         val currentTime = sdf.format(Date())
 
-        val newTrade = UserTransactions(
+        val transaction = UserTransactions(
             transactionItemName = coinName,
             price = coinPrice.toBigDecimal().toString(),
             amount = coinAmount.toBigDecimal().toString(),
             transactionTotalPrice = total.toBigDecimal().toString(),
-            date = currentTime,
+            date = System.currentTimeMillis().toString(),
             transactionType = tradeOperation.toString()
         )
 
         CoroutineScope(Dispatchers.IO).launch {
-            coinDetailRepositoryImp.addProgressToTradeHistory(newTrade)
+            val isLogin = true
+            if (isLogin) addTransactionHistory(transaction = transaction)
+            else coinDetailRepositoryImp.addProgressToTradeHistory(transaction)
+        }
+    }
+
+    private fun addTransactionHistory(transaction : UserTransactions){
+        //_transactionViewState.value = transactionViewState.value.copy(isLoading = true)
+
+
+        val userTransactionsRequest = UserTransactionsRequest(
+            email = "hasan-balaban@hotmail.com",
+            id = transaction.id,
+            transactionItemName = transaction.transactionItemName,
+            amount = transaction.amount,
+            price = transaction.price,
+            transactionTotalPrice = transaction.transactionTotalPrice,
+            transactionType = transaction.transactionType,
+            date = transaction.date
+        )
+
+        viewModelScope.launch {
+            val userService = UserApi()
+
+            val response = userService.addTransactionHistory(transaction = userTransactionsRequest)
+
+            //_transactionViewState.value = transactionViewState.value.copy(isLoading = false)
+            if (response.isSuccessful){
+                response.body()?.let {
+                   // _transactionHistoryResponse.value = it
+                    println(it)
+                    println(it)
+                    println(it)
+                }
+                println(response.body()?.success)
+                response.body()?.data
+                return@launch
+            }
+
+            println(response.message())
+            println(response.body()?.message)
+            println(response.body()?.error)
+            println(response.body()?.success)
         }
     }
 

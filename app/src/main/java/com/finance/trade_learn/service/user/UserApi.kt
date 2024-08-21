@@ -1,16 +1,12 @@
 package com.finance.trade_learn.service.user
 
-import android.provider.ContactsContract.CommonDataKinds.Email
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
+import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 import com.finance.trade_learn.models.NewUserRequest
 import com.finance.trade_learn.models.ResetPasswordRequest
 import com.finance.trade_learn.models.User
 import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
-import com.finance.trade_learn.models.coin_gecko.CoinDetail
-import com.finance.trade_learn.models.handleResponse
-import com.finance.trade_learn.service.ctryptoApi.CryptoOperationInterface
-import io.reactivex.Single
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -61,8 +57,8 @@ class UserApi {
         return userService.getTransactionHistory(email = email)
     }
 
-    suspend fun addTransactionHistory(userTransactions: UserTransactions): Response<WrapResponse<String>>  {
-        return userService.addTransactionHistory(userTransactions = userTransactions)
+    suspend fun addTransactionHistory(transaction: UserTransactionsRequest): Response<WrapResponse<String>>  {
+        return userService.addTransactionHistory(userTransactions = transaction)
     }
 
 }

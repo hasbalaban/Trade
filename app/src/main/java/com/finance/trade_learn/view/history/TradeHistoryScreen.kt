@@ -3,6 +3,7 @@ package com.finance.trade_learn.view.history
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,9 +41,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,45 +60,36 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun TradeHistoryScreen(modifier: Modifier, goBack: () -> Unit) {
+fun TradeHistoryScreen(goBack: () -> Unit) {
 
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.buy_sel_operations_text),
-                        color = MaterialTheme.colors.onPrimary
-                    )
-                },
-                backgroundColor = MaterialTheme.colors.primary,
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            goBack.invoke()
-                        }, modifier = Modifier.padding(12.dp)
-                    ) {
-                        Icon(
-                            Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = "Back",
-                            tint = MaterialTheme.colors.onPrimary
-                        )
-                    }
-                }
+    Column(modifier = Modifier.fillMaxSize()){
+        Box(modifier = Modifier.fillMaxWidth().padding(top = 24.dp).background(Color.White), contentAlignment = Alignment.CenterStart){
+            IconButton(
+                onClick = {
+                    goBack.invoke()
+                }, modifier = Modifier.padding(12.dp)
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Outlined.ArrowBack,
+                    contentDescription = "Back",
+                    tint = MaterialTheme.colors.onPrimary
+                )
+            }
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.buy_sel_operations_text),
+                color = MaterialTheme.colors.onPrimary,
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp
             )
         }
-    ) {
-        MainContent(
-            modifier = modifier.padding(it),
-            goBack = goBack
-        )
+        MainContent( goBack = goBack)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-private fun MainContent(modifier: Modifier, goBack: () -> Unit) {
+private fun MainContent(goBack: () -> Unit) {
     val viewModel = LocalViewModelHistoryTrade.current
     val transactions by viewModel.transactionHistoryResponse.collectAsState()
     val transactionViewState by viewModel.transactionViewState.collectAsState()
@@ -107,9 +101,9 @@ private fun MainContent(modifier: Modifier, goBack: () -> Unit) {
         else viewModel.getDataFromDatabase(context)
     }
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = Modifier .fillMaxSize().background(MaterialTheme.colors.background), contentAlignment = Alignment.Center) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(8.dp)
         ) {
