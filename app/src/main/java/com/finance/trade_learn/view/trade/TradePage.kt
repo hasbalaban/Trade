@@ -128,6 +128,7 @@ private fun TradeMainScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primary)
+                .padding(top = 24.dp)
                 .padding(vertical = 16.dp, horizontal = 16.dp),
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 20.sp,
