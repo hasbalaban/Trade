@@ -249,6 +249,9 @@ class MainActivity : AppCompatActivity() {
                     ProfileScreen(
                         onLogOut = {
                             navController.popBackStack()
+                        },
+                        goTransactionScreen = {
+                            navController.navigate(Screens.HistoryScreen.route)
                         }
                     )
                 }

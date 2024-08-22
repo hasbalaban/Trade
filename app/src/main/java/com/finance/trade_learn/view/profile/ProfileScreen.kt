@@ -6,9 +6,9 @@ import androidx.compose.runtime.Composable
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -29,12 +29,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.finance.trade_learn.utils.DataStoreKeys
 import com.finance.trade_learn.utils.clearSpecificPreference
 import com.finance.trade_learn.view.LocalProfileViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
-    onLogOut : () -> Unit
+    onLogOut : () -> Unit,
+    goTransactionScreen : () -> Unit
 ) {
     val context = LocalContext.current
     val coroutines = rememberCoroutineScope()
@@ -100,7 +100,16 @@ fun ProfileScreen(
                 fontSize = 16.sp
             )
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+            //ActionButton("Edit Profile")
+            //ActionButton("Settings")
+
+            ActionButton("Transaction History", onClickActionButton = goTransactionScreen)
+
             Spacer(modifier = Modifier.weight(1f))
+
+
 
 
             Button(
@@ -145,13 +154,15 @@ fun ProfileScreen(
 }
 
 @Composable
-fun ActionButton(text: String) {
+fun ActionButton(text: String, onClickActionButton : () -> Unit, modifier: Modifier = Modifier) {
     Button(
-        onClick = { /* Handle button click */ },
-        modifier = Modifier
+        onClick = {
+            onClickActionButton.invoke()
+        },
+        modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF2C2C2E))
+            .padding(vertical = 12.dp),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xff3B82F6))
     ) {
         Text(text, color = Color.White)
     }
@@ -160,7 +171,7 @@ fun ActionButton(text: String) {
 @Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview() {
-    ProfileScreen(onLogOut = {})
+    ProfileScreen(onLogOut = {}, goTransactionScreen = {})
 }
 
 
