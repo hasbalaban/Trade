@@ -99,8 +99,8 @@ private fun MainToolbar() {
 
     TopAppBar(
         colors = topAppBarColors(
-            containerColor = Color.White,
-            scrolledContainerColor = Color.White
+            containerColor = MaterialTheme.colors.primary,
+            scrolledContainerColor = MaterialTheme.colors.primary
         ),
         title = {},
         actions = {
@@ -144,7 +144,7 @@ fun SearchBar() {
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = null,
-                tint = Color.Black
+                tint = MaterialTheme.colors.onPrimary
             )
         },
         modifier = Modifier
@@ -155,7 +155,6 @@ fun SearchBar() {
             .padding(16.dp),
         shape = RoundedCornerShape(20),
         colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color(0xffF9FAFC),
             cursorColor = Color.Gray,
 
             focusedIndicatorColor = Color.Transparent,
@@ -167,7 +166,8 @@ fun SearchBar() {
         placeholder = {
             Text(
                 fontSize = 16.sp,
-                text = "Search Coin"
+                text = "Search Coin",
+                color = MaterialTheme.colors.onPrimary
             )
         }
 

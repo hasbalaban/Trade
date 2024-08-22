@@ -59,8 +59,8 @@ import java.util.Locale
 @Composable
 fun TradeHistoryScreen(goBack: () -> Unit) {
 
-    Column(modifier = Modifier.fillMaxSize()){
-        Box(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.primary).padding(top = 24.dp), contentAlignment = Alignment.CenterStart){
+    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.primary)){
+        Box(modifier = Modifier.fillMaxWidth().padding(top = 24.dp), contentAlignment = Alignment.CenterStart){
             IconButton(
                 onClick = {
                     goBack.invoke()
@@ -98,7 +98,7 @@ private fun MainContent(goBack: () -> Unit) {
         else viewModel.getDataFromDatabase(context)
     }
 
-    Box(modifier = Modifier .fillMaxSize().background(MaterialTheme.colors.background), contentAlignment = Alignment.Center) {
+    Box(modifier = Modifier .fillMaxSize(), contentAlignment = Alignment.Center) {
 
 
         if (transactions.data?.isEmpty() == true){
@@ -112,7 +112,6 @@ private fun MainContent(goBack: () -> Unit) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
                 ) {
                     items(transactions.data ?: emptyList()) { trade ->
                         TradeItem(trade)
@@ -281,9 +280,9 @@ fun EmptyTransactionHistoryScreen(
     ) {
         Text(
             text = "No Transactions Yet",
-            fontSize = 24.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Gray
+            color = MaterialTheme.colors.onPrimary
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -291,8 +290,8 @@ fun EmptyTransactionHistoryScreen(
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = "It seems like you haven't made any transactions yet.",
-            fontSize = 16.sp,
-            color = Color.Gray,
+            fontSize = 14.sp,
+            color = MaterialTheme.colors.onPrimary,
             textAlign = TextAlign.Center
         )
 
@@ -303,9 +302,9 @@ fun EmptyTransactionHistoryScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xff3B82F6))
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.onPrimary)
         ) {
-            Text(text = "Go Back", fontSize = 18.sp, color = Color.White)
+            Text(text = "Go Back", fontSize = 18.sp, color = MaterialTheme.colors.primary)
         }
     }
 }

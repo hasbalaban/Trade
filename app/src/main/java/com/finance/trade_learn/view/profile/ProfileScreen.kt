@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -63,12 +64,12 @@ fun ProfileScreen(
 
 
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+    Box(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.colors.primary), contentAlignment = Alignment.Center){
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF1C1C1E)) // Dark background to match cryptocurrency theme
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -80,7 +81,8 @@ fun ProfileScreen(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape),
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -161,7 +163,7 @@ fun ActionButton(text: String, onClickActionButton : () -> Unit, modifier: Modif
         },
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp),
+            .padding(vertical = 20.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xff3B82F6))
     ) {
         Text(text, color = Color.White)
@@ -172,9 +174,4 @@ fun ActionButton(text: String, onClickActionButton : () -> Unit, modifier: Modif
 @Composable
 fun ProfileScreenPreview() {
     ProfileScreen(onLogOut = {}, goTransactionScreen = {})
-}
-
-
-fun deleteAccount(){
-
 }

@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.BottomAppBar
@@ -163,11 +164,10 @@ class MainActivity : AppCompatActivity() {
                             if (shouldShowBottomNavigationBar) {
                                 BottomNavigationBar(navController = navController)
                             }
-                        }
+                        },
+                        backgroundColor = MaterialTheme.colors.primary
                     ) { padding ->
-                        Surface(color = androidx.compose.material.MaterialTheme.colors.secondaryVariant) {
-                            MainScreen(navController, Modifier.padding(paddingValues = padding))
-                        }
+                        MainScreen(navController, Modifier.padding(paddingValues = padding))
                     }
                 }
 
@@ -501,7 +501,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 
     BottomAppBar(
         scrollBehavior = scrollBehavior,
-        containerColor = Color.Transparent,
+        containerColor = MaterialTheme.colors.primary,
         contentColor = Color.White,
         tonalElevation = 8.dp,
         modifier = Modifier

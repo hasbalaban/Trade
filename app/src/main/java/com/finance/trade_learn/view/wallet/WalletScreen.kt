@@ -67,7 +67,9 @@ fun WalletScreen(
     Scaffold(
         topBar = { WalletTopBar() },
         content = {
-            WalletContent(navigateToHistoryPage = navigateToHistoryPage, modifier = Modifier.padding(it))
+            WalletContent(navigateToHistoryPage = navigateToHistoryPage, modifier = Modifier.padding(
+                top = it.calculateTopPadding()
+            ))
         }
     )
 }
