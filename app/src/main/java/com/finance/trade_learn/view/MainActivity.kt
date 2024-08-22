@@ -224,9 +224,14 @@ class MainActivity : AppCompatActivity() {
                 val viewModel = hiltViewModel<WalletPageViewModel>()
 
                 CompositionLocalProvider(LocalWalletPageViewModel provides viewModel) {
-                    WalletScreen() {
-                        navController.navigate(Screens.HistoryScreen.route)
-                    }
+                    WalletScreen(
+                        goBack = {
+                            navController.popBackStack()
+                        },
+                        navigateToHistoryPage = {
+                            navController.navigate(Screens.HistoryScreen.route)
+                        }
+                    )
                 }
 
             }
