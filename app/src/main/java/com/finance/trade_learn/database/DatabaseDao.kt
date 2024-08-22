@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
+import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 
 @Dao
 interface DatabaseDao {

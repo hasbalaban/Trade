@@ -67,7 +67,7 @@ fun WalletScreen(
     Scaffold(
         topBar = { WalletTopBar() },
         content = {
-            WalletContent(navigateToHistoryPage = navigateToHistoryPage)
+            WalletContent(navigateToHistoryPage = navigateToHistoryPage, modifier = Modifier.padding(it))
         }
     )
 }
@@ -92,7 +92,7 @@ fun WalletTopBar() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WalletContent(navigateToHistoryPage: () -> Unit) {
+fun WalletContent(navigateToHistoryPage: () -> Unit, modifier: Modifier) {
     val viewModel = LocalWalletPageViewModel.current
     val cryptoItems = viewModel.myCoinsNewModel.observeAsState(emptyList())
 
@@ -105,23 +105,11 @@ fun WalletContent(navigateToHistoryPage: () -> Unit) {
     )
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.primary)
-            .padding(16.dp)
+            .padding(12.dp)
     ) {
-        Text(
-            text = stringResource(id = R.string.cripto_wallet),
-            style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colors.onPrimary,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        HorizontalDivider(
-            modifier = Modifier.padding(bottom = 16.dp),
-            color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f)
-        )
-
         Text(
             text = stringResource(id = R.string.total_balance),
             style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,

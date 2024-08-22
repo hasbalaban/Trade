@@ -2,7 +2,9 @@ package com.finance.trade_learn.view.history
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,10 +17,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Card
@@ -28,7 +31,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -38,6 +42,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,55 +57,80 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun TradeHistoryScreen(modifier: Modifier, goBack : () -> Unit) {
-    val viewModel = LocalViewModelHistoryTrade.current
+fun TradeHistoryScreen(goBack: () -> Unit) {
 
-    val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        viewModel.getDataFromDatabase(context)
+    Column(modifier = Modifier.fillMaxSize()){
+        Box(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.primary).padding(top = 24.dp), contentAlignment = Alignment.CenterStart){
+            IconButton(
+                onClick = {
+                    goBack.invoke()
+                }, modifier = Modifier.padding(12.dp)
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Outlined.ArrowBack,
+                    contentDescription = "Back",
+                    tint = MaterialTheme.colors.onPrimary
+                )
+            }
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.buy_sel_operations_text),
+                color = MaterialTheme.colors.onPrimary,
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp
+            )
+        }
+        MainContent(goBack = goBack)
     }
-
-    val trades = viewModel.listOfTrade.observeAsState(emptyList()).value
-    MainContent(trades = trades, modifier = modifier, goBack = goBack)
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-private fun MainContent(trades: List<UserTransactions>, modifier: Modifier, goBack: () -> Unit) {
-    Scaffold(
-        topBar = {
+private fun MainContent(goBack: () -> Unit) {
+    val viewModel = LocalViewModelHistoryTrade.current
+    val transactions by viewModel.transactionHistoryResponse.collectAsState()
+    val transactionViewState by viewModel.transactionViewState.collectAsState()
 
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.buy_sel_operations_text), color = MaterialTheme.colors.onPrimary) },
-                backgroundColor = MaterialTheme.colors.primary,
-                navigationIcon = {
-                    IconButton(onClick = {
-                        goBack.invoke()
-                    }, modifier = Modifier.padding(12.dp)
-                    ) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colors.onPrimary)
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        val isLogin = true
+        if (isLogin) viewModel.getTransactionHistory()
+        else viewModel.getDataFromDatabase(context)
+    }
+
+    Box(modifier = Modifier .fillMaxSize().background(MaterialTheme.colors.background), contentAlignment = Alignment.Center) {
+
+
+        if (transactions.data?.isEmpty() == true){
+            EmptyTransactionHistoryScreen(onGoBackClick = goBack)
+        }else{
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    items(transactions.data ?: emptyList()) { trade ->
+                        TradeItem(trade)
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .alpha(0.5f)
+                                .padding(vertical = 8.dp)
+                        )
                     }
                 }
-            )
-        }
-    ) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(8.dp)
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            ) {
-                items(trades) { trade ->
-                    TradeItem(trade)
-                    HorizontalDivider(modifier = Modifier
-                        .alpha(0.5f)
-                        .padding(vertical = 8.dp))
-                }
             }
+        }
+
+        if (transactionViewState.isLoading) {
+            CircularProgressIndicator(
+                color = Color(0xff3B82F6),
+                strokeWidth = 4.dp
+            )
         }
     }
 }
@@ -163,13 +193,16 @@ fun TradeItem(trade: UserTransactions) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stringResource(id = R.string.amount) + trade.amount.toDouble().formatAmount(),
+                        text = stringResource(id = R.string.amount) + trade.amount.toDouble()
+                            .formatAmount(),
                         fontSize = 13.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = stringResource(id = R.string.price) + ": ${trade.price.toDouble().formatPrice()}",
+                        text = stringResource(id = R.string.price) + ": ${
+                            trade.price.toDouble().formatPrice()
+                        }",
                         fontSize = 13.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
@@ -181,7 +214,9 @@ fun TradeItem(trade: UserTransactions) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stringResource(id = R.string.total) + ": ${trade.transactionTotalPrice.toDouble().formatTotalCost()}",
+                        text = stringResource(id = R.string.total) + ": ${
+                            trade.transactionTotalPrice.toDouble().formatTotalCost()
+                        }",
                         fontSize = 13.sp,
                         color = MaterialTheme.colors.onSurface // Text color
                     )
@@ -203,7 +238,11 @@ fun TradeItem(trade: UserTransactions) {
                         color = MaterialTheme.colors.onPrimary // Default text color
                     )
                     Text(
-                        text = if (trade.transactionType.equals(stringResource(id = R.string.buy), ignoreCase = true)) {
+                        text = if (trade.transactionType.equals(
+                                stringResource(id = R.string.buy),
+                                ignoreCase = true
+                            )
+                        ) {
                             stringResource(id = R.string.buy)
                         } else {
                             stringResource(id = R.string.sell)
@@ -211,7 +250,11 @@ fun TradeItem(trade: UserTransactions) {
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         color =
-                        if (trade.transactionType.equals(stringResource(id = R.string.buy), ignoreCase = true))
+                        if (trade.transactionType.equals(
+                                stringResource(id = R.string.buy),
+                                ignoreCase = true
+                            )
+                        )
                             Color(0xFF4CAF50)
                         else
                             Color(0xFFF44336)
@@ -225,6 +268,49 @@ fun TradeItem(trade: UserTransactions) {
 }
 
 
+@Composable
+fun EmptyTransactionHistoryScreen(
+    onGoBackClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "No Transactions Yet",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Gray
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "It seems like you haven't made any transactions yet.",
+            fontSize = 16.sp,
+            color = Color.Gray,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Button(
+            onClick = onGoBackClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xff3B82F6))
+        ) {
+            Text(text = "Go Back", fontSize = 18.sp, color = Color.White)
+        }
+    }
+}
+
+
 // Extensions for formatting
 fun Double.formatAmount(): String = "%.6f".format(this)
 fun Double.formatPrice(): String = "%.6f".format(this)
@@ -232,7 +318,16 @@ fun Double.formatTotalCost(): String = "%.3f".format(this)
 fun String.formatDate(): String {
     val inputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
     val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-    val date = inputFormat.parse(this)
+
+    val date = try {
+        inputFormat.parse(this)
+    }catch (_ : Exception){
+        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+        val date = Date(this.toLong())
+        val formattedDate = sdf.format(date)
+        inputFormat.parse(formattedDate)
+    }
+
     return outputFormat.format(date)
 }
 
@@ -246,20 +341,22 @@ fun PreviewTradeScreen() {
             "0.5",
             "35000.0",
             "17500.0",
+            "Buy",
             SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date()),
-            "Buy"
-        ),
+
+            ),
         UserTransactions(
             2,
             "Ethereum",
             "10.0",
             "2300.0",
             "23000.0",
-            SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date(System.currentTimeMillis() - 86400000)),
-            "sell"
+            "sell",
+            SimpleDateFormat(
+                "dd/MM/yyyy HH:mm:ss",
+                Locale.getDefault()
+            ).format(Date(System.currentTimeMillis() - 86400000)),
         )
     )
-    MainContent(sampleTradeData, modifier = Modifier, goBack = {
-
-    })
+    TradeItem(sampleTradeData.first())
 }

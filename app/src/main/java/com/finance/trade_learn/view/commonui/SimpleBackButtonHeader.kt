@@ -28,6 +28,7 @@ fun SimpleBackButtonHeader(
         modifier = Modifier
             .fillMaxWidth()
             .background(backgroundColor) // Arka plan rengi
+            .padding(top = 24.dp)
             .padding(16.dp),
         contentAlignment = Alignment.CenterStart
     ) {
