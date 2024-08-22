@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 
 data class SignUpViewState(
     val email: String = "",
+    val nameAndSurname : String = "",
     val password: String = "",
     val confirmPassword: String = "",
     val isLoading: Boolean = false
@@ -37,6 +38,12 @@ data class SignUpViewState(
 
     val emailBorderColor: Color
         get() = when (isEmailValid) {
+            true -> Color.Green
+            false -> Color.Gray
+        }
+
+    val nameAndSurnameBorder: Color
+        get() = when (nameAndSurname.length >= 2) {
             true -> Color.Green
             false -> Color.Gray
         }

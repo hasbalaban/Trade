@@ -129,7 +129,31 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                OutlinedTextField(
+                    value = signUpViewState.nameAndSurname,
+                    onValueChange = {
+                        viewModel.changeUserNameAndSurname(it)
+                    },
+                    placeholder = { Text("Name and surname") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, signUpViewState.nameAndSurnameBorder, RoundedCornerShape(6.dp)),
+                    singleLine = true,
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        cursorColor = Color.Gray,
+                        textColor = Color.Black,
+                        focusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
+                        unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için,
 
+                        placeholderColor = Color.Gray
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
 
 
                 OutlinedTextField(
