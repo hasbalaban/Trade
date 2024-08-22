@@ -1,7 +1,6 @@
 package com.finance.trade_learn.view.history
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,11 +17,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Card
@@ -34,14 +33,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,7 +60,7 @@ import java.util.Locale
 fun TradeHistoryScreen(goBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()){
-        Box(modifier = Modifier.fillMaxWidth().padding(top = 24.dp).background(Color.White), contentAlignment = Alignment.CenterStart){
+        Box(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.primary).padding(top = 24.dp), contentAlignment = Alignment.CenterStart){
             IconButton(
                 onClick = {
                     goBack.invoke()
@@ -83,7 +80,7 @@ fun TradeHistoryScreen(goBack: () -> Unit) {
                 fontSize = 20.sp
             )
         }
-        MainContent( goBack = goBack)
+        MainContent(goBack = goBack)
     }
 }
 
@@ -102,23 +99,29 @@ private fun MainContent(goBack: () -> Unit) {
     }
 
     Box(modifier = Modifier .fillMaxSize().background(MaterialTheme.colors.background), contentAlignment = Alignment.Center) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
-        ) {
-            LazyColumn(
+
+
+        if (transactions.data?.isEmpty() == true){
+            EmptyTransactionHistoryScreen(onGoBackClick = goBack)
+        }else{
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .fillMaxSize()
+                    .padding(8.dp)
             ) {
-                items(transactions.data ?: emptyList()) { trade ->
-                    TradeItem(trade)
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .alpha(0.5f)
-                            .padding(vertical = 8.dp)
-                    )
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    items(transactions.data ?: emptyList()) { trade ->
+                        TradeItem(trade)
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .alpha(0.5f)
+                                .padding(vertical = 8.dp)
+                        )
+                    }
                 }
             }
         }
@@ -260,6 +263,49 @@ fun TradeItem(trade: UserTransactions) {
 
 
             }
+        }
+    }
+}
+
+
+@Composable
+fun EmptyTransactionHistoryScreen(
+    onGoBackClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "No Transactions Yet",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Gray
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "It seems like you haven't made any transactions yet.",
+            fontSize = 16.sp,
+            color = Color.Gray,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Button(
+            onClick = onGoBackClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xff3B82F6))
+        ) {
+            Text(text = "Go Back", fontSize = 18.sp, color = Color.White)
         }
     }
 }
