@@ -21,6 +21,10 @@ class ForgotPasswordViewModel : ViewModel() {
         _forgotPasswordViewState.value = forgotPasswordViewState.value.copy(email = email)
     }
 
+    fun clearCodeResponse(){
+        _sendCodeResponse.value = WrapResponse()
+    }
+
 
     fun sendResetPasswordCode(){
         _forgotPasswordViewState.value = forgotPasswordViewState.value.copy(isLoading = true)

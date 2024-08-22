@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.BottomAppBar
@@ -163,11 +164,10 @@ class MainActivity : AppCompatActivity() {
                             if (shouldShowBottomNavigationBar) {
                                 BottomNavigationBar(navController = navController)
                             }
-                        }
+                        },
+                        backgroundColor = MaterialTheme.colors.primary
                     ) { padding ->
-                        Surface(color = androidx.compose.material.MaterialTheme.colors.secondaryVariant) {
-                            MainScreen(navController, Modifier.padding(paddingValues = padding))
-                        }
+                        MainScreen(navController, Modifier.padding(paddingValues = padding))
                     }
                 }
 
@@ -224,9 +224,14 @@ class MainActivity : AppCompatActivity() {
                 val viewModel = hiltViewModel<WalletPageViewModel>()
 
                 CompositionLocalProvider(LocalWalletPageViewModel provides viewModel) {
-                    WalletScreen() {
-                        navController.navigate(Screens.HistoryScreen.route)
-                    }
+                    WalletScreen(
+                        goBack = {
+                            navController.popBackStack()
+                        },
+                        navigateToHistoryPage = {
+                            navController.navigate(Screens.HistoryScreen.route)
+                        }
+                    )
                 }
 
             }
@@ -319,10 +324,7 @@ class MainActivity : AppCompatActivity() {
                         userEmail = "hasan-balaban@hotmail.com",
                         onVerifyCode = {
                             navController.navigate(Screens.Login.route){
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                }
-                                restoreState = true
+                                popUpTo(navController.graph.startDestinationRoute ?: Screens.Home.route)
                                 launchSingleTop = true
                             }
                         },
@@ -504,7 +506,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 
     BottomAppBar(
         scrollBehavior = scrollBehavior,
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colors.primary,
         contentColor = Color.White,
         tonalElevation = 8.dp,
         modifier = Modifier
@@ -526,8 +528,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                         imageVector = navItem.icon,
                         contentDescription = stringResource(id = navItem.label),
                         modifier = Modifier
-                            .size(36.dp)
-                            .padding(2.dp)
+                            .size(20.dp)
                             .then(otherModifier),
                         colorFilter = ColorFilter.tint(
                             if (isSelected && navItem.label != R.string.Trade) selectedColor

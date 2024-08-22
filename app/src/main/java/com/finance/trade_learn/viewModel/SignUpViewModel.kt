@@ -1,7 +1,5 @@
 package com.finance.trade_learn.viewModel
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.models.NewUserRequest
@@ -10,13 +8,10 @@ import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.service.user.UserApi
 import com.finance.trade_learn.view.loginscreen.signup.SignUpViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor() : ViewModel() {
@@ -28,6 +23,10 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
     val userSignUpResponse: StateFlow<WrapResponse<User?>> get() = _userSignUpResponse
 
 
+
+    fun changeUserNameAndSurname(nameAndSurname: String) {
+        _signUpViewState.value = _signUpViewState.value.copy(nameAndSurname = nameAndSurname)
+    }
 
     fun changeEmail(email: String) {
         _signUpViewState.value = _signUpViewState.value.copy(email = email)
@@ -49,9 +48,8 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
             val userService = UserApi()
             val newUserRequest = NewUserRequest(
                 email = signUpViewState.value.email,
-                password = signUpViewState.value.password,
-                userName = Random.nextInt().toString(),
-                userSurname = Random.nextInt().toString(),
+                nameAndSurname = signUpViewState.value.nameAndSurname,
+                password = signUpViewState.value.password
             )
 
             val response = userService.createNewUser(newUserRequest)
@@ -75,5 +73,4 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
         }
 
     }
-
 }

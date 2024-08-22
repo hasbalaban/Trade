@@ -56,8 +56,8 @@ fun ForgotPasswordScreen(onResetPassword: () -> Unit, onBackToLogin: () -> Unit)
         if (sendCodeResponse.success == true) {
             Toast.makeText(context, sendCodeResponse.message, Toast.LENGTH_LONG).show()
             coroutines.launch {
-                delay(1000)
                 onResetPassword.invoke()
+                viewModel.clearCodeResponse()
             }
         } else if (sendCodeResponse.success == false){
             Toast.makeText(context, sendCodeResponse.message ?: sendCodeResponse.error?.message ?: "error", Toast.LENGTH_LONG).show()

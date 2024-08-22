@@ -72,10 +72,7 @@ fun CodeVerificationScreen(
     LaunchedEffect(verificationCodeResponse.success){
         if (verificationCodeResponse.success == true) {
             Toast.makeText(context, verificationCodeResponse.message, Toast.LENGTH_LONG).show()
-            coroutines.launch {
-                delay(1000)
-                onVerifyCode.invoke()
-            }
+            onVerifyCode.invoke()
         } else if (verificationCodeResponse.success == false){
             Toast.makeText(context, verificationCodeResponse.message ?: verificationCodeResponse.error?.message ?: "error", Toast.LENGTH_LONG).show()
         }
