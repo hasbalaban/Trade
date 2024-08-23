@@ -1,17 +1,13 @@
 package com.finance.trade_learn.viewModel
 
 import android.content.Context
-import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finance.trade_learn.models.User
-import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.service.user.UserApi
 import com.finance.trade_learn.utils.DataStoreKeys
 import com.finance.trade_learn.utils.readStringPreference
 import com.finance.trade_learn.view.profile.ProfileViewState
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

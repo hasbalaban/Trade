@@ -7,18 +7,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.models.DataForHomePage
+import com.finance.trade_learn.models.UserInfo
+import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.service.ctryptoApi.cryptoService
+import com.finance.trade_learn.service.user.UserApi
 import com.finance.trade_learn.utils.ConvertOperation
 import com.finance.trade_learn.utils.DataStoreKeys
 import com.finance.trade_learn.utils.RemoteConfigs
 import com.finance.trade_learn.utils.readStringPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,6 +29,16 @@ import javax.inject.Inject
 @HiltViewModel
 open class BaseViewModel @Inject constructor(
 ) : ViewModel() {
+
+
+    private var userEmail = ""
+    private var userPassword = ""
+
+
+
+    private val _userInfo = MutableStateFlow<WrapResponse<UserInfo>>(WrapResponse())
+    val userInfo : StateFlow<WrapResponse<UserInfo>> get() = _userInfo
+
 
     private val _isLogin = MutableStateFlow<Boolean>(false)
     val isLogin : StateFlow<Boolean> get() = _isLogin
@@ -115,20 +128,50 @@ open class BaseViewModel @Inject constructor(
     }
 
 
+    private var job : Job = Job()
+    fun checkUserInfo(context: Context) {
+        job.cancel()
+        job = viewModelScope.launch {
+            val userEmailFlow = context.readStringPreference(DataStoreKeys.StringKeys.email)
+            val userPasswordFlow = context.readStringPreference(DataStoreKeys.StringKeys.password)
 
-    fun isLogin(context: Context){
-        viewModelScope.launch {
-            val userEmail =  context.readStringPreference(DataStoreKeys.StringKeys.email)
-            val userpassword = context.readStringPreference(DataStoreKeys.StringKeys.password)
-
-            userEmail.zip(userpassword){email, password ->
-                email.isNotBlank() && password.isNotBlank()
-            }.collect{isLogin ->
-                _isLogin.value = isLogin
+            userEmailFlow.zip(userPasswordFlow) { email, password ->
+                email to password
+            }.collect { result ->
+                if (result.first.isNotBlank() && result.second.isNotBlank()) {
+                    userEmail = result.first
+                    userPassword = result.second
+                    getUserInfo()
+                }
             }
+
         }
     }
 
+    private suspend fun getUserInfo() {
+
+        viewModelScope.launch {
+            val userService = UserApi()
+            val response = userService.getUserInfo(email = userEmail)
+
+            if (response.isSuccessful){
+                response.body()?.let {
+                    _userInfo.value = it
+                    _isLogin.value = true
+                }
+                println(response.body()?.success)
+                response.body()?.data
+                return@launch
+            }
+
+            println(response.message())
+            println(response.body()?.message)
+            println(response.body()?.error)
+            println(response.body()?.success)
+
+
+        }
+    }
 
 
     override fun onCleared() {

@@ -3,7 +3,7 @@ package com.finance.trade_learn.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.models.NewUserRequest
-import com.finance.trade_learn.models.User
+import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.service.user.UserApi
 import com.finance.trade_learn.view.loginscreen.signup.SignUpViewState
@@ -19,8 +19,8 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
     val signUpViewState: StateFlow<SignUpViewState> get() = _signUpViewState
 
 
-    private val _userSignUpResponse = MutableStateFlow<WrapResponse<User?>>(WrapResponse())
-    val userSignUpResponse: StateFlow<WrapResponse<User?>> get() = _userSignUpResponse
+    private val _userSignUpResponse = MutableStateFlow<WrapResponse<UserInfo>>(WrapResponse())
+    val userSignUpResponse: StateFlow<WrapResponse<UserInfo>> get() = _userSignUpResponse
 
 
 

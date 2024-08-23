@@ -4,7 +4,7 @@ import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 import com.finance.trade_learn.models.NewUserRequest
 import com.finance.trade_learn.models.ResetPasswordRequest
-import com.finance.trade_learn.models.User
+import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
 import okhttp3.OkHttpClient
@@ -33,11 +33,11 @@ class UserApi {
         .build()
         .create(UserService::class.java)
 
-    suspend fun createNewUser(newUserRequest: NewUserRequest): Response<WrapResponse<User?>> {
+    suspend fun createNewUser(newUserRequest: NewUserRequest): Response<WrapResponse<UserInfo>> {
         return userService.createNewUser(newUserRequest = newUserRequest)
     }
 
-    suspend fun login(loginRequest: UserLoginRequest): Response<WrapResponse<User?>> {
+    suspend fun login(loginRequest: UserLoginRequest): Response<WrapResponse<UserInfo>> {
         return userService.login(loginRequest = loginRequest)
     }
 
@@ -59,6 +59,9 @@ class UserApi {
 
     suspend fun addTransactionHistory(transaction: UserTransactionsRequest): Response<WrapResponse<String>>  {
         return userService.addTransactionHistory(userTransactions = transaction)
+    }
+    suspend fun getUserInfo(email: String): Response<WrapResponse<UserInfo>>  {
+        return userService.getUserInfo(email = email)
     }
 
 }
