@@ -2,13 +2,11 @@ package com.finance.trade_learn.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finance.trade_learn.models.NewUserRequest
-import com.finance.trade_learn.models.User
+import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.service.user.UserApi
 import com.finance.trade_learn.view.loginscreen.login.LoginViewState
-import com.finance.trade_learn.view.loginscreen.signup.SignUpViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,8 +22,8 @@ class LoginViewModel @Inject constructor() : ViewModel() {
 
 
 
-    private val _userLoginResponse = MutableStateFlow<WrapResponse<User?>>(WrapResponse())
-    val userLoginResponse: StateFlow<WrapResponse<User?>> get() = _userLoginResponse
+    private val _userLoginResponse = MutableStateFlow<WrapResponse<UserInfo>>(WrapResponse())
+    val userLoginResponse: StateFlow<WrapResponse<UserInfo>> get() = _userLoginResponse
 
     fun changeEmail(email: String) {
         _loginViewState.value = loginViewState.value.copy(email = email)

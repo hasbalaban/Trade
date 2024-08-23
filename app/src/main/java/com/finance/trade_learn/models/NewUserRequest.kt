@@ -6,13 +6,24 @@ data class NewUserRequest(
     val nameAndSurname : String,
 )
 
-data class User(
-    val id: Int,
+
+data class UserInfo(
+    val email: String,
     val nameAndSurname: String,
-    val email: String
+    val balances: List<UserBalance>,
+    val totalBalance: Double
 )
+
+data class UserBalance(
+    val itemName: String,
+    val amount: Double
+)
+
 
 data class UserLoginRequest(
     val email: String,
     val password: String
 )
+
+
+

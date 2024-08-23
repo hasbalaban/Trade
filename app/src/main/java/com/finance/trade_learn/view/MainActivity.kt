@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
@@ -54,8 +53,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -148,7 +145,7 @@ class MainActivity : AppCompatActivity() {
 
                 LaunchedEffect(Unit) {
                     setup()
-                    baseViewModel.isLogin(context = context)
+                    baseViewModel.checkUserInfo(context = context)
                 }
 
 
@@ -180,6 +177,9 @@ class MainActivity : AppCompatActivity() {
         var marketPageNumber by remember { mutableIntStateOf(2) }
 
         val context = LocalContext.current
+
+        val baseViewModel = hiltViewModel<BaseViewModel>()
+
 
         NavHost(modifier = modifier, navController = navController, startDestination = Screens.Home.route) {
             composable(Screens.Home.route) {
@@ -279,6 +279,7 @@ class MainActivity : AppCompatActivity() {
                         },
                         goBack = {
                             navController.popBackStack()
+                            baseViewModel.checkUserInfo(context)
                         }
                     )
                 }
