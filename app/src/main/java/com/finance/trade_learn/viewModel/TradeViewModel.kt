@@ -126,20 +126,20 @@ class TradeViewModel @Inject constructor(
 
     // this function for buy coin that i want to be have
     private fun buyCoin(coinName: String, addCoinAmount: Double, total: Double, coinPrice: Double) {
+        var itemAmount = 0.0
+        var userTotalBalance = 0.0
 
-        var userTotalBalance = when(val userInfo = userBalance.value){
-            is TradePageUiState.Data -> {
-                userInfo.data?.CoinAmount ?: 0.0
-            }
-            else -> 0.0
+        val userBalance = userBalance.value
+        val itemBalance = _availableItemInfo.value
+
+        if (itemBalance is TradePageUiState.Data){
+            itemAmount = itemBalance.data?.CoinAmount ?: 0.0
         }
 
-        val itemAmount = when(val userInfo = _availableItemInfo.value){
-            is TradePageUiState.Data -> {
-                userInfo.data?.CoinAmount ?: 0.0
-            }
-            else -> 0.0
+        if (userBalance is TradePageUiState.Data){
+            userTotalBalance = userBalance.data?.CoinAmount ?: 0.0
         }
+
 
         CoroutineScope(Dispatchers.IO).launch {
 
