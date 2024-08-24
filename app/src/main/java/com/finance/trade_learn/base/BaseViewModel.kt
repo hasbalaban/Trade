@@ -35,14 +35,6 @@ open class BaseViewModel @Inject constructor(
     private var userPassword = ""
 
 
-
-    private val _userInfo = MutableStateFlow<WrapResponse<UserInfo>>(WrapResponse())
-    val userInfo : StateFlow<WrapResponse<UserInfo>> get() = _userInfo
-
-
-    private val _isLogin = MutableStateFlow<Boolean>(false)
-    val isLogin : StateFlow<Boolean> get() = _isLogin
-
     private var baseDisposable: CompositeDisposable = CompositeDisposable()
 
 
@@ -142,7 +134,12 @@ open class BaseViewModel @Inject constructor(
                     userEmail = result.first
                     userPassword = result.second
                     getUserInfo()
+                    return@collect
                 }
+
+
+                _userInfo.value = WrapResponse()
+                _isLogin.value = false
             }
 
         }
@@ -156,13 +153,15 @@ open class BaseViewModel @Inject constructor(
 
             if (response.isSuccessful){
                 response.body()?.let {
-                    _userInfo.value = it
-                    _isLogin.value = true
+                    updateUserInfo(it)
+                    updateUserLoginStatus(isLogin = true)
                 }
                 println(response.body()?.success)
                 response.body()?.data
                 return@launch
             }
+
+            updateUserLoginStatus(isLogin = false)
 
             println(response.message())
             println(response.body()?.message)
@@ -184,6 +183,23 @@ open class BaseViewModel @Inject constructor(
         var lastItems : List<CoinsHome> = emptyList()
 
         var allCryptoItems = ArrayList<CoinDetail>()
+
+
+
+        private val _userInfo = MutableStateFlow<WrapResponse<UserInfo>>(WrapResponse())
+        val userInfo : StateFlow<WrapResponse<UserInfo>> get() = _userInfo
+
+
+        private val _isLogin = MutableStateFlow<Boolean>(false)
+        val isLogin : StateFlow<Boolean> get() = _isLogin
+
+        fun updateUserInfo(response : WrapResponse<UserInfo>){
+            _userInfo.value = response
+        }
+
+        fun updateUserLoginStatus(isLogin : Boolean){
+            _isLogin.value = isLogin
+        }
     }
 
 }

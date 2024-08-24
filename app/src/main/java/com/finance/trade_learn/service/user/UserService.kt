@@ -4,7 +4,7 @@ import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 import com.finance.trade_learn.models.NewUserRequest
 import com.finance.trade_learn.models.ResetPasswordRequest
-import com.finance.trade_learn.models.User
+import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
 import retrofit2.Response
@@ -17,10 +17,10 @@ import retrofit2.http.Query
 interface UserService {
 
     @POST("/createNewUser")
-    suspend fun createNewUser(@Body newUserRequest : NewUserRequest): Response<WrapResponse<User?>>
+    suspend fun createNewUser(@Body newUserRequest : NewUserRequest): Response<WrapResponse<UserInfo>>
 
     @POST("/login")
-    suspend fun login(@Body loginRequest : UserLoginRequest): Response<WrapResponse<User?>>
+    suspend fun login(@Body loginRequest : UserLoginRequest): Response<WrapResponse<UserInfo>>
 
     @DELETE("/deleteUserById")
     suspend fun deleteAccount(
@@ -42,6 +42,11 @@ interface UserService {
     suspend fun addTransactionHistory(
         @Body userTransactions: UserTransactionsRequest
     ): Response<WrapResponse<String>>
+
+    @GET("/userInfo")
+    suspend fun getUserInfo(
+        @Query("email") email: String
+    ): Response<WrapResponse<UserInfo>>
 
 
 }
