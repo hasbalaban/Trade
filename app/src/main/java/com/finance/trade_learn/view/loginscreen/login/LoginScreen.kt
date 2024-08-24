@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.utils.DataStoreKeys
 import com.finance.trade_learn.utils.saveStringPreference
 import com.finance.trade_learn.view.LocalLoginViewModel
@@ -54,9 +55,14 @@ fun LoginScreen(
             coroutines.launch {
                 context.saveStringPreference(DataStoreKeys.StringKeys.email, loginViewState.email)
                 context.saveStringPreference(DataStoreKeys.StringKeys.password, loginViewState.password)
-                goBack.invoke()
+
+                BaseViewModel.updateUserInfo(userLoginResponse)
+                BaseViewModel.updateUserLoginStatus(true)
+
+                onLogin.invoke()
             }
         } else if (userLoginResponse.success == false){
+
             Toast.makeText(context, userLoginResponse.message ?: userLoginResponse.error?.message ?: "error", Toast.LENGTH_LONG).show()
         }
     }

@@ -254,6 +254,7 @@ class MainActivity : AppCompatActivity() {
                     ProfileScreen(
                         onLogOut = {
                             navController.popBackStack()
+                            baseViewModel.checkUserInfo(context)
                         },
                         goTransactionScreen = {
                             navController.navigate(Screens.HistoryScreen.route)
@@ -495,7 +496,7 @@ private fun isEmulator(): Boolean {
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     val mainViewModel = LocalBaseViewModel.current
-    val isLogin by mainViewModel.isLogin.collectAsState()
+    val isLogin by BaseViewModel.isLogin.collectAsState()
     val scrollBehavior = LocalMainScrollBehavior.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
