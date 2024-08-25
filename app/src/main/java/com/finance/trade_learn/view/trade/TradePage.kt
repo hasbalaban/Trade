@@ -54,9 +54,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
-import com.finance.trade_learn.models.TradeType
 import com.finance.trade_learn.view.CoinProgress
-import com.finance.trade_learn.view.trade.TradePageUiState
 import com.finance.trade_learn.viewModel.TradeViewModel
 
 
@@ -178,7 +176,7 @@ private fun TradeMainScreen(
                 Button(
                     onClick = {
                         if (amountToTrade > 0) {
-                            performBuyAction(amountToTrade, viewModel = viewModel)
+                            viewModel.buyCoin(amountToTrade)
                         }
                     },
                     modifier = Modifier
@@ -196,7 +194,7 @@ private fun TradeMainScreen(
                 Button(
                     onClick = {
                         if (amountToTrade > 0) {
-                            performSellAction(amountToTrade, viewModel = viewModel)
+                            viewModel.sellCoin(amountToTrade)
                         }
                     },
                     modifier = Modifier
@@ -403,35 +401,6 @@ fun BalanceSection(
             color = androidx.compose.material.MaterialTheme.colors.onPrimary
         )
     }
-}
-
-
-private fun performBuyAction(
-    amountToTrade: Double,
-    viewModel: TradeViewModel
-) {
-    val isAvailableToBuy = viewModel.compare(amount = amountToTrade, tradeState = TradeType.Buy)
-
-    if(isAvailableToBuy){
-        viewModel.operationTrade(
-            itemAmount = amountToTrade,
-            tradeType = TradeType.Buy
-        )
-    }
-
-    //Toast.makeText(context, "Alım işlemi gerçekleştirildi: $amountToTrade", Toast.LENGTH_SHORT).show()
-}
-
-private fun performSellAction(amountToTrade: Double, viewModel: TradeViewModel) {
-    val isAvailableToBuy = viewModel.compare(amount = amountToTrade, tradeState = TradeType.Sell)
-
-    if(isAvailableToBuy){
-        viewModel.operationTrade(
-            itemAmount = amountToTrade,
-            tradeType = TradeType.Sell
-        )
-    }
-    //Toast.makeText(context, "Satış işlemi gerçekleştirildi: $amountToTrade", Toast.LENGTH_SHORT).show()
 }
 
 @Preview
