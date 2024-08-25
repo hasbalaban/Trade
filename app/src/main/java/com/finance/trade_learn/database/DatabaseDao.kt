@@ -3,6 +3,7 @@ package com.finance.trade_learn.database
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
@@ -13,7 +14,7 @@ import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 interface DatabaseDao {
 
     // ------ operations of sell and buy
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addCoin(myCoins: MyCoins)
 
 
@@ -34,7 +35,7 @@ interface DatabaseDao {
 
 
     // ------ operations of save of trade
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addTrade(trade: UserTransactions)
 
     @Query("select * from SaveCoin")

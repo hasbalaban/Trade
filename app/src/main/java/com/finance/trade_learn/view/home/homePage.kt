@@ -257,7 +257,7 @@ fun MainView(
                 }
             }
             ConstraintLayout(modifier = Modifier
-                .padding(it)
+                .padding(top = it.calculateTopPadding())
                 .fillMaxSize()) {
                 val (toolbar, divider1, mainItemsScreen) = createRefs()
                 Column(modifier = Modifier

@@ -1,12 +1,8 @@
 package com.finance.trade_learn.viewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.finance.trade_learn.utils.solveCoinName
 import com.finance.trade_learn.base.BaseViewModel
-import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
@@ -14,19 +10,18 @@ import com.finance.trade_learn.models.TradeType
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
 import com.finance.trade_learn.service.user.UserApi
+import com.finance.trade_learn.utils.solveCoinName
 import com.finance.trade_learn.view.CoinProgress
 import com.finance.trade_learn.view.trade.TradePageUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,116 +29,55 @@ class TradeViewModel @Inject constructor(
     private val coinDetailRepositoryImp : CoinDetailRepositoryImp
 ) : BaseViewModel() {
 
+    val userBalance = MutableStateFlow<MyCoins?>(MyCoins("", 0.0))
 
-    private var disposable = CompositeDisposable()
-    var isSuccess = MutableLiveData<Boolean>()
+    private val _availableItemInfo = MutableStateFlow<TradePageUiState<MyCoins>>(TradePageUiState())
+    val availableItemInfo: StateFlow<TradePageUiState<MyCoins>> get() =  _availableItemInfo
 
-    val userBalance = MutableStateFlow<TradePageUiState<MyCoins?>>(TradePageUiState.Loading)
-
-    private val _availableItemInfo = MutableStateFlow<TradePageUiState<MyCoins?>>(TradePageUiState.Loading)
-    val availableItemInfo: StateFlow<TradePageUiState<MyCoins?>> = _availableItemInfo.asStateFlow()
-
-    private val _itemCurrentInfo = MutableStateFlow<TradePageUiState<CoinDetail>>(TradePageUiState.Loading)
+    private val _itemCurrentInfo = MutableStateFlow<TradePageUiState<CoinDetail>>(TradePageUiState(isLoading = false, data = null))
     val itemCurrentInfo: StateFlow<TradePageUiState<CoinDetail>> = _itemCurrentInfo.asStateFlow()
-
-
 
     fun getItemInfo (coinName: String): LiveData<MyCoins?> {
         return coinDetailRepositoryImp.getSelectedItemDetail(coinName)
     }
 
     fun setUserBalance(myCoins: MyCoins) {
-        userBalance.value = TradePageUiState.Data(myCoins)
+        userBalance.value = myCoins
     }
 
     fun setDetailsOfCoinFromDatabase(myCoins: MyCoins) {
-        _availableItemInfo.value = TradePageUiState.Data(myCoins)
+        _availableItemInfo.value = availableItemInfo.value.copy(data = myCoins)
     }
 
     fun getSelectedCoinDetails(coinName: String) {
-        _availableItemInfo.value = TradePageUiState.Loading
+        _itemCurrentInfo.value = itemCurrentInfo.value.copy(isLoading = true)
 
-        disposable.add(
-            cryptoService().getSelectedCoinToTradeCoinGecko(coinName.lowercase())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object :
-                    DisposableSingleObserver<List<CoinDetail>>() {
-
-                    override fun onSuccess(it: List<CoinDetail>) {
-                        it.firstOrNull()?.let {response ->
-                            _itemCurrentInfo.value = TradePageUiState.Data(response)
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        val cachedItem = allCryptoItems.firstOrNull {
-                            solveCoinName(it.id) == coinName
-                        }
-                        cachedItem?.let {
-                            _itemCurrentInfo.value = TradePageUiState.Data(it)
-                        }
-                    }
-
-                    }
-                )
-        )
-
+        val cachedItem = allCryptoItems.firstOrNull {
+            solveCoinName(it.id) == coinName
+        }
+        cachedItem?.let {
+            _itemCurrentInfo.value = itemCurrentInfo.value.copy(data = it)
+        }
     }
 
-
-    fun operationTrade(
-        itemAmount: Double,
-        tradeType: TradeType
-    ) {
-        val item = when(val item = itemCurrentInfo.value){
-            is TradePageUiState.Data -> item.data
-            else -> return
-        }
+    fun buyCoin(amount: Double) {
+        val item = itemCurrentInfo.value.data ?: return
         val currentPrice = item.current_price
+        val coinName = item.name.lowercase(Locale.getDefault())
 
-        when (tradeType) {
-            TradeType.Buy -> {
-                if (itemAmount.toString().isNotEmpty() && currentPrice != null) {
-                    val total = itemAmount * currentPrice
-                    buyCoin(item.name.lowercase(Locale.getDefault()), itemAmount, total, currentPrice)
-                }
-            }
+        if (currentPrice == null) return
 
-            TradeType.Sell -> {
-                if (itemAmount.toString() != "" && item.current_price != null) {
-                    val total = itemAmount * item.current_price
-                    sellCoin(item.name.lowercase(Locale.getDefault()), itemAmount, total, item.current_price)
-                }
-            }
-
-            else -> {}
-        }
-    }
+        val total = amount * currentPrice
+        val balance = userBalance.value?.CoinAmount ?: 0.0
+        val isAvailableToBuy = ((balance >= total) && (balance > 0.0) && (total > 0.0) && (amount > 0.0))
+        if (!isAvailableToBuy) return
 
 
-
-
-    // this function for buy coin that i want to be have
-    private fun buyCoin(coinName: String, addCoinAmount: Double, total: Double, coinPrice: Double) {
-
-        var userTotalBalance = when(val userInfo = userBalance.value){
-            is TradePageUiState.Data -> {
-                userInfo.data?.CoinAmount ?: 0.0
-            }
-            else -> 0.0
-        }
-
-        val itemAmount = when(val userInfo = _availableItemInfo.value){
-            is TradePageUiState.Data -> {
-                userInfo.data?.CoinAmount ?: 0.0
-            }
-            else -> 0.0
-        }
+        val itemAmount = _availableItemInfo.value.data?.CoinAmount ?: 0.0
+        var userTotalBalance = userBalance.value?.CoinAmount ?: 0.0
 
         CoroutineScope(Dispatchers.IO).launch {
-
-            val newAmount = itemAmount + addCoinAmount
+            val newAmount = itemAmount + amount
 
             val myCoinItem = MyCoins(coinName.lowercase(Locale.getDefault()), newAmount)
             if (userTotalBalance >= total) {
@@ -154,77 +88,134 @@ class TradeViewModel @Inject constructor(
                 if (coinName != "tether") {
                     withContext(Dispatchers.Main) {
 
-                        try {
 
-                            if (itemAmount > 0) coinDetailRepositoryImp.updateSelectedItem(myCoinItem)
-                            else coinDetailRepositoryImp.buyNewItem(myCoinItem)
-
-                            coinDetailRepositoryImp.updateSelectedItem(myDollars)
-                            isSuccess.value = true
-
-                            saveTradeToDatabase(
-                                coinName,
-                                addCoinAmount,
-                                coinPrice,
-                                total,
-                                TradeType.Buy
+                        if (!isLogin.value) {
+                            buyFromLocal(
+                                itemAmount,
+                                myCoinItem, myDollars,
+                                coinName, amount,
+                                currentPrice, total
                             )
-                        } catch (e: Exception) {
-                            isSuccess.value = false
+                        } else {
+                            buyFromRemote(coinName, amount, currentPrice, total)
                         }
-
                     }
-
                 }
             }
-
         }
     }
 
+    private suspend fun buyFromLocal(
+        itemAmount: Double,
+        myCoinItem: MyCoins,
+        myDollars: MyCoins,
+        coinName: String,
+        addCoinAmount: Double,
+        coinPrice: Double,
+        total: Double
+    ) {
+        if (itemAmount > 0) coinDetailRepositoryImp.updateSelectedItem(myCoinItem)
+        else coinDetailRepositoryImp.buyNewItem(myCoinItem)
 
-    // this function for sell coin that i have
-    private fun sellCoin(coinName: String, sellAmount: Double, total: Double, coinPrice: Double) {
+        coinDetailRepositoryImp.updateSelectedItem(myDollars)
+        saveTradeToDatabase(
+            coinName,
+            addCoinAmount,
+            coinPrice,
+            total,
+            TradeType.Buy
+        )
+    }
 
-        var userTotalBalance = when(val userInfo = userBalance.value){
-            is TradePageUiState.Data -> {
-                userInfo.data?.CoinAmount ?: 0.0
-            }
-            else -> 0.0
-        }
+    private suspend fun buyFromRemote(
+        coinName: String,
+        addCoinAmount: Double,
+        coinPrice: Double,
+        total: Double,
+    ) {
+        val transaction = UserTransactionsRequest(
+            email = "hasan-balaban@hotmail.com",
+            transactionItemName = coinName,
+            amount = addCoinAmount.toBigDecimal().toString(),
+            price = coinPrice.toBigDecimal().toString(),
+            transactionTotalPrice = total.toBigDecimal().toString(),
+            transactionType = TradeType.Buy.toString(),
+            date = System.currentTimeMillis().toString()
+        )
+        addTransactionHistory(transaction = transaction)
+    }
 
-        val itemAmount = when(val userInfo = _availableItemInfo.value){
-            is TradePageUiState.Data -> {
-                userInfo.data?.CoinAmount ?: 0.0
-            }
-            else -> 0.0
-        }
+    fun sellCoin(amount: Double) {
+        val item = itemCurrentInfo.value.data ?: return
+        val currentPrice = item.current_price
+        val coinName = item.name.lowercase(Locale.getDefault())
+
+        if (currentPrice == null) return
+
+        var userTotalBalance = userBalance.value?.CoinAmount ?: 0.0
+        val itemAmount = _availableItemInfo.value.data?.CoinAmount ?: 0.0
+
+        val total = amount * currentPrice
+        val isAvailableToBuy =   ((itemAmount >= amount) && (itemAmount > 0.0) && (total > 0.0) && (amount > 0.0))
+        if (!isAvailableToBuy) return
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            if (itemAmount >= sellAmount) {
-
-
-                val newAmount = itemAmount - sellAmount
+            if (itemAmount >= amount) {
+                val newAmount = itemAmount - amount
                 val myCoinItem = MyCoins(coinName, newAmount)
 
                 userTotalBalance += total
                 val myDollars = MyCoins("tether", userTotalBalance)
 
                 if (coinName != "tether") {
-
-                    try {
-                        coinDetailRepositoryImp.updateSelectedItem(myCoinItem)
-                        coinDetailRepositoryImp.updateSelectedItem(myDollars)
-                        //and save to database, too
-                        saveTradeToDatabase(coinName, sellAmount, coinPrice, total, TradeType.Sell)
-                        withContext(Dispatchers.Main) { isSuccess.value = true }
-                    } catch (_: Exception) {
+                    if (!isLogin.value) {
+                        sellFromLocal(
+                            coinName,
+                            amount,
+                            currentPrice,
+                            total,
+                            myCoinItem,
+                            myDollars
+                        )
+                    } else {
+                        sellFromRemote(coinName, amount, currentPrice, total)
                     }
                 }
                 return@launch
-
             }
         }
+    }
+
+
+    private suspend fun sellFromLocal(
+        coinName: String,
+        amount: Double,
+        currentPrice: Double,
+        total: Double,
+        myCoinItem: MyCoins,
+        myDollars: MyCoins
+    ) {
+        try {
+            coinDetailRepositoryImp.updateSelectedItem(myCoinItem)
+            coinDetailRepositoryImp.updateSelectedItem(myDollars)
+            //and save to database, too
+            saveTradeToDatabase(coinName, amount, currentPrice, total, TradeType.Sell)
+        } catch (_: Exception) { }
+    }
+
+
+    private suspend fun sellFromRemote(coinName: String, amount : Double, coinPrice : Double, total: Double){
+        val transaction = UserTransactionsRequest(
+            email = "hasan-balaban@hotmail.com",
+            transactionItemName = coinName,
+            amount = amount.toString(),
+            price = coinPrice.toString(),
+            transactionTotalPrice = total.toString(),
+            transactionType = TradeType.Sell.toString(),
+            date = System.currentTimeMillis().toString()
+        )
+        addTransactionHistory(transaction = transaction)
     }
 
 
@@ -235,11 +226,6 @@ class TradeViewModel @Inject constructor(
         total: Double,
         tradeOperation: TradeType
     ) {
-        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-
-        Log.i("timetime", sdf.format(Date()))
-        val currentTime = sdf.format(Date())
-
         val transaction = UserTransactions(
             transactionItemName = coinName,
             price = coinPrice.toBigDecimal().toString(),
@@ -250,106 +236,32 @@ class TradeViewModel @Inject constructor(
         )
 
         CoroutineScope(Dispatchers.IO).launch {
-            val isLogin = true
-            if (isLogin) addTransactionHistory(transaction = transaction)
-            else coinDetailRepositoryImp.addProgressToTradeHistory(transaction)
+            coinDetailRepositoryImp.addProgressToTradeHistory(transaction)
         }
     }
 
-    private fun addTransactionHistory(transaction : UserTransactions){
-        //_transactionViewState.value = transactionViewState.value.copy(isLoading = true)
-
-
-        val userTransactionsRequest = UserTransactionsRequest(
-            email = "hasan-balaban@hotmail.com",
-            id = transaction.id,
-            transactionItemName = transaction.transactionItemName,
-            amount = transaction.amount,
-            price = transaction.price,
-            transactionTotalPrice = transaction.transactionTotalPrice,
-            transactionType = transaction.transactionType,
-            date = transaction.date
-        )
-
+    private suspend fun addTransactionHistory(transaction: UserTransactionsRequest){
         viewModelScope.launch {
             val userService = UserApi()
-
-            val response = userService.addTransactionHistory(transaction = userTransactionsRequest)
+            val response = userService.addTransactionHistory(transaction = transaction)
 
             //_transactionViewState.value = transactionViewState.value.copy(isLoading = false)
             if (response.isSuccessful){
                 response.body()?.let {
                    // _transactionHistoryResponse.value = it
-                    println(it)
-                    println(it)
+                    updateUserInfo(it)
                     println(it)
                 }
                 println(response.body()?.success)
-                response.body()?.data
                 return@launch
             }
-
             println(response.message())
-            println(response.body()?.message)
-            println(response.body()?.error)
-            println(response.body()?.success)
         }
     }
-
 
     fun changeAmounts(currentAmount: Double, quantity: Double, progress: CoinProgress) : Double{
         val newAmount = if (progress == CoinProgress.SUM) currentAmount + quantity else currentAmount - quantity
         val amount = if ( newAmount.toString().length>10 && newAmount.toString().subSequence(0,10).last().toString() != ".") newAmount.toString().substring(0,10) else  newAmount.toString()
         return amount.toDouble()
     }
-
-    fun compare(amount: Double, tradeState: TradeType): Boolean {
-        val balance = when(val userInfo = userBalance.value){
-            is TradePageUiState.Data -> {
-                userInfo.data?.CoinAmount ?: 0.0
-            }
-            else -> 0.0
-        }
-
-        val availableAmount = when(val userInfo = availableItemInfo.value){
-            is TradePageUiState.Data -> {
-                userInfo.data?.CoinAmount ?: 0.0
-            }
-            else -> 0.0
-        }
-
-        val currentPrice = when(val userInfo = itemCurrentInfo.value){
-            is TradePageUiState.Data -> {
-                userInfo.data.current_price ?: 0.0
-            }
-            else -> 0.0
-        }
-
-        val totalCost = amount * currentPrice
-
-        return try {
-            when (tradeState) {
-                TradeType.Buy -> {
-                    ((balance >= totalCost) && (balance > 0.0) && (totalCost > 0.0) && (amount > 0.0))
-                }
-                TradeType.Sell -> {
-                    ((availableAmount >= amount) && (availableAmount > 0.0) && (totalCost > 0.0) && (amount > 0.0))
-                }
-
-                else -> {false}
-            }
-
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-
-    override fun onCleared() {
-        disposable.clear()
-
-        Log.i("clear", "clear")
-        super.onCleared()
-    }
-
 }

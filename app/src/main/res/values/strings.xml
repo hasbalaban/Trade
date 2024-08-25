@@ -53,6 +53,7 @@
     <string name="increase">Increase</string>
     <string name="total_cost_text">Total Transaction Cost</string>
     <string name="total_cost">Total Cost: </string>
+    <string name="balance" translatable="false">Balance </string>
     <string name="total_balance">Total Balance </string>
     <string name="buy_sel_operations_text">Buy/Sell Operations</string>
 

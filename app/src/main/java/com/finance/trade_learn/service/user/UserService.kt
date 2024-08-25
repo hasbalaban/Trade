@@ -41,7 +41,7 @@ interface UserService {
     @POST("/transaction")
     suspend fun addTransactionHistory(
         @Body userTransactions: UserTransactionsRequest
-    ): Response<WrapResponse<String>>
+    ): Response<WrapResponse<UserInfo>>
 
     @GET("/userInfo")
     suspend fun getUserInfo(
