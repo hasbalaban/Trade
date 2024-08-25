@@ -31,6 +31,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableDoubleStateOf
@@ -51,6 +52,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.finance.trade_learn.R
+import com.finance.trade_learn.base.BaseViewModel
+import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.models.TradeType
 import com.finance.trade_learn.view.CoinProgress
 import com.finance.trade_learn.view.trade.TradePageUiState
@@ -63,20 +66,51 @@ private val LocalTradePageViewModel = compositionLocalOf<TradeViewModel> { error
 fun TradePage(itemName: String) {
     val viewModel = hiltViewModel<TradeViewModel>()
 
-    val detailOfItem = viewModel.getItemInfo(itemName).observeAsState()
-    val userBalance = viewModel.getItemInfo("tether").observeAsState()
-
-    userBalance.value?.let {
-        viewModel.setUserBalance(it)
-    }
-
-    detailOfItem.value?.let {
-        viewModel.setDetailsOfCoinFromDatabase(it)
-    }
 
     LaunchedEffect(key1 = Unit) {
         viewModel.getSelectedCoinDetails(itemName)
     }
+
+    val isLogin = BaseViewModel.isLogin.value
+    if (isLogin) {
+        val userInfo = BaseViewModel.userInfo.collectAsState()
+        LaunchedEffect(userInfo) {
+            val accountBalance = MyCoins(
+                CoinName = "tether",
+                CoinAmount = userInfo.value.data?.balances?.firstOrNull { it.itemName == "tether" }?.amount  ?: 0.0
+            )
+
+            userInfo.value.data?.balances?.firstOrNull { it.itemName == "tether" }
+            viewModel.setUserBalance(accountBalance)
+
+            val selectedItemBalance = userInfo.value.data?.balances?.firstOrNull {
+                it.itemName == itemName
+            }
+            selectedItemBalance?.let {
+                val item = MyCoins(
+                    CoinName = selectedItemBalance.itemName,
+                    CoinAmount = selectedItemBalance.amount
+                )
+                viewModel.setDetailsOfCoinFromDatabase(item)
+            }
+        }
+    } else {
+        val detailOfItem = viewModel.getItemInfo(itemName).observeAsState()
+        val userBalance = viewModel.getItemInfo("tether").observeAsState()
+
+        userBalance.value?.let {
+            viewModel.setUserBalance(it)
+        }
+
+        detailOfItem.value?.let {
+            viewModel.setDetailsOfCoinFromDatabase(it)
+        }
+    }
+
+
+
+
+
 
     CompositionLocalProvider(LocalTradePageViewModel provides viewModel) {
         TradeMainScreen()
@@ -89,32 +123,13 @@ private fun TradeMainScreen(
 ) {
     var amountToTrade by remember { mutableDoubleStateOf(0.0) }
 
-    var price by remember { mutableDoubleStateOf(0.0) }
     val itemCurrentInfo by viewModel.itemCurrentInfo.collectAsState()
-    when (val item = itemCurrentInfo) {
-        is TradePageUiState.Data -> {
-            price = item.data.current_price ?: 0.0
+    val price by remember {
+        derivedStateOf {
+            itemCurrentInfo.data?.current_price ?: 0.0
         }
-        else -> {}
     }
 
-    var availableAmount by remember { mutableDoubleStateOf(0.0) }
-    val availableItemInfo by viewModel.availableItemInfo.collectAsState()
-    when (val item = availableItemInfo) {
-        is TradePageUiState.Data -> {
-            availableAmount = item.data?.CoinAmount ?: 0.0
-        }
-        else -> {}
-    }
-
-    var userBalance by remember { mutableDoubleStateOf(0.0) }
-    val userInfo by viewModel.userBalance.collectAsState()
-    when (val item = userInfo) {
-        is TradePageUiState.Data -> {
-            userBalance = item.data?.CoinAmount ?: 0.0
-        }
-        else -> {}
-    }
 
     Column(
         modifier = Modifier
@@ -152,9 +167,7 @@ private fun TradeMainScreen(
             )
 
             Spacer(modifier = Modifier.height(6.dp))
-            BalanceSection(
-                totalBalance = userBalance
-            )
+            BalanceSection(viewModel = viewModel)
 
             Spacer(modifier = Modifier.height(16.dp))
             Row(
@@ -217,62 +230,50 @@ fun ItemDetailSection(
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        when (val item = itemCurrentInfo) {
-            is TradePageUiState.Error -> {
-                // Handle error state
-            }
-            TradePageUiState.Loading -> {
-                // Handle loading state
-            }
-            is TradePageUiState.Data -> {
-                Image(
-                    painter = rememberAsyncImagePainter(item.data.image),
-                    contentDescription = stringResource(id = R.string.cripto_image),
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(shape = CircleShape)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = item.data.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = androidx.compose.material.MaterialTheme.colors.onPrimary
-                )
-                Spacer(modifier = Modifier.height(4.dp))
 
-                val priceChangeColor = if ((item.data.price_change_percentage_24h ?: 0.0) >= 0.0) Color(0xFF4CAF50) else Color(0xFFF44336)
 
-                Text(
-                    text = stringResource(id = R.string.daily_change) + "%.2f%%".format(item.data.price_change_percentage_24h),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = priceChangeColor,
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = stringResource(id = R.string.price) + ": ${item.data.current_price} USD",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = androidx.compose.material.MaterialTheme.colors.onPrimary
-                )
-            }
+        itemCurrentInfo.data?.let {
+            Image(
+                painter = rememberAsyncImagePainter(it.image),
+                contentDescription = stringResource(id = R.string.cripto_image),
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(shape = CircleShape)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = itemCurrentInfo.data?.name ?: "",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = androidx.compose.material.MaterialTheme.colors.onPrimary
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+
+            val priceChangeColor = if ((it.price_change_percentage_24h ?: 0.0) >= 0.0) Color(0xFF4CAF50) else Color(0xFFF44336)
+
+            Text(
+                text = stringResource(id = R.string.daily_change) + "%.2f%%".format(it.price_change_percentage_24h),
+                style = MaterialTheme.typography.bodyLarge,
+                color = priceChangeColor,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(id = R.string.price) + ": ${it.current_price} USD",
+                style = MaterialTheme.typography.bodyMedium,
+                color = androidx.compose.material.MaterialTheme.colors.onPrimary
+            )
         }
 
-        when (val item = availableItemInfo) {
-            TradePageUiState.Loading -> {
-                // Handle loading state for available item info
-            }
-            is TradePageUiState.Data -> {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = stringResource(id = R.string.available_amount) + "%.6f USD".format(item.data?.CoinAmount),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = androidx.compose.material.MaterialTheme.colors.onPrimary
-                )
-            }
-            is TradePageUiState.Error -> {
-                // Handle error state for available item info
-            }
+
+        availableItemInfo.data?.let {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(id = R.string.available_amount) + "%.6f USD".format(it.CoinAmount),
+                style = MaterialTheme.typography.bodyMedium,
+                color = androidx.compose.material.MaterialTheme.colors.onPrimary
+            )
         }
+
     }
 }
 
@@ -286,14 +287,10 @@ fun TradeAmountInput(
     var textFieldValue by remember { mutableDoubleStateOf(0.0) }
 
     val itemCurrentInfo by viewModel.itemCurrentInfo.collectAsState()
-    var currentPrice by remember { mutableDoubleStateOf(0.0) }
-
-    when (val item = itemCurrentInfo) {
-        is TradePageUiState.Data -> {
-            currentPrice = item.data.current_price ?: 0.0
+    val currentPrice by remember {
+        derivedStateOf {
+            itemCurrentInfo.data?.current_price ?: 0.0
         }
-
-        else -> {}
     }
 
     Column(
@@ -386,15 +383,22 @@ fun TotalCostSection(
 
 @Composable
 fun BalanceSection(
-    totalBalance: Double
+    viewModel: TradeViewModel
 ) {
+    val userInfo by viewModel.userBalance.collectAsState()
+    val userBalance by remember {
+        derivedStateOf {
+            userInfo?.CoinAmount ?: 0.0
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(id = R.string.total_balance) +  "%.4f USD".format(totalBalance),
+            text = stringResource(id = R.string.balance) + "  " +  "%.4f USD".format(userBalance),
             style = MaterialTheme.typography.bodyMedium,
             color = androidx.compose.material.MaterialTheme.colors.onPrimary
         )
