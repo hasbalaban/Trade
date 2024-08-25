@@ -18,9 +18,6 @@ interface UserLocalWalletDatabase{
     suspend fun addProgressToTradeHistory(item : UserTransactions) :  Unit
 
     suspend fun buyNewItem(item : MyCoins) :  Unit
-
-    suspend fun getFilteredItems(filter : String) :  List<MyCoins>
-
 }
 
 
@@ -49,9 +46,4 @@ class CoinDetailRepositoryImp @Inject constructor(
     override suspend fun buyNewItem(item: MyCoins) {
         dataBaseService.addCoin(item)
     }
-
-    override suspend fun getFilteredItems(filter: String): List<MyCoins> {
-        return dataBaseService.getFilteredItems(filter.lowercase(Locale.getDefault()))
-    }
-
 }

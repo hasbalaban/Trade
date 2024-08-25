@@ -145,7 +145,7 @@ open class BaseViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getUserInfo() {
+    suspend fun getUserInfo() {
 
         viewModelScope.launch {
             val userService = UserApi()

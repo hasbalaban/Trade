@@ -1,15 +1,9 @@
 package com.finance.trade_learn.viewModel
 
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.schedulers.Schedulers
-
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.utils.solveCoinName
 import com.finance.trade_learn.base.BaseViewModel
-import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
@@ -19,122 +13,71 @@ import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @HiltViewModel
 class WalletPageViewModel @Inject constructor(
     private val coinDetailRepositoryImp : CoinDetailRepositoryImp
 ) : BaseViewModel() {
     private val myCoinsDatabaseModel = MutableLiveData<List<MyCoins>>()
-    val myCoinsNewModel = MutableLiveData<ArrayList<NewModelForItemHistory>>()
+    val myCoinsNewModel = MutableLiveData<List<NewModelForItemHistory>>()
     val myBaseModelOneCryptoModel = MutableLiveData<List<CoinDetail>>()
-    var disposable = CompositeDisposable()
     // this function fot get coins that i have
-    fun getMyCoinsDetails(constraint: String? = null) {
+    fun getMyCoinsDetails() {
 
         CoroutineScope(Dispatchers.Main).launch {
-            if (constraint == null) {
-                myCoinsDatabaseModel.value = coinDetailRepositoryImp.getAllItems()
-                checkDatabaseData(myCoinsDatabaseModel)
-                return@launch
-            }
-            myCoinsDatabaseModel.value = coinDetailRepositoryImp.getFilteredItems(constraint)
+            myCoinsDatabaseModel.value = coinDetailRepositoryImp.getAllItems()
             checkDatabaseData(myCoinsDatabaseModel)
         }
     }
 
     private fun checkDatabaseData(myCoinsDatabaseModel: MutableLiveData<List<MyCoins>>) {
+        myCoinsDatabaseModel.value?.let {
 
-        myCoinsDatabaseModel.let {
-            var coinQuery = ""
-            for (i in myCoinsDatabaseModel.value!!) {
-                coinQuery += i.CoinName.lowercase() + ","
-            }
-            val ids = coinQuery.dropLast(1)
-            getDataFromApi(ids)
+            val idList = it.map { it.CoinName.lowercase() }
+            getDataFromApi(idList)
         }
     }
 
 
-    private fun getDataFromApi(coinQuery: String) {
-        if (coinQuery.isBlank()) return
-        disposable.add(
-            cryptoService().getSelectedCoinToTradeCoinGecko(coinQuery.lowercase())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<List<CoinDetail>>() {
+    fun getDataFromApi(coinQuery: List<String>?) {
+        if (coinQuery.isNullOrEmpty()) return
+        val availableCoins = allCryptoItems.filter {
+            val id = solveCoinName(it.id).lowercase(Locale.getDefault())
+            coinQuery.contains(id)
+        }.map {item ->
 
-                    override fun onSuccess(t: List<CoinDetail>) {
-                        myBaseModelOneCryptoModel.value = t
-                        createNewModel(itemList = t)
-                    }
+            var total = BigDecimal.ZERO
+            val price = item.current_price?.toBigDecimal() ?: BigDecimal.ZERO
 
-                    override fun onError(e: Throwable) {
-
-                        val cachedItems = allCryptoItems.filter {
-                            val id = solveCoinName(it.id)
-                            coinQuery.split(",").contains(id)
-                        }
-                        viewModelScope.launch(Dispatchers.Main){
-                            myBaseModelOneCryptoModel.value = cachedItems
-                            createNewModel(itemList = cachedItems)
-                        }
-                    }
-
-                })
-        )
-    }
+            val amount = if (isLogin.value)
+                userInfo.value.data?.balances?.firstOrNull {
+                    it.itemName.lowercase(Locale.getDefault()) == item.id.lowercase(Locale.getDefault())
+                }?.amount?.toBigDecimal() ?: BigDecimal.ZERO
+            else myCoinsDatabaseModel.value?.firstOrNull {
+                it.CoinName.lowercase(Locale.getDefault()) == item.id.lowercase(Locale.getDefault())
+            }?.CoinAmount?.toBigDecimal() ?: BigDecimal.ZERO
 
 
-    fun createNewModel(itemList: List<CoinDetail>) {
 
-        var total = BigDecimal.ZERO
-        val newModelForCoins = ArrayList<NewModelForItemHistory>()
+            total += (price * amount)
 
-        if (myCoinsDatabaseModel.value?.isNotEmpty() == true) {
+            val totalItemBalance = amount * price
 
-
-            CoroutineScope(Dispatchers.IO).launch {
-                var j = 0
-                    for (i in itemList){
-                        myCoinsDatabaseModel.value?.let {
-                            for (z in myCoinsDatabaseModel.value!!) {
-                                if (i.id.lowercase() == z.CoinName.lowercase()) {
-                                    val name = i.id.lowercase(Locale.getDefault())
-                                    val price = i.current_price?.toBigDecimal() ?: BigDecimal.ZERO
-
-
-                                    val amount = z.CoinAmount.toBigDecimal()
-                                    val image = i.image
-
-                                    total += (price * amount)
-
-                                    val totalItemBalance = amount * price
-                                    newModelForCoins.add(
-                                        NewModelForItemHistory(
-                                            name,
-                                            amount,
-                                            totalItemBalance,
-                                            image
-                                        )
-                                    )
-                                    j++
-                                    break
-                                }
-                            }
-                        }
-                    }
-
-                withContext(Dispatchers.Main) {
-                    myCoinsNewModel.value = newModelForCoins
-                }
-
-            }
+            NewModelForItemHistory(
+                CoinName =item.id.lowercase(Locale.getDefault()),
+                CoinAmount = amount,
+                Total = totalItemBalance,
+                Image = item.image
+            )
         }
+
+        viewModelScope.launch {
+            myCoinsNewModel.value = availableCoins
+        }
+
     }
 
     override fun onCleared() {
-        disposable.clear()
         super.onCleared()
     }
 }
