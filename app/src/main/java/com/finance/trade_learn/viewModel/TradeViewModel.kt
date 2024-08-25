@@ -139,7 +139,7 @@ class TradeViewModel @Inject constructor(
             amount = addCoinAmount.toBigDecimal().toString(),
             price = coinPrice.toBigDecimal().toString(),
             transactionTotalPrice = total.toBigDecimal().toString(),
-            transactionType = TradeType.Sell.toString(),
+            transactionType = TradeType.Buy.toString(),
             date = System.currentTimeMillis().toString()
         )
         addTransactionHistory(transaction = transaction)
@@ -169,17 +169,55 @@ class TradeViewModel @Inject constructor(
                 val myDollars = MyCoins("tether", userTotalBalance)
 
                 if (coinName != "tether") {
-                    try {
-                        coinDetailRepositoryImp.updateSelectedItem(myCoinItem)
-                        coinDetailRepositoryImp.updateSelectedItem(myDollars)
-                        //and save to database, too
-                        saveTradeToDatabase(coinName, amount, currentPrice, total, TradeType.Sell)
-                    } catch (_: Exception) { }
+                    if (!isLogin.value) {
+                        sellFromLocal(
+                            coinName,
+                            amount,
+                            currentPrice,
+                            total,
+                            myCoinItem,
+                            myDollars
+                        )
+                    } else {
+                        sellFromRemote(coinName, amount, currentPrice, total)
+                    }
                 }
                 return@launch
             }
         }
     }
+
+
+    private suspend fun sellFromLocal(
+        coinName: String,
+        amount: Double,
+        currentPrice: Double,
+        total: Double,
+        myCoinItem: MyCoins,
+        myDollars: MyCoins
+    ) {
+        try {
+            coinDetailRepositoryImp.updateSelectedItem(myCoinItem)
+            coinDetailRepositoryImp.updateSelectedItem(myDollars)
+            //and save to database, too
+            saveTradeToDatabase(coinName, amount, currentPrice, total, TradeType.Sell)
+        } catch (_: Exception) { }
+    }
+
+
+    private suspend fun sellFromRemote(coinName: String, amount : Double, coinPrice : Double, total: Double){
+        val transaction = UserTransactionsRequest(
+            email = "hasan-balaban@hotmail.com",
+            transactionItemName = coinName,
+            amount = amount.toString(),
+            price = coinPrice.toString(),
+            transactionTotalPrice = total.toString(),
+            transactionType = TradeType.Sell.toString(),
+            date = System.currentTimeMillis().toString()
+        )
+        addTransactionHistory(transaction = transaction)
+    }
+
 
     private fun saveTradeToDatabase(
         coinName: String,

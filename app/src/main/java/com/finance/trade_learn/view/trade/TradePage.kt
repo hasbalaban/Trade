@@ -54,6 +54,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
+import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.view.CoinProgress
 import com.finance.trade_learn.viewModel.TradeViewModel
 
@@ -72,25 +73,24 @@ fun TradePage(itemName: String) {
     val isLogin = BaseViewModel.isLogin.value
     if (isLogin) {
         val userInfo = BaseViewModel.userInfo.collectAsState()
-        LaunchedEffect(userInfo) {
-            val accountBalance = MyCoins(
-                CoinName = "tether",
-                CoinAmount = userInfo.value.data?.balances?.firstOrNull { it.itemName == "tether" }?.amount  ?: 0.0
+        val accountBalance = MyCoins(
+            CoinName = "tether",
+            CoinAmount = userInfo.value.data?.balances?.firstOrNull { it.itemName == "tether" }?.amount
+                ?: 0.0
+        )
+
+        userInfo.value.data?.balances?.firstOrNull { it.itemName == "tether" }
+        viewModel.setUserBalance(accountBalance)
+
+        val selectedItemBalance = userInfo.value.data?.balances?.firstOrNull {
+            it.itemName == itemName
+        }
+        selectedItemBalance?.let {
+            val item = MyCoins(
+                CoinName = selectedItemBalance.itemName,
+                CoinAmount = selectedItemBalance.amount
             )
-
-            userInfo.value.data?.balances?.firstOrNull { it.itemName == "tether" }
-            viewModel.setUserBalance(accountBalance)
-
-            val selectedItemBalance = userInfo.value.data?.balances?.firstOrNull {
-                it.itemName == itemName
-            }
-            selectedItemBalance?.let {
-                val item = MyCoins(
-                    CoinName = selectedItemBalance.itemName,
-                    CoinAmount = selectedItemBalance.amount
-                )
-                viewModel.setDetailsOfCoinFromDatabase(item)
-            }
+            viewModel.setDetailsOfCoinFromDatabase(item)
         }
     } else {
         val detailOfItem = viewModel.getItemInfo(itemName).observeAsState()
