@@ -4,6 +4,7 @@ import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 import com.finance.trade_learn.models.NewUserRequest
 import com.finance.trade_learn.models.ResetPasswordRequest
+import com.finance.trade_learn.models.UserBalance
 import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
@@ -56,7 +57,7 @@ class UserApi {
         return userService.getTransactionHistory(email = email)
     }
 
-    suspend fun addTransactionHistory(transaction: UserTransactionsRequest): Response<WrapResponse<UserInfo>>  {
+    suspend fun addTransactionHistory(transaction: UserTransactionsRequest): Response<WrapResponse<List<UserBalance>>>  {
         return userService.addTransactionHistory(userTransactions = transaction)
     }
     suspend fun getUserInfo(email: String): Response<WrapResponse<UserInfo>>  {
