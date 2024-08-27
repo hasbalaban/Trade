@@ -247,9 +247,8 @@ class TradeViewModel @Inject constructor(
 
             //_transactionViewState.value = transactionViewState.value.copy(isLoading = false)
             if (response.isSuccessful){
-                response.body()?.let {
-                   // _transactionHistoryResponse.value = it
-                    updateUserInfo(it)
+                response.body()?.data?.let {
+                    updateUserBalance(it)
                     println(it)
                 }
                 println(response.body()?.success)

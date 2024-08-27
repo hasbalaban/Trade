@@ -4,6 +4,7 @@ import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 import com.finance.trade_learn.models.NewUserRequest
 import com.finance.trade_learn.models.ResetPasswordRequest
+import com.finance.trade_learn.models.UserBalance
 import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
@@ -22,9 +23,8 @@ val client = OkHttpClient.Builder()
 
 class UserApi {
 
-
-    //val localBaseUrl = "http://10.0.2.2:8080"
-    val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
+    val localBaseUrl = "http://10.0.2.2:8080"
+    //val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
     var userService = Retrofit.Builder()
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
@@ -57,7 +57,7 @@ class UserApi {
         return userService.getTransactionHistory(email = email)
     }
 
-    suspend fun addTransactionHistory(transaction: UserTransactionsRequest): Response<WrapResponse<String>>  {
+    suspend fun addTransactionHistory(transaction: UserTransactionsRequest): Response<WrapResponse<List<UserBalance>>>  {
         return userService.addTransactionHistory(userTransactions = transaction)
     }
     suspend fun getUserInfo(email: String): Response<WrapResponse<UserInfo>>  {

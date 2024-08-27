@@ -4,6 +4,7 @@ import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 import com.finance.trade_learn.models.NewUserRequest
 import com.finance.trade_learn.models.ResetPasswordRequest
+import com.finance.trade_learn.models.UserBalance
 import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
@@ -41,7 +42,7 @@ interface UserService {
     @POST("/transaction")
     suspend fun addTransactionHistory(
         @Body userTransactions: UserTransactionsRequest
-    ): Response<WrapResponse<UserInfo>>
+    ): Response<WrapResponse<List<UserBalance>>>
 
     @GET("/userInfo")
     suspend fun getUserInfo(

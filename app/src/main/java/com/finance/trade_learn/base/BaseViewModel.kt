@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.models.DataForHomePage
+import com.finance.trade_learn.models.UserBalance
 import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
@@ -196,6 +197,10 @@ open class BaseViewModel @Inject constructor(
 
         fun updateUserInfo(response : WrapResponse<UserInfo>){
             _userInfo.value = response
+        }
+
+        fun updateUserBalance(updatedBalance : List<UserBalance>){
+            _userInfo.value = userInfo.value.copy(data = userInfo.value.data?.copy(balances = updatedBalance))
         }
 
         fun updateUserLoginStatus(isLogin : Boolean){
