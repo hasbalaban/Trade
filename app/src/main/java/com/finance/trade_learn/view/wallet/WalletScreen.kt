@@ -30,13 +30,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -46,7 +44,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -56,7 +53,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.finance.trade_learn.R
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
+import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.LocalWalletPageViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -66,13 +65,25 @@ fun WalletScreen(
     navigateToHistoryPage: () -> Unit,
 ) {
     val viewModel = LocalWalletPageViewModel.current
+    val baseViewModel = LocalBaseViewModel.current
     LaunchedEffect(Unit) {
-        viewModel.getMyCoinsDetails()
+        if (BaseViewModel.isLogin.value) {
+            baseViewModel.getUserInfo()
+        }
+        else viewModel.getMyCoinsDetails()
+    }
+
+    val userInfo = BaseViewModel.userInfo.collectAsState()
+    if (BaseViewModel.isLogin.value){
+        viewModel.getDataFromApi(userInfo.value.data?.balances?.map {it.itemName})
     }
 
     Column(modifier = Modifier.fillMaxWidth()){
 
-        Box(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.primary).padding(top = 24.dp), contentAlignment = Alignment.CenterStart){
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.primary)
+            .padding(top = 24.dp), contentAlignment = Alignment.CenterStart){
             IconButton(
                 onClick = {
                     goBack.invoke()
@@ -94,9 +105,7 @@ fun WalletScreen(
         }
 
 
-        WalletContent(navigateToHistoryPage = navigateToHistoryPage, modifier = Modifier.padding(
-            top = 24.dp
-        ))
+        WalletContent(navigateToHistoryPage = navigateToHistoryPage, modifier = Modifier)
 
 
     }
@@ -105,30 +114,13 @@ fun WalletScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WalletTopBar() {
-    TopAppBar(
-        title = {
-            Text(
-                stringResource(id = R.string.cripto_wallet),
-                color = MaterialTheme.colors.onPrimary,
-                fontSize = 20.sp,
-                fontFamily = FontFamily.SansSerif
-            )
-        },
-        colors = TopAppBarDefaults.topAppBarColors (
-            containerColor = MaterialTheme.colors.onPrimary
-        )
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 fun WalletContent(navigateToHistoryPage: () -> Unit, modifier: Modifier) {
     val viewModel = LocalWalletPageViewModel.current
     val cryptoItems = viewModel.myCoinsNewModel.observeAsState(emptyList())
+    val totalBalance = viewModel.totalBalance.collectAsState(0f)
 
     val animatedBalance by animateFloatAsState(
-        targetValue = cryptoItems.value.sumOf { it.Total.toDouble() }.toFloat(),
+        targetValue = totalBalance.value,
         animationSpec = tween(
             durationMillis = 1200,
             easing = FastOutSlowInEasing
