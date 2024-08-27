@@ -63,7 +63,7 @@ class TradeViewModel @Inject constructor(
     fun buyCoin(amount: Double) {
         val item = itemCurrentInfo.value.data ?: return
         val currentPrice = item.current_price
-        val coinName = item.name.lowercase(Locale.getDefault())
+        val coinName = item.id.lowercase(Locale.getDefault())
 
         if (currentPrice == null) return
 
@@ -148,7 +148,7 @@ class TradeViewModel @Inject constructor(
     fun sellCoin(amount: Double) {
         val item = itemCurrentInfo.value.data ?: return
         val currentPrice = item.current_price
-        val coinName = item.name.lowercase(Locale.getDefault())
+        val coinName = item.id.lowercase(Locale.getDefault())
 
         if (currentPrice == null) return
 

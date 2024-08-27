@@ -117,9 +117,10 @@ fun WalletScreen(
 fun WalletContent(navigateToHistoryPage: () -> Unit, modifier: Modifier) {
     val viewModel = LocalWalletPageViewModel.current
     val cryptoItems = viewModel.myCoinsNewModel.observeAsState(emptyList())
+    val totalBalance = viewModel.totalBalance.collectAsState(0f)
 
     val animatedBalance by animateFloatAsState(
-        targetValue = cryptoItems.value.sumOf { it.Total.toDouble() }.toFloat(),
+        targetValue = totalBalance.value,
         animationSpec = tween(
             durationMillis = 1200,
             easing = FastOutSlowInEasing

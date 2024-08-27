@@ -20,7 +20,10 @@ class WalletPageViewModel @Inject constructor(
 ) : BaseViewModel() {
     private val myCoinsDatabaseModel = MutableLiveData<List<MyCoins>>()
     val myCoinsNewModel = MutableLiveData<List<NewModelForItemHistory>>()
-    val myBaseModelOneCryptoModel = MutableLiveData<List<CoinDetail>>()
+
+    private val _totalBalance = MutableStateFlow<Float>(0.0f)
+    val totalBalance : StateFlow<Float> get() = _totalBalance
+
     // this function fot get coins that i have
     fun getMyCoinsDetails() {
 
@@ -73,6 +76,15 @@ class WalletPageViewModel @Inject constructor(
 
         viewModelScope.launch {
             myCoinsNewModel.value = availableCoins
+
+            if (!isLogin.value){
+                _totalBalance.value = availableCoins.sumOf { it.Total }.toFloat()
+                return@launch
+            }
+
+            userInfo.value.data?.totalBalance?.let {
+                _totalBalance.value = it.toFloat()
+            }
         }
 
     }
