@@ -105,9 +105,7 @@ fun WalletScreen(
         }
 
 
-        WalletContent(navigateToHistoryPage = navigateToHistoryPage, modifier = Modifier.padding(
-            top = 24.dp
-        ))
+        WalletContent(navigateToHistoryPage = navigateToHistoryPage, modifier = Modifier)
 
 
     }

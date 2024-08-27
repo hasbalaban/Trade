@@ -18,6 +18,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -116,7 +117,7 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color.Transparent,
                         cursorColor = Color.Gray,
-                        textColor = Color.Black,
+                        textColor = MaterialTheme.colors.onPrimary,
                         focusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
                         unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için,
 
@@ -142,11 +143,11 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color.Transparent,
                         cursorColor = Color.Gray,
-                        textColor = Color.Black,
+                        textColor = MaterialTheme.colors.onPrimary,
                         focusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
                         unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için,
 
-                        placeholderColor = Color.Gray
+                        placeholderColor = Color.Gray,
                     ),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next
@@ -179,7 +180,7 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                         backgroundColor = Color.Transparent,
                         cursorColor = Color.Gray,
 
-                        textColor = Color.Black,
+                        textColor = MaterialTheme.colors.onPrimary,
                         focusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
                         unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
 
@@ -211,7 +212,7 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                         backgroundColor = Color.Transparent,
                         cursorColor = Color.Gray,
 
-                        textColor = Color.Black,
+                        textColor = MaterialTheme.colors.onPrimary,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
 

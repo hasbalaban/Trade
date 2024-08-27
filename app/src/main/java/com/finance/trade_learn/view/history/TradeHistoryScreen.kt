@@ -137,7 +137,7 @@ private fun MainContent(goBack: () -> Unit) {
 @Composable
 fun TradeItem(trade: UserTransactions) {
     val imageUrl = allCryptoItems.firstOrNull {
-        it.name.contains(trade.transactionItemName, ignoreCase = true)
+        it.id.contains(trade.transactionItemName, ignoreCase = true)
     }?.image
 
     Card(
