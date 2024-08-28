@@ -241,9 +241,13 @@ class TradeViewModel @Inject constructor(
     }
 
     private suspend fun addTransactionHistory(transaction: UserTransactionsRequest){
+        setLockMainActivityStatus(true)
+
         viewModelScope.launch {
             val userService = UserApi()
             val response = userService.addTransactionHistory(transaction = transaction)
+            setLockMainActivityStatus(false)
+
 
             //_transactionViewState.value = transactionViewState.value.copy(isLoading = false)
             if (response.isSuccessful){
