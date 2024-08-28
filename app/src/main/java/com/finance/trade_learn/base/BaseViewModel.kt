@@ -174,7 +174,6 @@ open class BaseViewModel @Inject constructor(
     }
 
 
-
     override fun onCleared() {
         super.onCleared()
         baseDisposable.clear()
@@ -195,6 +194,11 @@ open class BaseViewModel @Inject constructor(
         private val _isLogin = MutableStateFlow<Boolean>(false)
         val isLogin : StateFlow<Boolean> get() = _isLogin
 
+
+        private val _lockMainActivityToAction = MutableLiveData<Boolean>()
+        val lockMainActivityToAction : LiveData<Boolean> get() = _lockMainActivityToAction
+
+
         fun updateUserInfo(response : WrapResponse<UserInfo>){
             _userInfo.value = response
         }
@@ -205,6 +209,11 @@ open class BaseViewModel @Inject constructor(
 
         fun updateUserLoginStatus(isLogin : Boolean){
             _isLogin.value = isLogin
+        }
+
+
+        fun setLockMainActivityStatus(shouldLockScreen : Boolean){
+            _lockMainActivityToAction.value = shouldLockScreen
         }
     }
 

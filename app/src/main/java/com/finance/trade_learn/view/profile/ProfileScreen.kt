@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.utils.DataStoreKeys
 import com.finance.trade_learn.utils.clearSpecificPreference
 import com.finance.trade_learn.view.LocalProfileViewModel
@@ -41,6 +42,7 @@ fun ProfileScreen(
     val coroutines = rememberCoroutineScope()
     val viewModel = LocalProfileViewModel.current
 
+    val userInfo by BaseViewModel.userInfo.collectAsState()
     val signUpViewState by viewModel.profileViewState.collectAsState()
     val accountDeletingResponse by viewModel.accountDeletingResponse.collectAsState()
 
@@ -88,21 +90,21 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "John Doe", // Replace with dynamic name
-                color = Color.White,
-                fontSize = 24.sp,
+                text = userInfo.data?.nameAndSurname ?: "",
+                color = Color.Gray,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "john.doe@example.com", // Replace with dynamic email
+                text = userInfo.data?.email ?: "", // Replace with dynamic name
                 color = Color.Gray,
                 fontSize = 16.sp
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             //ActionButton("Edit Profile")
             //ActionButton("Settings")

@@ -2,6 +2,7 @@ package com.finance.trade_learn.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.NewUserRequest
 import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.WrapResponse
@@ -44,6 +45,7 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
         if (!signUpViewState.value.credentialsIsValid) return
 
         _signUpViewState.value = _signUpViewState.value.copy(isLoading = true)
+        BaseViewModel.setLockMainActivityStatus(shouldLockScreen = true)
         viewModelScope.launch {
             val userService = UserApi()
             val newUserRequest = NewUserRequest(
@@ -54,6 +56,7 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
 
             val response = userService.createNewUser(newUserRequest)
 
+            BaseViewModel.setLockMainActivityStatus(shouldLockScreen = false)
             _signUpViewState.value = _signUpViewState.value.copy(isLoading = false)
             if (response.isSuccessful){
                 response.body()?.let {
@@ -68,8 +71,6 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
             println(response.body()?.message)
             println(response.body()?.error)
             println(response.body()?.success)
-
-
         }
 
     }

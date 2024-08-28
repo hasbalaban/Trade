@@ -40,7 +40,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -134,20 +138,41 @@ private fun TradeMainScreen(
             .fillMaxSize()
             .background(androidx.compose.material.MaterialTheme.colors.primary)
     ) {
-        Text(
-            text = stringResource(id = R.string.cripto_buy_sel) ,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(top = 24.dp)
-                .padding(vertical = 16.dp, horizontal = 16.dp),
-            color = MaterialTheme.colorScheme.onPrimary,
-            fontSize = 20.sp,
-            fontFamily = FontFamily.SansSerif
-        )
 
+        Row(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primary), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
+            Text(
+                text = itemCurrentInfo.data?.name  ?: stringResource(id = R.string.cripto_buy_sel),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(top = 24.dp)
+                    .padding(vertical = 16.dp, horizontal = 16.dp),
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontSize = 20.sp,
+                fontFamily = FontFamily.SansSerif
+            )
+
+
+            Image(
+                painter = rememberAsyncImagePainter(itemCurrentInfo.data?.image),
+                contentDescription = stringResource(id = R.string.cripto_image),
+                modifier = Modifier
+                    .padding(end = 24.dp, top = 10.dp)
+                    .size(36.dp)
+                    .drawBehind {
+                        drawCircle(
+                            color = Color(0xff3B82F6),
+                            radius = size.minDimension / 2,
+                            style = Stroke(width = 1.dp.toPx()) // Çizgi kalınlığı
+                        )
+                    }
+                    .padding(4.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.FillBounds,
+                alignment = Alignment.CenterStart
+            )
+
+        }
         Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
             ItemDetailSection()
 
@@ -182,7 +207,7 @@ private fun TradeMainScreen(
                     modifier = Modifier
                         .weight(1f)
                         .padding(end = 8.dp),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.pozitive)),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
@@ -200,7 +225,7 @@ private fun TradeMainScreen(
                     modifier = Modifier
                         .weight(1f)
                         .padding(start = 8.dp),
-                    colors = ButtonDefaults.buttonColors(androidx.compose.material.MaterialTheme.colors.error),
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.negative)),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
@@ -232,15 +257,26 @@ fun ItemDetailSection(
 
         itemCurrentInfo.data?.let {
             Image(
-                painter = rememberAsyncImagePainter(it.image),
+                painter = rememberAsyncImagePainter(itemCurrentInfo.data?.image),
                 contentDescription = stringResource(id = R.string.cripto_image),
                 modifier = Modifier
-                    .size(60.dp)
-                    .clip(shape = CircleShape)
+                    .size(84.dp)
+                    .drawBehind {
+                        drawCircle(
+                            color = Color(0xff3B82F6),
+                            radius = size.minDimension / 2,
+                            style = Stroke(width = 1.dp.toPx()) // Çizgi kalınlığı
+                        )
+                    }
+                    .padding(4.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.FillBounds,
+                alignment = Alignment.CenterStart
             )
+
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = itemCurrentInfo.data?.name ?: "",
+                text = itemCurrentInfo.data?.symbol ?: "",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = androidx.compose.material.MaterialTheme.colors.onPrimary
