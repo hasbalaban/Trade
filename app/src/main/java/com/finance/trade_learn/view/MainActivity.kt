@@ -14,6 +14,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -111,9 +114,7 @@ val LocalForgotPasswordViewModel = compositionLocalOf<ForgotPasswordViewModel> {
 val LocalCodeVerificationViewModel = compositionLocalOf<CodeVerificationViewModel> { error("No CodeVerificationViewModel found") }
 
 @OptIn(ExperimentalMaterial3Api::class)
-private val LocalMainScrollBehavior =
-    compositionLocalOf<BottomAppBarScrollBehavior> { error("No BottomAppBarScrollBehavior found") }
-
+private val LocalMainScrollBehavior = compositionLocalOf<BottomAppBarScrollBehavior> { error("No BottomAppBarScrollBehavior found") }
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -134,13 +135,14 @@ class MainActivity : AppCompatActivity() {
                 val navController = rememberNavController()
 
                 val baseViewModel = hiltViewModel<BaseViewModel>()
-                val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(
-                    true
-                )
+                val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(true)
+                val isLockedScreen by BaseViewModel.lockMainActivityToAction.observeAsState(true)
 
                 navController.addOnDestinationChangedListener { controller, destination, arguments ->
                     val bottomNavigationIsVisible = destination.route in Constants.BottomNavItems.map { it.route }
+
                     baseViewModel.setBottomNavigationBarStatus(bottomNavigationIsVisible)
+                    BaseViewModel.setLockMainActivityStatus(false)
                 }
 
                 LaunchedEffect(Unit) {
@@ -166,6 +168,18 @@ class MainActivity : AppCompatActivity() {
                     ) { padding ->
                         MainScreen(navController, Modifier.padding(paddingValues = padding))
                     }
+
+                    if (isLockedScreen) {
+                        Column(
+                            Modifier
+                                .clickable(enabled = false, onClick = {})
+                                .fillMaxSize()
+                                .background(Color(0x80000000))
+                        ) {
+
+                        }
+                    }
+
                 }
 
             }
