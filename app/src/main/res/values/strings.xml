@@ -65,5 +65,7 @@
     <string name="value">Value</string>
     <string name="profile">Profile</string>
 
+    <string name="create_account_text">Create Account</string>
+    <string name="create_account_information">Hesap oluşturulduğunda, yerel olarak yapılan işlemler korunmaz.</string>
 
 </resources>

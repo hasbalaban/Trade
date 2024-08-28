@@ -1,6 +1,7 @@
 package com.finance.trade_learn.view.loginscreen.signup
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -45,6 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finance.trade_learn.R
 import com.finance.trade_learn.view.LocalSingUpViewModel
 import com.finance.trade_learn.view.commonui.SimpleBackButtonHeader
 import kotlinx.coroutines.delay
@@ -82,11 +85,29 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
             verticalArrangement = Arrangement.SpaceAround
         ) {
             SimpleBackButtonHeader(
-                title = "Create Account",
+                title = stringResource(id = R.string.create_account_text),
                 onBackClick = {
                     onBackToLogin.invoke()
                 }
             )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .border(1.dp, Color.Yellow, RoundedCornerShape(46))
+                    .background(Color(0xFFFFF9C4)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "⚠️ " + stringResource(id = R.string.create_account_information),
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+
 
             Column(
                 modifier = Modifier
@@ -96,7 +117,7 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Create Account",
+                    text = stringResource(id = R.string.create_account_text),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -138,7 +159,11 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                     placeholder = { Text("Name and surname") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, signUpViewState.nameAndSurnameBorder, RoundedCornerShape(6.dp)),
+                        .border(
+                            1.dp,
+                            signUpViewState.nameAndSurnameBorder,
+                            RoundedCornerShape(6.dp)
+                        ),
                     singleLine = true,
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color.Transparent,
