@@ -209,13 +209,11 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:$nav_version"
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
-
-
-
-
     implementation 'com.android.support:multidex:1.0.3'
-
     implementation "androidx.datastore:datastore-preferences:1.1.1"
+
+    //lottie animation
+    implementation("com.airbnb.android:lottie-compose:6.0.0")
 
 
 
