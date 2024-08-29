@@ -134,7 +134,7 @@ class TradeViewModel @Inject constructor(
         total: Double,
     ) {
         val transaction = UserTransactionsRequest(
-            email = "hasan-balaban@hotmail.com",
+            email = userInfo.value.data?.email ?: "",
             transactionItemName = coinName,
             amount = addCoinAmount.toBigDecimal().toString(),
             price = coinPrice.toBigDecimal().toString(),
