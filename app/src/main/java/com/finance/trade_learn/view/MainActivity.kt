@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -41,6 +42,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -68,6 +70,7 @@ import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.view.history.TradeHistoryScreen
+import com.finance.trade_learn.view.loading.LoadingLottieAnimation
 import com.finance.trade_learn.view.loginscreen.codeverification.CodeVerificationScreen
 import com.finance.trade_learn.view.loginscreen.forgotpassword.ForgotPasswordScreen
 import com.finance.trade_learn.view.loginscreen.login.LoginScreen
@@ -174,9 +177,16 @@ class MainActivity : AppCompatActivity() {
                             Modifier
                                 .clickable(enabled = false, onClick = {})
                                 .fillMaxSize()
-                                .background(Color(0x80000000))
+                                .background(Color(0x80000000)),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
 
+                            LoadingLottieAnimation(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .align(alignment = Alignment.CenterHorizontally)
+                            )
                         }
                     }
 
