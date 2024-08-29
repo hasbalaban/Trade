@@ -211,13 +211,6 @@ fun LoginScreen(
             }
         }
 
-        if (loginViewState.isLoading){
-
-            CircularProgressIndicator(
-                color = Color(0xff3B82F6),
-                strokeWidth = 4.dp
-            )
-        }
     }
 
 }

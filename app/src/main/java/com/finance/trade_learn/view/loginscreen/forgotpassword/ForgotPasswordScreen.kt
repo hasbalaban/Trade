@@ -142,14 +142,6 @@ fun ForgotPasswordScreen(onResetPassword: () -> Unit, onBackToLogin: () -> Unit)
                 )
             }
         }
-
-        if (forgotPasswordViewState.isLoading){
-
-            CircularProgressIndicator(
-                color = Color(0xff3B82F6),
-                strokeWidth = 4.dp
-            )
-        }
     }
 
 

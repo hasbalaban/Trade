@@ -3,6 +3,7 @@ package com.finance.trade_learn.viewModel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.service.user.UserApi
 import com.finance.trade_learn.utils.DataStoreKeys
@@ -31,13 +32,16 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun deleteAccount() {
+        BaseViewModel.setLockMainActivityStatus(true)
         _profileViewState.value = _profileViewState.value.copy(isAccountDeleting = true)
 
         viewModelScope.launch {
             val userService = UserApi()
             val response = userService.deleteAccount(email = profileViewState.value.userEmail)
 
+            BaseViewModel.setLockMainActivityStatus(false)
             _profileViewState.value = _profileViewState.value.copy(isAccountDeleting = false)
+
             if (response.isSuccessful){
                 response.body()?.let {
                     _accountDeletingResponse.value = it

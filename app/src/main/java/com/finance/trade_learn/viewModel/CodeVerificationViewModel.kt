@@ -2,6 +2,7 @@ package com.finance.trade_learn.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.ResetPasswordRequest
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.service.user.UserApi
@@ -40,7 +41,9 @@ class CodeVerificationViewModel () : ViewModel() {
 
         if (verificationViewState.value.verificationCode.toIntOrNull() == null) return
 
+        BaseViewModel.setLockMainActivityStatus(true)
         _verificationViewState.value = verificationViewState.value.copy(isLoading = true)
+
         viewModelScope.launch {
             val userService = UserApi()
 
@@ -52,7 +55,9 @@ class CodeVerificationViewModel () : ViewModel() {
 
             val response = userService.resetPassword(resetPasswordRequest = resetPasswordRequest)
 
+            BaseViewModel.setLockMainActivityStatus(false)
             _verificationViewState.value = verificationViewState.value.copy(isLoading = false)
+
             if (response.isSuccessful){
                 response.body()?.let {
                     _verificationCodeResponse.value = it

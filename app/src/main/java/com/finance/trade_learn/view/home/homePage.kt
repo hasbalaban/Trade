@@ -243,19 +243,6 @@ fun MainView(
             containerColor = MaterialTheme.colors.primary
         ) {
 
-            val isLoading = baseViewModel.isLoading.observeAsState().value ?: false
-            if (isLoading){
-                Row(modifier = Modifier.fillMaxSize()) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        CircularProgressIndicator(
-                            color = colorResource(id = R.color.pozitive),
-                        )
-                    }
-                }
-            }
             ConstraintLayout(modifier = Modifier
                 .padding(top = it.calculateTopPadding())
                 .fillMaxSize()) {

@@ -46,6 +46,7 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
 
         _signUpViewState.value = _signUpViewState.value.copy(isLoading = true)
         BaseViewModel.setLockMainActivityStatus(shouldLockScreen = true)
+
         viewModelScope.launch {
             val userService = UserApi()
             val newUserRequest = NewUserRequest(
@@ -58,6 +59,7 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
 
             BaseViewModel.setLockMainActivityStatus(shouldLockScreen = false)
             _signUpViewState.value = _signUpViewState.value.copy(isLoading = false)
+
             if (response.isSuccessful){
                 response.body()?.let {
                     _userSignUpResponse.value = it
