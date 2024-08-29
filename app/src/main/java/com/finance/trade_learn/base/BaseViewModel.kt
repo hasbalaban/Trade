@@ -213,7 +213,7 @@ open class BaseViewModel @Inject constructor(
 
 
         fun setLockMainActivityStatus(shouldLockScreen : Boolean){
-            _lockMainActivityToAction.value = shouldLockScreen
+            _lockMainActivityToAction.postValue(shouldLockScreen)
         }
     }
 
