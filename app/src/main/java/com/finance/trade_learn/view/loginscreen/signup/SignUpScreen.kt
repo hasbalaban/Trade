@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -275,12 +274,6 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
             }
         }
 
-        if (signUpViewState.isLoading){
-            CircularProgressIndicator(
-                color = Color(0xff3B82F6),
-                strokeWidth = 4.dp
-            )
-        }
     }
 
 

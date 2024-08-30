@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseService
 import com.finance.trade_learn.models.ResetPasswordRequest
@@ -28,14 +29,19 @@ class TransactionViewModel : ViewModel() {
     private val _transactionHistoryResponse = MutableStateFlow<WrapResponse<List<UserTransactions>>>(WrapResponse())
     val transactionHistoryResponse: StateFlow<WrapResponse<List<UserTransactions>>> get() = _transactionHistoryResponse
 
-    fun getTransactionHistory(email : String = "hasan-balaban@hotmail.com"){
+    fun getTransactionHistory(){
+        val email = BaseViewModel.userInfo.value.data?.email ?: return
         _transactionViewState.value = transactionViewState.value.copy(isLoading = true)
+        BaseViewModel.setLockMainActivityStatus(true)
+
         viewModelScope.launch {
             val userService = UserApi()
 
             val response = userService.getTransactionHistory(email = email)
 
             _transactionViewState.value = transactionViewState.value.copy(isLoading = false)
+            BaseViewModel.setLockMainActivityStatus(false)
+
             if (response.isSuccessful){
                 response.body()?.let {
                     _transactionHistoryResponse.value = it

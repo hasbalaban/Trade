@@ -29,8 +29,8 @@ android {
         applicationId "com.finance.trade_learn"
         minSdk 30
         targetSdk 34
-        versionCode 85
-        versionName "2.5.0"
+        versionCode 86
+        versionName "2.5.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -44,7 +44,7 @@ android {
     buildTypes {
         release {
             zipAlignEnabled true
-            minifyEnabled false
+            minifyEnabled true
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release

@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -49,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.finance.trade_learn.R
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.base.BaseViewModel.Companion.allCryptoItems
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.view.LocalViewModelHistoryTrade
@@ -93,8 +93,7 @@ private fun MainContent(goBack: () -> Unit) {
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-        val isLogin = true
-        if (isLogin) viewModel.getTransactionHistory()
+        if (BaseViewModel.isLogin.value) viewModel.getTransactionHistory()
         else viewModel.getDataFromDatabase(context)
     }
 
@@ -125,12 +124,6 @@ private fun MainContent(goBack: () -> Unit) {
             }
         }
 
-        if (transactionViewState.isLoading) {
-            CircularProgressIndicator(
-                color = Color(0xff3B82F6),
-                strokeWidth = 4.dp
-            )
-        }
     }
 }
 

@@ -2,6 +2,7 @@ package com.finance.trade_learn.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
@@ -37,6 +38,8 @@ class LoginViewModel @Inject constructor() : ViewModel() {
         if (!loginViewState.value.credentialsIsValid) return
 
         _loginViewState.value = loginViewState.value.copy(isLoading = true)
+        BaseViewModel.setLockMainActivityStatus(true)
+
         viewModelScope.launch {
             val userService = UserApi()
             val newUserRequest = UserLoginRequest(
@@ -47,6 +50,8 @@ class LoginViewModel @Inject constructor() : ViewModel() {
             val response = userService.login(newUserRequest)
 
             _loginViewState.value = loginViewState.value.copy(isLoading = false)
+            BaseViewModel.setLockMainActivityStatus(false)
+
             if (response.isSuccessful){
                 response.body()?.let {
                     _userLoginResponse.value = it

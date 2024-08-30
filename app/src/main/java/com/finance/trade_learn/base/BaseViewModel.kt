@@ -39,8 +39,6 @@ open class BaseViewModel @Inject constructor(
     private var baseDisposable: CompositeDisposable = CompositeDisposable()
 
 
-    var isLoading = MutableLiveData<Boolean>(false)
-
     var currentItemsLiveData = MutableLiveData<List<CoinsHome>>()
     var listOfCryptoForPopular = MutableLiveData<List<CoinsHome>>()
 
@@ -52,14 +50,14 @@ open class BaseViewModel @Inject constructor(
     }
 
     fun getAllCrypto(page : Int) {
-        isLoading.value = true
+        setLockMainActivityStatus(true)
+
         viewModelScope.launch {
             val response = cryptoService().getCoinList(page)
+            setLockMainActivityStatus(false)
+
             when(response.isSuccessful){
                 true -> {
-
-                    isLoading.value = false
-
                     response.body()?.data?.let {
                         val newList = it.filter {newItem->
                             !allCryptoItems.any {oldItem -> oldItem.id == newItem.id }
@@ -78,9 +76,6 @@ open class BaseViewModel @Inject constructor(
                 }
                 false -> {
                     RemoteConfigs.SHOULD_BE_LOCAL_REQUEST = !RemoteConfigs.SHOULD_BE_LOCAL_REQUEST
-
-                    isLoading.value = false
-
                     currentItemsLiveData.value = currentItems
                     listOfCryptoForPopular.value = convertPopularCoinList(currentItems)
                 }
@@ -213,7 +208,7 @@ open class BaseViewModel @Inject constructor(
 
 
         fun setLockMainActivityStatus(shouldLockScreen : Boolean){
-            _lockMainActivityToAction.value = shouldLockScreen
+            _lockMainActivityToAction.postValue(shouldLockScreen)
         }
     }
 

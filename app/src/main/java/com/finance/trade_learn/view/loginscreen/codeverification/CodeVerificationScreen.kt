@@ -263,14 +263,6 @@ fun CodeVerificationScreen(
                     .clickable { onResendCode() }
             )
         }
-
-
-        if (verificationViewState.isLoading) {
-            CircularProgressIndicator(
-                color = Color(0xff3B82F6),
-                strokeWidth = 4.dp
-            )
-        }
     }
 }
 
