@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.finance.trade_learn.R
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.base.BaseViewModel.Companion.allCryptoItems
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.view.LocalViewModelHistoryTrade
@@ -92,8 +93,7 @@ private fun MainContent(goBack: () -> Unit) {
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-        val isLogin = true
-        if (isLogin) viewModel.getTransactionHistory()
+        if (BaseViewModel.isLogin.value) viewModel.getTransactionHistory()
         else viewModel.getDataFromDatabase(context)
     }
 
