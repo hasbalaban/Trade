@@ -23,8 +23,8 @@ val client = OkHttpClient.Builder()
 
 class UserApi {
 
-    val localBaseUrl = "http://10.0.2.2:8080"
-    //val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
+    //val localBaseUrl = "http://10.0.2.2:8080"
+    val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
     var userService = Retrofit.Builder()
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
