@@ -42,7 +42,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun ForgotPasswordScreen(onResetPassword: () -> Unit, onBackToLogin: () -> Unit) {
+fun ForgotPasswordScreen(onResetPassword: (String) -> Unit, onBackToLogin: () -> Unit) {
 
     val coroutines = rememberCoroutineScope()
     val context = LocalContext.current
@@ -56,7 +56,7 @@ fun ForgotPasswordScreen(onResetPassword: () -> Unit, onBackToLogin: () -> Unit)
         if (sendCodeResponse.success == true) {
             Toast.makeText(context, sendCodeResponse.message, Toast.LENGTH_LONG).show()
             coroutines.launch {
-                onResetPassword.invoke()
+                onResetPassword.invoke(forgotPasswordViewState.email)
                 viewModel.clearCodeResponse()
             }
         } else if (sendCodeResponse.success == false){

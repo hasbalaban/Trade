@@ -57,7 +57,9 @@ sealed class Screens(val label: String? = null,val icon : Int, val route: String
     object Profile : Screens("Profile",R.drawable.home,"profile")
     object Login : Screens("Login",R.drawable.home,"login")
     object ForgotPassword : Screens("forgot_password",R.drawable.home,"forgot_password")
-    object VerificationCode : Screens("verification_code",R.drawable.home,"verification_code")
+    class VerificationCode (email : String): Screens("verification_code",R.drawable.home,"verification_code?email=$email")
+
+
     object SingUp : Screens("Profile",R.drawable.home,"sign_up")
     object HistoryScreen : Screens("historyScreen",R.drawable.home,"historyScreen")
 }

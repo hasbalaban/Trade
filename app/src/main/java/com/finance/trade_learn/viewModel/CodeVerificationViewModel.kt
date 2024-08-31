@@ -16,8 +16,13 @@ class CodeVerificationViewModel () : ViewModel() {
     private val _verificationViewState = MutableStateFlow<CodeVerificationViewState>(CodeVerificationViewState())
     val verificationViewState: StateFlow<CodeVerificationViewState> get() = _verificationViewState
 
+
     private val _verificationCodeResponse = MutableStateFlow<WrapResponse<String>>(WrapResponse())
     val verificationCodeResponse: StateFlow<WrapResponse<String>> get() = _verificationCodeResponse
+
+
+    private val _sendCodeResponse = MutableStateFlow<WrapResponse<String>>(WrapResponse())
+    val sendCodeResponse: StateFlow<WrapResponse<String>> get() = _sendCodeResponse
 
     fun changeVerificationCodeText(code: String) {
         _verificationViewState.value = verificationViewState.value.copy(verificationCode = code)
@@ -61,6 +66,32 @@ class CodeVerificationViewModel () : ViewModel() {
             if (response.isSuccessful){
                 response.body()?.let {
                     _verificationCodeResponse.value = it
+                }
+                println(response.body()?.success)
+                response.body()?.data
+                return@launch
+            }
+
+            println(response.message())
+            println(response.body()?.message)
+            println(response.body()?.error)
+            println(response.body()?.success)
+
+
+        }
+    }
+
+    fun sendResetPasswordCode(){
+        BaseViewModel.setLockMainActivityStatus(true)
+        viewModelScope.launch {
+            val userService = UserApi()
+
+            val response = userService.sendResetPasswordCode(verificationViewState.value.email)
+            BaseViewModel.setLockMainActivityStatus(false)
+
+            if (response.isSuccessful){
+                response.body()?.let {
+                    _sendCodeResponse.value = it
                 }
                 println(response.body()?.success)
                 response.body()?.data

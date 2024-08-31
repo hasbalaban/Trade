@@ -333,7 +333,8 @@ class MainActivity : AppCompatActivity() {
                 CompositionLocalProvider(LocalForgotPasswordViewModel provides viewModel) {
                     ForgotPasswordScreen(
                         onResetPassword = {
-                            navController.navigate(Screens.VerificationCode.route)
+                            val route = Screens.VerificationCode(it).route
+                            navController.navigate(route)
                         },
                         onBackToLogin = {
                             navController.popBackStack()
@@ -343,21 +344,24 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            composable(Screens.VerificationCode.route) {
+
+            //"trade?coinName={coinName}"
+            //Screens.VerificationCode.route
+            composable("verification_code?email={email}", arguments = listOf(navArgument("email") {
+                type = NavType.StringType
+                defaultValue = ""
+            })){backStackEntry ->
                 val viewModel = hiltViewModel<CodeVerificationViewModel>()
+                val userEmail = backStackEntry.arguments?.getString("email") ?: ""
                 CompositionLocalProvider(LocalCodeVerificationViewModel provides viewModel) {
                     CodeVerificationScreen(
-                        userEmail = "hasan-balaban@hotmail.com",
+                        userEmail = userEmail,
                         onVerifyCode = {
                             navController.navigate(Screens.Login.route){
                                 popUpTo(navController.graph.startDestinationRoute ?: Screens.Home.route)
                                 launchSingleTop = true
                             }
-                        },
-                        onResendCode = {
-                            navController.popBackStack()
                         }
-
                     )
                 }
             }

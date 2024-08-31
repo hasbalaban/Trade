@@ -52,8 +52,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CodeVerificationScreen(
     userEmail : String,
-    onVerifyCode: () -> Unit,
-    onResendCode: () -> Unit
+    onVerifyCode: () -> Unit
 ) {
     val coroutines = rememberCoroutineScope()
 
@@ -62,6 +61,7 @@ fun CodeVerificationScreen(
 
     val verificationViewState by viewModel.verificationViewState.collectAsState()
     val verificationCodeResponse by viewModel.verificationCodeResponse.collectAsState()
+    val sendCodeResponse by viewModel.sendCodeResponse.collectAsState()
 
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -74,6 +74,14 @@ fun CodeVerificationScreen(
             Toast.makeText(context, verificationCodeResponse.message, Toast.LENGTH_LONG).show()
             onVerifyCode.invoke()
         } else if (verificationCodeResponse.success == false){
+            Toast.makeText(context, verificationCodeResponse.message ?: verificationCodeResponse.error?.message ?: "error", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    LaunchedEffect(sendCodeResponse.success){
+        if (sendCodeResponse.success == true) {
+            Toast.makeText(context, sendCodeResponse.data ?: sendCodeResponse.message, Toast.LENGTH_LONG).show()
+        } else if (sendCodeResponse.success == false){
             Toast.makeText(context, verificationCodeResponse.message ?: verificationCodeResponse.error?.message ?: "error", Toast.LENGTH_LONG).show()
         }
     }
@@ -127,7 +135,7 @@ fun CodeVerificationScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = userEmail,
+                value = verificationViewState.email,
                 onValueChange = {
                     viewModel.changeEmail(it)
                 },
@@ -260,7 +268,7 @@ fun CodeVerificationScreen(
                     color = Color(0xFF1E88E5) // Mavi tonlarında yeniden gönderme metni
                 ),
                 modifier = Modifier
-                    .clickable { onResendCode() }
+                    .clickable { viewModel.sendResetPasswordCode() }
             )
         }
     }
@@ -270,8 +278,7 @@ fun CodeVerificationScreen(
 @Composable
 fun CodeVerificationScreenPreview() {
     CodeVerificationScreen(
-        userEmail =  "",
-        onVerifyCode = {},
-        onResendCode = {}
+        userEmail  = "",
+        onVerifyCode = {}
     )
 }
