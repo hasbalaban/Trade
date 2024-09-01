@@ -250,7 +250,7 @@ fun PortfolioCard(
 private fun BalanceCard() {
     val viewModel = LocalHomeViewModel.current
     val cryptoItems by viewModel.myCoinsNewModel.observeAsState(emptyList())
-    val totalBalance by viewModel.totalBalance.collectAsState()
+    val totalBalance by viewModel.totalBalance.collectAsState(0f)
 
     val totalDollarBalance =
         cryptoItems?.firstOrNull { it.CoinName.contains("tether", true) }?.CoinAmount

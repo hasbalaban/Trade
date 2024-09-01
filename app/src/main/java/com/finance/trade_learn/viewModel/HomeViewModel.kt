@@ -83,7 +83,8 @@ class HomeViewModel @Inject constructor(
             myCoinsNewModel.value = availableCoins
 
             if (!BaseViewModel.isLogin.value){
-                _totalBalance.value = availableCoins.sumOf { it.Total }.toFloat()
+                val total = availableCoins.sumOf { it.Total }.toFloat()
+                _totalBalance.value = total
                 return@launch
             }
 
