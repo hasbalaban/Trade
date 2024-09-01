@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -148,11 +149,13 @@ fun ItemIcon(imageUrl: String, itemName: String, modifier: Modifier = Modifier) 
                 drawCircle(
                     color = Color(0xff3B82F6),
                     radius = size.minDimension / 2,
-                    style = Stroke(width = 1.dp.toPx()) // Çizgi kalınlığı
+                    style = Stroke(width = 1.dp.toPx()), // Çizgi kalınlığı
+
                 )
             }
             .padding(4.dp)
-            .clip(CircleShape),
+            .clip(CircleShape)
+            .background(MaterialTheme.colors.primary),
         contentScale = ContentScale.FillBounds,
         alignment = Alignment.CenterStart
     )

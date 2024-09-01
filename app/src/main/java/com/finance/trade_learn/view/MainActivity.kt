@@ -213,9 +213,14 @@ class MainActivity : AppCompatActivity() {
             composable(Screens.Home.route) {
                 val viewModel = hiltViewModel<HomeViewModel>()
                 CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
-                    HomeScreen { itemId : String ->
-                        navController.navigate(Screens.Trade(itemId).route)
-                    }
+                    HomeScreen(
+                        openTradePage = { itemId: String ->
+                            navController.navigate(Screens.Trade(itemId).route)
+                        },
+                        clickedViewAll = {
+                            navController.navigate(Screens.Wallet.route)
+                        }
+                    )
                 }
             }
 

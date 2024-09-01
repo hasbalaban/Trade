@@ -3,9 +3,7 @@ package com.finance.trade_learn.view.home
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,13 +28,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.theme.FinanceAppTheme
@@ -45,7 +41,7 @@ import com.finance.trade_learn.view.coin.ItemIcon
 import com.finance.trade_learn.view.wallet.format
 
 @Composable
-fun HomeScreen(openTradePage: (String) -> Unit) {
+fun HomeScreen(openTradePage: (String) -> Unit, clickedViewAll : () -> Unit) {
     val viewModel = LocalHomeViewModel.current
 
     LaunchedEffect(Unit) {
@@ -56,17 +52,20 @@ fun HomeScreen(openTradePage: (String) -> Unit) {
 
     if (BaseViewModel.isLogin.value) {
         val userInfo = BaseViewModel.userInfo.collectAsState()
-        if (BaseViewModel.isLogin.value){
-            viewModel.getDataFromApi(userInfo.value.data?.balances?.map {it.itemName})
+        if (BaseViewModel.isLogin.value) {
+            viewModel.getDataFromApi(userInfo.value.data?.balances?.map { it.itemName })
         }
     }
 
 
-    StockitPortfolioScreen()
+    StockitPortfolioScreen(
+        openTradePage = openTradePage,
+        clickedViewAll = clickedViewAll
+    )
 }
 
 @Composable
-fun StockitPortfolioScreen() {
+fun StockitPortfolioScreen(openTradePage: (String) -> Unit, clickedViewAll: () -> Unit) {
     // Background color for the screen
     val backgroundColor = Color(0xFFF5F6FA) // Light grayish background color
     val textColor = Color(0xFF000000) // Black text color
@@ -76,7 +75,6 @@ fun StockitPortfolioScreen() {
     val positiveChangeColor = Color(0xFF2ECC71) // Green color for positive changes
 
 
-
     val viewModel = LocalHomeViewModel.current
     val items by viewModel.myCoinsNewModel.observeAsState(emptyList())
 
@@ -84,7 +82,7 @@ fun StockitPortfolioScreen() {
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 24.dp)
-            .padding(16.dp)
+            .padding(vertical = 16.dp, horizontal = 12.dp)
     ) {
         BaseViewModel.userInfo.value.data?.let {
             Text(
@@ -111,13 +109,23 @@ fun StockitPortfolioScreen() {
         Spacer(modifier = Modifier.height(16.dp))
 
 
-
         // Portfolio Section
-        Text(
-            text = "Portfolio",
-            style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
-            color = textColor
-        )
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
+            Text(
+                text = "Portfolio",
+                style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                color = textColor
+            )
+            Text(
+                text = "View all",
+                style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal, fontSize = 16.sp, color = Color(0xff3E84F6)),
+                color = Color(0xff3E84F6),
+                modifier = Modifier.clickable {
+                    clickedViewAll.invoke()
+                }
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -125,16 +133,16 @@ fun StockitPortfolioScreen() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            LazyRow(modifier = Modifier.fillMaxWidth()){
-                items(items){
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                items(items) {
                     PortfolioCard(
                         item = it,
                         portfolioValue = "131,46",
                         changePercentage = "2,02%",
                         changeColor = negativeChangeColor,
-                        iconResource = R.drawable.arrow,
-                        modifier = Modifier
-                            .sizeIn(minWidth = 250.dp)
+                        modifier = Modifier.clickable {
+                            openTradePage.invoke(it.CoinName)
+                        }.sizeIn(minWidth = 220.dp)
                     )
                 }
             }
@@ -156,59 +164,76 @@ fun PortfolioCard(
     portfolioValue: String,
     changePercentage: String,
     changeColor: Color,
-    iconResource: Int,
     modifier: Modifier,
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
-        backgroundColor = Color(0xffF9FAFC),
+        backgroundColor = MaterialTheme.colors.primary,
         elevation = 4.dp,
-        modifier = modifier.fillMaxWidth().padding(end = 16.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 2.dp, end = 10.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
         ) {
-            Row(modifier = modifier.fillMaxWidth()){
+            Row(modifier = Modifier.fillMaxWidth()) {
 
-                ItemIcon(imageUrl = item.Image, itemName = item.CoinName, modifier = Modifier.size(48.dp))
+                ItemIcon(
+                    imageUrl = item.Image,
+                    itemName = item.CoinName,
+                    modifier = Modifier.size(48.dp)
+                )
 
 
 
-                Column(modifier = modifier.padding(start = 16.dp)){
+                Column(modifier = Modifier.padding(start = 16.dp)) {
                     Text(
                         text = item.CoinName,
                         style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Bold),
-                        color = Color.Black
+                        color = MaterialTheme.colors.onPrimary
                     )
                     Text(
                         text = item.CoinName,
                         style = MaterialTheme.typography.body2.copy(color = Color.Gray),
-                        color = Color.Gray
+                        color = MaterialTheme.colors.onPrimary.copy(alpha = 0.9f)
                     )
                 }
             }
-            Spacer(modifier = modifier.height(16.dp))
 
-            Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.SpaceAround ){
-                Column(modifier = Modifier.weight(1f)){
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(16.dp)
+            )
+
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "Portfolio",
-                        style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal, fontSize = 12.sp),
-                        color = Color.Black.copy(alpha = 0.5f)
+                        style = MaterialTheme.typography.h6.copy(
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 12.sp
+                        ),
+                        color = MaterialTheme.colors.onPrimary.copy(alpha = 0.9f)
                     )
                     Text(
                         text = portfolioValue,
                         style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
-                        color = Color.Black
+                        color = MaterialTheme.colors.onPrimary
                     )
                 }
 
 
 
                 Text(
-                    modifier = Modifier.background(MaterialTheme.colors.primary).padding(6.dp).border(1.dp, Color.White, RoundedCornerShape(6.dp)),
+                    modifier = Modifier.padding(6.dp),
                     text = changePercentage,
                     style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.Bold),
                     color = changeColor,
@@ -222,13 +247,14 @@ fun PortfolioCard(
 
 
 @Composable
-private fun BalanceCard(){
+private fun BalanceCard() {
     val viewModel = LocalHomeViewModel.current
     val cryptoItems by viewModel.myCoinsNewModel.observeAsState(emptyList())
     val totalBalance by viewModel.totalBalance.collectAsState()
 
-    val totalDollarBalance =  cryptoItems?.firstOrNull { it.CoinName.contains("tether", true)}?.CoinAmount
-        ?: 0.0
+    val totalDollarBalance =
+        cryptoItems?.firstOrNull { it.CoinName.contains("tether", true) }?.CoinAmount
+            ?: 0.0
 
     val animatedBalance by animateFloatAsState(
         targetValue = totalBalance,
@@ -245,7 +271,7 @@ private fun BalanceCard(){
         elevation = 4.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .height(250.dp)
+            .height(200.dp)
     ) {
         Column(
             modifier = Modifier
@@ -298,8 +324,8 @@ private fun BalanceCard(){
 
 @Preview
 @Composable
-fun HomeScreenPreview(){
+fun HomeScreenPreview() {
     FinanceAppTheme {
-        HomeScreen(openTradePage = {})
+        HomeScreen(openTradePage = {}, clickedViewAll = {})
     }
 }
