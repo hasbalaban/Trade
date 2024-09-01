@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -45,7 +46,7 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
         ,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ItemIcon(item = coin, modifier = Modifier.size(48.dp))
+        ItemIcon(imageUrl = coin.CoinImage, itemName = coin.CoinName, modifier = Modifier.size(48.dp))
 
 
         Column(
@@ -127,11 +128,11 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
 }
 
 @Composable
-fun ItemIcon(item: CoinsHome, modifier: Modifier = Modifier) {
+fun ItemIcon(imageUrl: String, itemName: String, modifier: Modifier = Modifier) {
 
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(LocalContext.current)
-            .data(item.CoinImage)
+            .data(imageUrl)
             .apply {
                 crossfade(true)
                 placeholder(R.drawable.placeholder)
@@ -142,17 +143,19 @@ fun ItemIcon(item: CoinsHome, modifier: Modifier = Modifier) {
 
     Image(
         painter = painter,
-        contentDescription = item.CoinName,
+        contentDescription = itemName,
         modifier = modifier
             .drawBehind {
                 drawCircle(
                     color = Color(0xff3B82F6),
                     radius = size.minDimension / 2,
-                    style = Stroke(width = 1.dp.toPx()) // Çizgi kalınlığı
+                    style = Stroke(width = 1.dp.toPx()), // Çizgi kalınlığı
+
                 )
             }
             .padding(4.dp)
-            .clip(CircleShape),
+            .clip(CircleShape)
+            .background(MaterialTheme.colors.primary),
         contentScale = ContentScale.FillBounds,
         alignment = Alignment.CenterStart
     )

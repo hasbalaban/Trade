@@ -236,7 +236,7 @@ private fun CryptoItem(item: NewModelForItemHistory) {
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(item.CoinName, style = androidx.compose.material3.MaterialTheme.typography.bodyMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), overflow = TextOverflow.Ellipsis)
-        Text(item.CoinAmount.toDouble().format(6), style = androidx.compose.material3.MaterialTheme.typography.bodyMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+        Text(item.CoinAmount.format(6), style = androidx.compose.material3.MaterialTheme.typography.bodyMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
         Text("\$${item.Total.toDouble().format(2)}", style = androidx.compose.material3.MaterialTheme.typography.bodyMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
     }
 }

@@ -68,7 +68,7 @@ class WalletPageViewModel @Inject constructor(
 
             NewModelForItemHistory(
                 CoinName =item.id.lowercase(Locale.getDefault()),
-                CoinAmount = amount,
+                CoinAmount = amount.toDouble(),
                 Total = totalItemBalance,
                 Image = item.image
             )
