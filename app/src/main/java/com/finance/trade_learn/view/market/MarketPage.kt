@@ -3,8 +3,6 @@ package com.finance.trade_learn.view.market
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
 import android.view.ViewTreeObserver
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -15,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -70,7 +69,6 @@ import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.LocalMarketViewModel
 import com.finance.trade_learn.view.coin.PopularCoinCard
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -173,24 +171,12 @@ fun SearchBar() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainView(
-    page: Int = 1,
+fun MarketScreen(
     shouldShowPopularCoins: Boolean = false,
     openTradePage: (String) -> Unit
 ) {
     val baseViewModel = LocalBaseViewModel.current
     val viewModel = LocalMarketViewModel.current
-
-    var runnable by remember {
-        mutableStateOf(Runnable {  })
-    }
-    val handler by remember {
-        mutableStateOf(Handler(Looper.getMainLooper()))
-    }
-    val timeLoop by remember {
-        mutableStateOf(60000L)
-    }
-
 
     val popularItemListState = rememberLazyListState()
 
@@ -204,30 +190,11 @@ fun MainView(
         }
     }
 
-    LaunchedEffect(Unit) {
-        while (true){
-            delay(2000)
-            val newPosition =
-                if (popularItemListState.canScrollForward) popularItemListState.layoutInfo.visibleItemsInfo.first().index + 1
-                else 0
-            popularItemListState.animateScrollToItem(newPosition)
-        }
-    }
 
-    DisposableEffect(Unit) {
-        runnable = Runnable {
-            runBlocking {
-                if (false) baseViewModel.getAllCrypto(page)
-                else baseViewModel.getAllCrypto(page)
-            }
-            handler.postDelayed(runnable, timeLoop)
-        }
-        handler.post(runnable)
 
-        onDispose {
-            handler.removeCallbacks(runnable)
-        }
-    }
+
+    AutoScrollList(popularItemListState = popularItemListState)
+
 
 
     CompositionLocalProvider(LocalHomePageScrollBehavior provides scrollBehavior) {
@@ -324,6 +291,21 @@ fun MainView(
 
 
 }
+
+
+@Composable
+fun AutoScrollList(popularItemListState: LazyListState) {
+    LaunchedEffect(Unit) {
+        while (true){
+            delay(2000)
+            val newPosition =
+                if (popularItemListState.canScrollForward) popularItemListState.layoutInfo.visibleItemsInfo.first().index + 1
+                else 0
+            popularItemListState.animateScrollToItem(newPosition)
+        }
+    }
+}
+
 
 @Composable
 fun keyboardAsState(): State<Boolean> {
