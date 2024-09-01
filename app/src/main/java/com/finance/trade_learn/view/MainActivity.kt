@@ -6,10 +6,13 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
@@ -76,6 +79,7 @@ import com.finance.trade_learn.view.loginscreen.codeverification.CodeVerificatio
 import com.finance.trade_learn.view.loginscreen.forgotpassword.ForgotPasswordScreen
 import com.finance.trade_learn.view.loginscreen.login.LoginScreen
 import com.finance.trade_learn.view.loginscreen.signup.SignUpScreen
+import com.finance.trade_learn.view.market.MarketScreen
 import com.finance.trade_learn.view.profile.ProfileScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.CodeVerificationViewModel
@@ -126,9 +130,15 @@ private val LocalMainScrollBehavior = compositionLocalOf<BottomAppBarScrollBehav
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    private val baseViewModel : BaseViewModel by viewModels()
+
 
     //   private lateinit var firestore: FirebaseFirestore
     private var mInterstitialAd: InterstitialAd? = null
+
+    var runnable = Runnable {  }
+    val handler = Handler(Looper.getMainLooper())
+    val timeLoop = 60000L
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,7 +151,6 @@ class MainActivity : AppCompatActivity() {
                 val context = LocalContext.current
                 val navController = rememberNavController()
 
-                val baseViewModel = hiltViewModel<BaseViewModel>()
                 val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(true)
                 val isLockedScreen by BaseViewModel.lockMainActivityToAction.observeAsState(true)
 
@@ -228,8 +237,8 @@ class MainActivity : AppCompatActivity() {
                 val viewModel = hiltViewModel<MarketViewModel>()
 
                 CompositionLocalProvider(LocalMarketViewModel provides viewModel) {
-                    com.finance.trade_learn.view.market.MainView(
-                        page = marketPageNumber,
+                    MarketScreen(
+                        shouldShowPopularCoins = true,
                         openTradePage = {
                             navController.navigate(Screens.Trade(it).route)
                         }
@@ -511,6 +520,29 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun keepDataUpdated(){
+        runnable = Runnable {
+            runBlocking {
+                baseViewModel.getAllCrypto(0)
+            }
+            handler.postDelayed(runnable, timeLoop)
+        }
+        handler.post(runnable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        keepDataUpdated()
+    }
+
+
+
+    override fun onStop() {
+        super.onStop()
+        handler.removeCallbacks(runnable)
+    }
+
+
 
 }
 
@@ -609,6 +641,9 @@ fun BottomNavigationBar(navController: NavHostController) {
 
     }
 }
+
+
+
 
 
 @Preview

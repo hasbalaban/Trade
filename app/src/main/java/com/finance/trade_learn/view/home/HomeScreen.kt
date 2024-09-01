@@ -3,6 +3,7 @@ package com.finance.trade_learn.view.home
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,18 +28,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.view.LocalHomeViewModel
 import com.finance.trade_learn.view.coin.ItemIcon
 import com.finance.trade_learn.view.wallet.format
+import java.util.Locale
 
 @Composable
 fun HomeScreen(openTradePage: (String) -> Unit, clickedViewAll : () -> Unit) {
@@ -136,13 +144,15 @@ fun StockitPortfolioScreen(openTradePage: (String) -> Unit, clickedViewAll: () -
             LazyRow(modifier = Modifier.fillMaxWidth()) {
                 items(items) {
                     PortfolioCard(
-                        item = it,
+                        itemName = it.CoinName,
                         portfolioValue = "131,46",
                         changePercentage = "2,02%",
                         changeColor = negativeChangeColor,
-                        modifier = Modifier.clickable {
-                            openTradePage.invoke(it.CoinName)
-                        }.sizeIn(minWidth = 220.dp)
+                        modifier = Modifier
+                            .clickable {
+                                openTradePage.invoke(it.CoinName)
+                            }
+                            .sizeIn(minWidth = 220.dp)
                     )
                 }
             }
@@ -160,12 +170,16 @@ fun StockitPortfolioScreen(openTradePage: (String) -> Unit, clickedViewAll: () -
 
 @Composable
 fun PortfolioCard(
-    item: NewModelForItemHistory,
+    itemName: String,
     portfolioValue: String,
     changePercentage: String,
     changeColor: Color,
     modifier: Modifier,
 ) {
+    val item = BaseViewModel.allCryptoItems.firstOrNull {
+        itemName.lowercase(Locale.getDefault()) == it.id.lowercase(Locale.getDefault())
+    } ?: return
+
     Card(
         shape = RoundedCornerShape(16.dp),
         backgroundColor = MaterialTheme.colors.primary,
@@ -182,8 +196,8 @@ fun PortfolioCard(
             Row(modifier = Modifier.fillMaxWidth()) {
 
                 ItemIcon(
-                    imageUrl = item.Image,
-                    itemName = item.CoinName,
+                    imageUrl = item.image,
+                    itemName = item.name,
                     modifier = Modifier.size(48.dp)
                 )
 
@@ -191,12 +205,12 @@ fun PortfolioCard(
 
                 Column(modifier = Modifier.padding(start = 16.dp)) {
                     Text(
-                        text = item.CoinName,
+                        text = item.symbol,
                         style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colors.onPrimary
                     )
                     Text(
-                        text = item.CoinName,
+                        text = item.name,
                         style = MaterialTheme.typography.body2.copy(color = Color.Gray),
                         color = MaterialTheme.colors.onPrimary.copy(alpha = 0.9f)
                     )
@@ -223,22 +237,52 @@ fun PortfolioCard(
                         ),
                         color = MaterialTheme.colors.onPrimary.copy(alpha = 0.9f)
                     )
+                    val currentPrice = when {
+                        (item.current_price ?: 0.0) > 1.0 -> item.current_price?.format(2)
+                        (item.current_price ?: 0.0) > 0.001 -> item.current_price?.format(3)
+                        (item.current_price ?: 0.0) > 0.0001 -> item.current_price?.format(4)
+                        (item.current_price ?: 0.0) > 0.00001 -> item.current_price?.format(5)
+                        (item.current_price ?: 0.0) > 0.000001 -> item.current_price?.format(6)
+                        (item.current_price ?: 0.0) > 0.0000001 -> item.current_price?.format(7)
+                        (item.current_price ?: 0.0) > 0.00000001 -> item.current_price?.format(8)
+                        (item.current_price ?: 0.0) > 0.000000001 -> item.current_price?.format(9)
+                        (item.current_price ?: 0.0) > 0.0000000001 -> item.current_price?.format(10)
+                        else -> item.current_price?.format(11)
+                    }
+
                     Text(
-                        text = portfolioValue,
+                        text = currentPrice ?: "",
                         style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colors.onPrimary
                     )
                 }
 
+                val priceChangePercent = item.price_change_percentage_24h
+                val priceChangeColor = if ((priceChangePercent ?: 0.0) > 0.0) Color(0xFF4CAF50) else Color(0xFFF44336)
 
+                Row(verticalAlignment = Alignment.CenterVertically){
+                    Image(
+                        modifier = Modifier
+                            .size(height = 7.dp, width = 12.dp)
+                            .rotate(
+                                if ((priceChangePercent ?: 0.0) > 0.0) 0.0f else 180f
+                            )
+                            .padding(end = 2.dp),
+                        painter = painterResource(id = R.drawable.arrow),
+                        contentDescription = stringResource(id = R.string.change24),
+                        colorFilter = ColorFilter.tint(priceChangeColor),
+                        contentScale = ContentScale.FillBounds,
+                        alignment = Alignment.BottomStart
+                    )
 
-                Text(
-                    modifier = Modifier.padding(6.dp),
-                    text = changePercentage,
-                    style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.Bold),
-                    color = changeColor,
-                    textAlign = TextAlign.End
-                )
+                    Text(
+                        modifier = Modifier.padding(6.dp),
+                        text = priceChangePercent?.format(2).toString() + "%",
+                        style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.Bold),
+                        color = priceChangeColor,
+                        textAlign = TextAlign.End
+                    )
+                }
 
             }
         }
