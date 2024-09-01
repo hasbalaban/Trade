@@ -49,7 +49,7 @@ fun PopularCoinCard(
             verticalArrangement = Arrangement.Center
         ) {
 
-            ItemIcon(item = coin, modifier = Modifier.size(36.dp))
+            ItemIcon(imageUrl = coin.CoinImage, itemName = coin.CoinName, modifier = Modifier.size(36.dp))
 
             Spacer(modifier = Modifier.height(8.dp))
 

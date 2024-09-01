@@ -4,7 +4,7 @@ import java.math.BigDecimal
 
 data class NewModelForItemHistory(
     var CoinName: String,
-    var CoinAmount: BigDecimal,
+    var CoinAmount: Double,
     var Total: BigDecimal,
     val Image: String
 

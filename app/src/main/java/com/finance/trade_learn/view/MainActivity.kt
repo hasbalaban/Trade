@@ -70,6 +70,7 @@ import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.*
 import com.finance.trade_learn.view.history.TradeHistoryScreen
+import com.finance.trade_learn.view.home.HomeScreen
 import com.finance.trade_learn.view.loading.LoadingLottieAnimation
 import com.finance.trade_learn.view.loginscreen.codeverification.CodeVerificationScreen
 import com.finance.trade_learn.view.loginscreen.forgotpassword.ForgotPasswordScreen
@@ -80,6 +81,7 @@ import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.CodeVerificationViewModel
 import com.finance.trade_learn.viewModel.ForgotPasswordViewModel
 import com.finance.trade_learn.viewModel.HomeViewModel
+import com.finance.trade_learn.viewModel.MarketViewModel
 import com.finance.trade_learn.viewModel.LoginViewModel
 import com.finance.trade_learn.viewModel.ProfileViewModel
 import com.finance.trade_learn.viewModel.SignUpViewModel
@@ -103,10 +105,12 @@ val LocalWalletPageViewModel =
 val LocalViewModelHistoryTrade =
     compositionLocalOf<TransactionViewModel> { error("No ViewModelHistoryTrade found") }
 
-val LocalHomeViewModel =
-    compositionLocalOf<HomeViewModel> { error("No ViewModelHistoryTrade found") }
+val LocalMarketViewModel =
+    compositionLocalOf<MarketViewModel> { error("No MarketViewModel found") }
 
 val LocalSingUpViewModel = compositionLocalOf<SignUpViewModel> { error("No SignUpViewModel found") }
+
+val LocalHomeViewModel = compositionLocalOf<HomeViewModel> { error("No HomeViewModel found") }
 
 val LocalProfileViewModel = compositionLocalOf<ProfileViewModel> { error("No ProfileViewModel found") }
 
@@ -208,20 +212,17 @@ class MainActivity : AppCompatActivity() {
         NavHost(modifier = modifier, navController = navController, startDestination = Screens.Home.route) {
             composable(Screens.Home.route) {
                 val viewModel = hiltViewModel<HomeViewModel>()
-
                 CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
-                    com.finance.trade_learn.view.market.MainView(
-                        shouldShowPopularCoins = true,
-                        openTradePage = {
-                            navController.navigate(Screens.Trade(it).route)
-                        }
-                    )
+                    HomeScreen { itemId : String ->
+                        navController.navigate(Screens.Trade(itemId).route)
+                    }
                 }
             }
-            composable(Screens.Market.route) {
-                val viewModel = hiltViewModel<HomeViewModel>()
 
-                CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
+            composable(Screens.Market.route) {
+                val viewModel = hiltViewModel<MarketViewModel>()
+
+                CompositionLocalProvider(LocalMarketViewModel provides viewModel) {
                     com.finance.trade_learn.view.market.MainView(
                         page = marketPageNumber,
                         openTradePage = {

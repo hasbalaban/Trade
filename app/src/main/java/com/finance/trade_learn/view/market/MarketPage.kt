@@ -67,7 +67,7 @@ import com.finance.trade_learn.R
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.view.HomePageItems
 import com.finance.trade_learn.view.LocalBaseViewModel
-import com.finance.trade_learn.view.LocalHomeViewModel
+import com.finance.trade_learn.view.LocalMarketViewModel
 import com.finance.trade_learn.view.coin.PopularCoinCard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -114,7 +114,7 @@ private fun MainToolbar() {
 
 @Composable
 fun SearchBar() {
-    val viewModel = LocalHomeViewModel.current
+    val viewModel = LocalMarketViewModel.current
     val searchBarViewState by viewModel.searchBarViewState.collectAsState()
 
     val isKeyboardOpen by keyboardAsState()
@@ -179,7 +179,7 @@ fun MainView(
     openTradePage: (String) -> Unit
 ) {
     val baseViewModel = LocalBaseViewModel.current
-    val viewModel = LocalHomeViewModel.current
+    val viewModel = LocalMarketViewModel.current
 
     var runnable by remember {
         mutableStateOf(Runnable {  })
