@@ -210,7 +210,7 @@ class MainActivity : AppCompatActivity() {
                 val viewModel = hiltViewModel<HomeViewModel>()
 
                 CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
-                    com.finance.trade_learn.view.home.MainView(
+                    com.finance.trade_learn.view.market.MainView(
                         shouldShowPopularCoins = true,
                         openTradePage = {
                             navController.navigate(Screens.Trade(it).route)
@@ -222,7 +222,7 @@ class MainActivity : AppCompatActivity() {
                 val viewModel = hiltViewModel<HomeViewModel>()
 
                 CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
-                    com.finance.trade_learn.view.home.MainView(
+                    com.finance.trade_learn.view.market.MainView(
                         page = marketPageNumber,
                         openTradePage = {
                             navController.navigate(Screens.Trade(it).route)

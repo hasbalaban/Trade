@@ -1,4 +1,4 @@
-package com.finance.trade_learn.view.home.homeViewStates
+package com.finance.trade_learn.view.market.marketViewStates
 
 data class SearchBarViewState (
     val text : String = "",
