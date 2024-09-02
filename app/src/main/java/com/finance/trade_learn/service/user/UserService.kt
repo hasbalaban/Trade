@@ -52,7 +52,7 @@ interface UserService {
     ): Response<WrapResponse<UserInfo>>
 
 
-    @GET("/watchList")
+    @POST("/watchList")
     suspend fun addOrRemoveWatchListItem(
         @Body watchListRequestItem : WatchListRequestItem
     ): Response<WrapResponse<List<WatchListItem>>>

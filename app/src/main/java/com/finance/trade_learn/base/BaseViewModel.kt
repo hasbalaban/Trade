@@ -12,6 +12,8 @@ import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
+import com.finance.trade_learn.models.watchList.WatchListItem
+import com.finance.trade_learn.models.watchList.WatchListRequestItem
 import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.service.user.UserApi
 import com.finance.trade_learn.utils.ConvertOperation
@@ -142,7 +144,6 @@ open class BaseViewModel @Inject constructor(
     }
 
     suspend fun getUserInfo() {
-
         viewModelScope.launch {
             val userService = UserApi()
             val response = userService.getUserInfo(email = userEmail)
@@ -163,8 +164,39 @@ open class BaseViewModel @Inject constructor(
             println(response.body()?.message)
             println(response.body()?.error)
             println(response.body()?.success)
+        }
+    }
 
+    suspend fun saveOrRemoveWatchListItem(itemId : String) {
+        val userInfo = userInfo.value.data ?: return
+        val isRemoved = userInfo.userWatchList.any {
+            it.itemId.contains(itemId)
+        }
 
+        val watchListRequestItem = WatchListRequestItem(
+            userId = userInfo.userId,
+            itemId = itemId,
+            isRemoved = isRemoved,
+        )
+        viewModelScope.launch {
+            setLockMainActivityStatus(true)
+            val userService = UserApi()
+            val response = userService.addOrRemoveWatchListItem(watchListRequestItem = watchListRequestItem)
+
+            setLockMainActivityStatus(false)
+            if (response.isSuccessful){
+                response.body()?.data?.let {
+                    updateUserWatchList(it)
+                }
+                println(response.body()?.success)
+                response.body()?.data
+                return@launch
+            }
+
+            updateUserLoginStatus(isLogin = false)
+
+            println(response.message())
+            println(response.body()?.message)
         }
     }
 
@@ -200,6 +232,10 @@ open class BaseViewModel @Inject constructor(
 
         fun updateUserBalance(updatedBalance : List<UserBalance>){
             _userInfo.value = userInfo.value.copy(data = userInfo.value.data?.copy(balances = updatedBalance))
+        }
+
+        fun updateUserWatchList(userWatchList: List<WatchListItem>){
+            _userInfo.value = userInfo.value.copy(data = userInfo.value.data?.copy(userWatchList = userWatchList))
         }
 
         fun updateUserLoginStatus(isLogin : Boolean){

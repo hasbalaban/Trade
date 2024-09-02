@@ -1,5 +1,7 @@
 package com.finance.trade_learn.models
 
+import com.finance.trade_learn.models.watchList.WatchListItem
+
 data class NewUserRequest(
     val email : String,
     val password : String,
@@ -11,6 +13,7 @@ data class UserInfo(
     val userId : Int,
     val email: String,
     val nameAndSurname: String,
+    val userWatchList : List<WatchListItem>,
     val balances: List<UserBalance>,
     val totalBalance: Double
 )

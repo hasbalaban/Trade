@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,8 +42,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
+import com.finance.trade_learn.models.enumPriceChange
+import com.finance.trade_learn.models.modelsConvector.CoinsHome
+import com.finance.trade_learn.models.modelsConvector.Percent
 import com.finance.trade_learn.theme.FinanceAppTheme
+import com.finance.trade_learn.utils.percenteChange
 import com.finance.trade_learn.view.LocalHomeViewModel
+import com.finance.trade_learn.view.coin.CoinItemScreen
 import com.finance.trade_learn.view.coin.ItemIcon
 import com.finance.trade_learn.view.wallet.format
 import java.util.Locale
@@ -161,6 +167,7 @@ fun StockitPortfolioScreen(openTradePage: (String) -> Unit, clickedViewAll: () -
             style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
             color = textColor
         )
+        WatchListSection(openTradePage = openTradePage)
     }
 }
 
@@ -357,6 +364,61 @@ private fun BalanceCard() {
         }
     }
 
+}
+
+@Composable
+private fun WatchListSection(openTradePage: (String) -> Unit) {
+    val userInfo = BaseViewModel.userInfo.collectAsState()
+
+    val items = userInfo.value.data?.userWatchList?.map { watchListItem ->
+        val currentItemInfo =
+            BaseViewModel.allCryptoItems.firstOrNull { it.id == watchListItem.itemId }
+        if (currentItemInfo == null) null
+        else {
+
+            val percenteChange: Percent? = if (currentItemInfo.price_change_24h == null) {
+                Percent(0.0, "+", "%")
+            } else {
+                percenteChange(currentItemInfo.price_change_percentage_24h.toString())
+            }
+
+            val coinPercenteChange = percenteChange?.raise + (percenteChange?.percentChange
+                .toString() + "0000").subSequence(0, 4).toString() + "%"
+
+            CoinsHome(
+                id = currentItemInfo.id,
+                CoinName = currentItemInfo.name.uppercase(Locale.getDefault()) + " / USD",
+                coinSymbol = currentItemInfo.symbol.uppercase(Locale.getDefault()) + " / USD",
+                CoinPrice = (currentItemInfo.current_price.toString() + "00000000").subSequence(
+                    0,
+                    8
+                ).toString(),
+                CoinChangePercente = coinPercenteChange,
+                CoinImage = currentItemInfo.image,
+                raise = if ((currentItemInfo.price_change_percentage_24h
+                        ?: 0.0) > 0.0
+                ) enumPriceChange.pozitive else enumPriceChange.negative,
+                marketCap = currentItemInfo.market_cap,
+                total_volume = currentItemInfo.total_volume,
+            )
+        }
+    }?.mapNotNull { it }
+
+
+    items?.let {
+        LazyColumn(modifier = Modifier){
+            items(
+                items = items,
+                key = {
+                    it.CoinName
+                }
+            ){
+                CoinItemScreen(it){ selectedItemName ->
+                    openTradePage.invoke(selectedItemName)
+                }
+            }
+        }
+    }
 }
 
 @Preview

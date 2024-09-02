@@ -83,11 +83,13 @@ class ConvertOperation(
         return DataForHomePage(lastItems ?: emptyList(), ListOfCrypto.value ?: ArrayList())
     }
 
-    private fun percenteChange(coinPrice: String): Percent {
-        return when (coinPrice.subSequence(0, 1)) {
-            "-" -> Percent(coinPrice.subSequence(1, coinPrice.length).toString().toDouble(), "-")
-            else -> Percent(coinPrice.subSequence(0, coinPrice.length).toString().toDouble(), "+")
-        }
-    }
 
+
+}
+
+fun percenteChange(coinPrice: String): Percent {
+    return when (coinPrice.subSequence(0, 1)) {
+        "-" -> Percent(coinPrice.subSequence(1, coinPrice.length).toString().toDouble(), "-")
+        else -> Percent(coinPrice.subSequence(0, coinPrice.length).toString().toDouble(), "+")
+    }
 }
