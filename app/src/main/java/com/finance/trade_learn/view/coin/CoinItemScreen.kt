@@ -5,9 +5,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,6 +26,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.OffsetEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -24,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
@@ -35,16 +47,14 @@ import com.finance.trade_learn.models.modelsConvector.CoinsHome
 @Composable
 fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
     Row(
-
         modifier = Modifier
+            .fillMaxWidth()
             .clickable { clickedItem.invoke(coin.id) }
             .height(IntrinsicSize.Min)
             .sizeIn(minHeight = 72.dp)
-            .fillMaxWidth()
             .background(MaterialTheme.colors.surface)
-            .padding(horizontal = 12.dp)
-        ,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(start = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         ItemIcon(imageUrl = coin.CoinImage, itemName = coin.CoinName, modifier = Modifier.size(48.dp))
 
@@ -124,6 +134,8 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
 
         }
 
+        OverflowMenu()
+
     }
 }
 
@@ -159,6 +171,40 @@ fun ItemIcon(imageUrl: String, itemName: String, modifier: Modifier = Modifier) 
         contentScale = ContentScale.FillBounds,
         alignment = Alignment.CenterStart
     )
+}
+
+@Composable
+fun OverflowMenu() {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(
+        contentAlignment = Alignment.TopEnd
+    ) {
+        Icon(
+            modifier = Modifier
+                .padding(start = 4.dp)
+                .clickable {
+                    expanded = true
+                },
+            imageVector = Icons.Default.MoreVert,
+            contentDescription = "Menu",
+            tint = MaterialTheme.colors.onSurface
+        )
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            offset = DpOffset((-12).dp, 8.dp)
+        ) {
+            DropdownMenuItem(onClick = {
+                // Handle first action
+                expanded = false
+            }) {
+                Text(if (true) "add watchlist" else "remove watchlist")
+            }
+
+        }
+    }
 }
 
 @Preview

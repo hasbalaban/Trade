@@ -8,6 +8,8 @@ import com.finance.trade_learn.models.UserBalance
 import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
+import com.finance.trade_learn.models.watchList.WatchListItem
+import com.finance.trade_learn.models.watchList.WatchListRequestItem
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -23,8 +25,8 @@ val client = OkHttpClient.Builder()
 
 class UserApi {
 
-    //val localBaseUrl = "http://10.0.2.2:8080"
-    val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
+    val localBaseUrl = "http://10.0.2.2:8080"
+    //val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
     var userService = Retrofit.Builder()
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
@@ -62,6 +64,10 @@ class UserApi {
     }
     suspend fun getUserInfo(email: String): Response<WrapResponse<UserInfo>>  {
         return userService.getUserInfo(email = email)
+    }
+
+    suspend fun addOrRemoveWatchListItem(watchListRequestItem : WatchListRequestItem): Response<WrapResponse<List<WatchListItem>>> {
+        return userService.addOrRemoveWatchListItem(watchListRequestItem = watchListRequestItem)
     }
 
 }
