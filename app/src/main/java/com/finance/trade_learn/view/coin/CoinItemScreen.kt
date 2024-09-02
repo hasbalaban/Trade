@@ -8,25 +8,24 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.OffsetEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -41,20 +40,25 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.finance.trade_learn.R
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
+import com.finance.trade_learn.theme.FinanceAppTheme
+import com.finance.trade_learn.view.LocalBaseViewModel
+import kotlinx.coroutines.launch
+import java.nio.file.WatchEvent
 
 @Composable
 fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
+    val isLogin by BaseViewModel.isLogin.collectAsState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { clickedItem.invoke(coin.id) }
             .height(IntrinsicSize.Min)
             .sizeIn(minHeight = 72.dp)
-            .background(MaterialTheme.colors.surface)
-            .padding(start = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .background(MaterialTheme.colors.surface),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         ItemIcon(imageUrl = coin.CoinImage, itemName = coin.CoinName, modifier = Modifier.size(48.dp))
 
@@ -134,7 +138,9 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
 
         }
 
-        OverflowMenu()
+        if (isLogin){
+            OverflowMenu(coin.id)
+        }
 
     }
 }
@@ -174,8 +180,11 @@ fun ItemIcon(imageUrl: String, itemName: String, modifier: Modifier = Modifier) 
 }
 
 @Composable
-fun OverflowMenu() {
+fun OverflowMenu(itemId: String) {
+    val baseViewModel = LocalBaseViewModel.current
+    val coroutines = rememberCoroutineScope()
     var expanded by remember { mutableStateOf(false) }
+    var isInWatchList by remember { mutableStateOf(BaseViewModel.userInfo.value.data?.userWatchList?.any { it.itemId.contains(itemId) } ?: false) }
 
     Box(
         contentAlignment = Alignment.TopEnd
@@ -184,6 +193,9 @@ fun OverflowMenu() {
             modifier = Modifier
                 .padding(start = 4.dp)
                 .clickable {
+                    isInWatchList = BaseViewModel.userInfo.value.data?.userWatchList?.any {
+                        it.itemId.contains(itemId)
+                    } ?: false
                     expanded = true
                 },
             imageVector = Icons.Default.MoreVert,
@@ -199,8 +211,18 @@ fun OverflowMenu() {
             DropdownMenuItem(onClick = {
                 // Handle first action
                 expanded = false
+                coroutines.launch {
+                    baseViewModel.saveOrRemoveWatchListItem(itemId = itemId)
+                }
+
             }) {
-                Text(if (true) "add watchlist" else "remove watchlist")
+                Text(if (isInWatchList) "remove watchlist" else "add watchlist")
+            }
+
+            DropdownMenuItem(onClick = {
+                expanded = false
+            }) {
+                Text("Alarm Ekle")
             }
 
         }
@@ -221,5 +243,9 @@ fun PreviewCoinItemScreen() {
         marketCap = "221975378",
         total_volume = "221975378"
     )
-    CoinItemScreen(coinItem) {}
+    FinanceAppTheme {
+        Column(modifier = Modifier.background(Color.White).padding(horizontal = 12.dp)){
+            CoinItemScreen(coinItem) {}
+        }
+    }
 }

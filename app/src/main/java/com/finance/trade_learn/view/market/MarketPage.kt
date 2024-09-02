@@ -44,7 +44,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -64,7 +63,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.finance.trade_learn.R
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
-import com.finance.trade_learn.view.HomePageItems
+import com.finance.trade_learn.view.MarketPageItems
 import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.LocalMarketViewModel
 import com.finance.trade_learn.view.coin.PopularCoinCard
@@ -262,6 +261,7 @@ fun MarketScreen(
 
                 Column(modifier = Modifier
                     .fillMaxWidth()
+                    .padding(start = 12.dp)
                     .constrainAs(mainItemsScreen) {
                         top.linkTo(divider1.bottom)
                         bottom.linkTo(parent.bottom)
@@ -281,7 +281,7 @@ fun MarketScreen(
 
                     val filterList = filterList(filteredText = searchBarViewState.value.text, list = updateList ?: emptyList())
 
-                    HomePageItems(coinsHome = filterList) { selectedItemName ->
+                    MarketPageItems(coinsHome = filterList) { selectedItemName ->
                         openTradePage.invoke(selectedItemName)
                     }
                 }

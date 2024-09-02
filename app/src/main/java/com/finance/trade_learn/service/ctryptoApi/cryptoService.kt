@@ -42,10 +42,4 @@ class cryptoService() {
         else Response.success(retrofit.getCoinGeckoData(page = page).body().handleResponse())
     }
 
-
-    fun getSelectedCoinToTradeCoinGecko(ids : String): Single<List<CoinDetail>> {
-        return retrofit.getSelectedCoinToTradeCoinGecko(ids = ids)
-    }
-
-
 }
