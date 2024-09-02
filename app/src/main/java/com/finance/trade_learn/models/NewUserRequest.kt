@@ -8,6 +8,7 @@ data class NewUserRequest(
 
 
 data class UserInfo(
+    val userId : Int,
     val email: String,
     val nameAndSurname: String,
     val balances: List<UserBalance>,

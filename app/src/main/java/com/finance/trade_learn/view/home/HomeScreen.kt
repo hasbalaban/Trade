@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
-import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.view.LocalHomeViewModel
 import com.finance.trade_learn.view.coin.ItemIcon
@@ -145,9 +144,6 @@ fun StockitPortfolioScreen(openTradePage: (String) -> Unit, clickedViewAll: () -
                 items(items) {
                     PortfolioCard(
                         itemName = it.CoinName,
-                        portfolioValue = "131,46",
-                        changePercentage = "2,02%",
-                        changeColor = negativeChangeColor,
                         modifier = Modifier
                             .clickable {
                                 openTradePage.invoke(it.CoinName)
@@ -171,9 +167,6 @@ fun StockitPortfolioScreen(openTradePage: (String) -> Unit, clickedViewAll: () -
 @Composable
 fun PortfolioCard(
     itemName: String,
-    portfolioValue: String,
-    changePercentage: String,
-    changeColor: Color,
     modifier: Modifier,
 ) {
     val item = BaseViewModel.allCryptoItems.firstOrNull {

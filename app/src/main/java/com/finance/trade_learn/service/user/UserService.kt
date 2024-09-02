@@ -8,6 +8,8 @@ import com.finance.trade_learn.models.UserBalance
 import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
+import com.finance.trade_learn.models.watchList.WatchListItem
+import com.finance.trade_learn.models.watchList.WatchListRequestItem
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -48,6 +50,12 @@ interface UserService {
     suspend fun getUserInfo(
         @Query("email") email: String
     ): Response<WrapResponse<UserInfo>>
+
+
+    @GET("/watchList")
+    suspend fun addOrRemoveWatchListItem(
+        @Body watchListRequestItem : WatchListRequestItem
+    ): Response<WrapResponse<List<WatchListItem>>>
 
 
 }
