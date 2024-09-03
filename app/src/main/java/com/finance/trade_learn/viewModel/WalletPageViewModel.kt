@@ -52,6 +52,8 @@ class WalletPageViewModel @Inject constructor(
             val id = solveCoinName(item.id)
             coinQuery.any {
                 it.lowercase(Locale.getDefault()) == id.lowercase(Locale.getDefault())
+                        || it.lowercase(Locale.getDefault()) == item.name.lowercase(Locale.getDefault())
+                        || it.lowercase(Locale.getDefault()) == item.symbol.lowercase(Locale.getDefault())
             }
         }.map {item ->
                 val price = item.current_price?.toBigDecimal() ?: BigDecimal.ZERO
@@ -59,9 +61,13 @@ class WalletPageViewModel @Inject constructor(
                 val amount = if (isLogin.value)
                     userInfo.value.data?.balances?.firstOrNull {
                         it.itemName.lowercase(Locale.getDefault()) == item.id.lowercase(Locale.getDefault())
+                                || it.itemName.lowercase(Locale.getDefault()) == item.name.lowercase(Locale.getDefault())
+                                || it.itemName.lowercase(Locale.getDefault()) == item.symbol.lowercase(Locale.getDefault())
                     }?.amount?.toBigDecimal() ?: BigDecimal.ZERO
                 else myCoinsDatabaseModel.value?.firstOrNull {
                     it.CoinName.lowercase(Locale.getDefault()) == item.id.lowercase(Locale.getDefault())
+                            || it.CoinName.lowercase(Locale.getDefault()) == item.name.lowercase(Locale.getDefault())
+                            || it.CoinName.lowercase(Locale.getDefault()) == item.symbol.lowercase(Locale.getDefault())
                 }?.CoinAmount?.toBigDecimal() ?: BigDecimal.ZERO
 
                 val totalItemBalance = amount * price

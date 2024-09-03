@@ -51,23 +51,23 @@ import com.finance.trade_learn.view.LocalHomeViewModel
 import com.finance.trade_learn.view.coin.CoinItemScreen
 import com.finance.trade_learn.view.coin.ItemIcon
 import com.finance.trade_learn.view.wallet.format
+import kotlinx.coroutines.delay
 import java.util.Locale
 
 @Composable
 fun HomeScreen(openTradePage: (String) -> Unit, clickedViewAll : () -> Unit) {
     val viewModel = LocalHomeViewModel.current
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(BaseViewModel) {
         if (!BaseViewModel.isLogin.value) {
+            delay(3000)
             viewModel.getMyCoinsDetails()
         }
     }
 
     if (BaseViewModel.isLogin.value) {
         val userInfo = BaseViewModel.userInfo.collectAsState()
-        if (BaseViewModel.isLogin.value) {
-            viewModel.getDataFromApi(userInfo.value.data?.balances?.map { it.itemName })
-        }
+        viewModel.getDataFromApi(userInfo.value.data?.balances?.map { it.itemName })
     }
 
 
@@ -79,13 +79,7 @@ fun HomeScreen(openTradePage: (String) -> Unit, clickedViewAll : () -> Unit) {
 
 @Composable
 fun StockitPortfolioScreen(openTradePage: (String) -> Unit, clickedViewAll: () -> Unit) {
-    // Background color for the screen
-    val backgroundColor = Color(0xFFF5F6FA) // Light grayish background color
     val textColor = Color(0xFF000000) // Black text color
-    val cardBackgroundColor = Color.White
-    val portfolioTitleColor = Color(0xFFB0B0B0) // Gray text for portfolio titles
-    val negativeChangeColor = Color(0xFFE74C3C) // Red color for negative changes
-    val positiveChangeColor = Color(0xFF2ECC71) // Green color for positive changes
 
 
     val viewModel = LocalHomeViewModel.current
