@@ -116,27 +116,31 @@ val LocalSingUpViewModel = compositionLocalOf<SignUpViewModel> { error("No SignU
 
 val LocalHomeViewModel = compositionLocalOf<HomeViewModel> { error("No HomeViewModel found") }
 
-val LocalProfileViewModel = compositionLocalOf<ProfileViewModel> { error("No ProfileViewModel found") }
+val LocalProfileViewModel =
+    compositionLocalOf<ProfileViewModel> { error("No ProfileViewModel found") }
 
 val LocalLoginViewModel = compositionLocalOf<LoginViewModel> { error("No LoginViewModel found") }
 
-val LocalForgotPasswordViewModel = compositionLocalOf<ForgotPasswordViewModel> { error("No LoginViewModel found") }
+val LocalForgotPasswordViewModel =
+    compositionLocalOf<ForgotPasswordViewModel> { error("No LoginViewModel found") }
 
-val LocalCodeVerificationViewModel = compositionLocalOf<CodeVerificationViewModel> { error("No CodeVerificationViewModel found") }
+val LocalCodeVerificationViewModel =
+    compositionLocalOf<CodeVerificationViewModel> { error("No CodeVerificationViewModel found") }
 
 @OptIn(ExperimentalMaterial3Api::class)
-private val LocalMainScrollBehavior = compositionLocalOf<BottomAppBarScrollBehavior> { error("No BottomAppBarScrollBehavior found") }
+private val LocalMainScrollBehavior =
+    compositionLocalOf<BottomAppBarScrollBehavior> { error("No BottomAppBarScrollBehavior found") }
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val baseViewModel : BaseViewModel by viewModels()
+    private val baseViewModel: BaseViewModel by viewModels()
 
 
     //   private lateinit var firestore: FirebaseFirestore
     private var mInterstitialAd: InterstitialAd? = null
 
-    var runnable = Runnable {  }
+    var runnable = Runnable { }
     val handler = Handler(Looper.getMainLooper())
     val timeLoop = 60000L
 
@@ -218,7 +222,11 @@ class MainActivity : AppCompatActivity() {
         val baseViewModel = hiltViewModel<BaseViewModel>()
 
 
-        NavHost(modifier = modifier, navController = navController, startDestination = Screens.Home.route) {
+        NavHost(
+            modifier = modifier,
+            navController = navController,
+            startDestination = Screens.Home.route
+        ) {
             composable(Screens.Home.route) {
                 val viewModel = hiltViewModel<HomeViewModel>()
                 CompositionLocalProvider(LocalHomeViewModel provides viewModel) {
@@ -228,6 +236,9 @@ class MainActivity : AppCompatActivity() {
                         },
                         clickedViewAll = {
                             navController.navigate(Screens.Wallet.route)
+                        },
+                        openMarketPage = {
+                            navController.navigate(Screens.Market.route)
                         }
                     )
                 }
@@ -365,15 +376,17 @@ class MainActivity : AppCompatActivity() {
             composable("verification_code?email={email}", arguments = listOf(navArgument("email") {
                 type = NavType.StringType
                 defaultValue = ""
-            })){backStackEntry ->
+            })) { backStackEntry ->
                 val viewModel = hiltViewModel<CodeVerificationViewModel>()
                 val userEmail = backStackEntry.arguments?.getString("email") ?: ""
                 CompositionLocalProvider(LocalCodeVerificationViewModel provides viewModel) {
                     CodeVerificationScreen(
                         userEmail = userEmail,
                         onVerifyCode = {
-                            navController.navigate(Screens.Login.route){
-                                popUpTo(navController.graph.startDestinationRoute ?: Screens.Home.route)
+                            navController.navigate(Screens.Login.route) {
+                                popUpTo(
+                                    navController.graph.startDestinationRoute ?: Screens.Home.route
+                                )
                                 launchSingleTop = true
                             }
                         }
@@ -520,7 +533,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun keepDataUpdated(){
+    private fun keepDataUpdated() {
         runnable = Runnable {
             runBlocking {
                 baseViewModel.getAllCrypto(0)
@@ -536,12 +549,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     override fun onStop() {
         super.onStop()
         handler.removeCallbacks(runnable)
     }
-
 
 
 }
@@ -616,7 +627,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                 },
                 selected = isSelected,
                 onClick = {
-                    if (navItem.route == Screens.Profile.route && !isLogin){
+                    if (navItem.route == Screens.Profile.route && !isLogin) {
                         navController.navigate(Screens.Login.route)
                         return@NavigationBarItem
                     }
@@ -641,9 +652,6 @@ fun BottomNavigationBar(navController: NavHostController) {
 
     }
 }
-
-
-
 
 
 @Preview
