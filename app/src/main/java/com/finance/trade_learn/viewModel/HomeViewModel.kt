@@ -49,7 +49,7 @@ class HomeViewModel @Inject constructor(
 
     fun getDataFromApi(coinQuery: List<String>?) {
         if (coinQuery.isNullOrEmpty()) return
-        val availableCoins = BaseViewModel.allCryptoItems
+        val availableCoins = BaseViewModel.allCryptoItems.value
             .asSequence()
             .filter {item ->
 
