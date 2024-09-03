@@ -45,7 +45,7 @@ class WalletPageViewModel @Inject constructor(
 
     fun getDataFromApi(coinQuery: List<String>?) {
         if (coinQuery.isNullOrEmpty()) return
-        val availableCoins = allCryptoItems
+        val availableCoins = allCryptoItems.value
             .asSequence()
             .filter {item ->
 

@@ -62,11 +62,11 @@ open class BaseViewModel @Inject constructor(
                 true -> {
                     response.body()?.data?.let {
                         val newList = it.filter {newItem->
-                            !allCryptoItems.any {oldItem -> oldItem.id == newItem.id }
+                            !allCryptoItems.value.any {oldItem -> oldItem.id == newItem.id }
                         }
-                        allCryptoItems.addAll(newList)
+                        allCryptoItems.value.addAll(newList)
 
-                        val data = convertCryptoList(allCryptoItems)
+                        val data = convertCryptoList(allCryptoItems.value)
                         if (data.ListOfCrypto.isNotEmpty()){
                             currentItemsLiveData.value = data.ListOfCrypto
                             listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
@@ -210,7 +210,7 @@ open class BaseViewModel @Inject constructor(
         var currentItems : List<CoinsHome> = emptyList()
         var lastItems : List<CoinsHome> = emptyList()
 
-        var allCryptoItems = ArrayList<CoinDetail>()
+        var allCryptoItems = MutableStateFlow<MutableList<CoinDetail>>(mutableListOf())
 
 
 

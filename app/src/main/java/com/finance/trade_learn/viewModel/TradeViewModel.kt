@@ -52,7 +52,7 @@ class TradeViewModel @Inject constructor(
     fun getSelectedCoinDetails(coinName: String) {
         _itemCurrentInfo.value = itemCurrentInfo.value.copy(isLoading = true)
 
-        val cachedItem = allCryptoItems.firstOrNull {
+        val cachedItem = allCryptoItems.value.firstOrNull {
             solveCoinName(it.id) == coinName
         }
         cachedItem?.let {
