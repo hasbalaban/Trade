@@ -315,7 +315,7 @@ private fun BalanceCard() {
         elevation = 4.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(160.dp)
     ) {
         Column(
             modifier = Modifier
@@ -332,7 +332,7 @@ private fun BalanceCard() {
                 )
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = "\$${animatedBalance.toDouble().format(2)}",
@@ -342,7 +342,7 @@ private fun BalanceCard() {
                 )
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = "Dollar Holdings",
@@ -352,7 +352,7 @@ private fun BalanceCard() {
                 )
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = "\$${totalDollarBalance.format(2)}",
