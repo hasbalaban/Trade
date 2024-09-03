@@ -140,6 +140,8 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
 
         if (isLogin){
             OverflowMenu(coin.id)
+        }else{
+            Spacer(modifier = Modifier.width(12.dp))
         }
 
     }
@@ -244,7 +246,9 @@ fun PreviewCoinItemScreen() {
         total_volume = "221975378"
     )
     FinanceAppTheme {
-        Column(modifier = Modifier.background(Color.White).padding(horizontal = 12.dp)){
+        Column(modifier = Modifier
+            .background(Color.White)
+            .padding(horizontal = 12.dp)){
             CoinItemScreen(coinItem) {}
         }
     }

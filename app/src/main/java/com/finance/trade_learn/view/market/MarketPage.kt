@@ -149,6 +149,7 @@ fun SearchBar() {
             .padding(16.dp),
         shape = RoundedCornerShape(20),
         colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color(0xffF9FAFC),
             cursorColor = Color.Gray,
 
             focusedIndicatorColor = Color.Transparent,

@@ -4,8 +4,10 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,13 +17,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -55,35 +62,50 @@ import kotlinx.coroutines.delay
 import java.util.Locale
 
 @Composable
-fun HomeScreen(openTradePage: (String) -> Unit, clickedViewAll : () -> Unit) {
+fun HomeScreen(
+    openTradePage: (String) -> Unit,
+    clickedViewAll: () -> Unit,
+    openMarketPage: () -> Unit
+) {
     val viewModel = LocalHomeViewModel.current
 
+    val islogin by BaseViewModel.isLogin.collectAsState()
+    val marketItems = BaseViewModel.allCryptoItems.collectAsState()
+
+
     LaunchedEffect(BaseViewModel) {
-        if (!BaseViewModel.isLogin.value) {
+        if (!islogin) {
             delay(3000)
             viewModel.getMyCoinsDetails()
         }
     }
 
-    if (BaseViewModel.isLogin.value) {
+    if (islogin) {
         val userInfo = BaseViewModel.userInfo.collectAsState()
         viewModel.getDataFromApi(userInfo.value.data?.balances?.map { it.itemName })
     }
 
+    if (marketItems.value.isNotEmpty()) {
+        StockitPortfolioScreen(
+            openTradePage = openTradePage,
+            clickedViewAll = clickedViewAll,
+            openMarketPage = openMarketPage
+        )
+    }
 
-    StockitPortfolioScreen(
-        openTradePage = openTradePage,
-        clickedViewAll = clickedViewAll
-    )
+
 }
 
 @Composable
-fun StockitPortfolioScreen(openTradePage: (String) -> Unit, clickedViewAll: () -> Unit) {
-    val textColor = Color(0xFF000000) // Black text color
-
-
+fun StockitPortfolioScreen(
+    openTradePage: (String) -> Unit,
+    clickedViewAll: () -> Unit,
+    openMarketPage: () -> Unit
+) {
     val viewModel = LocalHomeViewModel.current
     val items by viewModel.myCoinsNewModel.observeAsState(emptyList())
+    val isLogin by BaseViewModel.isLogin.collectAsState()
+
 
     Column(
         modifier = Modifier
@@ -91,26 +113,31 @@ fun StockitPortfolioScreen(openTradePage: (String) -> Unit, clickedViewAll: () -
             .padding(top = 24.dp)
             .padding(vertical = 16.dp, horizontal = 12.dp)
     ) {
-        BaseViewModel.userInfo.value.data?.let {
+
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+
             Text(
-                text = it.nameAndSurname,
-                style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Normal),
-                color = textColor
+                text = "Welcome",
+                style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
+                color = MaterialTheme.colors.onPrimary
             )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            BaseViewModel.userInfo.value.data?.let {
+                Text(
+                    text = "-   " + it.nameAndSurname,
+                    style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
+                    color = MaterialTheme.colors.onPrimary
+                )
+            }
+
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Welcome to Stockit",
-            style = MaterialTheme.typography.h5.copy(fontWeight = FontWeight.Bold),
-            color = textColor
-        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        BalanceCard()
+        BalanceCard(clickedViewAll = clickedViewAll)
 
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -118,50 +145,57 @@ fun StockitPortfolioScreen(openTradePage: (String) -> Unit, clickedViewAll: () -
 
         // Portfolio Section
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
-            Text(
-                text = "Portfolio",
-                style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
-                color = textColor
-            )
-            Text(
-                text = "View all",
-                style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal, fontSize = 16.sp, color = Color(0xff3E84F6)),
-                color = Color(0xff3E84F6),
-                modifier = Modifier.clickable {
-                    clickedViewAll.invoke()
-                }
-            )
-        }
+        if (items.isNotEmpty()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Portfolio",
+                    style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colors.onPrimary
+                )
+                Text(
+                    text = "View all",
+                    style = MaterialTheme.typography.h6.copy(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                        color = Color(0xff3E84F6)
+                    ),
+                    color = Color(0xff3E84F6),
+                    modifier = Modifier.clickable {
+                        clickedViewAll.invoke()
+                    }
+                )
+            }
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                items(items) {
-                    PortfolioCard(
-                        itemName = it.CoinName,
-                        modifier = Modifier
-                            .clickable {
-                                openTradePage.invoke(it.CoinName)
-                            }
-                            .sizeIn(minWidth = 220.dp)
-                    )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                LazyRow(modifier = Modifier.fillMaxWidth()) {
+                    items(items) {
+                        PortfolioCard(
+                            itemName = it.CoinName,
+                            modifier = Modifier
+                                .clickable {
+                                    openTradePage.invoke(it.CoinName)
+                                }
+                                .sizeIn(minWidth = 220.dp)
+                        )
+                    }
                 }
             }
         }
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(24.dp))
 
-        Text(
-            text = "Watchlist",
-            style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
-            color = textColor
-        )
-        WatchListSection(openTradePage = openTradePage)
+        if (isLogin){
+            WatchListSection(openTradePage = openTradePage, openMarketPage = openMarketPage)
+        }
+
     }
 }
 
@@ -170,7 +204,7 @@ fun PortfolioCard(
     itemName: String,
     modifier: Modifier,
 ) {
-    val item = BaseViewModel.allCryptoItems.firstOrNull {
+    val item = BaseViewModel.allCryptoItems.value.firstOrNull {
         itemName.lowercase(Locale.getDefault()) == it.id.lowercase(Locale.getDefault())
     } ?: return
 
@@ -252,9 +286,10 @@ fun PortfolioCard(
                 }
 
                 val priceChangePercent = item.price_change_percentage_24h
-                val priceChangeColor = if ((priceChangePercent ?: 0.0) > 0.0) Color(0xFF4CAF50) else Color(0xFFF44336)
+                val priceChangeColor =
+                    if ((priceChangePercent ?: 0.0) > 0.0) Color(0xFF4CAF50) else Color(0xFFF44336)
 
-                Row(verticalAlignment = Alignment.CenterVertically){
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         modifier = Modifier
                             .size(height = 7.dp, width = 12.dp)
@@ -285,7 +320,7 @@ fun PortfolioCard(
 
 
 @Composable
-private fun BalanceCard() {
+private fun BalanceCard(clickedViewAll: () -> Unit) {
     val viewModel = LocalHomeViewModel.current
     val cryptoItems by viewModel.myCoinsNewModel.observeAsState(emptyList())
     val totalBalance by viewModel.totalBalance.collectAsState(0f)
@@ -308,6 +343,9 @@ private fun BalanceCard() {
         backgroundColor = Color(0xFF1E88E5), // Blue background color
         elevation = 4.dp,
         modifier = Modifier
+            .clickable {
+                clickedViewAll.invoke()
+            }
             .fillMaxWidth()
             .height(160.dp)
     ) {
@@ -361,12 +399,12 @@ private fun BalanceCard() {
 }
 
 @Composable
-private fun WatchListSection(openTradePage: (String) -> Unit) {
+private fun WatchListSection(openTradePage: (String) -> Unit, openMarketPage: () -> Unit) {
     val userInfo = BaseViewModel.userInfo.collectAsState()
 
     val items = userInfo.value.data?.userWatchList?.map { watchListItem ->
         val currentItemInfo =
-            BaseViewModel.allCryptoItems.firstOrNull { it.id == watchListItem.itemId }
+            BaseViewModel.allCryptoItems.value.firstOrNull { it.id == watchListItem.itemId }
         if (currentItemInfo == null) null
         else {
 
@@ -398,19 +436,73 @@ private fun WatchListSection(openTradePage: (String) -> Unit) {
         }
     }?.mapNotNull { it }
 
+    Text(
+        text = "Watchlist",
+        style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+        color = MaterialTheme.colors.onPrimary
+    )
 
-    items?.let {
-        LazyColumn(modifier = Modifier){
-            items(
-                items = items,
-                key = {
-                    it.CoinName
-                }
-            ){
-                CoinItemScreen(it){ selectedItemName ->
-                    openTradePage.invoke(selectedItemName)
+    if (items.isNullOrEmpty()) {
+        EmptyWatchlist(openMarketPage = openMarketPage)
+    } else {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            LazyColumn(modifier = Modifier) {
+                items(
+                    items = items,
+                    key = {
+                        it.CoinName
+                    }
+                ) {
+                    CoinItemScreen(it) { selectedItemName ->
+                        openTradePage.invoke(selectedItemName)
+                    }
                 }
             }
+        }
+    }
+
+
+}
+
+@Composable
+fun EmptyWatchlist(openMarketPage: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Add Item",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(64.dp)
+                    .background(
+                        Color(0xff3E84F6).copy(alpha = 0.9f),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(8.dp)
+                    .clickable { openMarketPage.invoke() }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(id = R.string.watchlist_empty),
+                style = MaterialTheme.typography.subtitle1.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                ),
+                color = MaterialTheme.colors.onPrimary
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(id = R.string.click_to_add_something),
+                style = MaterialTheme.typography.body2.copy(fontSize = 16.sp),
+                color = MaterialTheme.colors.onPrimary.copy(alpha = 0.7f)
+            )
         }
     }
 }
@@ -419,6 +511,6 @@ private fun WatchListSection(openTradePage: (String) -> Unit) {
 @Composable
 fun HomeScreenPreview() {
     FinanceAppTheme {
-        HomeScreen(openTradePage = {}, clickedViewAll = {})
+        HomeScreen(openTradePage = {}, clickedViewAll = {}, openMarketPage = {})
     }
 }

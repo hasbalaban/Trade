@@ -68,4 +68,7 @@
     <string name="create_account_text">Create Account</string>
     <string name="create_account_information">Hesap oluşturulduğunda, yerel olarak yapılan işlemler korunmaz.</string>
 
+    <string name="watchlist_empty">Your watchlist empy</string>
+    <string name="click_to_add_something">Bir şeyler eklemek için tıklayın</string>
+
 </resources>
