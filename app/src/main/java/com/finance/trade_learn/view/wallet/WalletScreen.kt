@@ -21,8 +21,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,8 +44,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -57,6 +62,8 @@ import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.LocalWalletPageViewModel
+import com.finance.trade_learn.view.home.PortfolioCard
+import com.finance.trade_learn.view.home.PortfolioCard1
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -131,34 +138,19 @@ fun WalletContent(navigateToHistoryPage: () -> Unit, modifier: Modifier) {
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.primary)
-            .padding(12.dp)
+            .padding(horizontal = 12.dp)
     ) {
-        Text(
-            text = stringResource(id = R.string.total_balance),
-            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colors.onPrimary,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom
-        ) {
-            Text(
-                text = "\$${animatedBalance.toDouble().format(2)}",
-                style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colors.onPrimary,
-                modifier = Modifier.padding(start = 6.dp, bottom = 4.dp)
-            )
-
+            horizontalArrangement = Arrangement.End
+        ){
             Button(
                 onClick = navigateToHistoryPage,
                 modifier = Modifier,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
-                    contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colors.onPrimary,
+                    contentColor = MaterialTheme.colors.primary
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
@@ -166,20 +158,76 @@ fun WalletContent(navigateToHistoryPage: () -> Unit, modifier: Modifier) {
             }
         }
 
-        val searchQuery = remember { mutableStateOf(TextFieldValue()) }
-        OutlinedTextField(
-            value = searchQuery.value,
-            onValueChange = { searchQuery.value = it },
-            label = { Text(stringResource(id = R.string.Search), color = MaterialTheme.colors.onPrimary) },
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-                .fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.onPrimary,
-                unfocusedBorderColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f),
-                cursorColor = MaterialTheme.colors.onPrimary
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+
+            Text(
+                text = stringResource(id = R.string.total_balance),
+                style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.padding(vertical = 8.dp)
             )
+
+            Text(
+                text = "\$${animatedBalance.toDouble().format(2)}",
+                style = MaterialTheme.typography.h5.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.primary,
+                ),
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.padding(start = 6.dp, bottom = 4.dp, end = 24.dp)
+            )
+
+        }
+
+        val searchQuery = remember { mutableStateOf(TextFieldValue()) }
+
+        TextField(
+            value = searchQuery.value,
+            onValueChange = { newText ->
+                searchQuery.value = newText
+            },
+            leadingIcon = {
+                androidx.compose.material.Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null,
+                    tint = Color.Black
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            shape = RoundedCornerShape(20),
+            colors = androidx.compose.material.TextFieldDefaults.textFieldColors(
+                backgroundColor = Color(0xffF9FAFC),
+                cursorColor = Color.Gray,
+
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+
+                focusedLabelColor = Color.Transparent,
+                textColor = Color.Black
+            ),
+            placeholder = {
+                Text(
+                    fontSize = 16.sp,
+                    text = "Search Coin",
+                    color = Color.Gray
+                )
+            }
+
         )
+
+
+
+
+
+
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
@@ -201,10 +249,8 @@ fun WalletContent(navigateToHistoryPage: () -> Unit, modifier: Modifier) {
             items(cryptoItems.value.filter {
                 searchQuery.value.text.isBlank() || it.CoinName.contains(searchQuery.value.text, ignoreCase = true)
             }) { item ->
-                CryptoItem(item = item)
-                HorizontalDivider(modifier = Modifier
-                    .alpha(0.5f)
-                    .padding(vertical = 8.dp))
+
+                PortfolioCard1(item, modifier = Modifier.padding(vertical = 6.dp))
             }
         }
     }

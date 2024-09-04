@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -44,11 +43,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
+import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.models.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.models.modelsConvector.Percent
@@ -178,7 +179,7 @@ fun StockitPortfolioScreen(
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
                     items(items) {
                         PortfolioCard(
-                            itemName = it.CoinName,
+                            portfolioItem = it,
                             modifier = Modifier
                                 .clickable {
                                     openTradePage.invoke(it.CoinName)
@@ -201,11 +202,11 @@ fun StockitPortfolioScreen(
 
 @Composable
 fun PortfolioCard(
-    itemName: String,
+    portfolioItem: NewModelForItemHistory,
     modifier: Modifier,
 ) {
     val item = BaseViewModel.allCryptoItems.value.firstOrNull {
-        itemName.lowercase(Locale.getDefault()) == it.id.lowercase(Locale.getDefault())
+        portfolioItem.CoinName.lowercase(Locale.getDefault()) == it.id.lowercase(Locale.getDefault())
     } ?: return
 
     Card(
@@ -266,16 +267,16 @@ fun PortfolioCard(
                         color = MaterialTheme.colors.onPrimary.copy(alpha = 0.9f)
                     )
                     val currentPrice = when {
-                        (item.current_price ?: 0.0) > 1.0 -> item.current_price?.format(2)
-                        (item.current_price ?: 0.0) > 0.001 -> item.current_price?.format(3)
-                        (item.current_price ?: 0.0) > 0.0001 -> item.current_price?.format(4)
-                        (item.current_price ?: 0.0) > 0.00001 -> item.current_price?.format(5)
-                        (item.current_price ?: 0.0) > 0.000001 -> item.current_price?.format(6)
-                        (item.current_price ?: 0.0) > 0.0000001 -> item.current_price?.format(7)
-                        (item.current_price ?: 0.0) > 0.00000001 -> item.current_price?.format(8)
-                        (item.current_price ?: 0.0) > 0.000000001 -> item.current_price?.format(9)
-                        (item.current_price ?: 0.0) > 0.0000000001 -> item.current_price?.format(10)
-                        else -> item.current_price?.format(11)
+                        (portfolioItem.CoinAmount  ?: 0.0) > 1.0 -> portfolioItem.CoinAmount?.format(2)
+                        (portfolioItem.CoinAmount ?: 0.0) > 0.001 -> portfolioItem.CoinAmount?.format(3)
+                        portfolioItem.CoinAmount > 0.0001 -> portfolioItem.CoinAmount?.format(4)
+                        (portfolioItem.CoinAmount ?: 0.0) > 0.00001 -> portfolioItem.CoinAmount?.format(5)
+                        (portfolioItem.CoinAmount ?: 0.0) > 0.000001 -> portfolioItem.CoinAmount?.format(6)
+                        (portfolioItem.CoinAmount ?: 0.0) > 0.0000001 -> portfolioItem.CoinAmount?.format(7)
+                        (portfolioItem.CoinAmount ?: 0.0) > 0.00000001 -> portfolioItem.CoinAmount?.format(8)
+                        (portfolioItem.CoinAmount ?: 0.0) > 0.000000001 -> portfolioItem.CoinAmount?.format(9)
+                        (portfolioItem.CoinAmount ?: 0.0) > 0.0000000001 -> portfolioItem.CoinAmount?.format(10)
+                        else -> portfolioItem.CoinAmount?.format(11)
                     }
 
                     Text(
@@ -315,6 +316,72 @@ fun PortfolioCard(
 
             }
         }
+    }
+}
+
+@Composable
+fun PortfolioCard1(
+    portfolioItem: NewModelForItemHistory,
+    modifier: Modifier,
+) {
+
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        backgroundColor = MaterialTheme.colors.primary,
+        elevation = 4.dp,
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+
+        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically) {
+
+            ItemIcon(
+                imageUrl = portfolioItem.Image,
+                itemName = portfolioItem.CoinName,
+                modifier = Modifier.size(40.dp)
+            )
+
+
+            Text(
+                modifier = Modifier.padding(start = 12.dp).weight(1f),
+                text = portfolioItem.CoinName,
+                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colors.onPrimary,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            val currentPrice = when {
+                (portfolioItem.CoinAmount  ?: 0.0) > 1.0 -> portfolioItem.CoinAmount?.format(2)
+                (portfolioItem.CoinAmount ?: 0.0) > 0.001 -> portfolioItem.CoinAmount?.format(3)
+                portfolioItem.CoinAmount > 0.0001 -> portfolioItem.CoinAmount?.format(4)
+                (portfolioItem.CoinAmount ?: 0.0) > 0.00001 -> portfolioItem.CoinAmount?.format(5)
+                (portfolioItem.CoinAmount ?: 0.0) > 0.000001 -> portfolioItem.CoinAmount?.format(6)
+                (portfolioItem.CoinAmount ?: 0.0) > 0.0000001 -> portfolioItem.CoinAmount?.format(7)
+                (portfolioItem.CoinAmount ?: 0.0) > 0.00000001 -> portfolioItem.CoinAmount?.format(8)
+                (portfolioItem.CoinAmount ?: 0.0) > 0.000000001 -> portfolioItem.CoinAmount?.format(9)
+                (portfolioItem.CoinAmount ?: 0.0) > 0.0000000001 -> portfolioItem.CoinAmount?.format(10)
+                else -> portfolioItem.CoinAmount?.format(11)
+            }
+
+            Text(
+                modifier = Modifier.weight(1f),
+                text = currentPrice,
+                color = MaterialTheme.colors.onPrimary,
+                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.End
+            )
+
+            Text(
+                "\$${portfolioItem.Total.toDouble().format(2)}",
+                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.End
+            )
+
+
+        }
+
     }
 }
 
