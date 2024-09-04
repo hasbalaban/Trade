@@ -138,7 +138,7 @@ fun SearchBar() {
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = null,
-                tint = MaterialTheme.colors.onPrimary
+                tint = Color.Black
             )
         },
         modifier = Modifier
@@ -162,7 +162,7 @@ fun SearchBar() {
             Text(
                 fontSize = 16.sp,
                 text = "Search Coin",
-                color = MaterialTheme.colors.onPrimary
+                color = Color.Gray
             )
         }
 

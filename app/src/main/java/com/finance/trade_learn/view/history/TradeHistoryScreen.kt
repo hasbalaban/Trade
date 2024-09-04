@@ -106,7 +106,7 @@ private fun MainContent(goBack: () -> Unit) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(8.dp)
+                    .padding(horizontal = 8.dp)
             ) {
                 LazyColumn(
                     modifier = Modifier
@@ -117,7 +117,7 @@ private fun MainContent(goBack: () -> Unit) {
                         HorizontalDivider(
                             modifier = Modifier
                                 .alpha(0.5f)
-                                .padding(vertical = 8.dp)
+                                .padding(vertical = 4.dp)
                         )
                     }
                 }
