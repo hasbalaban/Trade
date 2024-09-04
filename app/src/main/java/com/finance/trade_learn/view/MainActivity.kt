@@ -239,6 +239,12 @@ class MainActivity : AppCompatActivity() {
                         },
                         openMarketPage = {
                             navController.navigate(Screens.Market.route)
+                        },
+                        navigateToLogin = {
+                            navController.navigate(Screens.Login.route)
+                        },
+                        navigateToSignUp = {
+                            navController.navigate(Screens.SingUp.route)
                         }
                     )
                 }
@@ -342,9 +348,14 @@ class MainActivity : AppCompatActivity() {
                 val viewModel = hiltViewModel<SignUpViewModel>()
                 CompositionLocalProvider(LocalSingUpViewModel provides viewModel) {
                     SignUpScreen(
-                        onSignUp = {
+                        onSignUpCompleted = {
                             Toast.makeText(context, "on Sign Up completed", Toast.LENGTH_LONG)
                                 .show()
+
+                            navController.navigate(Screens.Login.route) {
+                                popUpTo(navController.graph.startDestinationRoute ?: Screens.Home.route)
+                                launchSingleTop = true
+                            }
                         },
                         onBackToLogin = {
                             navController.popBackStack()
