@@ -22,6 +22,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -66,7 +68,9 @@ import java.util.Locale
 fun HomeScreen(
     openTradePage: (String) -> Unit,
     clickedViewAll: () -> Unit,
-    openMarketPage: () -> Unit
+    openMarketPage: () -> Unit,
+    navigateToLogin : () -> Unit,
+    navigateToSignUp : () -> Unit,
 ) {
     val viewModel = LocalHomeViewModel.current
 
@@ -90,7 +94,9 @@ fun HomeScreen(
         StockitPortfolioScreen(
             openTradePage = openTradePage,
             clickedViewAll = clickedViewAll,
-            openMarketPage = openMarketPage
+            openMarketPage = openMarketPage,
+            navigateToLogin = navigateToLogin,
+            navigateToSignUp = navigateToSignUp
         )
     }
 
@@ -101,12 +107,12 @@ fun HomeScreen(
 fun StockitPortfolioScreen(
     openTradePage: (String) -> Unit,
     clickedViewAll: () -> Unit,
-    openMarketPage: () -> Unit
+    openMarketPage: () -> Unit,
+    navigateToLogin : () -> Unit,
+    navigateToSignUp : () -> Unit,
 ) {
     val viewModel = LocalHomeViewModel.current
     val items by viewModel.myCoinsNewModel.observeAsState(emptyList())
-    val isLogin by BaseViewModel.isLogin.collectAsState()
-
 
     Column(
         modifier = Modifier
@@ -193,9 +199,12 @@ fun StockitPortfolioScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        if (isLogin){
-            WatchListSection(openTradePage = openTradePage, openMarketPage = openMarketPage)
-        }
+        WatchListSection(
+            openTradePage = openTradePage,
+            openMarketPage = openMarketPage,
+            navigateToLogin = navigateToLogin,
+            navigateToSignUp = navigateToSignUp
+        )
 
     }
 }
@@ -333,7 +342,9 @@ fun PortfolioCard1(
             .fillMaxWidth()
     ) {
 
-        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp, horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically) {
 
             ItemIcon(
                 imageUrl = portfolioItem.Image,
@@ -343,7 +354,9 @@ fun PortfolioCard1(
 
 
             Text(
-                modifier = Modifier.padding(start = 12.dp).weight(1f),
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .weight(1f),
                 text = portfolioItem.CoinName,
                 style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colors.onPrimary,
@@ -466,7 +479,14 @@ private fun BalanceCard(clickedViewAll: () -> Unit) {
 }
 
 @Composable
-private fun WatchListSection(openTradePage: (String) -> Unit, openMarketPage: () -> Unit) {
+private fun WatchListSection(
+    openTradePage: (String) -> Unit,
+    openMarketPage: () -> Unit,
+    navigateToLogin : () -> Unit,
+    navigateToSignUp : () -> Unit,
+) {
+
+    val isLogin by BaseViewModel.isLogin.collectAsState()
     val userInfo = BaseViewModel.userInfo.collectAsState()
 
     val items = userInfo.value.data?.userWatchList?.map { watchListItem ->
@@ -509,19 +529,25 @@ private fun WatchListSection(openTradePage: (String) -> Unit, openMarketPage: ()
         color = MaterialTheme.colors.onPrimary
     )
 
-    if (items.isNullOrEmpty()) {
-        EmptyWatchlist(openMarketPage = openMarketPage)
-    } else {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            LazyColumn(modifier = Modifier) {
-                items(
-                    items = items,
-                    key = {
-                        it.CoinName
-                    }
-                ) {
-                    CoinItemScreen(it) { selectedItemName ->
-                        openTradePage.invoke(selectedItemName)
+    when{
+        !isLogin -> {
+            LoginOrSignUpScreen(navigateToLogin = navigateToLogin, navigateToSignUp = navigateToSignUp)
+        }
+        items.isNullOrEmpty() -> {
+            EmptyWatchlist(openMarketPage)
+        }
+        else -> {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                LazyColumn(modifier = Modifier) {
+                    items(
+                        items = items,
+                        key = {
+                            it.CoinName
+                        }
+                    ) {
+                        CoinItemScreen(it) { selectedItemName ->
+                            openTradePage.invoke(selectedItemName)
+                        }
                     }
                 }
             }
@@ -529,6 +555,55 @@ private fun WatchListSection(openTradePage: (String) -> Unit, openMarketPage: ()
     }
 
 
+}
+
+
+
+@Composable
+fun LoginOrSignUpScreen(
+    navigateToLogin: () -> Unit,
+    navigateToSignUp: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(id = R.string.please_login_or_signup),
+                style = MaterialTheme.typography.subtitle1.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                ),
+                color = MaterialTheme.colors.onPrimary,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Row {
+                Button(onClick = navigateToLogin,
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Black,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = stringResource(id = R.string.login))
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(onClick = navigateToSignUp,
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Black,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = stringResource(id = R.string.sign_up))
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -578,6 +653,6 @@ fun EmptyWatchlist(openMarketPage: () -> Unit) {
 @Composable
 fun HomeScreenPreview() {
     FinanceAppTheme {
-        HomeScreen(openTradePage = {}, clickedViewAll = {}, openMarketPage = {})
+        HomeScreen(openTradePage = {}, clickedViewAll = {}, openMarketPage = {}, navigateToLogin = {}, navigateToSignUp = {})
     }
 }

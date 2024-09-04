@@ -53,7 +53,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
+fun SignUpScreen(onSignUpCompleted: () -> Unit, onBackToLogin: () -> Unit) {
     val coroutines = rememberCoroutineScope()
 
 
@@ -70,7 +70,7 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
             Toast.makeText(context, userSignUpResponse.message, Toast.LENGTH_LONG).show()
             coroutines.launch {
                 delay(1000)
-                onBackToLogin.invoke()
+                onSignUpCompleted.invoke()
             }
         } else if (userSignUpResponse.success == false){
             Toast.makeText(context, userSignUpResponse.message ?: userSignUpResponse.error?.message ?: "error", Toast.LENGTH_LONG).show()
@@ -282,5 +282,5 @@ fun SignUpScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun SignUpScreenPreview() {
-    SignUpScreen(onSignUp = {}, onBackToLogin = {})
+    SignUpScreen(onSignUpCompleted = {}, onBackToLogin = {})
 }
