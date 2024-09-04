@@ -206,6 +206,7 @@ fun OverflowMenu(itemId: String) {
         )
 
         DropdownMenu(
+            modifier = Modifier.background(MaterialTheme.colors.onPrimary),
             expanded = expanded,
             onDismissRequest = { expanded = false },
             offset = DpOffset((-12).dp, 8.dp)
@@ -218,13 +219,19 @@ fun OverflowMenu(itemId: String) {
                 }
 
             }) {
-                Text(if (isInWatchList) "remove watchlist" else "add watchlist")
+                Text(
+                    if (isInWatchList) "remove watchlist" else "add watchlist",
+                    color = MaterialTheme.colors.primary
+                )
             }
 
             DropdownMenuItem(onClick = {
                 expanded = false
             }) {
-                Text("Alarm Ekle")
+                Text(
+                    text = "Alarm Ekle",
+                    color = MaterialTheme.colors.primary
+                )
             }
 
         }
