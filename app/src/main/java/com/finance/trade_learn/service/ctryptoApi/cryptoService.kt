@@ -16,6 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class cryptoService() {
     val BaseUrlCoinGecko = "https://api.coingecko.com/api/v3/"
     var retrofit = Retrofit.Builder()
+        .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .baseUrl(BaseUrlCoinGecko)
@@ -23,8 +24,8 @@ class cryptoService() {
         .create(CryptoOperationInterface::class.java)
 
 
-    val localBaseUrl = "http://10.0.2.2:8080"
-    //val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
+    //val localBaseUrl = "http://10.0.2.2:8080"
+    val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
     var localRetrofit = Retrofit.Builder()
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
@@ -33,7 +34,7 @@ class cryptoService() {
         .build()
         .create(CryptoOperationInterface::class.java)
 
-    fun selectedCoinToTrade(coinName: String): Single<List<CoinDetail>> {
+    suspend fun selectedCoinToTrade(coinName: String): Single<List<CoinDetail>> {
         return retrofit.getSelectedCoinToTradeCoinGecko(ids = coinName.lowercase())
     }
 

@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -64,9 +65,11 @@ class TransactionViewModel : ViewModel() {
 
     fun getDataFromDatabase(context: Context) {
         val dao = dataBaseService.invoke(context).databaseDao()
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val list = dao.getAllTrades()
-            convertListForAdapter(list)
+            withContext(Dispatchers.Main){
+                convertListForAdapter(list)
+            }
         }
     }
 
