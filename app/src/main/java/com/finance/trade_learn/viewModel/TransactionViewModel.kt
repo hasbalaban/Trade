@@ -65,7 +65,7 @@ class TransactionViewModel : ViewModel() {
 
     fun getDataFromDatabase(context: Context) {
         val dao = dataBaseService.invoke(context).databaseDao()
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             val list = dao.getAllTrades()
             withContext(Dispatchers.Main){
                 convertListForAdapter(list)

@@ -34,7 +34,7 @@ class cryptoService() {
         .build()
         .create(CryptoOperationInterface::class.java)
 
-    suspend fun selectedCoinToTrade(coinName: String): Single<List<CoinDetail>> {
+    fun selectedCoinToTrade(coinName: String): Single<List<CoinDetail>> {
         return retrofit.getSelectedCoinToTradeCoinGecko(ids = coinName.lowercase())
     }
 
