@@ -32,8 +32,8 @@ class HomeViewModel @Inject constructor(
     val totalBalance : StateFlow<Float> get() = _totalBalance
 
     fun getMyCoinsDetails() {
-        CoroutineScope(Dispatchers.IO).launch {
-            myCoinsDatabaseModel.postValue(coinDetailRepositoryImp.getAllItems())
+        CoroutineScope(Dispatchers.Main).launch {
+            myCoinsDatabaseModel.value = coinDetailRepositoryImp.getAllItems()
             checkDatabaseData(myCoinsDatabaseModel)
         }
     }
