@@ -1,5 +1,7 @@
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -353,8 +355,25 @@ fun TradeAmountInput(
                     onAmountChange(textFieldValue)
                 }
             ) {
-                Icon(Icons.Default.Remove, contentDescription = stringResource(id = R.string.Decrease), tint = androidx.compose.material.MaterialTheme.colors.onPrimary)
+                Icon(
+                    imageVector = Icons.Filled.Remove,
+                    contentDescription = stringResource(id = R.string.Decrease),
+                    tint = androidx.compose.material.MaterialTheme.colors.onPrimary,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .background(
+                            Color(0xff3E84F6).copy(alpha = 0.9f),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .border(BorderStroke(1.dp, Color.Transparent), RoundedCornerShape(8.dp))
+                        .padding(8.dp),
+
+                )
+
             }
+
+
+
             Spacer(modifier = Modifier.width(16.dp))
             OutlinedTextField(
                 value = textFieldValue.toString(),
@@ -384,8 +403,24 @@ fun TradeAmountInput(
                     onAmountChange(textFieldValue)
                 }
             ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(id = R.string.increase), tint = androidx.compose.material.MaterialTheme.colors.onPrimary)
+
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = stringResource(id = R.string.increase),
+                    tint = androidx.compose.material.MaterialTheme.colors.onPrimary,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .background(
+                            Color(0xff3E84F6).copy(alpha = 0.9f),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .border(BorderStroke(1.dp, Color.Transparent), RoundedCornerShape(8.dp))
+                        .padding(8.dp),
+
+                    )
             }
+
+
         }
     }
 }
