@@ -262,6 +262,9 @@ class MainActivity : AppCompatActivity() {
                         shouldShowPopularCoins = true,
                         openTradePage = {
                             navController.navigate(Screens.Trade(it).route)
+                        },
+                        navigateToLogin = {
+                            navController.navigate(Screens.Login.route)
                         }
                     )
                 }

@@ -14,7 +14,8 @@ import com.finance.trade_learn.view.coin.CoinItemScreen
 @Composable
 fun MarketPageItems (
     coinsHome: List<CoinsHome>?,
-    onViewClick : (String) -> Unit
+    onViewClick : (String) -> Unit,
+    navigateToLogin : () -> Unit,
 ) {
     coinsHome?.let {item ->
 
@@ -25,9 +26,11 @@ fun MarketPageItems (
                     it.CoinName
                 }
             ){
-                CoinItemScreen(it){ selectedItemName ->
-                    onViewClick.invoke(selectedItemName)
-                }
+                CoinItemScreen(
+                    coin = it,
+                    navigateToLogin = navigateToLogin,
+                    clickedItem = onViewClick
+                )
             }
         }
     }

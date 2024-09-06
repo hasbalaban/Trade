@@ -173,7 +173,8 @@ fun SearchBar() {
 @Composable
 fun MarketScreen(
     shouldShowPopularCoins: Boolean = false,
-    openTradePage: (String) -> Unit
+    openTradePage: (String) -> Unit,
+    navigateToLogin: () -> Unit
 ) {
     val baseViewModel = LocalBaseViewModel.current
     val viewModel = LocalMarketViewModel.current
@@ -282,9 +283,14 @@ fun MarketScreen(
 
                     val filterList = filterList(filteredText = searchBarViewState.value.text, list = updateList ?: emptyList())
 
-                    MarketPageItems(coinsHome = filterList) { selectedItemName ->
-                        openTradePage.invoke(selectedItemName)
-                    }
+                    MarketPageItems(
+                        coinsHome = filterList,
+                        onViewClick = { selectedItemName ->
+                            openTradePage.invoke(selectedItemName)
+                        },
+                        navigateToLogin = navigateToLogin
+
+                        )
                 }
             }
         }
