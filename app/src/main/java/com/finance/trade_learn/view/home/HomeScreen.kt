@@ -80,7 +80,7 @@ fun HomeScreen(
 
     LaunchedEffect(BaseViewModel) {
         if (!islogin) {
-            delay(3000)
+            delay(2000)
             viewModel.getMyCoinsDetails()
         }
     }
