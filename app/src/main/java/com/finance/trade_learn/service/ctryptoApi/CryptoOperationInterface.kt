@@ -22,7 +22,7 @@ interface CryptoOperationInterface {
     suspend fun getLocalCoinList(): Response<WrapResponse<List<CoinDetail>?>>
 
     @GET("coins/markets")
-    fun getSelectedCoinToTradeCoinGecko(
+    suspend fun getSelectedCoinToTradeCoinGecko(
         @Query("vs_currency") vsCurrency: String = "usd",
         @Query("ids") ids: String,
         @Query("page") page: Int = 1,

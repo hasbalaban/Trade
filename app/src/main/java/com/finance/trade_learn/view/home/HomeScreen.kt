@@ -524,7 +524,7 @@ private fun WatchListSection(
     }?.mapNotNull { it }
 
     Text(
-        text = "Watchlist",
+        text = stringResource(id = R.string.watchlist_text),
         style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
         color = MaterialTheme.colors.onPrimary
     )

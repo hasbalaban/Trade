@@ -49,34 +49,30 @@ class SendNotificationPer12Hours @Inject constructor(
         val channelName = "Coin Price Notifications"
 
         Log.i("version", Build.VERSION.SDK_INT.toString())
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.i("version is equals or bigger", Build.VERSION.SDK_INT.toString())
+        Log.i("version is equals or bigger", Build.VERSION.SDK_INT.toString())
 
-            val priority = NotificationManager.IMPORTANCE_HIGH
-            val notifyManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            val channel = NotificationChannel(channelId, channelName, priority)
+        val priority = NotificationManager.IMPORTANCE_HIGH
+        val notifyManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val channel = NotificationChannel(channelId, channelName, priority)
 
-            notifyManager.createNotificationChannel(channel)
-            val notificationSettings = Notification.Builder(context, channelId)
+        notifyManager.createNotificationChannel(channel)
+        val notificationSettings = Notification.Builder(context, channelId)
 
-            val intent = Intent(context,MainActivity::class.java)
-            val pendingIntent= PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_MUTABLE)
+        val intent = Intent(context,MainActivity::class.java)
+        val pendingIntent= PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_MUTABLE)
 
-            notificationSettings.setSubText("Learn Trade")
-                .setContentTitle("Coin Name: $coinName")
-                .setContentText("Price: $price")
-                .setColor(555555)
-                .setSmallIcon(R.drawable.coin)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
+        notificationSettings.setSubText("Learn Trade")
+            .setContentTitle("Coin Name: $coinName")
+            .setContentText("Price: $price")
+            .setColor(555555)
+            .setSmallIcon(R.drawable.coin)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
 
-            val notification = NotificationManagerCompat.from(context)
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                notification.notify(1, notificationSettings.build())
-            }
-            return
+        val notification = NotificationManagerCompat.from(context)
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            notification.notify(1, notificationSettings.build())
         }
-        Log.i("version is lower", Build.VERSION.SDK_INT.toString())
     }
 
     private fun getData() {
