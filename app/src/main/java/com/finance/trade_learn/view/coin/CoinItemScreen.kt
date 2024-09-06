@@ -49,8 +49,11 @@ import kotlinx.coroutines.launch
 import java.nio.file.WatchEvent
 
 @Composable
-fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
-    val isLogin by BaseViewModel.isLogin.collectAsState()
+fun CoinItemScreen(
+    coin: CoinsHome,
+    clickedItem: (String) -> Unit,
+    navigateToLogin: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -138,11 +141,12 @@ fun CoinItemScreen(coin: CoinsHome, clickedItem: (String) -> Unit) {
 
         }
 
-        if (isLogin){
-            OverflowMenu(coin.id)
-        }else{
-            Spacer(modifier = Modifier.width(12.dp))
-        }
+
+        OverflowMenu(
+            itemId = coin.id,
+            navigateToLogin = navigateToLogin,
+            clickedItem = clickedItem
+            )
 
     }
 }
@@ -182,7 +186,13 @@ fun ItemIcon(imageUrl: String, itemName: String, modifier: Modifier = Modifier) 
 }
 
 @Composable
-fun OverflowMenu(itemId: String) {
+fun OverflowMenu(
+    itemId: String,
+    navigateToLogin : () -> Unit,
+    clickedItem : (String) -> Unit,
+) {
+    val isLogin by BaseViewModel.isLogin.collectAsState()
+
     val baseViewModel = LocalBaseViewModel.current
     val coroutines = rememberCoroutineScope()
     var expanded by remember { mutableStateOf(false) }
@@ -214,9 +224,12 @@ fun OverflowMenu(itemId: String) {
             DropdownMenuItem(onClick = {
                 // Handle first action
                 expanded = false
-                coroutines.launch {
-                    baseViewModel.saveOrRemoveWatchListItem(itemId = itemId)
-                }
+
+                if (isLogin) {
+                    coroutines.launch {
+                        baseViewModel.saveOrRemoveWatchListItem(itemId = itemId)
+                    }
+                } else navigateToLogin.invoke()
 
             }) {
                 Text(
@@ -227,9 +240,10 @@ fun OverflowMenu(itemId: String) {
 
             DropdownMenuItem(onClick = {
                 expanded = false
+                clickedItem.invoke(itemId)
             }) {
                 Text(
-                    text = "Alarm Ekle",
+                    text = "Detay",
                     color = MaterialTheme.colors.primary
                 )
             }
@@ -256,7 +270,11 @@ fun PreviewCoinItemScreen() {
         Column(modifier = Modifier
             .background(Color.White)
             .padding(horizontal = 12.dp)){
-            CoinItemScreen(coinItem) {}
+            CoinItemScreen(
+                coin = coinItem,
+                navigateToLogin = {},
+                clickedItem = {}
+            )
         }
     }
 }

@@ -545,9 +545,13 @@ private fun WatchListSection(
                             it.CoinName
                         }
                     ) {
-                        CoinItemScreen(it) { selectedItemName ->
-                            openTradePage.invoke(selectedItemName)
-                        }
+                        CoinItemScreen(
+                            coin = it,
+                            navigateToLogin = navigateToLogin,
+                            clickedItem = { selectedItemName ->
+                                openTradePage.invoke(selectedItemName)
+                            }
+                        )
                     }
                 }
             }
