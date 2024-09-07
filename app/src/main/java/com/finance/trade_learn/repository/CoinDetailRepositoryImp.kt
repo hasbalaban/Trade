@@ -10,6 +10,8 @@ import javax.inject.Inject
 interface UserLocalWalletDatabase{
     suspend fun getAllItems() :  List<MyCoins>
 
+    fun getAllCoinsAsLiveData() :  LiveData<List<MyCoins>>
+
     fun getSelectedItemDetail(selectedItem : String) :  LiveData<MyCoins?>
 
     suspend fun updateSelectedItem(item : MyCoins) :  Unit
@@ -28,6 +30,10 @@ class CoinDetailRepositoryImp @Inject constructor(
         return dataBaseService.getAllCoins().map {
             it.copy(CoinName = it.CoinName.lowercase(Locale.getDefault()))
         }
+    }
+
+    override fun getAllCoinsAsLiveData(): LiveData<List<MyCoins>> {
+        return dataBaseService.getAllCoinsAsLiveData()
     }
 
     override fun getSelectedItemDetail(selectedItem : String): LiveData<MyCoins?> {
