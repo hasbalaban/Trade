@@ -21,7 +21,6 @@ import com.finance.trade_learn.utils.DataStoreKeys
 import com.finance.trade_learn.utils.RemoteConfigs
 import com.finance.trade_learn.utils.readStringPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,9 +35,6 @@ open class BaseViewModel @Inject constructor(
 
     private var userEmail = ""
     private var userPassword = ""
-
-
-    private var baseDisposable: CompositeDisposable = CompositeDisposable()
 
 
     var currentItemsLiveData = MutableLiveData<List<CoinsHome>>()
@@ -198,12 +194,6 @@ open class BaseViewModel @Inject constructor(
             println(response.message())
             println(response.body()?.message)
         }
-    }
-
-
-    override fun onCleared() {
-        super.onCleared()
-        baseDisposable.clear()
     }
 
     companion object {
