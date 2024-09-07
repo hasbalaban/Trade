@@ -79,7 +79,8 @@ class HomeViewModel @Inject constructor(
                     CoinName =item.id.lowercase(Locale.getDefault()),
                     CoinAmount = amount.toDouble().format(6).toDouble(),
                     Total = totalItemBalance,
-                    Image = item.image
+                    Image = item.image,
+                    currentPrice = item.current_price.toString()
                 )
             }.sortedByDescending { it.Total }
             .toList()

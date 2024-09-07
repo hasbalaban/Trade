@@ -21,6 +21,9 @@ interface DatabaseDao {
     @Query("select * from myCoins where CoinAmount>0.0")
     suspend fun getAllCoins(): List<MyCoins>
 
+    @Query("select * from myCoins where CoinAmount>0.0")
+    fun getAllCoinsAsLiveData(): LiveData<List<MyCoins>>
+
     // this fun will return that it  constraint
    // @Query("select * from myCoins where CoinName LIKE '%' || :firstName || '%'")
    // suspend fun getFilteredItems(firstName: String): List<MyCoins>

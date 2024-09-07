@@ -91,6 +91,7 @@ import com.finance.trade_learn.viewModel.LoginViewModel
 import com.finance.trade_learn.viewModel.ProfileViewModel
 import com.finance.trade_learn.viewModel.SignUpViewModel
 import com.finance.trade_learn.viewModel.TransactionViewModel
+import com.finance.trade_learn.viewModel.TvViewModel
 import com.finance.trade_learn.viewModel.WalletPageViewModel
 import com.finance.trade_learn.viewModel.ViewModelUtils
 import com.google.android.gms.ads.*
@@ -106,6 +107,8 @@ val LocalBaseViewModel = compositionLocalOf<BaseViewModel> { error("No BaseViewM
 
 val LocalWalletPageViewModel =
     compositionLocalOf<WalletPageViewModel> { error("No LocalWalletPageViewModel found") }
+
+val LocalTvPageViewModel = compositionLocalOf<TvViewModel> { error("No TvViewModel found") }
 
 val LocalViewModelHistoryTrade =
     compositionLocalOf<TransactionViewModel> { error("No ViewModelHistoryTrade found") }
@@ -281,7 +284,17 @@ class MainActivity : AppCompatActivity() {
             ) { backStackEntry ->
 
                 val coinName = backStackEntry.arguments?.getString("coinName") ?: "TETHER"
-                TradePage(itemName = coinName)
+                val viewModel = hiltViewModel<TvViewModel>()
+                CompositionLocalProvider(LocalTvPageViewModel provides viewModel) {
+                    MainBuySellScreen(
+                        itemId = coinName,
+                        goBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+
             }
             composable(Screens.Wallet.route) {
                 val viewModel = hiltViewModel<WalletPageViewModel>()
