@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import com.finance.trade_learn.database.DatabaseDao
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
-import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 import java.util.*
 import javax.inject.Inject
 

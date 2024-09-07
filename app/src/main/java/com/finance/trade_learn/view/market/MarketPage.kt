@@ -7,12 +7,14 @@ import android.view.ViewTreeObserver
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -62,12 +64,15 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.finance.trade_learn.R
+import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.view.MarketPageItems
 import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.LocalMarketViewModel
 import com.finance.trade_learn.view.coin.PopularCoinCard
+import com.finance.trade_learn.view.home.PortfolioCard
 import kotlinx.coroutines.delay
+import java.math.BigDecimal
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -231,19 +236,32 @@ fun MarketScreen(
                             )
 
                             if (popularItems != null) {
+
                                 LazyRow(
-                                    state = popularItemListState ,
+                                    state = popularItemListState,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(vertical = 4.dp)
+                                        .padding(vertical = 8.dp)
                                 ) {
-                                    items(popularItems) { item ->
-                                        PopularCoinCard(
-                                            item,
-                                            Modifier.weight(1f)
-                                        ) { selectedItemName ->
-                                            openTradePage.invoke(selectedItemName)
-                                        }
+                                    items(popularItems) {
+
+                                        val item = NewModelForItemHistory(
+                                            CoinName = it.CoinName.split(" ").first(),
+                                            CoinAmount = it.CoinPrice.toDoubleOrNull() ?: 0.0,
+                                            Total = BigDecimal.ZERO,
+                                            Image = it.CoinImage,
+                                            currentPrice = it.CoinPrice,
+                                        )
+
+
+                                        PortfolioCard(
+                                            portfolioItem = item,
+                                            modifier = Modifier
+                                                .clickable {
+                                                    openTradePage.invoke(it.CoinName)
+                                                }
+                                                .sizeIn(minWidth = 220.dp)
+                                        )
                                     }
                                 }
                             }

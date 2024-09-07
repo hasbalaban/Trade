@@ -31,7 +31,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -61,7 +60,6 @@ import com.finance.trade_learn.view.LocalHomeViewModel
 import com.finance.trade_learn.view.coin.CoinItemScreen
 import com.finance.trade_learn.view.coin.ItemIcon
 import com.finance.trade_learn.view.wallet.format
-import kotlinx.coroutines.delay
 import java.util.Locale
 
 @Composable
@@ -78,11 +76,8 @@ fun HomeScreen(
     val marketItems = BaseViewModel.allCryptoItems.collectAsState()
 
 
-    LaunchedEffect(BaseViewModel) {
-        if (!islogin) {
-            delay(3000)
-            viewModel.getMyCoinsDetails()
-        }
+    if (!islogin && marketItems.value.isNotEmpty()) {
+        viewModel.getMyCoinsDetails()
     }
 
     if (islogin) {

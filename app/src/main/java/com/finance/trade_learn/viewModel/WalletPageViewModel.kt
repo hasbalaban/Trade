@@ -76,7 +76,8 @@ class WalletPageViewModel @Inject constructor(
                 CoinName =item.id.lowercase(Locale.getDefault()),
                 CoinAmount = amount.toDouble(),
                 Total = totalItemBalance,
-                Image = item.image
+                Image = item.image,
+                currentPrice = item.current_price.toString()
             )
         }.sortedByDescending { it.Total }
             .toList()
