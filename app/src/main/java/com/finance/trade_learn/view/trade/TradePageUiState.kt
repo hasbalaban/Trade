@@ -47,12 +47,12 @@ data class BuySellScreenData(
             _ownedShares = value // Set the value with 4 decimal precision
         }
     var transactionAmount: Double
-        get() = _transactionAmount.formatToDecimals(6)
+        get() = _transactionAmount.formatToDecimals(8)
         set(value) {
             _transactionAmount = value // Set the value with 4 decimal precision
         }
     val totalTransactionCost: Double
-        get() = (currentPrice * transactionAmount).formatToDecimals(5)
+        get() = (currentPrice * transactionAmount).formatToDecimals(8)
 }
 
 
