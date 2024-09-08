@@ -41,7 +41,7 @@ data class BuySellScreenData(
         set(value) {
             _balance = value // Set the value with 4 decimal precision
         }
-    var ownedShares: Double
+    var ownedAmount: Double
         get() = _ownedShares.formatToDecimals(6)
         set(value) {
             _ownedShares = value // Set the value with 4 decimal precision
@@ -53,6 +53,14 @@ data class BuySellScreenData(
         }
     val totalTransactionCost: Double
         get() = (currentPrice * transactionAmount).formatToDecimals(8)
+
+
+    val isBuyEnabled : Boolean
+        get() = balance >= totalTransactionCost
+    val isSellEnabled : Boolean
+        get() = ownedAmount >= transactionAmount
+
+
 }
 
 

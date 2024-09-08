@@ -52,7 +52,6 @@ import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.view.coin.ItemIcon
-import com.finance.trade_learn.view.trade.formatToDecimals
 
 
 @Composable
@@ -171,14 +170,14 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
                 ) {
                     Text(
                         text = "Balance: ", style = TextStyle(
-                            fontSize = 20.sp, fontWeight = FontWeight.SemiBold,
+                            fontSize = 20.sp, fontWeight = FontWeight.Normal,
                             color = MaterialTheme.colors.onPrimary
                         )
                     )
 
                     Text(
                         text = tradePageUiState.value.data.balance.toString() + " $",
-                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+                        style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colors.onPrimary
                     )
                 }
@@ -191,7 +190,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
                 )
                 Text(
                     modifier = Modifier.padding(top = 8.dp),
-                    text = "Owned Shares: ${tradePageUiState.value.data.ownedShares}",
+                    text = "Owned Shares: ${tradePageUiState.value.data.ownedAmount}",
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal),
                     color = MaterialTheme.colors.onPrimary
                 )
@@ -213,7 +212,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
                 )
                 Text(
                     text = tradePageUiState.value.data.currentPrice.toString(),
-                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.SemiBold),
+                    style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colors.onPrimary
                 )
             }
@@ -231,7 +230,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
             Text(
                 modifier = Modifier.padding(start = 12.dp),
                 text = "Quantity", style = TextStyle(
-                    fontSize = 20.sp, fontWeight = FontWeight.SemiBold,
+                    fontSize = 20.sp, fontWeight = FontWeight.Normal,
                     color = MaterialTheme.colors.onPrimary
                 )
             )
@@ -252,7 +251,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
                     imageVector = Icons.Filled.Remove,
                     contentDescription = "Decrease",
                     modifier = Modifier
-                        .padding( 8.dp)
+                        .padding(8.dp)
                         .size(40.dp)
                         .clickable {
                             if (quantity > 0) {
@@ -281,7 +280,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
                     imageVector = Icons.Filled.Add,
                     contentDescription = "Increase",
                     modifier = Modifier
-                        .padding( 8.dp)
+                        .padding(8.dp)
                         .size(40.dp)
                         .clickable {
                             val changeRate =
@@ -372,7 +371,10 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
             verticalAlignment = Alignment.Bottom
         ) {
             Button(
-                onClick = { /* Handle Buy Action */ },
+                enabled = tradePageUiState.value.data.isBuyEnabled,
+                onClick = {
+                    viewModel.clickedBuy()
+                },
                 modifier = Modifier
                     .padding(end = 8.dp)
                     .weight(1f)
@@ -384,8 +386,13 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
             ) {
                 Text(text = "BUY", style = TextStyle(fontSize = 16.sp))
             }
+
+
             Button(
-                onClick = { /* Handle Sell Action */ },
+                enabled = tradePageUiState.value.data.isSellEnabled,
+                onClick = {
+                    viewModel.clickedSell()
+                },
                 modifier = Modifier
                     .padding(start = 8.dp)
                     .weight(1f)
