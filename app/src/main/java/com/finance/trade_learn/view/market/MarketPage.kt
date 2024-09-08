@@ -258,7 +258,7 @@ fun MarketScreen(
                                             portfolioItem = item,
                                             modifier = Modifier
                                                 .clickable {
-                                                    openTradePage.invoke(it.CoinName)
+                                                    openTradePage.invoke(it.id)
                                                 }
                                                 .sizeIn(minWidth = 220.dp)
                                         )
