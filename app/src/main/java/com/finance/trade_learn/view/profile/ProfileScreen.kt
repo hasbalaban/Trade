@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Visibility
@@ -32,6 +35,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
@@ -146,34 +150,39 @@ fun ProfileScreen(
                     }
                 )
 
-            }
-
-
-            Spacer(modifier = Modifier.weight(1f))
-
-
-            Row(modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth()) {
-
-                ActionButton(
-                    text = "Delete Account"
-                ) {
-                    viewModel.deleteAccount()
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                ActionButton(
-                    text = "Logout"
-                ) {
-                    coroutines.launch {
-                        context.clearSpecificPreference(DataStoreKeys.StringKeys.email)
-                        context.clearSpecificPreference(DataStoreKeys.StringKeys.password)
-                        onLogOut.invoke()
+                ProfileItems(
+                    icon = Icons.Default.DeleteForever,
+                    iconColorTint = ColorFilter.tint(Color.Red),
+                    text = stringResource(id = R.string.delete_account),
+                    textStyle = TextStyle(
+                        fontSize = 20.sp,
+                        color = Color.Red,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    onClickActionButton = {
+                        viewModel.deleteAccount()
                     }
-                }
+                )
+
+                ProfileItems(
+                    icon = Icons.AutoMirrored.Filled.Logout,
+                    text = stringResource(id = R.string.log_out),
+                    textStyle = TextStyle(
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colors.onPrimary,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    onClickActionButton = {
+                        coroutines.launch {
+                            context.clearSpecificPreference(DataStoreKeys.StringKeys.email)
+                            context.clearSpecificPreference(DataStoreKeys.StringKeys.password)
+                            onLogOut.invoke()
+                        }
+                    }
+                )
+
             }
+
 
             if (signUpViewState.isAccountDeleting) {
                 CircularProgressIndicator(
@@ -189,13 +198,16 @@ fun ProfileScreen(
 @Composable
 fun ProfileItems(
     icon : ImageVector,
+    iconColorTint : ColorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary),
     text: String,
+    textStyle : TextStyle = TextStyle(fontSize = 20.sp, color = MaterialTheme.colors.onPrimary),
     onClickActionButton : () -> Unit,
 ) {
     Column(modifier = Modifier
         .clickable {
             onClickActionButton.invoke()
-        }.fillMaxWidth()){
+        }
+        .fillMaxWidth()){
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -207,7 +219,7 @@ fun ProfileItems(
             Image(
                 imageVector = icon,
                 contentDescription = text,
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary)
+                colorFilter = iconColorTint
             )
 
 
@@ -222,8 +234,7 @@ fun ProfileItems(
             ) {
                 Text(
                     text = text,
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colors.onPrimary
+                    style = textStyle,
                 )
             }
         }

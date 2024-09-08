@@ -74,6 +74,8 @@
     <string name="sign_up">Sing Up</string>
     <string name="please_login_or_signup">Log in or sign up to access watchlist</string>
     <string name="watchlist_text">Watchlist</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="log_out">Logout</string>
 
 
 </resources>
