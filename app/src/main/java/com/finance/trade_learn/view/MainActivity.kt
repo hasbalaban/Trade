@@ -306,7 +306,10 @@ class MainActivity : AppCompatActivity() {
                         },
                         navigateToHistoryPage = {
                             navController.navigate(Screens.HistoryScreen.route)
-                        }
+                        },
+                        openTradePage = { itemId: String ->
+                            navController.navigate(Screens.Trade(itemId).route)
+                        },
                     )
                 }
 

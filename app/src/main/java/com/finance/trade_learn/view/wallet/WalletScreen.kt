@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,12 +29,9 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,8 +41,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -62,7 +58,6 @@ import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.LocalWalletPageViewModel
-import com.finance.trade_learn.view.home.PortfolioCard
 import com.finance.trade_learn.view.home.PortfolioCard1
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -70,6 +65,7 @@ import com.finance.trade_learn.view.home.PortfolioCard1
 fun WalletScreen(
     goBack : () -> Unit,
     navigateToHistoryPage: () -> Unit,
+    openTradePage: (String) -> Unit
 ) {
     val viewModel = LocalWalletPageViewModel.current
     val baseViewModel = LocalBaseViewModel.current
@@ -112,7 +108,11 @@ fun WalletScreen(
         }
 
 
-        WalletContent(navigateToHistoryPage = navigateToHistoryPage, modifier = Modifier)
+        WalletContent(
+            navigateToHistoryPage = navigateToHistoryPage,
+            openTradePage = openTradePage,
+            modifier = Modifier
+        )
 
 
     }
@@ -121,7 +121,7 @@ fun WalletScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WalletContent(navigateToHistoryPage: () -> Unit, modifier: Modifier) {
+fun WalletContent(navigateToHistoryPage: () -> Unit, openTradePage : (String) -> Unit, modifier: Modifier) {
     val viewModel = LocalWalletPageViewModel.current
     val cryptoItems = viewModel.myCoinsNewModel.observeAsState(emptyList())
     val totalBalance = viewModel.totalBalance.collectAsState(0f)
@@ -250,7 +250,13 @@ fun WalletContent(navigateToHistoryPage: () -> Unit, modifier: Modifier) {
                 searchQuery.value.text.isBlank() || it.CoinName.contains(searchQuery.value.text, ignoreCase = true)
             }) { item ->
 
-                PortfolioCard1(item, modifier = Modifier.padding(vertical = 6.dp))
+                PortfolioCard1(
+                    item, modifier = Modifier
+                        .clickable {
+                            openTradePage.invoke(item.CoinName)
+                        }
+                        .padding(vertical = 6.dp)
+                )
             }
         }
     }
@@ -293,5 +299,5 @@ fun Double.format(digits: Int) = "%.${digits}f".format(this)
 @Composable
 @Preview
 private fun WalletScreenPreview() {
-    WalletScreen(goBack = {}, navigateToHistoryPage = {})
+    WalletScreen(goBack = {}, navigateToHistoryPage = {}, openTradePage = {})
 }
