@@ -537,7 +537,7 @@ private fun WatchListSection(
                     items(
                         items = items,
                         key = {
-                            it.CoinName
+                            it.id
                         }
                     ) {
                         CoinItemScreen(
