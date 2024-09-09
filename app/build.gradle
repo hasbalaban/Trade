@@ -29,7 +29,7 @@ android {
         applicationId "com.finance.trade_learn"
         minSdk 30
         targetSdk 34
-        versionCode 88
+        versionCode 89
         versionName "2.5.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
