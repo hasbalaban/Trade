@@ -187,6 +187,8 @@ class TvViewModel @Inject constructor(
         item: CoinDetail,
         tradeOperation: TradeType
     ) {
+        BaseViewModel.setLockMainActivityStatus(true)
+
         val transaction = UserTransactions(
             transactionItemName = item.id,
             price = tradeUiState.currentPrice.toString(),
@@ -196,6 +198,9 @@ class TvViewModel @Inject constructor(
             transactionType = tradeOperation.toString()
         )
         coinDetailRepositoryImp.addProgressToTradeHistory(transaction)
+
+        BaseViewModel.setLockMainActivityStatus(false)
+
     }
 
 

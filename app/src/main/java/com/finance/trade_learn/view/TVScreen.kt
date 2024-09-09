@@ -1,6 +1,9 @@
 package com.finance.trade_learn.view
 
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -104,6 +107,15 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
     val tradePageUiState = viewModel.tradePageUiState.collectAsState()
     val quantity by remember { derivedStateOf { tradePageUiState.value.data.transactionAmount} }
 
+    val animatedBalance by animateFloatAsState(
+        targetValue = tradePageUiState.value.data.balance.toFloat(),
+        animationSpec = tween(
+            durationMillis = 1200,
+            easing = FastOutSlowInEasing
+        ), label = ""
+    )
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -176,7 +188,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
                     )
 
                     Text(
-                        text = tradePageUiState.value.data.balance.toString() + " $",
+                        text = "$animatedBalance $",
                         style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colors.onPrimary
                     )
