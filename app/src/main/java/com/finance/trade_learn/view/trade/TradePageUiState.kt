@@ -1,6 +1,7 @@
 package com.finance.trade_learn.view.trade
 
 import com.finance.trade_learn.base.BaseViewModel
+import com.finance.trade_learn.view.wallet.format
 
 data class TradePageUiState<T>(
     val isLoading: Boolean = false,
@@ -27,32 +28,32 @@ data class BuySellScreenData(
             _isLogin = value
         }
     var currentPrice: Double
-        get() = _currentPrice.formatToDecimals(6)
+        get() = _currentPrice.format(6).toDouble()
         set(value) {
             _currentPrice = value // Set the value with 4 decimal precision
         }
     var dailyPercentChange: Double
-        get() = _dailyPercentChange.formatToDecimals(2)
+        get() = _dailyPercentChange.format(2).toDouble()
         set(value) {
             _dailyPercentChange = value // Set the value with 4 decimal precision
         }
     var balance: Double
-        get() = _balance.formatToDecimals(2)
+        get() = _balance.format(2).toDouble()
         set(value) {
             _balance = value // Set the value with 4 decimal precision
         }
     var ownedAmount: Double
-        get() = _ownedShares.formatToDecimals(6)
+        get() = _ownedShares.format(6).toDouble()
         set(value) {
             _ownedShares = value // Set the value with 4 decimal precision
         }
     var transactionAmount: Double
-        get() = _transactionAmount.formatToDecimals(8)
+        get() = _transactionAmount.format(8).toDouble()
         set(value) {
             _transactionAmount = value // Set the value with 4 decimal precision
         }
     val totalTransactionCost: Double
-        get() = (currentPrice * transactionAmount).formatToDecimals(4)
+        get() = (currentPrice * transactionAmount).format(4).toDouble()
 
 
     val isBuyEnabled : Boolean
@@ -61,9 +62,4 @@ data class BuySellScreenData(
         get() = ownedAmount >= transactionAmount
 
 
-}
-
-
-fun Double.formatToDecimals(decimals: Int): Double {
-    return "%.${decimals}f".format(this).toDouble()
 }

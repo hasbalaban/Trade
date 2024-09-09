@@ -59,6 +59,7 @@ import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelF
 import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.LocalWalletPageViewModel
 import com.finance.trade_learn.view.home.PortfolioCard1
+import java.util.Locale
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -294,7 +295,11 @@ private fun CryptoItem(item: NewModelForItemHistory) {
 }
 
 
-fun Double.format(digits: Int) = "%.${digits}f".format(this)
+
+
+fun Double.format(digits: Int): String {
+    return String.format(Locale.US, "%.${digits}f", this)
+}
 
 @Composable
 @Preview
