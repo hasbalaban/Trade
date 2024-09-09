@@ -208,6 +208,7 @@ fun StockitPortfolioScreen(
 fun PortfolioCard(
     portfolioItem: NewModelForItemHistory,
     modifier: Modifier,
+    isWatchlistItem : Boolean = true
 ) {
     val item = BaseViewModel.allCryptoItems.value.firstOrNull {
         portfolioItem.CoinName.lowercase(Locale.getDefault()) == it.id.lowercase(Locale.getDefault())
@@ -263,7 +264,7 @@ fun PortfolioCard(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Portfolio",
+                        text = if(isWatchlistItem) "Portfolio" else "Price",
                         style = MaterialTheme.typography.h6.copy(
                             fontWeight = FontWeight.Normal,
                             fontSize = 12.sp
