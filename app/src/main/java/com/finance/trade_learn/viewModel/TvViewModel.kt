@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
+import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 import com.finance.trade_learn.models.TradeType
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -72,6 +74,9 @@ class TvViewModel @Inject constructor(
     fun clickedBuy(){
         val tradeUiState = tradePageUiState.value.data ?: return
         val item = selectedItemDetail.value.data ?: return
+
+        if (!tradeUiState.isBuyEnabled) return
+
         CoroutineScope(Dispatchers.IO).launch {
 
             if (tradeUiState.isLogin) {
@@ -79,7 +84,7 @@ class TvViewModel @Inject constructor(
                 return@launch
             }
 
-           // buyFromLocal(itemAmount, myCoinItem, myDollars, coinName, amount, currentPrice, total)
+            buyFromLocal(tradeUiState = tradeUiState, item = item)
         }
     }
 
@@ -95,12 +100,51 @@ class TvViewModel @Inject constructor(
                 return@launch
             }
 
-            // buyFromLocal(itemAmount, myCoinItem, myDollars, coinName, amount, currentPrice, total)
+            sellFromLocal(tradeUiState = tradeUiState, item = item)
         }
     }
 
 
-    private fun buyFromLocal(itemAmount: Any, myCoinItem: Any, myDollars: Any, coinName: Any, amount: Any, currentPrice: Any, total: Any) {}
+    private suspend fun buyFromLocal(tradeUiState: BuySellScreenData, item: CoinDetail) {
+        val myCoinItem = MyCoins(
+            CoinName = item.id.lowercase(Locale.getDefault()),
+            CoinAmount = tradeUiState.ownedAmount + tradeUiState.transactionAmount
+        )
+        if (tradeUiState.ownedAmount > 0) coinDetailRepositoryImp.updateSelectedItem(myCoinItem)
+        else coinDetailRepositoryImp.buyNewItem(myCoinItem)
+
+        val newBalance = tradeUiState.balance - tradeUiState.totalTransactionCost
+        val myDollars = MyCoins("tether", newBalance)
+        coinDetailRepositoryImp.updateSelectedItem(myDollars)
+
+        saveTradeToDatabase(
+            tradeUiState = tradeUiState,
+            item = item,
+            TradeType.Buy
+        )
+    }
+
+    private suspend fun sellFromLocal(
+        tradeUiState: BuySellScreenData, item: CoinDetail
+    ) {
+        try {
+            val myCoinItem = MyCoins(
+                CoinName = item.id.lowercase(Locale.getDefault()),
+                CoinAmount = tradeUiState.ownedAmount - tradeUiState.transactionAmount
+            )
+            coinDetailRepositoryImp.updateSelectedItem(myCoinItem)
+
+            val newBalance = tradeUiState.balance + tradeUiState.totalTransactionCost
+            val myDollars = MyCoins("tether", newBalance)
+            coinDetailRepositoryImp.updateSelectedItem(myDollars)
+            //and save to database, too
+            saveTradeToDatabase(
+                tradeUiState = tradeUiState,
+                item = item,
+                TradeType.Sell
+            )
+        } catch (_: Exception) { }
+    }
 
 
     private suspend fun buyOrSellFromRemote(tradeUiState: BuySellScreenData, item: CoinDetail, transactionType : TradeType) {
@@ -136,6 +180,27 @@ class TvViewModel @Inject constructor(
             }
             println(response.message())
         }
+    }
+
+    private suspend fun saveTradeToDatabase(
+        tradeUiState: BuySellScreenData,
+        item: CoinDetail,
+        tradeOperation: TradeType
+    ) {
+        BaseViewModel.setLockMainActivityStatus(true)
+
+        val transaction = UserTransactions(
+            transactionItemName = item.id,
+            price = tradeUiState.currentPrice.toString(),
+            amount = tradeUiState.transactionAmount.toString(),
+            transactionTotalPrice = tradeUiState.totalTransactionCost.toString(),
+            date = System.currentTimeMillis().toString(),
+            transactionType = tradeOperation.toString()
+        )
+        coinDetailRepositoryImp.addProgressToTradeHistory(transaction)
+
+        BaseViewModel.setLockMainActivityStatus(false)
+
     }
 
 

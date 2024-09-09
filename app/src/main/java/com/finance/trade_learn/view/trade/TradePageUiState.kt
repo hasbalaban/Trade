@@ -37,7 +37,7 @@ data class BuySellScreenData(
             _dailyPercentChange = value // Set the value with 4 decimal precision
         }
     var balance: Double
-        get() = _balance.formatToDecimals(4)
+        get() = _balance.formatToDecimals(2)
         set(value) {
             _balance = value // Set the value with 4 decimal precision
         }
@@ -52,7 +52,7 @@ data class BuySellScreenData(
             _transactionAmount = value // Set the value with 4 decimal precision
         }
     val totalTransactionCost: Double
-        get() = (currentPrice * transactionAmount).formatToDecimals(8)
+        get() = (currentPrice * transactionAmount).formatToDecimals(4)
 
 
     val isBuyEnabled : Boolean

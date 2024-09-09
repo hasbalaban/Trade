@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 class TransactionViewModel : ViewModel() {
     private val _transactionViewState = MutableStateFlow<TransactionViewState>(TransactionViewState())
@@ -77,11 +78,14 @@ class TransactionViewModel : ViewModel() {
 
         val userTransactions = ArrayList<UserTransactions>()
         for (i in list) {
-            val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-            val dateStr = i.date
-            val timeInMillis = sdf.parse(dateStr).time.toString()
-
-
+            val formattedDateStr = try {
+                val timestamp = i.date.toLongOrNull() ?: 0L
+                val date = Date(timestamp)
+                val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+                sdf.format(date) ?: ""
+            } catch (e: Exception) {
+                ""
+            }
 
             val name = i.transactionItemName
             val amount = i.amount.toBigDecimal()
@@ -96,7 +100,7 @@ class TransactionViewModel : ViewModel() {
                 price = price.toString(),
                 transactionTotalPrice = total.toString(),
                 transactionType = state,
-                date = timeInMillis
+                date = formattedDateStr
             )
             userTransactions.add(itemOfHistory)
         }
