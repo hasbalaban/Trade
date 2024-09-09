@@ -140,13 +140,11 @@ class MainActivity : AppCompatActivity() {
 
     private val baseViewModel: BaseViewModel by viewModels()
 
-
-    //   private lateinit var firestore: FirebaseFirestore
     private var mInterstitialAd: InterstitialAd? = null
 
-    var runnable = Runnable { }
+    private var runnable = Runnable { }
     val handler = Handler(Looper.getMainLooper())
-    val timeLoop = 60000L
+    private val timeLoop = 60000L
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -445,7 +443,6 @@ class MainActivity : AppCompatActivity() {
         isOneEntering()
         checkIsAdShowed()
         showNotificationPermission()
-        //firebaseSave()
         //Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
     }
 
@@ -498,28 +495,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    fun firebaseSave() {
-
-        //  firestore = Firebase.firestore
-        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-        val currentDate = sdf.format(Date())
-
-        val deviceID = SharedPreferencesManager(this).getSharedPreferencesString("deviceId", "0")
-        val openAppDetails = hashMapOf(
-            "open" to "1",
-            "time" to currentDate,
-            "country" to Locale.getDefault().country,
-            "deviceID" to deviceID
-        )
-        if (deviceID != "057eea2e-396c-4117-b5d4-782b247000f9") {// this condotion will be delete
-            //  firestore.collection("StartApp").add(openAppDetails).addOnSuccessListener {
-            //   }.addOnFailureListener {
-
-            //  }
-        }
-    }
-
 
     private fun setInterstitialAd() {
         val adRequest = AdRequest.Builder().build()
