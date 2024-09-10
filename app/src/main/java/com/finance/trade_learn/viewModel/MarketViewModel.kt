@@ -16,16 +16,4 @@ class MarketViewModel : BaseViewModel() {
         _searchBarViewState.value = searchBarViewState
     }
 
-
-    private var disposable: CompositeDisposable = CompositeDisposable()
-
-    override fun onCleared() {
-        disposable.clear()
-        super.onCleared()
-    }
-
-
-
-
-
 }

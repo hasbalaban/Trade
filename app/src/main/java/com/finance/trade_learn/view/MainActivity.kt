@@ -1,7 +1,6 @@
 package com.finance.trade_learn.view
 
 
-import TradePage
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Build
@@ -82,6 +81,7 @@ import com.finance.trade_learn.view.loginscreen.login.LoginScreen
 import com.finance.trade_learn.view.loginscreen.signup.SignUpScreen
 import com.finance.trade_learn.view.market.MarketScreen
 import com.finance.trade_learn.view.profile.ProfileScreen
+import com.finance.trade_learn.view.trade.MainBuySellScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.CodeVerificationViewModel
 import com.finance.trade_learn.viewModel.ForgotPasswordViewModel
@@ -99,7 +99,6 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 

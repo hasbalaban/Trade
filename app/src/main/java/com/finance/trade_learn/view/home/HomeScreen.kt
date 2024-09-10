@@ -51,11 +51,10 @@ import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
-import com.finance.trade_learn.models.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.models.modelsConvector.Percent
 import com.finance.trade_learn.theme.FinanceAppTheme
-import com.finance.trade_learn.utils.percenteChange
+import com.finance.trade_learn.utils.percentageChange
 import com.finance.trade_learn.view.LocalHomeViewModel
 import com.finance.trade_learn.view.coin.CoinItemScreen
 import com.finance.trade_learn.view.coin.ItemIcon
@@ -494,7 +493,7 @@ private fun WatchListSection(
             val percenteChange: Percent? = if (currentItemInfo.price_change_24h == null) {
                 Percent(0.0, "+", "%")
             } else {
-                percenteChange(currentItemInfo.price_change_percentage_24h.toString())
+                percentageChange(currentItemInfo.price_change_percentage_24h.toString())
             }
 
             val coinPercenteChange = percenteChange?.raise + (percenteChange?.percentChange
@@ -510,9 +509,6 @@ private fun WatchListSection(
                 ).toString(),
                 CoinChangePercente = coinPercenteChange,
                 CoinImage = currentItemInfo.image,
-                raise = if ((currentItemInfo.price_change_percentage_24h
-                        ?: 0.0) > 0.0
-                ) enumPriceChange.pozitive else enumPriceChange.negative,
                 marketCap = currentItemInfo.market_cap,
                 total_volume = currentItemInfo.total_volume,
             )

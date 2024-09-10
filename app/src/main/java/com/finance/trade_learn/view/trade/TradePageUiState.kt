@@ -57,9 +57,9 @@ data class BuySellScreenData(
 
 
     val isBuyEnabled : Boolean
-        get() = balance >= totalTransactionCost
+        get() = balance > 0 && balance >= totalTransactionCost
     val isSellEnabled : Boolean
-        get() = ownedAmount >= transactionAmount
+        get() = transactionAmount > 0 && ownedAmount >= transactionAmount
 
 
 }
