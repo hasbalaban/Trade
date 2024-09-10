@@ -6,7 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finance.trade_learn.models.DataForHomePage
+import com.finance.trade_learn.models.FilterType
+import com.finance.trade_learn.models.FilterType.HighestPercentage
+import com.finance.trade_learn.models.FilterType.HighestPrice
+import com.finance.trade_learn.models.FilterType.LowestPercentage
+import com.finance.trade_learn.models.FilterType.LowestPrice
 import com.finance.trade_learn.models.UserBalance
 import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.WrapResponse
@@ -189,6 +193,18 @@ open class BaseViewModel @Inject constructor(
             println(response.message())
             println(response.body()?.message)
         }
+    }
+
+    fun filterChanged(filterType: FilterType) {
+        val sortedList = when (filterType) {
+                HighestPrice -> currentItems.sortedBy { it.CoinPrice }
+                LowestPrice -> currentItems.sortedByDescending { it.CoinPrice }
+                HighestPercentage -> currentItems.sortedBy { it.CoinChangePercente }
+            LowestPercentage -> currentItems.sortedByDescending { it.CoinChangePercente }
+        }
+
+        currentItems = sortedList
+        currentItemsLiveData.value = currentItems
     }
 
     companion object {
