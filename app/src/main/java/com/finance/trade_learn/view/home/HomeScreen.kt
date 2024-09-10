@@ -270,29 +270,16 @@ fun PortfolioCard(
                         ),
                         color = MaterialTheme.colors.onPrimary.copy(alpha = 0.9f)
                     )
-                    val currentPrice = when {
-                        (portfolioItem.CoinAmount  ?: 0.0) > 1.0 -> portfolioItem.CoinAmount?.format(2)
-                        (portfolioItem.CoinAmount ?: 0.0) > 0.001 -> portfolioItem.CoinAmount?.format(3)
-                        portfolioItem.CoinAmount > 0.0001 -> portfolioItem.CoinAmount?.format(4)
-                        (portfolioItem.CoinAmount ?: 0.0) > 0.00001 -> portfolioItem.CoinAmount?.format(5)
-                        (portfolioItem.CoinAmount ?: 0.0) > 0.000001 -> portfolioItem.CoinAmount?.format(6)
-                        (portfolioItem.CoinAmount ?: 0.0) > 0.0000001 -> portfolioItem.CoinAmount?.format(7)
-                        (portfolioItem.CoinAmount ?: 0.0) > 0.00000001 -> portfolioItem.CoinAmount?.format(8)
-                        (portfolioItem.CoinAmount ?: 0.0) > 0.000000001 -> portfolioItem.CoinAmount?.format(9)
-                        (portfolioItem.CoinAmount ?: 0.0) > 0.0000000001 -> portfolioItem.CoinAmount?.format(10)
-                        else -> portfolioItem.CoinAmount?.format(11)
-                    }
 
                     Text(
-                        text = currentPrice ?: "",
+                        text = portfolioItem.currentPrice,
                         style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colors.onPrimary
                     )
                 }
 
                 val priceChangePercent = item.price_change_percentage_24h
-                val priceChangeColor =
-                    if ((priceChangePercent ?: 0.0) > 0.0) Color(0xFF4CAF50) else Color(0xFFF44336)
+                val priceChangeColor = if ((priceChangePercent ?: 0.0) > 0.0) Color(0xFF4CAF50) else Color(0xFFF44336)
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
@@ -311,7 +298,7 @@ fun PortfolioCard(
 
                     Text(
                         modifier = Modifier.padding(6.dp),
-                        text = priceChangePercent?.format(2).toString() + "%",
+                        text = item.price_change_percentage_24h?.format(2) + "%",
                         style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.Bold),
                         color = priceChangeColor,
                         textAlign = TextAlign.End
@@ -358,29 +345,16 @@ fun PortfolioCard1(
                 overflow = TextOverflow.Ellipsis
             )
 
-            val currentPrice = when {
-                (portfolioItem.CoinAmount  ?: 0.0) > 1.0 -> portfolioItem.CoinAmount?.format(2)
-                (portfolioItem.CoinAmount ?: 0.0) > 0.001 -> portfolioItem.CoinAmount?.format(3)
-                portfolioItem.CoinAmount > 0.0001 -> portfolioItem.CoinAmount?.format(4)
-                (portfolioItem.CoinAmount ?: 0.0) > 0.00001 -> portfolioItem.CoinAmount?.format(5)
-                (portfolioItem.CoinAmount ?: 0.0) > 0.000001 -> portfolioItem.CoinAmount?.format(6)
-                (portfolioItem.CoinAmount ?: 0.0) > 0.0000001 -> portfolioItem.CoinAmount?.format(7)
-                (portfolioItem.CoinAmount ?: 0.0) > 0.00000001 -> portfolioItem.CoinAmount?.format(8)
-                (portfolioItem.CoinAmount ?: 0.0) > 0.000000001 -> portfolioItem.CoinAmount?.format(9)
-                (portfolioItem.CoinAmount ?: 0.0) > 0.0000000001 -> portfolioItem.CoinAmount?.format(10)
-                else -> portfolioItem.CoinAmount?.format(11)
-            }
-
             Text(
                 modifier = Modifier.weight(1f),
-                text = currentPrice,
+                text = portfolioItem.currentPrice,
                 color = MaterialTheme.colors.onPrimary,
                 style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End
             )
 
             Text(
-                "\$${portfolioItem.Total.toDouble().format(2)}",
+                "\$${portfolioItem.Total.toDouble()}",
                 style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colors.onPrimary,
                 modifier = Modifier.weight(1f),
@@ -442,7 +416,7 @@ private fun BalanceCard(clickedViewAll: () -> Unit) {
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = "\$${animatedBalance.toDouble().format(2)}",
+                text = "\$${animatedBalance}",
                 style = MaterialTheme.typography.h4.copy(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primary,
@@ -496,17 +470,13 @@ private fun WatchListSection(
                 percentageChange(currentItemInfo.price_change_percentage_24h.toString())
             }
 
-            val coinPercenteChange = percenteChange?.raise + (percenteChange?.percentChange
-                .toString() + "0000").subSequence(0, 4).toString() + "%"
+            val coinPercenteChange = percenteChange?.raise + percenteChange?.percentChange?.format(2).toString() + "%"
 
             CoinsHome(
                 id = currentItemInfo.id,
                 CoinName = currentItemInfo.name.uppercase(Locale.getDefault()) + " / USD",
                 coinSymbol = currentItemInfo.symbol.uppercase(Locale.getDefault()) + " / USD",
-                CoinPrice = (currentItemInfo.current_price.toString() + "00000000").subSequence(
-                    0,
-                    8
-                ).toString(),
+                CoinPrice = currentItemInfo.current_price?.format(2) ?: "0.0",
                 CoinChangePercente = coinPercenteChange,
                 CoinImage = currentItemInfo.image,
                 marketCap = currentItemInfo.market_cap,

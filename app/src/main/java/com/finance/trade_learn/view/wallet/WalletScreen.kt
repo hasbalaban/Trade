@@ -297,9 +297,28 @@ private fun CryptoItem(item: NewModelForItemHistory) {
 
 
 
+
 fun Double.format(digits: Int): String {
-    return String.format(Locale.US, "%.${digits}f", this)
+    if (!this.toString().contains("e", true)) return format(digits, this)
+
+    return String.format(Locale.US, "%.${8}f", this)
 }
+
+
+
+fun format(digits: Int, number : Double): String {
+    return String.format(Locale.US, "%.${digits}f", number)
+}
+
+/*
+fun Double.formatPrice(digits: Int): String {
+    if (!this.toString().contains("e", true)) return  this.toString()
+
+    val formatedDigits = minOf(this.toString().length, 6)
+    return String.format(Locale.US, "%.${formatedDigits}f", this)
+}
+
+ */
 
 @Composable
 @Preview

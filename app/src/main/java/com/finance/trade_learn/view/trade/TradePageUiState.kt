@@ -28,7 +28,7 @@ data class BuySellScreenData(
             _isLogin = value
         }
     var currentPrice: Double
-        get() = _currentPrice.format(6).toDouble()
+        get() = _currentPrice
         set(value) {
             _currentPrice = value // Set the value with 4 decimal precision
         }
@@ -57,9 +57,9 @@ data class BuySellScreenData(
 
 
     val isBuyEnabled : Boolean
-        get() = balance > 0 && balance >= totalTransactionCost
+        get() = balance > 0 && balance >= totalTransactionCost && totalTransactionCost >= 0
     val isSellEnabled : Boolean
-        get() = transactionAmount > 0 && ownedAmount >= transactionAmount
+        get() = transactionAmount > 0 && ownedAmount >= transactionAmount && totalTransactionCost >= 0
 
 
 }

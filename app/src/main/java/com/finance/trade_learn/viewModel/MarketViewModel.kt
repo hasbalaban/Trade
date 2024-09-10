@@ -27,8 +27,8 @@ class MarketViewModel : BaseViewModel() {
             FilterType.Default -> currentItems
             FilterType.HighestPrice -> currentItems.sortedByDescending { it.CoinPrice.toDouble() }
             FilterType.LowestPrice -> currentItems.sortedBy { it.CoinPrice.toDouble() }
-            FilterType.HighestPercentage -> currentItems.sortedByDescending { it.CoinChangePercente.toDouble() }
-            FilterType.LowestPercentage -> currentItems.sortedBy { it.CoinChangePercente.toDouble() }
+            FilterType.HighestPercentage -> currentItems.sortedByDescending { it.CoinChangePercente.replace("%", "").toDouble() }
+            FilterType.LowestPercentage -> currentItems.sortedBy { it.CoinChangePercente.replace("%", "").toDouble() }
         }
 
         val filteredList = if (searchBarViewState.value.searchText.isEmpty()) sortedList
