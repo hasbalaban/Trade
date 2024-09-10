@@ -41,12 +41,10 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
-import com.finance.trade_learn.models.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.view.LocalBaseViewModel
 import kotlinx.coroutines.launch
-import java.nio.file.WatchEvent
 
 @Composable
 fun CoinItemScreen(
@@ -262,7 +260,6 @@ fun PreviewCoinItemScreen() {
         CoinPrice = "0.636005",
         CoinChangePercente = "+1.10",
         CoinImage = "https://coin-images.coingecko.com/coins/images/5163/large/Flux_symbol_blue-white.png?1696505679",
-        raise = enumPriceChange.notr,
         marketCap = "221975378",
         total_volume = "221975378"
     )

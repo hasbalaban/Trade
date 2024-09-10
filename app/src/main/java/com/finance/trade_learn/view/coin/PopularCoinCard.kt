@@ -20,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
-import com.finance.trade_learn.models.enumPriceChange
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 
 @Composable
@@ -113,7 +112,6 @@ fun PreviewPopularCoinCard() {
         CoinPrice = "0.636005",
         CoinChangePercente = "+1.10",
         CoinImage = "https://coin-images.coingecko.com/coins/images/5163/large/Flux_symbol_blue-white.png?1696505679",
-        raise = enumPriceChange.notr,
         marketCap = "221975378",
         total_volume = "221975378"
     )

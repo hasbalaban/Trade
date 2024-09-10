@@ -16,10 +16,10 @@ import com.finance.trade_learn.models.watchList.WatchListItem
 import com.finance.trade_learn.models.watchList.WatchListRequestItem
 import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.service.user.UserApi
-import com.finance.trade_learn.utils.ConvertOperation
 import com.finance.trade_learn.utils.DataStoreKeys
 import com.finance.trade_learn.utils.RemoteConfigs
 import com.finance.trade_learn.utils.readStringPreference
+import com.finance.trade_learn.utils.transformationCoinItemDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,13 +62,12 @@ open class BaseViewModel @Inject constructor(
                         }
                         allCryptoItems.value.addAll(newList)
 
-                        val data = convertCryptoList(allCryptoItems.value)
-                        if (data.ListOfCrypto.isNotEmpty()){
-                            currentItemsLiveData.value = data.ListOfCrypto
-                            listOfCryptoForPopular.value = convertPopularCoinList(data.ListOfCrypto)
+                        val mappedList = convertCryptoList(allCryptoItems.value)
+                        if (mappedList.isNotEmpty()){
+                            currentItemsLiveData.value = mappedList
+                            listOfCryptoForPopular.value = convertPopularCoinList(mappedList)
 
-                            currentItems = data.ListOfCrypto
-                            lastItems = data.lastCrypoList
+                            currentItems = mappedList
                         }
                     }
                 }
@@ -82,16 +81,12 @@ open class BaseViewModel @Inject constructor(
         }
     }
 
-    fun convertCryptoList(t: List<CoinDetail>): DataForHomePage {
-        return ConvertOperation(t, lastItems).convertDataToUse()
+    private fun convertCryptoList(t: List<CoinDetail>): ArrayList<CoinsHome> {
+        return transformationCoinItemDTO(list = t)
     }
 
 
-    private fun convertPopularCoinListShortByTotalVolume(list: ArrayList<CoinsHome>?): List<CoinsHome>? {
-        return list?.sortedBy {
-            it.total_volume
-        }?.take(3)
-    }
+
 
     private fun convertPopularCoinList(list: List<CoinsHome>?): ArrayList<CoinsHome> {
         val popList = arrayListOf<CoinsHome>()
@@ -198,10 +193,7 @@ open class BaseViewModel @Inject constructor(
 
     companion object {
         var currentItems : List<CoinsHome> = emptyList()
-        var lastItems : List<CoinsHome> = emptyList()
-
         var allCryptoItems = MutableStateFlow<MutableList<CoinDetail>>(mutableListOf())
-
 
 
         private val _userInfo = MutableStateFlow<WrapResponse<UserInfo>>(WrapResponse())

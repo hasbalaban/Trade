@@ -1,4 +1,4 @@
-package com.finance.trade_learn.view
+package com.finance.trade_learn.view.trade
 
 
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
+import com.finance.trade_learn.view.LocalTvPageViewModel
 import com.finance.trade_learn.view.coin.ItemIcon
 
 
