@@ -77,5 +77,10 @@
     <string name="delete_account">Delete Account</string>
     <string name="log_out">Logout</string>
 
+    <string name="lowest_price">Lowest Price</string>
+    <string name="highest_price">Highest Price</string>
+    <string name="lowest_percentage">Lowest Percentage</string>
+    <string name="highest_percentage">Highest Percentage</string>
+
 
 </resources>

@@ -69,8 +69,8 @@ import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.view.MarketPageItems
 import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.LocalMarketViewModel
-import com.finance.trade_learn.view.coin.PopularCoinCard
 import com.finance.trade_learn.view.home.PortfolioCard
+import com.finance.trade_learn.view.trade.FilterAndSortButtons
 import kotlinx.coroutines.delay
 import java.math.BigDecimal
 
@@ -301,6 +301,13 @@ fun MarketScreen(
 
 
                     val filterList = filterList(filteredText = searchBarViewState.value.text, list = updateList ?: emptyList())
+
+                    FilterAndSortButtons(
+                        onClickFilter = {
+                            println(filterList)
+                            viewModel.filterChanged(it)
+                        }
+                    )
 
                     MarketPageItems(
                         coinsHome = filterList,
