@@ -23,7 +23,7 @@ fun MarketPageItems (
             items(
                 items = item,
                 key = {
-                    it.CoinName
+                    it.id
                 }
             ){
                 CoinItemScreen(

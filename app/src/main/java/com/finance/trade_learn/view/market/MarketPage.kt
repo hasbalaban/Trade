@@ -65,7 +65,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.finance.trade_learn.R
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
-import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.view.MarketPageItems
 import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.LocalMarketViewModel
@@ -135,9 +134,9 @@ fun SearchBar() {
     }
 
     TextField(
-        value = searchBarViewState.text,
+        value = searchBarViewState.searchText,
         onValueChange = { newText ->
-            viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(text = newText))
+            viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy( searchText = newText))
         },
         leadingIcon = {
             Icon(
@@ -188,6 +187,12 @@ fun MarketScreen(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(snapAnimationSpec = spring(stiffness = Spring.StiffnessLow))
     val popularItems = baseViewModel.listOfCryptoForPopular.observeAsState().value
+
+
+    val listOfItems by viewModel.itemList.collectAsState()
+    val searchBarViewState by viewModel.searchBarViewState.collectAsState()
+
+
 
 
     LaunchedEffect(scrollBehavior.state.collapsedFraction){
@@ -291,32 +296,19 @@ fun MarketScreen(
 
                 ) {
 
-                    val listOfItems = baseViewModel.currentItemsLiveData.observeAsState()
-                    val searchBarViewState = viewModel.searchBarViewState.collectAsState()
-
-                    val updateList =
-                        if (shouldShowPopularCoins) listOfItems.value else listOfItems.value?.sortedBy {
-                            it.total_volume
-                        }
-
-
-                    val filterList = filterList(filteredText = searchBarViewState.value.text, list = updateList ?: emptyList())
-
                     FilterAndSortButtons(
                         onClickFilter = {
-                            println(filterList)
-                            viewModel.filterChanged(it)
+                            viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(filterType = it))
                         }
                     )
 
                     MarketPageItems(
-                        coinsHome = filterList,
+                        coinsHome = listOfItems,
                         onViewClick = { selectedItemName ->
                             openTradePage.invoke(selectedItemName)
                         },
                         navigateToLogin = navigateToLogin
-
-                        )
+                    )
                 }
             }
         }
@@ -356,12 +348,3 @@ fun keyboardAsState(): State<Boolean> {
     return keyboardState
 }
 
-fun filterList(filteredText: String, list : List<CoinsHome>) : List<CoinsHome> {
-    if (filteredText.isEmpty()) return list
-
-    val filteredList = list.filter {
-        it.CoinName.contains(filteredText, ignoreCase = true) || it.coinSymbol.contains(filteredText, ignoreCase = true)
-    }
-
-    return filteredList
-}

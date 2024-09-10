@@ -41,7 +41,6 @@ open class BaseViewModel @Inject constructor(
     private var userPassword = ""
 
 
-    var currentItemsLiveData = MutableLiveData<List<CoinsHome>>()
     var listOfCryptoForPopular = MutableLiveData<List<CoinsHome>>()
 
     private val _shouldShowBottomNavigationBar = MutableLiveData<Boolean>()
@@ -68,7 +67,6 @@ open class BaseViewModel @Inject constructor(
 
                         val mappedList = convertCryptoList(allCryptoItems.value)
                         if (mappedList.isNotEmpty()){
-                            currentItemsLiveData.value = mappedList
                             listOfCryptoForPopular.value = convertPopularCoinList(mappedList)
 
                             currentItems = mappedList
@@ -77,7 +75,6 @@ open class BaseViewModel @Inject constructor(
                 }
                 false -> {
                     RemoteConfigs.SHOULD_BE_LOCAL_REQUEST = !RemoteConfigs.SHOULD_BE_LOCAL_REQUEST
-                    currentItemsLiveData.value = currentItems
                     listOfCryptoForPopular.value = convertPopularCoinList(currentItems)
                 }
             }
@@ -195,17 +192,6 @@ open class BaseViewModel @Inject constructor(
         }
     }
 
-    fun filterChanged(filterType: FilterType) {
-        val sortedList = when (filterType) {
-                HighestPrice -> currentItems.sortedBy { it.CoinPrice }
-                LowestPrice -> currentItems.sortedByDescending { it.CoinPrice }
-                HighestPercentage -> currentItems.sortedBy { it.CoinChangePercente }
-            LowestPercentage -> currentItems.sortedByDescending { it.CoinChangePercente }
-        }
-
-        currentItems = sortedList
-        currentItemsLiveData.value = currentItems
-    }
 
     companion object {
         var currentItems : List<CoinsHome> = emptyList()
