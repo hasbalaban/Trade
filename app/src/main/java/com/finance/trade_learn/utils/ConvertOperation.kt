@@ -14,7 +14,7 @@ fun transformationCoinItemDTO(list: List<CoinDetail>): ArrayList<CoinsHome> {
         val coinImage=i.image
         val coinName = i.name.uppercase(Locale.getDefault()) + " / USD"
         val coinSymbol = i.symbol.uppercase(Locale.getDefault()) + " / USD"
-        val coinPrice = (i.current_price.toString()+"00000000").subSequence(0, 8).toString()
+        val coinPrice = i.current_price.toString().ifEmpty { "0.0" }
         val percenteChange: Percent = if (i.price_change_24h==null){
             Percent(0.0,"+","%")
         } else {
