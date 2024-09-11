@@ -54,6 +54,7 @@ import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelF
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.models.modelsConvector.Percent
 import com.finance.trade_learn.theme.FinanceAppTheme
+import com.finance.trade_learn.utils.FirebaseLogEvents
 import com.finance.trade_learn.utils.percentageChange
 import com.finance.trade_learn.view.LocalHomeViewModel
 import com.finance.trade_learn.view.coin.CoinItemScreen
@@ -165,6 +166,7 @@ fun StockitPortfolioScreen(
                     ),
                     color = Color(0xff3E84F6),
                     modifier = Modifier.clickable {
+                        FirebaseLogEvents.logEvent("click All")
                         clickedViewAll.invoke()
                     }
                 )

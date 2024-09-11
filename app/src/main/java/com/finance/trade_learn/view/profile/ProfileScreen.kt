@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.utils.DataStoreKeys
+import com.finance.trade_learn.utils.FirebaseLogEvents
 import com.finance.trade_learn.utils.clearSpecificPreference
 import com.finance.trade_learn.view.LocalProfileViewModel
 import kotlinx.coroutines.launch
@@ -131,6 +132,7 @@ fun ProfileScreen(
                     icon = Icons.Filled.SwapHoriz,
                     text = stringResource(id = R.string.transactions),
                     onClickActionButton = {
+                        FirebaseLogEvents.logEvent("profile click transactions history" )
                         goTransactionScreen.invoke()
                     }
                 )
@@ -138,6 +140,7 @@ fun ProfileScreen(
                     icon = Icons.Filled.Wallet,
                     text = stringResource(id = R.string.Wallet),
                     onClickActionButton = {
+                        FirebaseLogEvents.logEvent("profile click wallet" )
                         goWalletScreen.invoke()
                     }
                 )
@@ -146,6 +149,7 @@ fun ProfileScreen(
                     icon = Icons.Default.Star,
                     text = stringResource(id = R.string.watchlist_text),
                     onClickActionButton = {
+                        FirebaseLogEvents.logEvent("profile click watchlist" )
                         navigateToHome.invoke()
                     }
                 )
@@ -160,6 +164,7 @@ fun ProfileScreen(
                         fontWeight = FontWeight.Medium
                     ),
                     onClickActionButton = {
+                        FirebaseLogEvents.logEvent("profile click delete account" )
                         viewModel.deleteAccount()
                     }
                 )
@@ -173,6 +178,7 @@ fun ProfileScreen(
                         fontWeight = FontWeight.Bold
                     ),
                     onClickActionButton = {
+                        FirebaseLogEvents.logEvent("profile click logout" )
                         coroutines.launch {
                             context.clearSpecificPreference(DataStoreKeys.StringKeys.email)
                             context.clearSpecificPreference(DataStoreKeys.StringKeys.password)
