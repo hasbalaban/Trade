@@ -74,7 +74,6 @@ open class BaseViewModel @Inject constructor(
                     }
                 }
                 false -> {
-                    RemoteConfigs.SHOULD_BE_LOCAL_REQUEST = !RemoteConfigs.SHOULD_BE_LOCAL_REQUEST
                     listOfCryptoForPopular.value = convertPopularCoinList(currentItems)
                 }
             }
