@@ -255,7 +255,7 @@ fun MarketScreen(
                                             CoinAmount = it.CoinPrice.toDoubleOrNull() ?: 0.0,
                                             Total = BigDecimal.ZERO,
                                             Image = it.CoinImage,
-                                            currentPrice = it.CoinPrice,
+                                            currentPrice = it.CoinPrice + " $" ,
                                         )
 
 

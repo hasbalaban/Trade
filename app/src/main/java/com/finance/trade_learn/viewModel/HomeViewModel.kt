@@ -77,10 +77,10 @@ class HomeViewModel @Inject constructor(
 
                 NewModelForItemHistory(
                     CoinName =item.id.lowercase(Locale.getDefault()),
-                    CoinAmount = amount.toDouble().format(6).toDouble(),
+                    CoinAmount = amount.toDouble(),
                     Total = totalItemBalance,
                     Image = item.image,
-                    currentPrice = item.current_price.toString()
+                    currentPrice = item.current_price?.format(2) ?: "0.0"
                 )
             }.sortedByDescending { it.Total }
             .toList()

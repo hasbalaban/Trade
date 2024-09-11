@@ -56,6 +56,7 @@ import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.view.LocalTvPageViewModel
 import com.finance.trade_learn.view.coin.ItemIcon
+import com.finance.trade_learn.view.wallet.format
 
 
 @Composable
@@ -224,7 +225,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
                     )
                 )
                 Text(
-                    text = tradePageUiState.value.data.currentPrice.toString(),
+                    text = tradePageUiState.value.data.currentPrice.format(2),
                     style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colors.onPrimary
                 )
