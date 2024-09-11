@@ -7,4 +7,9 @@
         <value>true</value>
     </entry>
 
+    <entry>
+        <key>SHOULD_SHOW_ADVERTISEMENT</key>
+        <value>false</value>
+    </entry>
+
 </defaultsMap>

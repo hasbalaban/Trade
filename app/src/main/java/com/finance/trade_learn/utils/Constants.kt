@@ -1,23 +1,20 @@
 package com.finance.trade_learn.utils
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Wallet
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.rounded.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.finance.trade_learn.R
 
 object Constants {
-    const val POST_NOTIFICATION = 1
+    const val ProductionAdKey = "ca-app-pub-2861105825918511/1127322176"
+    const val TestAdKey =       "ca-app-pub-2861105825918511/1127322176"
 
-    const val SHOULD_SHOW_ADS = false
+
+    const val POST_NOTIFICATION = 1
 
     val BottomNavItems = listOf(
         BottomNavItem(

@@ -501,7 +501,7 @@ class MainActivity : AppCompatActivity() {
 
         InterstitialAd.load(
             this,
-            "ca-app-pub-2861105825918511/1127322176",
+            Constants.ProductionAdKey,
             adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
@@ -528,19 +528,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIsAdShowed() {
-        val isAndroidIdAvailable = Settings.Secure.getString(
-            contentResolver,
-            Settings.Secure.ANDROID_ID
-        ) != "4e79e81765cb66e7"
 
-        if (Constants.SHOULD_SHOW_ADS && isAndroidIdAvailable) {
+        if (RemoteConfigs.SHOULD_SHOW_ADVERTISEMENT) {
             lifecycleScope.launch {
+                delay(6_000)
                 val currentMillis = System.currentTimeMillis()
-                val updateTime =
-                    SharedPreferencesManager(this@MainActivity).getSharedPreferencesLong(
-                        "interstitialAdLoadedTime",
-                        currentMillis
-                    )
+                val updateTime = SharedPreferencesManager(this@MainActivity).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
                 if (currentMillis < updateTime) return@launch
 
                 MobileAds.initialize(this@MainActivity) {}
