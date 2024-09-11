@@ -4,10 +4,13 @@ plugins {
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs'
     id 'dagger.hilt.android.plugin'
-//    id 'com.google.gms.google-services'
+
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
+    namespace 'com.finance.trade_learn'
     signingConfigs {
         release {
             storeFile file(FILE_PATH)
@@ -38,7 +41,7 @@ android {
     }
 
     composeOptions{
-        kotlinCompilerExtensionVersion = "1.4.4"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 
     buildTypes {
@@ -66,8 +69,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     buildFeatures {
@@ -106,10 +110,10 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.4.0")
 
     // Hilt
-    implementation 'com.google.dagger:hilt-android:2.38.1'
-    kapt 'com.google.dagger:hilt-android-compiler:2.38.1'
+    implementation 'com.google.dagger:hilt-android:2.51.1'
+    kapt 'com.google.dagger:hilt-android-compiler:2.51.1'
     // room
-    def room_version = "2.5.1"
+    def room_version = "2.6.1"
 
     implementation("androidx.room:room-runtime:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
@@ -207,6 +211,11 @@ dependencies {
 
     //splash screen
    // implementation 'androidx.core:core-splashscreen:1.2.0-alpha01'
+
+
+    //firebase
+    implementation 'com.google.firebase:firebase-crashlytics:19.0.3'
+
 
 
 

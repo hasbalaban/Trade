@@ -21,3 +21,6 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.finance.trade_learn.** { *; }
+
+-keepattributes SourceFile,LineNumberTable
+-keep class com.google.firebase.crashlytics.** { *; }
