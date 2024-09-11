@@ -1,5 +1,6 @@
 package com.finance.trade_learn.viewModel
 
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.base.BaseViewModel
@@ -7,6 +8,7 @@ import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.UserLoginRequest
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.service.user.UserApi
+import com.finance.trade_learn.utils.FirebaseLogEvents
 import com.finance.trade_learn.view.loginscreen.login.LoginViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,6 +56,12 @@ class LoginViewModel @Inject constructor() : ViewModel() {
 
             if (response.isSuccessful){
                 response.body()?.let {
+                    val bundle = Bundle()
+                    bundle.putString("email", it.data?.email)
+                    bundle.putString("email", it.data?.userId.toString())
+                    bundle.putString("email", it.data?.totalBalance.toString())
+                    bundle.putString("email", it.data?.nameAndSurname)
+                    FirebaseLogEvents.logLoginEvent(bundle)
                     _userLoginResponse.value = it
                 }
                 println(response.body()?.success)

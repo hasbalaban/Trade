@@ -3,6 +3,7 @@ package com.finance.trade_learn.view.market
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.view.ViewTreeObserver
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -65,6 +66,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.finance.trade_learn.R
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
+import com.finance.trade_learn.utils.FirebaseLogEvents
 import com.finance.trade_learn.view.MarketPageItems
 import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.LocalMarketViewModel
@@ -148,6 +150,10 @@ fun SearchBar() {
         modifier = Modifier
             .onFocusChanged { focusState ->
                 viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(isFocused = focusState.isFocused))
+
+                if (focusState.isFocused){
+                    FirebaseLogEvents.logEvent("market page click search box" )
+                }
             }
             .fillMaxWidth()
             .padding(16.dp),
@@ -298,6 +304,12 @@ fun MarketScreen(
 
                     FilterAndSortButtons(
                         onClickFilter = {
+
+
+                            val bundle = Bundle()
+                            bundle.putString("type", it.name)
+                            FirebaseLogEvents.logClickFilterEvent(bundle)
+
                             viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(filterType = it))
                         }
                     )

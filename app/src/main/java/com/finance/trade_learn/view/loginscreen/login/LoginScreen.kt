@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.utils.DataStoreKeys
+import com.finance.trade_learn.utils.FirebaseLogEvents
 import com.finance.trade_learn.utils.saveStringPreference
 import com.finance.trade_learn.view.LocalLoginViewModel
 import com.finance.trade_learn.view.LocalSingUpViewModel
@@ -166,6 +167,7 @@ fun LoginScreen(
 
                 Button(
                     onClick = {
+                        FirebaseLogEvents.logEvent("logClickLoginEvent")
                         viewModel.login()
                     },
                     modifier = Modifier
@@ -202,6 +204,7 @@ fun LoginScreen(
                         text = "Sign Up",
                         color = Color(0xFF1E88E5),
                         modifier = Modifier.clickable {
+                            FirebaseLogEvents.logEvent("logClickSignUpEvent")
                             onSignUp()
                         },
                         fontSize = 16.sp,
