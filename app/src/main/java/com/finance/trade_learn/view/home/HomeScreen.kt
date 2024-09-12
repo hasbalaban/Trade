@@ -119,7 +119,7 @@ fun StockitPortfolioScreen(
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
 
             Text(
-                text = "Welcome",
+                text = stringResource(id = R.string.welcome),
                 style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
                 color = MaterialTheme.colors.onPrimary
             )
@@ -153,12 +153,12 @@ fun StockitPortfolioScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Portfolio",
+                    text = stringResource(id = R.string.portfolio_text),
                     style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colors.onPrimary
                 )
                 Text(
-                    text = "View all",
+                    text = stringResource(id = R.string.view_all),
                     style = MaterialTheme.typography.h6.copy(
                         fontWeight = FontWeight.Normal,
                         fontSize = 16.sp,
@@ -408,7 +408,7 @@ private fun BalanceCard(clickedViewAll: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally // Centers content horizontally
         ) {
             Text(
-                text = "Total Coin Value",
+                text = stringResource(id = R.string.total_coin_value),
                 style = MaterialTheme.typography.subtitle1.copy(
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -428,7 +428,7 @@ private fun BalanceCard(clickedViewAll: () -> Unit) {
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = "Dollar Holdings",
+                text = stringResource(id = R.string.dollar_holdings),
                 style = MaterialTheme.typography.subtitle1.copy(
                     fontWeight = FontWeight.Bold,
                     color = Color.White

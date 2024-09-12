@@ -231,7 +231,7 @@ fun OverflowMenu(
 
             }) {
                 Text(
-                    if (isInWatchList) "remove watchlist" else "add watchlist",
+                    if (isInWatchList) stringResource(id = R.string.remove_in_watchlist) else stringResource(id = R.string.add_watchlist),
                     color = MaterialTheme.colors.primary
                 )
             }
@@ -241,7 +241,7 @@ fun OverflowMenu(
                 clickedItem.invoke(itemId)
             }) {
                 Text(
-                    text = "Detay",
+                    text = stringResource(id = R.string.detail),
                     color = MaterialTheme.colors.primary
                 )
             }

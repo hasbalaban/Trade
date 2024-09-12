@@ -69,11 +69,11 @@ fun FilterAndSortButtons(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_filter), // Replace with actual filter icon resource
-                    contentDescription = "Filter",
+                    contentDescription = stringResource(id = R.string.filter),
                     modifier = Modifier.size(20.dp),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Filter")
+                Text(text =  stringResource(id = R.string.filter))
             }
 
             DropdownMenu(
@@ -83,7 +83,7 @@ fun FilterAndSortButtons(
             ) {
 
 
-                FilterType.values().forEach {
+                FilterType.entries.forEach {
                     FilterItem(
                         filterType = it,
                         onClickFilter = {
@@ -112,7 +112,7 @@ fun FilterAndSortButtons(
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "Lowest price")
+            Text(text =  stringResource(id = R.string.lowest_price))
         }
     }
 }
