@@ -55,4 +55,54 @@
     <string name="cripto_wallet">Portefeuille Crypto</string>
     <string name="transactions">Historique des Transactions</string>
     <string name="value">Valeur</string>
+
+
+
+    <string name="create_account_text">Créer un Compte</string>
+    <string name="create_account_information">Lorsque vous créez un compte, les opérations effectuées localement ne sont pas conservées.</string>
+
+    <string name="watchlist_empty">Votre liste de suivi est vide</string>
+    <string name="click_to_add_something">Cliquez pour ajouter à la liste de suivi</string>
+    <string name="login">Se connecter</string>
+    <string name="sign_up">S'inscrire</string>
+    <string name="please_login_or_signup">Connectez-vous ou inscrivez-vous pour accéder à la liste de suivi</string>
+    <string name="watchlist_text">Liste de suivi</string>
+    <string name="delete_account">Supprimer le Compte</string>
+    <string name="log_out">Se déconnecter</string>
+
+    <string name="lowest_price">Prix le plus bas</string>
+    <string name="highest_price">Prix le plus élevé</string>
+    <string name="lowest_percentage">Pourcentage le plus bas</string>
+    <string name="highest_percentage">Pourcentage le plus élevé</string>
+    <string name="empty" />
+    <string name="default_text">Par défaut</string>
+    <string name="detail">Détail</string>
+    <string name="no_transaction_yet">Aucune transaction pour l'instant</string>
+    <string name="no_transaction_description">Il semble que vous n'ayez pas encore effectué de transactions.</string>
+    <string name="go_back">Revenir</string>
+    <string name="welcome">Bienvenue</string>
+    <string name="portfolio_text">Portefeuille</string>
+    <string name="view_all">Voir tout</string>
+    <string name="total_coin_value">Valeur totale des pièces</string>
+    <string name="dollar_holdings">Détention en dollars</string>
+    <string name="enter_verification_code">Entrez le code de vérification</string>
+    <string name="verify">Vérifier</string>
+    <string name="didnt_recieve_code">Vous n'avez pas reçu le code ?</string>
+    <string name="resend_code">Renvoyer le code</string>
+    <string name="reset_password">Réinitialiser le mot de passe</string>
+    <string name="back_to_login">Retour à la connexion</string>
+    <string name="welcome_back">Bon retour</string>
+    <string name="forgot_password">Mot de passe oublié ?</string>
+    <string name="dont_have_an_accounr">Vous n'avez pas de compte ?</string>
+    <string name="filter">Filtrer</string>
+    <string name="owned_balance">Actions détenues</string>
+    <string name="quantity">Quantité</string>
+    <string name="verificaiton_code">Code de vérification</string>
+    <string name="email_address">Adresse e-mail</string>
+    <string name="password">Mot de passe</string>
+    <string name="confirm_password">Confirmer le mot de passe</string>
+    <string name="remove_in_watchlist">Retirer de la liste de suivi</string>
+    <string name="add_watchlist">Ajouter à la liste de suivi</string>
+    <string name="name_and_surname_text">Nom et prénom</string>
+
 </resources>

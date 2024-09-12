@@ -55,4 +55,55 @@
     <string name="cripto_wallet">Кошелек крипто</string>
     <string name="transactions">История транзакций</string>
     <string name="value">Стоимость</string>
+
+
+
+
+    <string name="create_account_text">Создать аккаунт</string>
+    <string name="create_account_information">При создании аккаунта локально выполненные действия не сохраняются.</string>
+
+    <string name="watchlist_empty">Ваш список наблюдения пуст</string>
+    <string name="click_to_add_something">Нажмите, чтобы добавить в список наблюдения</string>
+    <string name="login">Войти</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="please_login_or_signup">Войдите или зарегистрируйтесь, чтобы получить доступ к списку наблюдения</string>
+    <string name="watchlist_text">Список наблюдения</string>
+    <string name="delete_account">Удалить аккаунт</string>
+    <string name="log_out">Выйти</string>
+
+    <string name="lowest_price">Самая низкая цена</string>
+    <string name="highest_price">Самая высокая цена</string>
+    <string name="lowest_percentage">Самый низкий процент</string>
+    <string name="highest_percentage">Самый высокий процент</string>
+    <string name="empty" />
+    <string name="default_text">По умолчанию</string>
+    <string name="detail">Детали</string>
+    <string name="no_transaction_yet">Пока нет транзакций</string>
+    <string name="no_transaction_description">Похоже, что вы еще не совершили ни одной транзакции.</string>
+    <string name="go_back">Назад</string>
+    <string name="welcome">Добро пожаловать</string>
+    <string name="portfolio_text">Портфель</string>
+    <string name="view_all">Посмотреть все</string>
+    <string name="total_coin_value">Общая стоимость монет</string>
+    <string name="dollar_holdings">Долларовые активы</string>
+    <string name="enter_verification_code">Введите код подтверждения</string>
+    <string name="verify">Подтвердить</string>
+    <string name="didnt_recieve_code">Не получили код?</string>
+    <string name="resend_code">Отправить код повторно</string>
+    <string name="reset_password">Сбросить пароль</string>
+    <string name="back_to_login">Вернуться к входу</string>
+    <string name="welcome_back">С возвращением</string>
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="dont_have_an_accounr">Нет аккаунта?</string>
+    <string name="filter">Фильтр</string>
+    <string name="owned_balance">Собственные акции</string>
+    <string name="quantity">Количество</string>
+    <string name="verificaiton_code">Код подтверждения</string>
+    <string name="email_address">Электронная почта</string>
+    <string name="password">Пароль</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <string name="remove_in_watchlist">Удалить из списка наблюдения</string>
+    <string name="add_watchlist">Добавить в список наблюдения</string>
+    <string name="name_and_surname_text">Имя и фамилия</string>
+
 </resources>

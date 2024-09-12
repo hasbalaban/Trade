@@ -62,4 +62,55 @@
     <string name="transactions">İşlem Geçmişi</string>
     <string name="value">Değer</string>
 
+
+
+
+    <string name="create_account_text">Hesap Oluştur</string>
+    <string name="create_account_information">Hesap oluşturulduğunda, yerel olarak yapılan işlemler korunmaz.</string>
+
+    <string name="watchlist_empty">Listeniz Boş</string>
+    <string name="click_to_add_something">Eklemek için tıklayın</string>
+    <string name="login">Giriş Yap</string>
+    <string name="sign_up">Kayıt Ol</string>
+    <string name="please_login_or_signup">Takip Listesine erişmek için giriş yapın veya kayıt olun</string>
+    <string name="watchlist_text">Takip Listesi</string>
+    <string name="delete_account">Hesabı Sil</string>
+    <string name="log_out">Çıkış Yap</string>
+
+    <string name="lowest_price">Düşükten yükseğe</string>
+    <string name="highest_price">Yüksekten Düşüğe</string>
+    <string name="lowest_percentage">En Düşük Yüzde</string>
+    <string name="highest_percentage">En Yüksek Yüzde</string>
+    <string name="empty" />
+    <string name="default_text">Varsayılan</string>
+    <string name="detail">Detay</string>
+    <string name="no_transaction_yet">Henüz bir işlem yapmadınız.</string>
+    <string name="no_transaction_description">Henüz herhangi bir işleminiz yok.</string>
+    <string name="go_back">Geri Dön</string>
+    <string name="welcome">Hoş Geldiniz</string>
+    <string name="portfolio_text">Portföy</string>
+    <string name="view_all">Hepsini Gör</string>
+    <string name="total_coin_value">Toplam Değer</string>
+    <string name="dollar_holdings">Dolar Bakiyesi</string>
+    <string name="enter_verification_code">Doğrulama Kodunu Girin</string>
+    <string name="verify">Doğrula</string>
+    <string name="didnt_recieve_code">Kodu almadınız mı?</string>
+    <string name="resend_code">Kodu Tekrar Gönder</string>
+    <string name="reset_password">Şifreyi Sıfırla</string>
+    <string name="back_to_login">Giriş Ekranına Dön</string>
+    <string name="welcome_back">Tekrar Hoş Geldiniz</string>
+    <string name="forgot_password">Şifrenizi mi unuttunuz?</string>
+    <string name="dont_have_an_accounr">Hesabınız yok mu?</string>
+    <string name="filter">Filtrele</string>
+    <string name="owned_balance">Sahip Olunan Adetler</string>
+    <string name="quantity">Miktar</string>
+    <string name="verificaiton_code">Doğrulama Kodu</string>
+    <string name="email_address">E-posta Adresi</string>
+    <string name="password">Şifre</string>
+    <string name="confirm_password">Şifreyi Onayla</string>
+    <string name="remove_in_watchlist">Listeden Çıkar</string>
+    <string name="add_watchlist">Listeye Ekle</string>
+    <string name="name_and_surname_text">Ad ve Soyad</string>
+
+
 </resources>
