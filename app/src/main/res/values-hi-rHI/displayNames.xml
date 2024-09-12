@@ -47,6 +47,7 @@
     <string name="increase">बढ़ाएं</string>
     <string name="total_cost_text">कुल लेन-देन लागत</string>
     <string name="total_cost">कुल लागत:</string>
+    <string name="balance">शेष</string>
     <string name="total_balance">कुल शेष राशि:</string>
     <string name="buy_sel_operations_text">खरीद/बिक्री संचालन</string>
     <string name="buy">खरीदें</string>
@@ -55,7 +56,7 @@
     <string name="cripto_wallet">क्रिप्टो बटुआ</string>
     <string name="transactions">लेन-देन का इतिहास</string>
     <string name="value">मूल्य</string>
-
+    <string name="profile">Profile</string>
 
 
 

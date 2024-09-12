@@ -47,6 +47,7 @@
     <string name="increase">زيادة</string>
     <string name="total_cost_text">إجمالي تكلفة الصفقة</string>
     <string name="total_cost">التكلفة الإجمالية:</string>
+    <string name="balance">" الرصيد"</string>
     <string name="total_balance">الرصيد الإجمالي:</string>
     <string name="buy_sel_operations_text">عمليات الشراء/البيع</string>
     <string name="buy">شراء</string>
@@ -55,6 +56,8 @@
     <string name="cripto_wallet">محفظة العملة المشفرة</string>
     <string name="transactions">تاريخ المعاملات</string>
     <string name="value">القيمة</string>
+    <string name="profile">الملف الشخصي</string>
+
 
 
     <string name="create_account_text">إنشاء حساب</string>

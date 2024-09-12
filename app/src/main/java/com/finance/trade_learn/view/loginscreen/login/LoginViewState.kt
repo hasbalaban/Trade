@@ -5,8 +5,10 @@ import androidx.compose.ui.graphics.Color
 import com.finance.trade_learn.view.loginscreen.signup.isValidEmail
 
 data class LoginViewState(
-    val email: String = "hasan-balaban@hotmail.com",
-    val password: String = "123456",
+    val email: String = "",
+    //val email: String = "hasan-balaban@hotmail.com",
+    val password: String = "",
+    //val password: String = "123456",
     val isLoading: Boolean = false
 ){
 

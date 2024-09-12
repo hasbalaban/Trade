@@ -52,6 +52,7 @@
     <string name="increase">Artır</string>
     <string name="total_cost_text">Toplam İşlem Maliyeti</string>
     <string name="total_cost">Toplam Maliyet: </string>
+    <string name="balance">Bakiye</string>
     <string name="total_balance">Toplam Bakiye: </string>
     <string name="buy_sel_operations_text">Alış/Satış İşlemleri</string>
 
@@ -61,7 +62,7 @@
     <string name="cripto_wallet">Kripto Cüzdan</string>
     <string name="transactions">İşlem Geçmişi</string>
     <string name="value">Değer</string>
-
+    <string name="profile">Profil</string>
 
 
 

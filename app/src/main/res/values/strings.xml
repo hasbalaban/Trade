@@ -53,7 +53,6 @@
     <string name="increase">Increase</string>
     <string name="total_cost_text">Total Transaction Cost</string>
     <string name="total_cost">Total Cost: </string>
-    <string name="balance" translatable="false">Balance </string>
     <string name="total_balance">Total Balance </string>
     <string name="buy_sel_operations_text">Buy/Sell Operations</string>
 
@@ -63,7 +62,14 @@
     <string name="cripto_wallet">Crypto Wallet</string>
     <string name="transactions">Transaction History</string>
     <string name="value">Value</string>
+
+
+
     <string name="profile">Profile</string>
+    <string name="balance">Balance </string>
+
+
+
 
     <string name="create_account_text">Create Account</string>
     <string name="create_account_information">Hesap oluşturulduğunda, yerel olarak yapılan işlemler korunmaz.</string>
@@ -81,7 +87,7 @@
     <string name="highest_price">Highest Price</string>
     <string name="lowest_percentage">Lowest Percentage</string>
     <string name="highest_percentage">Highest Percentage</string>
-    <string name="empty" />
+    <string name="empty" translatable="false" />
     <string name="default_text">Default</string>
     <string name="detail">Detail</string>
     <string name="no_transaction_yet">No Transactions Yet</string>

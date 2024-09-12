@@ -1,67 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Kripto Demo - Ücretsiz Al-Sat</string>
-    <string name="hello_blank_fragment">merhaba boş fragment</string>
+    <string name="app_name">Crypto Account Demo Köp-Sälj</string>
+
+    <string name="hello_blank_fragment">Hej tomt fragment</string>
     <string name="USD"> / USD</string>
 
-    <string name="home" >Anasayfa</string>
-    <string name="Market" >Market</string>
-    <string name="Trade" >Ticaret</string>
-    <string name="Wallet" >Cüzdan</string>
-    <string name="hintSearch" >Coin Ara</string>
-    <string name="filter_coin" >Filter Coin</string>
-    <string name="name">Coin Adı:</string>
-    <string name="lastPrice">Güncel Fiyat:</string>
-    <string name="change24">24h Değişim:</string>
-    <string name="textBuy">Al</string>
-    <string name="textSell">Sat</string>
-    <string name="Avaible">Bulunan</string>
-    <string name="TotalValue">Toplam Değer ( $ )</string>
-    <string name="Search">Ara</string>
+    <string name="home">Hem</string>
+    <string name="Market">Marknad</string>
+    <string name="Trade">Handel</string>
+    <string name="Wallet">Plånbok</string>
+    <string name="hintSearch">Sök Coin</string>
+    <string name="filter_coin">Filtrera Coin</string>
+    <string name="name">Namn:</string>
+    <string name="lastPrice">Senaste pris:</string>
+    <string name="change24">24h förändring:</string>
+    <string name="textBuy">Köp</string>
+    <string name="textSell">Sälj</string>
+    <string name="Avaible">Tillgänglig</string>
+    <string name="TotalValue">Totalt värde ( $ )</string>
+    <string name="Search">Sök</string>
     <string name="Symbol">Coin</string>
-    <string name="Amount">İşlem Miktarı</string>
-    <string name="Value">Değer ($)</string>
-    <string name="price">Fiyat</string>
-    <string name="total">Toplam</string>
-    <string name="totalUSD">Toplam (USD)</string>
-    <string name="date">Tarih</string>
-    <string name="state">Durum</string>
-    <string name="trueValue">Lütfen geçerli bir değer giriniz</string>
-    <string name="proggresState">İşlem başarısız. Bakiyeyi kontrol et</string>
-    <string name="enterAmountDialog">Lütfen Adet girin</string>
-    <string name="succes">İşlem başarılı</string>
-    <string name="fail">İşlem başarısız</string>
+    <string name="Amount">Mängd</string>
+    <string name="Value">Värde ($)</string>
+    <string name="price">Pris</string>
+    <string name="total">Total</string>
+    <string name="totalUSD">Total (USD)</string>
+    <string name="date">Datum</string>
+    <string name="state">Status</string>
+    <string name="trueValue">vänligen ange korrekt värde</string>
+    <string name="proggresState">Framsteg misslyckades, kontrollera ditt saldo</string>
+    <string name="enterAmountDialog">vänligen ange mängd</string>
+    <string name="succes">Framsteg lyckades</string>
+    <string name="fail">Framsteg misslyckades</string>
     <string name="addZeros">0.000000</string>
+    <string name="page_name">Sök Coin</string>
 
-    <string name="page_name">Kripto Ara</string>
-    <string name="notification_title">Ücretsiz Bildirimler</string>
-    <string name="notification_allow_button">İzin Ver</string>
-    <string name="notification_subTitle">Ücretsiz bildirimleri almak için bildirimlere izin ver.</string>
+    <string name="notification_title">Få Gratis Notifikationer</string>
+    <string name="notification_subTitle">För att få gratis notifikationer, tillåt notifikationsbehörighet</string>
+    <string name="notification_allow_button">Tillåt</string>
+
+    <string name="loading">Laddar</string>
+
+    <string name="popular_coins">Populära Coins</string>
+    <string name="market_cap">Marknadsvärde:</string>
+    <string name="cripto_buy_sel">Krypto Köp/Sälj</string>
+    <string name="cripto_image">Krypto Bild</string>
+    <string name="daily_change">Daglig förändring: </string>
+    <string name="available_amount">Tillgänglig mängd: </string>
+    <string name="amount">Mängd: </string>
+    <string name="Decrease">Minska</string>
+    <string name="increase">Öka</string>
+    <string name="total_cost_text">Totala transaktionskostnader</string>
+    <string name="total_cost">Totalkostnad: </string>
+    <string name="total_balance">Totalt saldo </string>
+    <string name="buy_sel_operations_text">Köp/Sälj Operationer</string>
+
+    <string name="buy">Köp</string>
+    <string name="sell">Sälj</string>
+    <string name="operation_text">Operation: </string>
+    <string name="cripto_wallet">Krypto Plånbok</string>
+    <string name="transactions">Transaktionshistorik</string>
+    <string name="value">Värde</string>
 
 
-    <string name="loading">Yükleniyor...</string>
 
-    <string name="popular_coins">Popüler Kripto Paralar</string>
-    <string name="market_cap">Piyasa Değeri:</string>
-    <string name="cripto_buy_sel">Kripto Alış/Satış</string>
-    <string name="cripto_image">Kripto Görseli</string>
-    <string name="daily_change">Günlük Değişim: </string>
-    <string name="available_amount">Mevcut Miktar: </string>
-    <string name="amount">Miktar: </string>
-    <string name="Decrease">Azalt</string>
-    <string name="increase">Artır</string>
-    <string name="total_cost_text">Toplam İşlem Maliyeti</string>
-    <string name="total_cost">Toplam Maliyet: </string>
-    <string name="total_balance">Toplam Bakiye: </string>
-    <string name="buy_sel_operations_text">Alış/Satış İşlemleri</string>
 
-    <string name="buy">Al</string>
-    <string name="sell">Sat</string>
-    <string name="operation_text">İşlem: </string>
-    <string name="cripto_wallet">Kripto Cüzdan</string>
-    <string name="transactions">İşlem Geçmişi</string>
-    <string name="value">Değer</string>
 
+    <string name="balance">Saldo</string>
+    <string name="profile">Profile</string>
 
 
 
