@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Krypto-Konto Demo Kaufen-Verkaufen</string>
+
+    <string name="hello_blank_fragment">Hallo leeres Fragment</string>
+    <string name="USD"> / USD</string>
+
+    <string name="home">Startseite</string>
+    <string name="Market">Markt</string>
+    <string name="Trade">Handel</string>
+    <string name="Wallet">Brieftasche</string>
+    <string name="hintSearch">Münze suchen</string>
+    <string name="filter_coin">Münze filtern</string>
+    <string name="name">Name:</string>
+    <string name="lastPrice">Letzter Preis:</string>
+    <string name="change24">24h Änderung:</string>
+    <string name="textBuy">Kaufen</string>
+    <string name="textSell">Verkaufen</string>
+    <string name="Avaible">Verfügbar</string>
+    <string name="TotalValue">Gesamtwert ( $ )</string>
+    <string name="Search">Suchen</string>
+    <string name="Symbol">Münze</string>
+    <string name="Amount">Menge</string>
+    <string name="Value">Wert ($)</string>
+    <string name="price">Preis</string>
+    <string name="total">Gesamt</string>
+    <string name="totalUSD">Gesamt (USD)</string>
+    <string name="date">Datum</string>
+    <string name="state">Zustand</string>
+    <string name="trueValue">Bitte echten Wert eingeben</string>
+    <string name="proggresState">Fortschritt fehlgeschlagen, überprüfen Sie Ihr Guthaben</string>
+    <string name="enterAmountDialog">Bitte Betrag eingeben</string>
+    <string name="succes">Fortschritt erfolgreich</string>
+    <string name="fail">Fortschritt fehlgeschlagen</string>
+    <string name="addZeros">0.000000</string>
+    <string name="page_name">Münze suchen</string>
+
+    <string name="notification_title">Erhalten Sie kostenlose Benachrichtigungen</string>
+    <string name="notification_subTitle">Um kostenlose Benachrichtigungen zu erhalten, erlauben Sie die Benachrichtigungsberechtigung</string>
+    <string name="notification_allow_button">Erlauben</string>
+
+    <string name="loading">Laden</string>
+
+    <string name="popular_coins">Beliebte Münzen</string>
+    <string name="market_cap">Marktkapitalisierung:</string>
+    <string name="cripto_buy_sel">Krypto Kaufen/Verkaufen</string>
+    <string name="cripto_image">Krypto-Bild</string>
+    <string name="daily_change">Tägliche Änderung:</string>
+    <string name="available_amount">Verfügbarer Betrag:</string>
+    <string name="amount">Betrag:</string>
+    <string name="Decrease">Verringern</string>
+    <string name="increase">Erhöhen</string>
+    <string name="total_cost_text">Gesamte Transaktionskosten</string>
+    <string name="total_cost">Gesamtkosten:</string>
+    <string name="balance" translatable="false">Guthaben</string>
+    <string name="total_balance">Gesamtes Guthaben</string>
+    <string name="buy_sel_operations_text">Kauf/Verkauf Operationen</string>
+
+    <string name="buy">Kaufen</string>
+    <string name="sell">Verkaufen</string>
+    <string name="operation_text">Operation:</string>
+    <string name="cripto_wallet">Krypto-Brieftasche</string>
+    <string name="transactions">Transaktionsverlauf</string>
+    <string name="value">Wert</string>
+    <string name="profile">Profil</string>
+
+
+
+
+
+
+
+
+    <string name="create_account_text">Konto erstellen</string>
+    <string name="create_account_information">Wenn das Konto erstellt wird, werden lokal durchgeführte Aktionen nicht gespeichert.</string>
+
+    <string name="watchlist_empty">Ihre Beobachtungsliste ist leer</string>
+    <string name="click_to_add_something">Klicken Sie hier, um etwas zur Beobachtungsliste hinzuzufügen</string>
+    <string name="login">Anmelden</string>
+    <string name="sign_up">Registrieren</string>
+    <string name="please_login_or_signup">Melden Sie sich an oder registrieren Sie sich, um auf die Beobachtungsliste zuzugreifen</string>
+    <string name="watchlist_text">Beobachtungsliste</string>
+    <string name="delete_account">Konto löschen</string>
+    <string name="log_out">Abmelden</string>
+
+    <string name="lowest_price">Niedrigster Preis</string>
+    <string name="highest_price">Höchster Preis</string>
+    <string name="lowest_percentage">Niedrigster Prozentsatz</string>
+    <string name="highest_percentage">Höchster Prozentsatz</string>
+    <string name="empty" />
+    <string name="default_text">Standard</string>
+    <string name="detail">Detail</string>
+    <string name="no_transaction_yet">Noch keine Transaktionen</string>
+    <string name="no_transaction_description">Es scheint, als hätten Sie bisher keine Transaktionen durchgeführt.</string>
+    <string name="go_back">Zurück</string>
+    <string name="welcome">Willkommen</string>
+    <string name="portfolio_text">Portfolio</string>
+    <string name="view_all">Alle anzeigen</string>
+    <string name="total_coin_value">Gesamtwert der Münzen</string>
+    <string name="dollar_holdings">Dollar-Bestände</string>
+    <string name="enter_verification_code">Bestätigungscode eingeben</string>
+    <string name="verify">Verifizieren</string>
+    <string name="didnt_recieve_code">Code nicht erhalten?</string>
+    <string name="resend_code">Code erneut senden</string>
+    <string name="reset_password">Passwort zurücksetzen</string>
+    <string name="back_to_login">Zurück zum Login</string>
+    <string name="welcome_back">Willkommen zurück</string>
+    <string name="forgot_password">Passwort vergessen?</string>
+    <string name="dont_have_an_accounr">Haben Sie kein Konto?</string>
+    <string name="filter">Filtern</string>
+    <string name="owned_balance">Besessene Anteile</string>
+    <string name="quantity">Menge</string>
+    <string name="verificaiton_code">Bestätigungscode</string>
+    <string name="email_address">E-Mail-Adresse</string>
+    <string name="password">Passwort</string>
+    <string name="confirm_password">Passwort bestätigen</string>
+    <string name="remove_in_watchlist">Von der Beobachtungsliste entfernen</string>
+    <string name="add_watchlist">Zur Beobachtungsliste hinzufügen</string>
+    <string name="name_and_surname_text">Vorname und Nachname</string>
+
+
+</resources>
+
