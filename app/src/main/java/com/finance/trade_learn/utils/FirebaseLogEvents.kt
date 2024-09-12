@@ -13,8 +13,8 @@ object FirebaseLogEvents {
 
 
     fun logEvent(event : String){
-        firebaseAnalytics.logEvent(event){
-            param(event, event)
+        firebaseAnalytics.logEvent(event.replace(" ", "_")){
+            param(event.replace(" ", "_"), event)
         }
     }
 
