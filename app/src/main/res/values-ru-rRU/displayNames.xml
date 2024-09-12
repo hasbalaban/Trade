@@ -47,6 +47,7 @@
     <string name="increase">Увеличить</string>
     <string name="total_cost_text">Общая стоимость транзакции</string>
     <string name="total_cost">Общая стоимость:</string>
+    <string name="balance">Баланс</string>
     <string name="total_balance">Общий баланс:</string>
     <string name="buy_sel_operations_text">Операции покупки/продажи</string>
     <string name="buy">Купить</string>
@@ -55,7 +56,7 @@
     <string name="cripto_wallet">Кошелек крипто</string>
     <string name="transactions">История транзакций</string>
     <string name="value">Стоимость</string>
-
+    <string name="profile">Профиль</string>
 
 
 

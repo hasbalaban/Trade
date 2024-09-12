@@ -47,6 +47,7 @@
     <string name="increase">Aumentar</string>
     <string name="total_cost_text">Costo Total de la Transacción</string>
     <string name="total_cost">Costo Total:</string>
+    <string name="balance">Saldo</string>
     <string name="total_balance">Saldo Total:</string>
     <string name="buy_sel_operations_text">Operaciones de Compra/Venta</string>
     <string name="buy">Comprar</string>
@@ -55,6 +56,7 @@
     <string name="cripto_wallet">Billetera Cripto</string>
     <string name="transactions">Historial de Transacciones</string>
     <string name="value">Valor</string>
+    <string name="profile">Perfil</string>
 
 
 

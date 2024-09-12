@@ -47,6 +47,7 @@
     <string name="increase">Zêde bike</string>
     <string name="total_cost_text">Teqeva Tîca Mîr</string>
     <string name="total_cost">Teqeva Gişt:</string>
+    <string name="balance">Balanse - Denge</string>
     <string name="total_balance">Balansê Gişt:</string>
     <string name="buy_sel_operations_text">Kirana/Guherandina Operasyon</string>
     <string name="buy">Bikirin</string>
@@ -55,7 +56,7 @@
     <string name="cripto_wallet">Qefza Kripto</string>
     <string name="transactions">Dîroka Danûstendinê</string>
     <string name="value">Giranî</string>
-
+    <string name="profile">Profile</string>
 
 
 
