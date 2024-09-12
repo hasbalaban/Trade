@@ -30,11 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finance.trade_learn.R
 import com.finance.trade_learn.view.LocalForgotPasswordViewModel
 import com.finance.trade_learn.view.LocalSingUpViewModel
 import com.finance.trade_learn.view.commonui.SimpleBackButtonHeader
@@ -71,7 +73,7 @@ fun ForgotPasswordScreen(onResetPassword: (String) -> Unit, onBackToLogin: () ->
             verticalArrangement = Arrangement.SpaceAround
         ) {
             SimpleBackButtonHeader(
-                title = "Reset Pasword",
+                title = stringResource(id = R.string.reset_password),
                 onBackClick = {
                     onBackToLogin.invoke()
                 }
@@ -85,7 +87,7 @@ fun ForgotPasswordScreen(onResetPassword: (String) -> Unit, onBackToLogin: () ->
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Reset Password",
+                    text =  stringResource(id = R.string.reset_password),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -98,7 +100,7 @@ fun ForgotPasswordScreen(onResetPassword: (String) -> Unit, onBackToLogin: () ->
                     onValueChange = {
                         viewModel.changeEmailText(it)
                     },
-                    placeholder = { Text("Email Address") },
+                    placeholder = { Text(stringResource(id = R.string.email_address)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(1.dp, Color.Gray, RoundedCornerShape(6.dp)),
@@ -128,13 +130,13 @@ fun ForgotPasswordScreen(onResetPassword: (String) -> Unit, onBackToLogin: () ->
                         .height(50.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF1E88E5)) // Mavi tonunda buton
                 ) {
-                    Text("Reset Password", color = Color.White, fontSize = 18.sp)
+                    Text(stringResource(id = R.string.reset_password), color = Color.White, fontSize = 18.sp)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Back to Login",
+                    text =  stringResource(id = R.string.back_to_login),
                     color = Color(0xFF1E88E5),
                     modifier = Modifier.clickable { onBackToLogin() },
                     fontSize = 16.sp,

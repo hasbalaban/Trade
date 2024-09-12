@@ -59,8 +59,12 @@ import java.util.Locale
 @Composable
 fun TradeHistoryScreen(goBack: () -> Unit) {
 
-    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.primary)){
-        Box(modifier = Modifier.fillMaxWidth().padding(top = 24.dp), contentAlignment = Alignment.CenterStart){
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colors.primary)){
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp), contentAlignment = Alignment.CenterStart){
             IconButton(
                 onClick = {
                     goBack.invoke()
@@ -272,7 +276,7 @@ fun EmptyTransactionHistoryScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "No Transactions Yet",
+            text = stringResource(id = R.string.no_transaction_yet),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colors.onPrimary
@@ -282,7 +286,7 @@ fun EmptyTransactionHistoryScreen(
 
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "It seems like you haven't made any transactions yet.",
+            text = stringResource(id = R.string.no_transaction_description),
             fontSize = 14.sp,
             color = MaterialTheme.colors.onPrimary,
             textAlign = TextAlign.Center
@@ -297,7 +301,7 @@ fun EmptyTransactionHistoryScreen(
                 .height(50.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.onPrimary)
         ) {
-            Text(text = "Go Back", fontSize = 18.sp, color = MaterialTheme.colors.primary)
+            Text(text = stringResource(id = R.string.go_back), fontSize = 18.sp, color = MaterialTheme.colors.primary)
         }
     }
 }

@@ -144,7 +144,7 @@ fun SearchBar() {
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = null,
-                tint = Color.Black
+                tint = MaterialTheme.colors.onPrimary
             )
         },
         modifier = Modifier
@@ -159,20 +159,20 @@ fun SearchBar() {
             .padding(16.dp),
         shape = RoundedCornerShape(20),
         colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color(0xffF9FAFC),
+            backgroundColor = MaterialTheme.colors.primaryVariant,
             cursorColor = Color.Gray,
 
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
 
             focusedLabelColor = Color.Transparent,
-            textColor = Color.Gray
+            textColor = MaterialTheme.colors.onPrimary
         ),
         placeholder = {
             Text(
                 fontSize = 16.sp,
-                text = "Search Coin",
-                color = Color.Gray
+                text = stringResource(id = R.string.Search),
+                color = MaterialTheme.colors.onPrimary.copy(0.7f)
             )
         }
 

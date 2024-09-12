@@ -183,7 +183,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Balance: ", style = TextStyle(
+                        text =  stringResource(id = R.string.balance) + ": ", style = TextStyle(
                             fontSize = 20.sp, fontWeight = FontWeight.Normal,
                             color = MaterialTheme.colors.onPrimary
                         )
@@ -198,13 +198,13 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
 
                 Text(
                     modifier = Modifier.padding(top = 20.dp),
-                    text = "Daily Change: ${tradePageUiState.value.data.dailyPercentChange}%",
+                    text = stringResource(id = R.string.daily_change) + ": ${tradePageUiState.value.data.dailyPercentChange}%",
                     style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Normal),
                     color = MaterialTheme.colors.onPrimary
                 )
                 Text(
                     modifier = Modifier.padding(top = 8.dp),
-                    text = "Owned Shares: ${tradePageUiState.value.data.ownedAmount}",
+                    text = stringResource(id = R.string.owned_balance) + ": ${tradePageUiState.value.data.ownedAmount}",
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal),
                     color = MaterialTheme.colors.onPrimary
                 )
@@ -219,7 +219,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
                 verticalAlignment = Alignment.Bottom
             ){
                 Text(
-                    text = "Price: ", style = TextStyle(
+                    text =  stringResource(id = R.string.price) + ": ", style = TextStyle(
                         fontSize = 20.sp,
                         color = MaterialTheme.colors.onPrimary
                     )
@@ -243,7 +243,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
 
             Text(
                 modifier = Modifier.padding(start = 12.dp),
-                text = "Quantity", style = TextStyle(
+                text =  stringResource(id = R.string.quantity), style = TextStyle(
                     fontSize = 20.sp, fontWeight = FontWeight.Normal,
                     color = MaterialTheme.colors.onPrimary
                 )
@@ -263,7 +263,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
             ) {
                 Icon(
                     imageVector = Icons.Filled.Remove,
-                    contentDescription = "Decrease",
+                    contentDescription = stringResource(id = R.string.Decrease),
                     modifier = Modifier
                         .padding(8.dp)
                         .size(40.dp)
@@ -292,7 +292,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
                 )
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = "Increase",
+                    contentDescription = stringResource(id = R.string.increase),
                     modifier = Modifier
                         .padding(8.dp)
                         .size(40.dp)
@@ -368,7 +368,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
             modifier = Modifier
                 .padding(end = 24.dp)
                 .fillMaxWidth(),
-            text = "Total: ${tradePageUiState.value.data.totalTransactionCost}",
+            text = stringResource(id = R.string.total) + ": ${tradePageUiState.value.data.totalTransactionCost}",
             style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
             color = MaterialTheme.colors.onPrimary,
             textAlign = TextAlign.End
@@ -398,7 +398,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
                     contentColor = Color.White
                 )
             ) {
-                Text(text = "BUY", style = TextStyle(fontSize = 16.sp))
+                Text(text = stringResource(id = R.string.buy), style = TextStyle(fontSize = 16.sp))
             }
 
 
@@ -416,7 +416,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
                     contentColor = Color.White
                 )
             ) {
-                Text(text = "SELL", style = TextStyle(fontSize = 16.sp))
+                Text(text = stringResource(id = R.string.sell), style = TextStyle(fontSize = 16.sp))
             }
         }
 

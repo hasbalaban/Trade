@@ -217,7 +217,7 @@ fun WalletContent(navigateToHistoryPage: () -> Unit, openTradePage : (String) ->
             placeholder = {
                 Text(
                     fontSize = 16.sp,
-                    text = "Search Coin",
+                    text = stringResource(id = R.string.Search),
                     color = Color.Gray
                 )
             }

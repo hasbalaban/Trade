@@ -129,7 +129,7 @@ fun SignUpScreen(onSignUpCompleted: () -> Unit, onBackToLogin: () -> Unit) {
                     onValueChange = {
                         viewModel.changeEmail(it)
                     },
-                    placeholder = { Text("Email Address") },
+                    placeholder = { Text(stringResource(id = R.string.email_address)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(1.dp, signUpViewState.emailBorderColor, RoundedCornerShape(6.dp)),
@@ -155,7 +155,7 @@ fun SignUpScreen(onSignUpCompleted: () -> Unit, onBackToLogin: () -> Unit) {
                     onValueChange = {
                         viewModel.changeUserNameAndSurname(it)
                     },
-                    placeholder = { Text("Name and surname") },
+                    placeholder = { Text(stringResource(id = R.string.name_and_surname_text)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(
@@ -186,7 +186,7 @@ fun SignUpScreen(onSignUpCompleted: () -> Unit, onBackToLogin: () -> Unit) {
                     onValueChange = {
                         viewModel.changePasswordText(it)
                     },
-                    placeholder = { Text("Password") },
+                    placeholder = { Text(stringResource(id = R.string.password)) },
                     trailingIcon = {
                         val image = if (passwordVisible) Icons.Default.Visibility
                         else Icons.Default.VisibilityOff
@@ -222,7 +222,7 @@ fun SignUpScreen(onSignUpCompleted: () -> Unit, onBackToLogin: () -> Unit) {
                     onValueChange = {
                         viewModel.changeConfirmPasswordText(it)
                     },
-                    placeholder = { Text("Confirm Password") },
+                    placeholder = { Text(stringResource(id = R.string.confirm_password)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(
@@ -259,13 +259,13 @@ fun SignUpScreen(onSignUpCompleted: () -> Unit, onBackToLogin: () -> Unit) {
                     ),
                     enabled = signUpViewState.credentialsIsValid && !signUpViewState.isLoading,
                 ) {
-                    Text("Sign Up", color = Color.White, fontSize = 18.sp)
+                    Text(stringResource(id = R.string.sign_up), color = Color.White, fontSize = 18.sp)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Back to Login",
+                    text =  stringResource(id = R.string.back_to_login),
                     color = Color(0xFF1E88E5),
                     modifier = Modifier.clickable { onBackToLogin() },
                     fontSize = 16.sp,

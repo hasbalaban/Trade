@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -45,6 +46,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finance.trade_learn.R
 import com.finance.trade_learn.view.LocalCodeVerificationViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -96,7 +98,7 @@ fun CodeVerificationScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Enter Verification Code",
+                text = stringResource(id = R.string.enter_verification_code),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
@@ -111,8 +113,9 @@ fun CodeVerificationScreen(
                 onValueChange = {
                     viewModel.changeVerificationCodeText(it)
                 },
-                placeholder = { Text("Verification Code") },
-                modifier = Modifier.fillMaxWidth()
+                placeholder = { Text(stringResource(id = R.string.verificaiton_code)) },
+                modifier = Modifier
+                    .fillMaxWidth()
                     .border(
                         1.dp,
                         verificationViewState.codeBorderColor,
@@ -139,7 +142,7 @@ fun CodeVerificationScreen(
                 onValueChange = {
                     viewModel.changeEmail(it)
                 },
-                placeholder = { androidx.compose.material.Text("Email Address") },
+                placeholder = { androidx.compose.material.Text(stringResource(id = R.string.email_address)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, Color.Gray, RoundedCornerShape(6.dp)),
@@ -171,7 +174,7 @@ fun CodeVerificationScreen(
                 onValueChange = {
                     viewModel.changePasswordText(it)
                 },
-                placeholder = { androidx.compose.material.Text("Password") },
+                placeholder = { androidx.compose.material.Text(stringResource(id = R.string.password)) },
                 trailingIcon = {
                     val image = if (passwordVisible) Icons.Default.Visibility
                     else Icons.Default.VisibilityOff
@@ -211,7 +214,7 @@ fun CodeVerificationScreen(
                 onValueChange = {
                     viewModel.changeConfirmPasswordText(it)
                 },
-                placeholder = { androidx.compose.material.Text("Confirm Password") },
+                placeholder = { androidx.compose.material.Text(stringResource(id = R.string.confirm_password)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
@@ -247,13 +250,13 @@ fun CodeVerificationScreen(
                     containerColor = Color(0xFF1E88E5)
                 )
             ) {
-                Text(text = "Verify", fontSize = 18.sp)
+                Text(text = stringResource(id = R.string.verify), fontSize = 18.sp)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Didn't receive the code?",
+                text = stringResource(id = R.string.didnt_recieve_code),
                 style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
                 color = Color.Gray
             )
@@ -261,7 +264,7 @@ fun CodeVerificationScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Resend Code",
+                text = stringResource(id = R.string.resend_code),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,

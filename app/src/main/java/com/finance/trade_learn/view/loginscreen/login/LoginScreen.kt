@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.utils.DataStoreKeys
 import com.finance.trade_learn.utils.FirebaseLogEvents
@@ -76,7 +78,7 @@ fun LoginScreen(
             verticalArrangement = Arrangement.SpaceAround
         ) {
             SimpleBackButtonHeader(
-                title = "Login",
+                title = stringResource(id = R.string.login),
                 onBackClick = {
                     goBack.invoke()
                 }
@@ -91,7 +93,7 @@ fun LoginScreen(
             ) {
 
                 Text(
-                    text = "Welcome Back",
+                    text =  stringResource(id = R.string.welcome_back),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -107,7 +109,7 @@ fun LoginScreen(
                     onValueChange = {
                         viewModel.changeEmail(it)
                     },
-                    placeholder = { Text("Email Address") },
+                    placeholder = { Text(stringResource(id = R.string.email_address)) },
                     singleLine = true,
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color.Transparent,
@@ -134,7 +136,7 @@ fun LoginScreen(
                     onValueChange = {
                         viewModel.changePasswordText(it)
                     },
-                    placeholder = { Text("Password") },
+                    placeholder = { Text(stringResource(id = R.string.password)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(1.dp, Color.Gray, RoundedCornerShape(6.dp)),
@@ -179,13 +181,13 @@ fun LoginScreen(
                     ),
                     enabled = loginViewState.credentialsIsValid
                 ) {
-                    Text("Login", color = Color.White, fontSize = 18.sp)
+                    Text(stringResource(id = R.string.login), color = Color.White, fontSize = 18.sp)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Forgot Password?",
+                    text =  stringResource(id = R.string.forgot_password),
                     color = Color(0xFF1E88E5),
                     modifier = Modifier.clickable { onForgotPassword() },
                     fontSize = 16.sp,
@@ -198,10 +200,10 @@ fun LoginScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Don't have an account?", color = Color.Gray, fontSize = 16.sp)
+                    Text(text =  stringResource(id = R.string.dont_have_an_accounr), color = Color.Gray, fontSize = 16.sp)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "Sign Up",
+                        text =  stringResource(id = R.string.sign_up),
                         color = Color(0xFF1E88E5),
                         modifier = Modifier.clickable {
                             FirebaseLogEvents.logEvent("logClickSignUpEvent")
