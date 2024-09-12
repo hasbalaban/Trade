@@ -166,7 +166,7 @@ fun StockitPortfolioScreen(
                     ),
                     color = Color(0xff3E84F6),
                     modifier = Modifier.clickable {
-                        FirebaseLogEvents.logEvent("click All")
+                        FirebaseLogEvents.logEvent("click View All")
                         clickedViewAll.invoke()
                     }
                 )
@@ -265,7 +265,7 @@ fun PortfolioCard(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = if(isWatchlistItem) "Portfolio" else "Price",
+                        text = if(isWatchlistItem) stringResource(id = R.string.portfolio_text) else stringResource(id = R.string.price),
                         style = MaterialTheme.typography.h6.copy(
                             fontWeight = FontWeight.Normal,
                             fontSize = 12.sp
@@ -587,7 +587,7 @@ fun EmptyWatchlist(openMarketPage: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
-                contentDescription = "Add Item",
+                contentDescription = stringResource(id = R.string.add_watchlist),
                 tint = Color.White,
                 modifier = Modifier
                     .size(64.dp)
