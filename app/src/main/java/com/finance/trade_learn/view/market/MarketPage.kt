@@ -151,8 +151,8 @@ fun SearchBar() {
             .onFocusChanged { focusState ->
                 viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(isFocused = focusState.isFocused))
 
-                if (focusState.isFocused){
-                    FirebaseLogEvents.logEvent("market page click search box" )
+                if (focusState.isFocused) {
+                    FirebaseLogEvents.logEvent("market page click search box")
                 }
             }
             .fillMaxWidth()

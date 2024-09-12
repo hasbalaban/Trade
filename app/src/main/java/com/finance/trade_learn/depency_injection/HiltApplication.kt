@@ -54,14 +54,14 @@ class HiltApplication : Application() {
                 if (task.isSuccessful) {
                     val updated = task.result
                     Log.d("TAG", "Config params updated: $updated")
-                    Toast.makeText(this, "Fetch and activate succeeded", Toast.LENGTH_SHORT,).show()
+                    //Toast.makeText(this, "Fetch and activate succeeded", Toast.LENGTH_SHORT,).show()
 
                     RemoteConfigs.SHOULD_BE_LOCAL_REQUEST = remoteConfig.getBoolean(RemoteConfigsConst.SHOULD_BE_LOCAL_REQUEST)
                     RemoteConfigs.SHOULD_SHOW_ADVERTISEMENT = remoteConfig.getBoolean(RemoteConfigsConst.SHOULD_SHOW_ADVERTISEMENT)
 
                     RemoteConfigs.setRemoteConfigStatus(true)
                 } else {
-                    Toast.makeText(this, "Fetch failed", Toast.LENGTH_SHORT,).show()
+                    //Toast.makeText(this, "Fetch failed", Toast.LENGTH_SHORT,).show()
 
                     retryFetching.invoke()
                 }
