@@ -206,8 +206,10 @@ class TradeViewModel @Inject constructor(
 
 
     private suspend fun sellFromRemote(coinName: String, amount : Double, coinPrice : Double, total: Double){
+        val email = userInfo.value.data?.email ?: return
+
         val transaction = UserTransactionsRequest(
-            email = "hasan-balaban@hotmail.com",
+            email = email,
             transactionItemName = coinName,
             amount = amount.toString(),
             price = coinPrice.toString(),
