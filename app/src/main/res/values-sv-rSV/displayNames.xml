@@ -62,4 +62,57 @@
     <string name="transactions">İşlem Geçmişi</string>
     <string name="value">Değer</string>
 
+
+
+
+
+
+    <string name="create_account_text">Skapa konto</string>
+    <string name="create_account_information">När kontot skapats kommer lokala åtgärder inte att sparas.</string>
+
+    <string name="watchlist_empty">Din bevakningslista är tom</string>
+    <string name="click_to_add_something">Klicka för att lägga till i bevakningslistan</string>
+    <string name="login">Logga in</string>
+    <string name="sign_up">Registrera dig</string>
+    <string name="please_login_or_signup">Logga in eller registrera dig för att få åtkomst till bevakningslistan</string>
+    <string name="watchlist_text">Bevakningslista</string>
+    <string name="delete_account">Ta bort konto</string>
+    <string name="log_out">Logga ut</string>
+
+    <string name="lowest_price">Lägsta pris</string>
+    <string name="highest_price">Högsta pris</string>
+    <string name="lowest_percentage">Lägsta procent</string>
+    <string name="highest_percentage">Högsta procent</string>
+    <string name="empty" />
+    <string name="default_text">Standard</string>
+    <string name="detail">Detalj</string>
+    <string name="no_transaction_yet">Inga transaktioner ännu</string>
+    <string name="no_transaction_description">Det verkar som att du inte har gjort några transaktioner än.</string>
+    <string name="go_back">Gå tillbaka</string>
+    <string name="welcome">Välkommen</string>
+    <string name="portfolio_text">Portfölj</string>
+    <string name="view_all">Visa alla</string>
+    <string name="total_coin_value">Totalt myntvärde</string>
+    <string name="dollar_holdings">Dollarinnehav</string>
+    <string name="enter_verification_code">Ange verifieringskod</string>
+    <string name="verify">Verifiera</string>
+    <string name="didnt_recieve_code">Fick du inte koden?</string>
+    <string name="resend_code">Skicka koden igen</string>
+    <string name="reset_password">Återställ lösenord</string>
+    <string name="back_to_login">Tillbaka till inloggning</string>
+    <string name="welcome_back">Välkommen tillbaka</string>
+    <string name="forgot_password">Glömt lösenord?</string>
+    <string name="dont_have_an_accounr">Har du inget konto?</string>
+    <string name="filter">Filter</string>
+    <string name="owned_balance">Ägda aktier</string>
+    <string name="quantity">Kvantitet</string>
+    <string name="verificaiton_code">Verifieringskod</string>
+    <string name="email_address">E-postadress</string>
+    <string name="password">Lösenord</string>
+    <string name="confirm_password">Bekräfta lösenord</string>
+    <string name="remove_in_watchlist">Ta bort från bevakningslistan</string>
+    <string name="add_watchlist">Lägg till i bevakningslistan</string>
+    <string name="name_and_surname_text">Förnamn och efternamn</string>
+
+
 </resources>

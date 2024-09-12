@@ -55,4 +55,56 @@
     <string name="cripto_wallet">Qefza Kripto</string>
     <string name="transactions">Dîroka Danûstendinê</string>
     <string name="value">Giranî</string>
+
+
+
+
+
+    <string name="create_account_text">Hesabê Afirandin</string>
+    <string name="create_account_information">Gelo herî baş nabe ku operasyonekên li herêmê ji bo parastinê.</string>
+
+    <string name="watchlist_empty">Lîsteya şopandinê vala ye</string>
+    <string name="click_to_add_something">Klick bikin da ku lîsteya şopandinê zêde bikin</string>
+    <string name="login">Têketin</string>
+    <string name="sign_up">Tomar bûn</string>
+    <string name="please_login_or_signup">Ji kerema xwe têketin an jî tomar bûn da ku gihîştinê lîsteya şopandinê</string>
+    <string name="watchlist_text">Lîsteya şopandinê</string>
+    <string name="delete_account">Hesabê jê bibe</string>
+    <string name="log_out">Derketin</string>
+
+    <string name="lowest_price">Bi kêmtirîn bihayê</string>
+    <string name="highest_price">Bi herî zêde bihayê</string>
+    <string name="lowest_percentage">Bi kêmtirîn peresentaj</string>
+    <string name="highest_percentage">Bi herî zêde peresentaj</string>
+    <string name="empty" />
+    <string name="default_text">Bingehîn</string>
+    <string name="detail">Têkildarî</string>
+    <string name="no_transaction_yet">Hîn tiştekî nehatîye kirin</string>
+    <string name="no_transaction_description">Wekî ku hîn tiştekî kirin nedîtî.</string>
+    <string name="go_back">Vegere</string>
+    <string name="welcome">Bi xêr hatî</string>
+    <string name="portfolio_text">Portfolyo</string>
+    <string name="view_all">Hemûyê bibîne</string>
+    <string name="total_coin_value">Nirxa tevahî ya sikkê</string>
+    <string name="dollar_holdings">Tengên dolaran</string>
+    <string name="enter_verification_code">Koda verifikasyonê binivîse</string>
+    <string name="verify">Pêşniyar bike</string>
+    <string name="didnt_recieve_code">Koda ne hatî?</string>
+    <string name="resend_code">Koda ji nû veşêre</string>
+    <string name="reset_password">Şîfreya nûve bike</string>
+    <string name="back_to_login">Vegere têketinê</string>
+    <string name="welcome_back">Bi xêr hatîya ku</string>
+    <string name="forgot_password">Şîfreya xwe yên bîr kiriye?</string>
+    <string name="dont_have_an_accounr">Hesabek nîn e?</string>
+    <string name="filter">Filtrekirin</string>
+    <string name="owned_balance">Parêzên xwedî</string>
+    <string name="quantity">Hejmara</string>
+    <string name="verificaiton_code">Koda verifikasyonê</string>
+    <string name="email_address">Navnîşana e-nameyê</string>
+    <string name="password">Şîfre</string>
+    <string name="confirm_password">Şîfreya pejirandinê</string>
+    <string name="remove_in_watchlist">Lîsteya şopandinê jê bibe</string>
+    <string name="add_watchlist">Lîsteya şopandinê zêde bike</string>
+    <string name="name_and_surname_text">Nav û paşnav</string>
+
 </resources>

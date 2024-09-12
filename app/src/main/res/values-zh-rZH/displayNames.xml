@@ -55,4 +55,55 @@
     <string name="cripto_wallet">加密钱包</string>
     <string name="transactions">交易历史</string>
     <string name="value">价值</string>
+
+
+
+
+    <string name="create_account_text">创建账户</string>
+    <string name="create_account_information">创建账户时，本地执行的操作不会被保存。</string>
+
+    <string name="watchlist_empty">您的观察列表为空</string>
+    <string name="click_to_add_something">点击添加到观察列表</string>
+    <string name="login">登录</string>
+    <string name="sign_up">注册</string>
+    <string name="please_login_or_signup">请登录或注册以访问观察列表</string>
+    <string name="watchlist_text">观察列表</string>
+    <string name="delete_account">删除账户</string>
+    <string name="log_out">注销</string>
+
+    <string name="lowest_price">最低价格</string>
+    <string name="highest_price">最高价格</string>
+    <string name="lowest_percentage">最低百分比</string>
+    <string name="highest_percentage">最高百分比</string>
+    <string name="empty" />
+    <string name="default_text">默认</string>
+    <string name="detail">详情</string>
+    <string name="no_transaction_yet">尚未进行交易</string>
+    <string name="no_transaction_description">看起来您还没有进行任何交易。</string>
+    <string name="go_back">返回</string>
+    <string name="welcome">欢迎</string>
+    <string name="portfolio_text">投资组合</string>
+    <string name="view_all">查看全部</string>
+    <string name="total_coin_value">总币值</string>
+    <string name="dollar_holdings">美元持有量</string>
+    <string name="enter_verification_code">输入验证码</string>
+    <string name="verify">验证</string>
+    <string name="didnt_recieve_code">没有收到验证码？</string>
+    <string name="resend_code">重新发送验证码</string>
+    <string name="reset_password">重置密码</string>
+    <string name="back_to_login">返回登录</string>
+    <string name="welcome_back">欢迎回来</string>
+    <string name="forgot_password">忘记密码？</string>
+    <string name="dont_have_an_accounr">没有账户？</string>
+    <string name="filter">过滤</string>
+    <string name="owned_balance">持有股份</string>
+    <string name="quantity">数量</string>
+    <string name="verificaiton_code">验证码</string>
+    <string name="email_address">电子邮件地址</string>
+    <string name="password">密码</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="remove_in_watchlist">从观察列表中移除</string>
+    <string name="add_watchlist">添加到观察列表</string>
+    <string name="name_and_surname_text">姓名</string>
+
 </resources>
