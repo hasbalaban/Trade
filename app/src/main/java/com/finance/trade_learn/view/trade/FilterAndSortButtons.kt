@@ -30,11 +30,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
 import com.finance.trade_learn.models.FilterType
 
@@ -86,6 +90,7 @@ fun FilterAndSortButtons(
 
                 FilterType.entries.forEach {
                     FilterItem(
+                        isSelected = selectedFilter == it,
                         filterType = it,
                         onClickFilter = {
                             onClickFilter.invoke(it)
@@ -119,13 +124,19 @@ fun FilterAndSortButtons(
 }
 
 @Composable
-private fun FilterItem(filterType : FilterType, onClickFilter: () -> Unit){
+private fun FilterItem(
+    isSelected: Boolean,
+    filterType: FilterType,
+    onClickFilter: () -> Unit
+) {
     DropdownMenuItem(onClick = {
         onClickFilter.invoke()
     }) {
         Text(
             text = stringResource(id = filterType.text),
-            color = MaterialTheme.colors.onPrimary
+            fontSize =  if (isSelected) 18.sp else TextUnit.Unspecified,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+            color = if (isSelected) Color(0xFF4CAF50) else MaterialTheme.colors.onPrimary
         )
     }
 
