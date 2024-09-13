@@ -7,6 +7,7 @@ import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
+import com.finance.trade_learn.view.wallet.format
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow

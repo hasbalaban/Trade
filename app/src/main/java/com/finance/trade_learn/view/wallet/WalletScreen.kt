@@ -264,41 +264,6 @@ fun WalletContent(navigateToHistoryPage: () -> Unit, openTradePage : (String) ->
     }
 }
 
-@Composable
-private fun CryptoItem(item: NewModelForItemHistory) {
-
-    val painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current)
-        .data(item.Image)
-        .apply {
-            crossfade(true)
-            placeholder(R.drawable.placeholder)
-            error(R.drawable.error)
-        }.build()
-    )
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painter,
-            contentDescription = item.CoinName,
-            modifier = Modifier.size(36.dp)
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(item.CoinName, style = androidx.compose.material3.MaterialTheme.typography.bodyMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), overflow = TextOverflow.Ellipsis)
-        Text(item.CoinAmount.format(6), style = androidx.compose.material3.MaterialTheme.typography.bodyMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
-        Text("\$${item.Total.toDouble().format(2)}", style = androidx.compose.material3.MaterialTheme.typography.bodyMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
-    }
-}
-
-
-
-
-
 fun Double.format(digits: Int): String {
     if (!this.toString().contains("e", true)) return format(digits, this)
 
