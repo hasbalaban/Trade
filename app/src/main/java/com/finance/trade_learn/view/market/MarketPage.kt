@@ -303,9 +303,8 @@ fun MarketScreen(
                 ) {
 
                     FilterAndSortButtons(
+                        selectedFilter = searchBarViewState.filterType,
                         onClickFilter = {
-
-
                             val bundle = Bundle()
                             bundle.putString("type", it.name)
                             FirebaseLogEvents.logClickFilterEvent(bundle)
