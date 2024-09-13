@@ -265,7 +265,7 @@ fun PortfolioCard(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = if(isWatchlistItem) stringResource(id = R.string.portfolio_text) else stringResource(id = R.string.price),
+                        text = stringResource(id = R.string.price),
                         style = MaterialTheme.typography.h6.copy(
                             fontWeight = FontWeight.Normal,
                             fontSize = 12.sp
@@ -349,14 +349,14 @@ fun PortfolioCard1(
 
             Text(
                 modifier = Modifier.weight(1f),
-                text = portfolioItem.currentPrice,
+                text = portfolioItem.CoinAmount.format(2),
                 color = MaterialTheme.colors.onPrimary,
                 style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End
             )
 
             Text(
-                "\$${portfolioItem.Total.toDouble()}",
+                "\$${portfolioItem.Total.toDouble().format(2)}",
                 style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colors.onPrimary,
                 modifier = Modifier.weight(1f),
