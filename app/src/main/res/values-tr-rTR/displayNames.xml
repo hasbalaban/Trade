@@ -74,7 +74,7 @@
     <string name="login">Giriş Yap</string>
     <string name="sign_up">Kayıt Ol</string>
     <string name="please_login_or_signup">Takip Listesine erişmek için giriş yapın veya kayıt olun</string>
-    <string name="watchlist_text">Takip Listesi</string>
+    <string name="watchlist_text">Favori Listesi</string>
     <string name="delete_account">Hesabı Sil</string>
     <string name="log_out">Çıkış Yap</string>
 
@@ -110,7 +110,7 @@
     <string name="password">Şifre</string>
     <string name="confirm_password">Şifreyi Onayla</string>
     <string name="remove_in_watchlist">Listeden Çıkar</string>
-    <string name="add_watchlist">Listeye Ekle</string>
+    <string name="add_watchlist">Favorilere Ekle</string>
     <string name="name_and_surname_text">Ad ve Soyad</string>
 
 
