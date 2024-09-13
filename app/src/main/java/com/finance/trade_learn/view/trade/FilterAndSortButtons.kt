@@ -40,6 +40,7 @@ import com.finance.trade_learn.models.FilterType
 
 @Composable
 fun FilterAndSortButtons(
+    selectedFilter : FilterType = FilterType.Default,
     onClickFilter : (FilterType) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -112,7 +113,7 @@ fun FilterAndSortButtons(
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text =  stringResource(id = R.string.lowest_price))
+            Text(text =  stringResource(id = selectedFilter.text))
         }
     }
 }
@@ -134,6 +135,9 @@ private fun FilterItem(filterType : FilterType, onClickFilter: () -> Unit){
 @Composable
 fun PreviewFilterAndSortButtons() {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        FilterAndSortButtons(onClickFilter = {})
+        FilterAndSortButtons(
+            selectedFilter = FilterType.Default,
+            onClickFilter = {}
+        )
     }
 }
