@@ -22,12 +22,16 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.ConnectException
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class AppInterceptor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-        val request = chain.request()
+        val request = chain
+            .request()
             .newBuilder()
+            .addHeader("language", Locale.getDefault().language)
+            .addHeader("platform", "Android")
             .build()
 
         var response: okhttp3.Response? = null
