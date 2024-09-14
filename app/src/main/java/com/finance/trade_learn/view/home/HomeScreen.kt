@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,6 +35,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -60,6 +63,7 @@ import com.finance.trade_learn.view.LocalHomeViewModel
 import com.finance.trade_learn.view.coin.CoinItemScreen
 import com.finance.trade_learn.view.coin.ItemIcon
 import com.finance.trade_learn.view.wallet.format
+import java.util.Calendar
 import java.util.Locale
 
 @Composable
@@ -109,6 +113,8 @@ fun StockitPortfolioScreen(
     val viewModel = LocalHomeViewModel.current
     val items by viewModel.myCoinsNewModel.observeAsState(emptyList())
 
+    val greetingMessage by remember { mutableIntStateOf(getTimeBasedGreeting()) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -119,7 +125,7 @@ fun StockitPortfolioScreen(
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
 
             Text(
-                text = stringResource(id = R.string.welcome),
+                text = stringResource(id = greetingMessage),
                 style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
                 color = MaterialTheme.colors.onPrimary
             )
@@ -616,6 +622,20 @@ fun EmptyWatchlist(openMarketPage: () -> Unit) {
         }
     }
 }
+
+
+fun getTimeBasedGreeting(): Int {
+    val calendar = Calendar.getInstance()
+    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+
+    return when (hour) {
+        in 6..11 -> R.string.good_mornig
+        in 12..17 -> R.string.welcome
+        in 18..23 -> R.string.good_evening
+        else -> R.string.good_night
+    }
+}
+
 
 @Preview
 @Composable

@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Search
@@ -120,7 +121,6 @@ fun WalletScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WalletContent(navigateToHistoryPage: () -> Unit, openTradePage : (String) -> Unit, modifier: Modifier) {
     val viewModel = LocalWalletPageViewModel.current
@@ -197,28 +197,28 @@ fun WalletContent(navigateToHistoryPage: () -> Unit, openTradePage : (String) ->
                 androidx.compose.material.Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = null,
-                    tint = Color.Black
+                    tint = MaterialTheme.colors.onPrimary
                 )
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 12.dp),
             shape = RoundedCornerShape(20),
-            colors = androidx.compose.material.TextFieldDefaults.textFieldColors(
-                backgroundColor = Color(0xffF9FAFC),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = MaterialTheme.colors.primaryVariant,
                 cursorColor = Color.Gray,
 
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
 
                 focusedLabelColor = Color.Transparent,
-                textColor = Color.Black
+                textColor = MaterialTheme.colors.onPrimary
             ),
             placeholder = {
                 Text(
                     fontSize = 16.sp,
                     text = stringResource(id = R.string.Search),
-                    color = Color.Gray
+                    color = MaterialTheme.colors.onPrimary.copy(0.7f)
                 )
             }
 
@@ -275,17 +275,6 @@ fun Double.format(digits: Int): String {
 fun format(digits: Int, number : Double): String {
     return String.format(Locale.US, "%.${digits}f", number)
 }
-
-/*
-fun Double.formatPrice(digits: Int): String {
-    if (!this.toString().contains("e", true)) return  this.toString()
-
-    val formatedDigits = minOf(this.toString().length, 6)
-    return String.format(Locale.US, "%.${formatedDigits}f", this)
-}
-
- */
-
 @Composable
 @Preview
 private fun WalletScreenPreview() {
