@@ -40,7 +40,7 @@ class cryptoService() {
 
     suspend fun getCoinList(page: Int): Response<WrapResponse<List<CoinDetail>?>> {
         return if (RemoteConfigs.SHOULD_BE_LOCAL_REQUEST) localRetrofit.getLocalCoinList()
-        else Response.success(retrofit.getCoinGeckoData(page = page).body().handleResponse())
+        else handleResponse(retrofit.getCoinGeckoData(page = page).body())
     }
 
 }

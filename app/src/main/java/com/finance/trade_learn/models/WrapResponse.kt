@@ -2,7 +2,9 @@ package com.finance.trade_learn.models
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.google.gson.annotations.SerializedName
+import retrofit2.Response
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
 
@@ -44,14 +46,14 @@ data class ErrorResponse(var code: Int?, var name: String?, var message: String?
     }
 }
 
-
-fun <T> T.handleResponse(): WrapResponse<T>{
-
-    return WrapResponse(
+fun handleResponse(data: List<CoinDetail>?): Response<WrapResponse<List<CoinDetail>?>> {
+    val response: WrapResponse<List<CoinDetail>?> = WrapResponse(
         success = true,
-        data = this,
+        data = data,
         message = null,
         error = ErrorResponse(null, null, null),
         dateTime = System.currentTimeMillis().toString()
     )
+
+    return Response.success(response)
 }
