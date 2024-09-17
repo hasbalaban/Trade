@@ -24,3 +24,35 @@
 
 -keepattributes SourceFile,LineNumberTable
 -keep class com.google.firebase.crashlytics.** { *; }
+
+
+-keepclassmembers enum * { *; }
+-keep,allowshrinking class com.google.firebase.** { *; }
+
+
+
+
+-keepattributes Signature
+-keepattributes *Annotation*
+
+
+-keep class com.finance.trade_learn.models.WrapResponse { *; }
+-keep class com.finance.trade_learn.models.ErrorResponse { *; }
+
+
+
+
+-keep class com.google.gson.stream.** { *; }
+-keep class * extends com.google.gson.TypeAdapter
+-keep class * extends com.google.gson.TypeAdapterFactory
+-keep class * extends com.google.gson.JsonSerializer
+-keep class * extends com.google.gson.JsonDeserializer
+
+
+
+
+-keepattributes Exceptions
+-keep class com.squareup.okhttp.** { *; }
+-keep class retrofit.** { *; }
+-keep interface retrofit.** { *; }
+

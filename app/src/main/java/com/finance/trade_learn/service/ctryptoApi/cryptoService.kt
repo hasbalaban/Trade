@@ -2,10 +2,8 @@ package com.finance.trade_learn.service.ctryptoApi
 
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
-import com.finance.trade_learn.models.coin_gecko.CoinInfoList
 import com.finance.trade_learn.models.handleResponse
 import com.finance.trade_learn.service.user.client
-import com.finance.trade_learn.utils.Constants
 import com.finance.trade_learn.utils.RemoteConfigs
 import io.reactivex.Single
 import retrofit2.Response
@@ -40,7 +38,7 @@ class cryptoService() {
 
     suspend fun getCoinList(page: Int): Response<WrapResponse<List<CoinDetail>?>> {
         return if (RemoteConfigs.SHOULD_BE_LOCAL_REQUEST) localRetrofit.getLocalCoinList()
-        else Response.success(retrofit.getCoinGeckoData(page = page).body().handleResponse())
+        else handleResponse(retrofit.getCoinGeckoData(page = page).body())
     }
 
 }

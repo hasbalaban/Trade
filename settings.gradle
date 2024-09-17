@@ -11,4 +11,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "LearnCrypto"
 include ':app'
-include ':data'
