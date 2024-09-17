@@ -1,7 +1,5 @@
 package com.finance.trade_learn.models.coin_gecko
 
-import com.finance.trade_learn.models.SearchCoinItem
-
 data class CoinDetail(
     val id: String,
     val symbol: String,
@@ -30,10 +28,3 @@ data class CoinDetail(
     val atl_date: String?,
     val last_updated: String?
 )
-
-
-data class CoinInfoList(
-    val id: String,
-    val symbol: String,
-    val name: String
-) : SearchCoinItem()

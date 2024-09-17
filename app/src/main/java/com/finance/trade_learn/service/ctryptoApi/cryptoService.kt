@@ -2,10 +2,8 @@ package com.finance.trade_learn.service.ctryptoApi
 
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
-import com.finance.trade_learn.models.coin_gecko.CoinInfoList
 import com.finance.trade_learn.models.handleResponse
 import com.finance.trade_learn.service.user.client
-import com.finance.trade_learn.utils.Constants
 import com.finance.trade_learn.utils.RemoteConfigs
 import io.reactivex.Single
 import retrofit2.Response

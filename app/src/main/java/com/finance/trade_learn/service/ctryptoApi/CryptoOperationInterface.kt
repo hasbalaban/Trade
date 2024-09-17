@@ -2,7 +2,6 @@ package com.finance.trade_learn.service.ctryptoApi
 
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
-import com.finance.trade_learn.models.coin_gecko.CoinInfoList
 import io.reactivex.Single
 import retrofit2.Response
 import retrofit2.http.GET
