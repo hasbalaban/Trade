@@ -1,12 +1,15 @@
 package com.finance.trade_learn.depency_injection
 
+import android.app.ActivityManager
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import com.finance.trade_learn.R
 import com.finance.trade_learn.utils.RemoteConfigs
 import com.finance.trade_learn.utils.RemoteConfigsConst
 import com.google.firebase.Firebase
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
@@ -37,6 +40,49 @@ class HiltApplication : Application() {
         remoteConfig.setConfigSettingsAsync(configSettings)
 
         fetchAndActivateFirebase()
+
+        Thread.setDefaultUncaughtExceptionHandler { thread, exception ->
+            handleUncaughtException(thread, exception)
+        }
+    }
+
+
+
+    // Hata yakalayıcı fonksiyon
+    private fun handleUncaughtException(thread: Thread, exception: Throwable) {
+        // Bellek bilgilerini al
+        val memoryInfo = getMemoryInfo(applicationContext)
+
+        // Bellek bilgilerini Crashlytics'e ekle
+        FirebaseCrashlytics.getInstance().log("Uncaught Exception on thread: ${thread.name}")
+        FirebaseCrashlytics.getInstance().log("Memory Info: $memoryInfo")
+
+        FirebaseCrashlytics.getInstance().recordException(exception)
+
+        // Uygulamayı sonlandır
+        android.os.Process.killProcess(android.os.Process.myPid())
+
+    }
+
+    private fun getMemoryInfo(context: Context): String {
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val memoryInfo = ActivityManager.MemoryInfo()
+        activityManager.getMemoryInfo(memoryInfo)
+
+        val runtime = Runtime.getRuntime()
+
+        val totalMemory = runtime.totalMemory() / (1024 * 1024) // MB cinsinden
+        val freeMemory = runtime.freeMemory() / (1024 * 1024) // MB cinsinden
+        val maxMemory = runtime.maxMemory() / (1024 * 1024) // MB cinsinden
+
+        return """
+        Total Memory: ${memoryInfo.totalMem / (1024 * 1024)} MB
+        Available Memory: ${memoryInfo.availMem / (1024 * 1024)} MB
+        Low Memory: ${memoryInfo.lowMemory}
+        Runtime Total Memory: $totalMemory MB
+        Runtime Free Memory: $freeMemory MB
+        Runtime Max Memory: $maxMemory MB
+    """.trimIndent()
     }
 
     private fun fetchAndActivateFirebase(){
