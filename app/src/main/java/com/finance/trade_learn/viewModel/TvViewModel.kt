@@ -51,6 +51,7 @@ class TvViewModel @Inject constructor(
     private fun initializeViewState() {
         selectedItemDetail.value.data?.let {
             val data = tradePageUiState.value.data.copy(
+                selectedItemId = it.id,
                 _currentPrice = it.current_price?: 0.0,
                 _dailyPercentChange = it.price_change_percentage_24h ?: 0.0,
             )

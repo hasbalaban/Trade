@@ -21,6 +21,7 @@ data class BuySellScreenData(
     private var _balance: Double = 0.0,
     private var _ownedShares: Double = 0.0,
     private var _transactionAmount: Double = 0.0, // Private field
+    var selectedItemId : String = "",
 ) {
     var isLogin: Boolean
         get() = BaseViewModel.isLogin.value
@@ -57,9 +58,14 @@ data class BuySellScreenData(
 
 
     val isBuyEnabled : Boolean
-        get() = balance > 0 && balance >= totalTransactionCost && totalTransactionCost >= 0
+        get() = balance > 0 && balance >= totalTransactionCost
+                && totalTransactionCost >= 0
+                && !selectedItemId.equals(other = "tether", ignoreCase = true)
+
     val isSellEnabled : Boolean
-        get() = transactionAmount > 0 && ownedAmount >= transactionAmount && totalTransactionCost >= 0
+        get() = transactionAmount > 0 && ownedAmount >= transactionAmount
+                && totalTransactionCost >= 0
+                && !selectedItemId.equals(other = "tether", ignoreCase = true)
 
 
 }
