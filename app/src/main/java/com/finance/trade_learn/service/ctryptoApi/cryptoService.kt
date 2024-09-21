@@ -2,28 +2,16 @@ package com.finance.trade_learn.service.ctryptoApi
 
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
-import com.finance.trade_learn.models.handleResponse
 import com.finance.trade_learn.service.user.client
-import com.finance.trade_learn.utils.RemoteConfigs
-import io.reactivex.Single
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 class cryptoService() {
-    val BaseUrlCoinGecko = "https://api.coingecko.com/api/v3/"
-    var retrofit = Retrofit.Builder()
-        .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .baseUrl(BaseUrlCoinGecko)
-        .build()
-        .create(CryptoOperationInterface::class.java)
 
-
-    //val localBaseUrl = "http://10.0.2.2:8080"
-    val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
+    val localBaseUrl = "http://10.0.2.2:8080"
+    //val localBaseUrl = "https://learn-trade-d43b9356970c.herokuapp.com"
     var localRetrofit = Retrofit.Builder()
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
@@ -32,15 +20,8 @@ class cryptoService() {
         .build()
         .create(CryptoOperationInterface::class.java)
 
-    fun selectedCoinToTrade(coinName: String): Single<List<CoinDetail>> {
-        return retrofit.getSelectedCoinToTradeCoinGecko(ids = coinName.lowercase())
-    }
-
-    suspend fun getCoinList(page: Int): Response<WrapResponse<List<CoinDetail>?>> {
-        return if (RemoteConfigs.SHOULD_BE_LOCAL_REQUEST)
-            localRetrofit.getLocalCoinList()
-        else
-            handleResponse(retrofit.getCoinGeckoData(page = page).body())
+    suspend fun getCoinList(): Response<WrapResponse<List<CoinDetail>?>> {
+        return localRetrofit.getLocalCoinList()
     }
 
 }

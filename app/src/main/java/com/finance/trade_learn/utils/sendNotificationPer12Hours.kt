@@ -13,16 +13,18 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.finance.trade_learn.R
-import com.finance.trade_learn.service.ctryptoApi.cryptoService
-import com.finance.trade_learn.models.coin_gecko.CoinDetail
+import com.finance.trade_learn.base.BaseViewModel.Companion.setLockMainActivityStatus
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
+import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.view.MainActivity
 import com.finance.trade_learn.viewModel.TradeViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -79,18 +81,21 @@ class SendNotificationPer12Hours @Inject constructor(
         val coinName = SharedPreferencesManager(context).getSharedPreferencesString("coinName")
 
         CoroutineScope(Dispatchers.IO).launch {
-            cryptoService().selectedCoinToTrade(coinName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object :
-                    DisposableSingleObserver<List<CoinDetail>>() {
 
-                    override fun onSuccess(t: List<CoinDetail>) {
-                        createNotification(t[0].symbol, t[0].current_price.toString())
-                    }
 
-                    override fun onError(e: Throwable) {}
-                })
+            val response = cryptoService().getCoinList()
+            setLockMainActivityStatus(false)
+
+            if(response.isSuccessful){
+                response.body()?.data?.let {
+
+                    val item = it.firstOrNull { it.id.equals(other = coinName, ignoreCase = true) } ?: return@launch
+
+
+
+                    createNotification(item.symbol, item.current_price.toString())
+                }
+            }
         }
     }
 }

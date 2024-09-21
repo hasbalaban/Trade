@@ -6,11 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finance.trade_learn.models.FilterType
-import com.finance.trade_learn.models.FilterType.HighestPercentage
-import com.finance.trade_learn.models.FilterType.HighestPrice
-import com.finance.trade_learn.models.FilterType.LowestPercentage
-import com.finance.trade_learn.models.FilterType.LowestPrice
 import com.finance.trade_learn.models.UserBalance
 import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.WrapResponse
@@ -21,7 +16,6 @@ import com.finance.trade_learn.models.watchList.WatchListRequestItem
 import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.service.user.UserApi
 import com.finance.trade_learn.utils.DataStoreKeys
-import com.finance.trade_learn.utils.RemoteConfigs
 import com.finance.trade_learn.utils.readStringPreference
 import com.finance.trade_learn.utils.transformationCoinItemDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,11 +44,11 @@ open class BaseViewModel @Inject constructor(
         _shouldShowBottomNavigationBar.value = shouldShow
     }
 
-    fun getAllCrypto(page : Int) {
+    fun getAllCrypto() {
         setLockMainActivityStatus(true)
 
         viewModelScope.launch {
-            val response = cryptoService().getCoinList(page)
+            val response = cryptoService().getCoinList()
             setLockMainActivityStatus(false)
 
             when(response.isSuccessful){

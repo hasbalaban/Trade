@@ -271,8 +271,7 @@ fun MarketScreen(
                                                 .clickable {
                                                     openTradePage.invoke(it.id)
                                                 }
-                                                .sizeIn(minWidth = 220.dp),
-                                            isWatchlistItem = false
+                                                .sizeIn(minWidth = 220.dp)
                                         )
                                     }
                                 }
