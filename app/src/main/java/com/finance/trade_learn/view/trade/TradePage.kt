@@ -60,8 +60,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
-import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.view.CoinProgress
+import com.finance.trade_learn.view.wallet.format
 import com.finance.trade_learn.viewModel.TradeViewModel
 
 
@@ -288,7 +288,7 @@ fun ItemDetailSection(
             val priceChangeColor = if ((it.price_change_percentage_24h ?: 0.0) >= 0.0) Color(0xFF4CAF50) else Color(0xFFF44336)
 
             Text(
-                text = stringResource(id = R.string.daily_change) + "%.2f%%".format(it.price_change_percentage_24h),
+                text = stringResource(id = R.string.daily_change) + it.price_change_percentage_24h?.format(2),
                 style = MaterialTheme.typography.bodyLarge,
                 color = priceChangeColor,
             )

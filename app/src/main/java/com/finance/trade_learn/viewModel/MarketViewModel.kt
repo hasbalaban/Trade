@@ -27,7 +27,7 @@ class MarketViewModel : BaseViewModel() {
             FilterType.Default -> currentItems
             FilterType.HighestPrice -> currentItems.sortedByDescending { it.CoinPrice.toDouble() }
             FilterType.LowestPrice -> currentItems.sortedBy { it.CoinPrice.toDouble() }
-            FilterType.HighestPercentage -> currentItems.sortedByDescending { it.CoinChangePercente.replace("%", "").toDouble() }
+            FilterType.HighestPercentage -> currentItems.sortedByDescending { it.CoinChangePercente.replace("%", "").toDouble()}
             FilterType.LowestPercentage -> currentItems.sortedBy { it.CoinChangePercente.replace("%", "").toDouble() }
         }
 

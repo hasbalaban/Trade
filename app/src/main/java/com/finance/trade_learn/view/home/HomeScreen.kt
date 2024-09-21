@@ -472,13 +472,13 @@ private fun WatchListSection(
         if (currentItemInfo == null) null
         else {
 
-            val percenteChange: Percent? = if (currentItemInfo.price_change_24h == null) {
-                Percent(0.0, "+", "%")
+            val percenteChange: Percent = if (currentItemInfo.price_change_24h == null) {
+                Percent("0.0", "+", "%")
             } else {
                 percentageChange(currentItemInfo.price_change_percentage_24h.toString())
             }
 
-            val coinPercenteChange = percenteChange?.raise + percenteChange?.percentChange?.format(2).toString() + "%"
+            val coinPercenteChange = percenteChange?.raise + percenteChange?.percentChange?.format(2) + "%"
 
             CoinsHome(
                 id = currentItemInfo.id,

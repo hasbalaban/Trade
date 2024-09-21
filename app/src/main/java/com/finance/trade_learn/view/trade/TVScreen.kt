@@ -198,7 +198,7 @@ fun BuySellUnifiedScreen(goBack: () -> Unit) {
 
                 Text(
                     modifier = Modifier.padding(top = 20.dp),
-                    text = stringResource(id = R.string.daily_change) + ": ${tradePageUiState.value.data.dailyPercentChange}%",
+                    text = stringResource(id = R.string.daily_change) + " ${tradePageUiState.value.data.dailyPercentChange}%",
                     style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Normal),
                     color = MaterialTheme.colors.onPrimary
                 )

@@ -17,7 +17,7 @@ fun transformationCoinItemDTO(list: List<CoinDetail>): ArrayList<CoinsHome> {
         val coinSymbol = i.symbol.uppercase(Locale.getDefault()) + " / USD"
         val coinPrice = i.current_price?.format(2).toString().ifEmpty { "0.0" }
         val percenteChange: Percent = if (i.price_change_24h==null){
-            Percent(0.0,"+","%")
+            Percent("0.0","+","%")
         } else {
             percentageChange(i.price_change_percentage_24h.toString())
         }
@@ -41,13 +41,7 @@ fun transformationCoinItemDTO(list: List<CoinDetail>): ArrayList<CoinsHome> {
 
 fun percentageChange(coinPrice: String): Percent {
     return when (coinPrice.subSequence(0, 1)) {
-        "-" -> Percent(coinPrice.subSequence(1, coinPrice.length).toString().toDouble(), "-")
-        else -> Percent(coinPrice.subSequence(0, coinPrice.length).toString().toDouble(), "+")
+        "-" -> Percent(coinPrice.subSequence(1, coinPrice.length).toString().toDouble().format(2), "-")
+        else -> Percent(coinPrice.subSequence(0, coinPrice.length).toString().toDouble().format(2), "+")
     }
-}
-
-private fun convertPopularCoinListShortByTotalVolume(list: ArrayList<CoinsHome>?): List<CoinsHome>? {
-    return list?.sortedBy {
-        it.total_volume
-    }?.take(3)
 }
