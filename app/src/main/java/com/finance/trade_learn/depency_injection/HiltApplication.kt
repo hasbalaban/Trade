@@ -41,6 +41,7 @@ class HiltApplication : Application() {
 
         fetchAndActivateFirebase()
 
+        return
         Thread.setDefaultUncaughtExceptionHandler { thread, exception ->
             handleUncaughtException(thread, exception)
         }

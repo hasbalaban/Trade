@@ -13,7 +13,7 @@ class MarketViewModel : BaseViewModel() {
     val searchBarViewState : StateFlow<MarketPageUiState> get() = _searchBarViewState
 
 
-    private val _itemList = MutableStateFlow<List<CoinsHome>>(currentItems)
+    private val _itemList = MutableStateFlow<List<CoinsHome>>(emptyList())
     val itemList : StateFlow<List<CoinsHome>> get() = _itemList
 
 
@@ -23,6 +23,7 @@ class MarketViewModel : BaseViewModel() {
     }
 
     private fun filterChanged() {
+        val currentItems = currentItems.value
         val sortedList = when (searchBarViewState.value.filterType) {
             FilterType.Default -> currentItems
             FilterType.HighestPrice -> currentItems.sortedByDescending { it.CoinPrice.toDouble() }

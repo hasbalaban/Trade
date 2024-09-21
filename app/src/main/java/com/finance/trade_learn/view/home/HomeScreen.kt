@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
+import com.finance.trade_learn.base.BaseViewModel.Companion.allCryptoItems
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.models.modelsConvector.Percent
@@ -76,7 +77,7 @@ fun HomeScreen(
     val viewModel = LocalHomeViewModel.current
 
     val islogin by BaseViewModel.isLogin.collectAsState()
-    val marketItems = BaseViewModel.allCryptoItems.collectAsState()
+    val marketItems = allCryptoItems.collectAsState()
 
 
     if (!islogin && marketItems.value.isNotEmpty()) {
@@ -215,7 +216,7 @@ fun PortfolioCard(
     portfolioItem: NewModelForItemHistory,
     modifier: Modifier
 ) {
-    val item = BaseViewModel.allCryptoItems.value.firstOrNull {
+    val item = allCryptoItems.value.firstOrNull {
         portfolioItem.CoinName.lowercase(Locale.getDefault()) == it.id.lowercase(Locale.getDefault())
     } ?: return
 
@@ -465,8 +466,7 @@ private fun WatchListSection(
     val userInfo = BaseViewModel.userInfo.collectAsState()
 
     val items = userInfo.value.data?.userWatchList?.map { watchListItem ->
-        val currentItemInfo =
-            BaseViewModel.allCryptoItems.value.firstOrNull { it.id == watchListItem.itemId }
+        val currentItemInfo = allCryptoItems.value.firstOrNull { it.id == watchListItem.itemId }
         if (currentItemInfo == null) null
         else {
 

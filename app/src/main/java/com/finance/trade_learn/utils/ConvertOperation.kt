@@ -32,7 +32,8 @@ fun transformationCoinItemDTO(list: List<CoinDetail>): ArrayList<CoinsHome> {
             coinPercenteChange,
             coinImage,
             i.market_cap,
-            total_volume = i.total_volume,)
+            total_volume = i.total_volume
+        )
         listItem.add(item)
     }
     return listItem

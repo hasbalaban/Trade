@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
 
     private var runnable = Runnable { }
     val handler = Handler(Looper.getMainLooper())
-    private val timeLoop = 6000L
+    private val timeLoop = 30_000L
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {

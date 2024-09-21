@@ -53,22 +53,25 @@ open class BaseViewModel @Inject constructor(
 
             when(response.isSuccessful){
                 true -> {
-                    response.body()?.data?.let {
-                        val newList = it.filter {newItem->
-                            !allCryptoItems.value.any {oldItem -> oldItem.id == newItem.id }
+                    response.body()?.data?.let {newList ->
+                        val copiedList = allCryptoItems.value
+
+                        copiedList.removeAll { oldItem ->
+                            newList.any {newItem ->  newItem.id == oldItem.id }
                         }
-                        allCryptoItems.value.addAll(newList)
+                        copiedList.addAll(newList)
+                        allCryptoItems.value = copiedList
 
                         val mappedList = convertCryptoList(allCryptoItems.value)
                         if (mappedList.isNotEmpty()){
                             listOfCryptoForPopular.value = convertPopularCoinList(mappedList)
 
-                            currentItems = mappedList
+                            currentItems.value = mappedList
                         }
                     }
                 }
                 false -> {
-                    listOfCryptoForPopular.value = convertPopularCoinList(currentItems)
+                    listOfCryptoForPopular.value = convertPopularCoinList(currentItems.value)
                 }
             }
 
@@ -187,7 +190,7 @@ open class BaseViewModel @Inject constructor(
 
 
     companion object {
-        var currentItems : List<CoinsHome> = emptyList()
+        var currentItems = MutableStateFlow<MutableList<CoinsHome>>(mutableListOf())
         var allCryptoItems = MutableStateFlow<MutableList<CoinDetail>>(mutableListOf())
 
 

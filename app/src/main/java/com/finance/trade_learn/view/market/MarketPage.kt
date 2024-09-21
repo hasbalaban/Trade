@@ -64,6 +64,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.finance.trade_learn.R
+import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.utils.FirebaseLogEvents
 import com.finance.trade_learn.view.MarketPageItems
@@ -128,6 +129,14 @@ fun SearchBar(viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()) {
             keyboardController?.hide()
         }
     }
+
+    val items = BaseViewModel.currentItems.collectAsState()
+
+    LaunchedEffect(items.value) {
+        viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value)
+    }
+
+
 
     TextField(
         value = searchBarViewState.searchText,

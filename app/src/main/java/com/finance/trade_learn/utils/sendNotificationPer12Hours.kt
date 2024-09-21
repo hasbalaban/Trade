@@ -81,8 +81,6 @@ class SendNotificationPer12Hours @Inject constructor(
         val coinName = SharedPreferencesManager(context).getSharedPreferencesString("coinName")
 
         CoroutineScope(Dispatchers.IO).launch {
-
-
             val response = cryptoService().getCoinList()
             setLockMainActivityStatus(false)
 
