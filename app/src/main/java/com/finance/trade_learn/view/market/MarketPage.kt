@@ -37,12 +37,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -64,20 +62,19 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.finance.trade_learn.R
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.utils.FirebaseLogEvents
 import com.finance.trade_learn.view.MarketPageItems
 import com.finance.trade_learn.view.LocalBaseViewModel
-import com.finance.trade_learn.view.LocalMarketViewModel
 import com.finance.trade_learn.view.home.PortfolioCard
 import com.finance.trade_learn.view.trade.FilterAndSortButtons
+import com.finance.trade_learn.viewModel.MarketViewModel
 import kotlinx.coroutines.delay
 import java.math.BigDecimal
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-private val LocalHomePageScrollBehavior = compositionLocalOf<TopAppBarScrollBehavior> { error("No TopAppBarScrollBehavior found") }
 
 private fun clickSendEmailButton( context: Context) {
     composeEmail(arrayOf("learntradeapp@gmail.com"),"A intent or Request", context)
@@ -94,9 +91,7 @@ private fun composeEmail(addresses: Array<String>, subject: String, context: Con
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainToolbar() {
-    val scrollBehavior = LocalHomePageScrollBehavior.current
-
+private fun MainToolbar(scrollBehavior : TopAppBarScrollBehavior) {
     TopAppBar(
         colors = topAppBarColors(
             containerColor = MaterialTheme.colors.primary,
@@ -116,8 +111,7 @@ private fun MainToolbar() {
 
 
 @Composable
-fun SearchBar() {
-    val viewModel = LocalMarketViewModel.current
+fun SearchBar(viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()) {
     val searchBarViewState by viewModel.searchBarViewState.collectAsState()
 
     val isKeyboardOpen by keyboardAsState()
@@ -182,13 +176,11 @@ fun SearchBar() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarketScreen(
-    shouldShowPopularCoins: Boolean = false,
     openTradePage: (String) -> Unit,
-    navigateToLogin: () -> Unit
+    navigateToLogin: () -> Unit,
+    viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()
 ) {
     val baseViewModel = LocalBaseViewModel.current
-    val viewModel = LocalMarketViewModel.current
-
     val popularItemListState = rememberLazyListState()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(snapAnimationSpec = spring(stiffness = Spring.StiffnessLow))
@@ -214,12 +206,11 @@ fun MarketScreen(
 
 
 
-    CompositionLocalProvider(LocalHomePageScrollBehavior provides scrollBehavior) {
         Scaffold(modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                MainToolbar()
+                MainToolbar(scrollBehavior = scrollBehavior)
             },
             containerColor = MaterialTheme.colors.primary
         ) {
@@ -233,51 +224,50 @@ fun MarketScreen(
                     .constrainAs(toolbar) {
                         top.linkTo(parent.top)
                     }) {
-                    if (shouldShowPopularCoins) {
-                        Column(
-                            modifier = Modifier
-                                .verticalScroll(rememberScrollState())
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.popular_coins),
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(top = 6.dp, start = 12.dp),
-                                color = MaterialTheme.colors.onPrimary
-                            )
 
-                            if (popularItems != null) {
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.popular_coins),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 6.dp, start = 12.dp),
+                            color = MaterialTheme.colors.onPrimary
+                        )
 
-                                LazyRow(
-                                    state = popularItemListState,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 8.dp)
-                                ) {
-                                    items(popularItems) {
+                        if (popularItems != null) {
 
-                                        val item = NewModelForItemHistory(
-                                            CoinName = it.CoinName.split(" ").first(),
-                                            CoinAmount = it.CoinPrice.toDoubleOrNull() ?: 0.0,
-                                            Total = BigDecimal.ZERO,
-                                            Image = it.CoinImage,
-                                            currentPrice = it.CoinPrice + " $" ,
-                                        )
+                            LazyRow(
+                                state = popularItemListState,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp)
+                            ) {
+                                items(popularItems) {
+
+                                    val item = NewModelForItemHistory(
+                                        CoinName = it.CoinName.split(" ").first(),
+                                        CoinAmount = it.CoinPrice.toDoubleOrNull() ?: 0.0,
+                                        Total = BigDecimal.ZERO,
+                                        Image = it.CoinImage,
+                                        currentPrice = it.CoinPrice + " $" ,
+                                    )
 
 
-                                        PortfolioCard(
-                                            portfolioItem = item,
-                                            modifier = Modifier
-                                                .clickable {
-                                                    openTradePage.invoke(it.id)
-                                                }
-                                                .sizeIn(minWidth = 220.dp)
-                                        )
-                                    }
+                                    PortfolioCard(
+                                        portfolioItem = item,
+                                        modifier = Modifier
+                                            .clickable {
+                                                openTradePage.invoke(it.id)
+                                            }
+                                            .sizeIn(minWidth = 220.dp)
+                                    )
                                 }
                             }
-
                         }
+
                     }
 
                 }
@@ -322,7 +312,7 @@ fun MarketScreen(
                 }
             }
         }
-    }
+
 
 
 }

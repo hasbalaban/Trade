@@ -112,9 +112,6 @@ val LocalTvPageViewModel = compositionLocalOf<TvViewModel> { error("No TvViewMod
 val LocalViewModelHistoryTrade =
     compositionLocalOf<TransactionViewModel> { error("No ViewModelHistoryTrade found") }
 
-val LocalMarketViewModel =
-    compositionLocalOf<MarketViewModel> { error("No MarketViewModel found") }
-
 val LocalSingUpViewModel = compositionLocalOf<SignUpViewModel> { error("No SignUpViewModel found") }
 
 val LocalHomeViewModel = compositionLocalOf<HomeViewModel> { error("No HomeViewModel found") }
@@ -143,7 +140,7 @@ class MainActivity : AppCompatActivity() {
 
     private var runnable = Runnable { }
     val handler = Handler(Looper.getMainLooper())
-    private val timeLoop = 60000L
+    private val timeLoop = 6000L
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -159,7 +156,6 @@ class MainActivity : AppCompatActivity() {
                 val bottomAppBarState = BottomAppBarState(0f, 0f,0f)
                 val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior(state = bottomAppBarState)
 
-                val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(true)
                 val isLockedScreen by BaseViewModel.lockMainActivityToAction.observeAsState(true)
 
                 navController.addOnDestinationChangedListener { controller, destination, arguments ->
@@ -178,15 +174,12 @@ class MainActivity : AppCompatActivity() {
 
 
                 CompositionLocalProvider(
-                    LocalBaseViewModel provides baseViewModel,
-                    LocalMainScrollBehavior provides scrollBehavior
+                    LocalBaseViewModel provides baseViewModel
                 ) {
                     Scaffold(
                         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                         bottomBar = {
-                            if (shouldShowBottomNavigationBar) {
-                                BottomNavigationBar(navController = navController)
-                            }
+                            BottomNavigationBar(navController = navController, scrollBehavior = scrollBehavior)
                         },
                         backgroundColor = MaterialTheme.colors.primary
                     ) { padding ->
@@ -219,8 +212,6 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun MainScreen(navController: NavHostController, modifier: Modifier = Modifier) {
-        var marketPageNumber by remember { mutableIntStateOf(2) }
-
         val context = LocalContext.current
 
         val baseViewModel = hiltViewModel<BaseViewModel>()
@@ -255,11 +246,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             composable(Screens.Market.route) {
-                val viewModel = hiltViewModel<MarketViewModel>()
-
-                CompositionLocalProvider(LocalMarketViewModel provides viewModel) {
                     MarketScreen(
-                        shouldShowPopularCoins = true,
                         openTradePage = {
                             navController.navigate(Screens.Trade(it).route)
                         },
@@ -267,10 +254,6 @@ class MainActivity : AppCompatActivity() {
                             navController.navigate(Screens.Login.route)
                         }
                     )
-                }
-
-
-                marketPageNumber++
             }
 
             composable(
@@ -581,10 +564,17 @@ private fun isEmulator(): Boolean {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomNavigationBar(navController: NavHostController) {
-    val mainViewModel = LocalBaseViewModel.current
+fun BottomNavigationBar(
+    navController: NavHostController,
+    scrollBehavior: BottomAppBarScrollBehavior
+) {
+    val baseViewModel = LocalBaseViewModel.current
+    val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(true)
+
+    if (!shouldShowBottomNavigationBar) return
+
+
     val isLogin by BaseViewModel.isLogin.collectAsState()
-    val scrollBehavior = LocalMainScrollBehavior.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -664,15 +654,19 @@ fun BottomNavigationBar(navController: NavHostController) {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun BottomBarPreview() {
     FinanceAppTheme {
         val navController = rememberNavController()
+        val bottomAppBarState = BottomAppBarState(0f, 0f,0f)
+        val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior(state = bottomAppBarState)
+
 
 
         Surface(color = Color.White) {
-            BottomNavigationBar(navController = navController)
+            BottomNavigationBar(navController = navController, scrollBehavior = scrollBehavior)
         }
     }
 }
