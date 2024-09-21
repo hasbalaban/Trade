@@ -88,11 +88,7 @@ class SendNotificationPer12Hours @Inject constructor(
 
             if(response.isSuccessful){
                 response.body()?.data?.let {
-
                     val item = it.firstOrNull { it.id.equals(other = coinName, ignoreCase = true) } ?: return@launch
-
-
-
                     createNotification(item.symbol, item.current_price.toString())
                 }
             }
