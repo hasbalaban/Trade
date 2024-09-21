@@ -85,19 +85,9 @@ class HomeViewModel @Inject constructor(
             }.sortedByDescending { it.Total }
             .toList()
 
-        viewModelScope.launch {
-            myCoinsNewModel.value = availableCoins
+        myCoinsNewModel.value = availableCoins
 
-            if (!BaseViewModel.isLogin.value){
-                val total = availableCoins.sumOf { it.Total }.toFloat()
-                _totalBalance.value = total
-                return@launch
-            }
-
-            BaseViewModel.userInfo.value.data?.totalBalance?.let {
-                _totalBalance.value = it.toFloat()
-            }
-        }
-
+        val total = availableCoins.sumOf { it.Total }.toFloat()
+        _totalBalance.value = total
     }
 }

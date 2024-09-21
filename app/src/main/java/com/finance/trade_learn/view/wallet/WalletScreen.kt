@@ -52,11 +52,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
-import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.view.LocalBaseViewModel
 import com.finance.trade_learn.view.LocalWalletPageViewModel
 import com.finance.trade_learn.view.home.PortfolioCard1
@@ -71,6 +68,7 @@ fun WalletScreen(
 ) {
     val viewModel = LocalWalletPageViewModel.current
     val baseViewModel = LocalBaseViewModel.current
+    val allCryptoItems = BaseViewModel.allCryptoItems.collectAsState()
     LaunchedEffect(Unit) {
         if (BaseViewModel.isLogin.value) {
             baseViewModel.getUserInfo()
@@ -79,6 +77,13 @@ fun WalletScreen(
     }
 
     val userInfo = BaseViewModel.userInfo.collectAsState()
+    LaunchedEffect(key1 = allCryptoItems) {
+        if (BaseViewModel.isLogin.value) {
+            viewModel.getDataFromApi(userInfo.value.data?.balances?.map {it.itemName})
+        }
+        else viewModel.getDataFromApi(viewModel.myCoinsNewModel.value?.map { it.CoinName })
+    }
+
     if (BaseViewModel.isLogin.value){
         viewModel.getDataFromApi(userInfo.value.data?.balances?.map {it.itemName})
     }

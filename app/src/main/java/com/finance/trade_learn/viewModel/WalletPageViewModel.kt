@@ -85,20 +85,8 @@ class WalletPageViewModel @Inject constructor(
 
         viewModelScope.launch {
             myCoinsNewModel.value = availableCoins
-
-            if (!isLogin.value){
-                _totalBalance.value = availableCoins.sumOf { it.Total }.toFloat()
-                return@launch
-            }
-
-            userInfo.value.data?.totalBalance?.let {
-                _totalBalance.value = it.toFloat()
-            }
+            _totalBalance.value = availableCoins.sumOf { it.Total }.toFloat()
         }
 
-    }
-
-    override fun onCleared() {
-        super.onCleared()
     }
 }

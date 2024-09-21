@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finance.trade_learn.base.BaseViewModel
+import com.finance.trade_learn.base.BaseViewModel.Companion.allCryptoItems
 import com.finance.trade_learn.database.dataBaseEntities.MyCoins
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
@@ -38,7 +39,7 @@ class TvViewModel @Inject constructor(
     val selectedItemDetail: StateFlow<TradePageUiState<CoinDetail>> = _selectedItemDetail.asStateFlow()
 
     fun setSelectedCoinDetails(itemId: String) {
-        val cachedItem = BaseViewModel.allCryptoItems.value.firstOrNull {
+        val cachedItem = allCryptoItems.value.firstOrNull {
             solveCoinName(it.id) == itemId
         }
         cachedItem?.let {
