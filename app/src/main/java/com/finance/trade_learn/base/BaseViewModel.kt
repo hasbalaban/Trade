@@ -66,12 +66,12 @@ open class BaseViewModel @Inject constructor(
                         if (mappedList.isNotEmpty()){
                             listOfCryptoForPopular.value = convertPopularCoinList(mappedList)
 
-                            currentItems = mappedList
+                            currentItems.value = mappedList
                         }
                     }
                 }
                 false -> {
-                    listOfCryptoForPopular.value = convertPopularCoinList(currentItems)
+                    listOfCryptoForPopular.value = convertPopularCoinList(currentItems.value)
                 }
             }
 
@@ -190,7 +190,7 @@ open class BaseViewModel @Inject constructor(
 
 
     companion object {
-        var currentItems : List<CoinsHome> = emptyList()
+        var currentItems = MutableStateFlow<MutableList<CoinsHome>>(mutableListOf())
         var allCryptoItems = MutableStateFlow<MutableList<CoinDetail>>(mutableListOf())
 
 
