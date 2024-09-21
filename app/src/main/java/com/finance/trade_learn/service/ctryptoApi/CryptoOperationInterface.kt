@@ -17,7 +17,7 @@ interface CryptoOperationInterface {
         @Query("sparkline") sparkline: Boolean = false,
     ): Response<List<CoinDetail>>
 
-    @GET("/allMarket")
+    @GET("/markets")
     suspend fun getLocalCoinList(): Response<WrapResponse<List<CoinDetail>?>>
 
     @GET("coins/markets")
