@@ -546,7 +546,7 @@ class MainActivity : AppCompatActivity() {
     private fun keepDataUpdated() {
         runnable = Runnable {
             runBlocking {
-                baseViewModel.getAllCrypto(0)
+                baseViewModel.getAllCrypto()
             }
             handler.postDelayed(runnable, timeLoop)
         }

@@ -53,7 +53,6 @@ class HiltApplication : Application() {
         // Bellek bilgilerini al
         val memoryInfo = getMemoryInfo(applicationContext)
 
-        // Bellek bilgilerini Crashlytics'e ekle
         FirebaseCrashlytics.getInstance().log("Uncaught Exception on thread: ${thread.name}")
         FirebaseCrashlytics.getInstance().log("Memory Info: $memoryInfo")
 

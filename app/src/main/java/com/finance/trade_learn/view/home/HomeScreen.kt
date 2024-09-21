@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -214,8 +213,7 @@ fun StockitPortfolioScreen(
 @Composable
 fun PortfolioCard(
     portfolioItem: NewModelForItemHistory,
-    modifier: Modifier,
-    isWatchlistItem : Boolean = true
+    modifier: Modifier
 ) {
     val item = BaseViewModel.allCryptoItems.value.firstOrNull {
         portfolioItem.CoinName.lowercase(Locale.getDefault()) == it.id.lowercase(Locale.getDefault())
@@ -473,12 +471,12 @@ private fun WatchListSection(
         else {
 
             val percenteChange: Percent = if (currentItemInfo.price_change_24h == null) {
-                Percent("0.0", "+", "%")
+                Percent("0.0", "+")
             } else {
                 percentageChange(currentItemInfo.price_change_percentage_24h.toString())
             }
 
-            val coinPercenteChange = percenteChange?.raise + percenteChange?.percentChange?.format(2) + "%"
+            val coinPercenteChange = percenteChange.raise + percenteChange.percentChange.format(2) + "%"
 
             CoinsHome(
                 id = currentItemInfo.id,
