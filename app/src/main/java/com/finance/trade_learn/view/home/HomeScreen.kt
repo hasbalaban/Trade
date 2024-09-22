@@ -31,6 +31,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -53,6 +54,7 @@ import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.base.BaseViewModel.Companion.allCryptoItems
+import com.finance.trade_learn.base.BaseViewModel.Companion.currentItems
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.models.modelsConvector.Percent
@@ -77,17 +79,19 @@ fun HomeScreen(
     val viewModel = LocalHomeViewModel.current
 
     val islogin by BaseViewModel.isLogin.collectAsState()
-    val marketItems = allCryptoItems.collectAsState()
 
+
+    val marketItems = currentItems.collectAsState()
 
     if (!islogin && marketItems.value.isNotEmpty()) {
         viewModel.getMyCoinsDetails()
     }
-
     if (islogin) {
         val userInfo = BaseViewModel.userInfo.collectAsState()
         viewModel.getDataFromApi(userInfo.value.data?.balances?.map { it.itemName })
     }
+
+
 
     if (marketItems.value.isNotEmpty()) {
         StockitPortfolioScreen(
@@ -113,6 +117,9 @@ fun StockitPortfolioScreen(
     val viewModel = LocalHomeViewModel.current
     val items by viewModel.myCoinsNewModel.observeAsState(emptyList())
 
+
+    val userInfo = BaseViewModel.userInfo.collectAsState()
+
     val greetingMessage by remember { mutableIntStateOf(getTimeBasedGreeting()) }
 
     Column(
@@ -132,7 +139,7 @@ fun StockitPortfolioScreen(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            BaseViewModel.userInfo.value.data?.let {
+            userInfo.value.data?.let {
                 Text(
                     text = "-   " + it.nameAndSurname,
                     style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
