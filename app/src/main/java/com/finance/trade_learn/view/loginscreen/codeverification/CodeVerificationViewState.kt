@@ -6,9 +6,9 @@ import com.finance.trade_learn.view.loginscreen.signup.isValidEmail
 
 data class CodeVerificationViewState(
     val email : String = "",
-    val verificationCode : String = "111111",
-    val password : String = "111111",
-    val confirmPassword : String = "111111",
+    val verificationCode : String = "",
+    val password : String = "",
+    val confirmPassword : String = "",
     val isLoading : Boolean = false
 ){
 

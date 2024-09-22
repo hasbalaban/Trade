@@ -1,7 +1,6 @@
 package com.finance.trade_learn.view.loginscreen.codeverification
 
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
@@ -32,7 +30,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,16 +45,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
 import com.finance.trade_learn.view.LocalCodeVerificationViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun CodeVerificationScreen(
     userEmail : String,
     onVerifyCode: () -> Unit
 ) {
-    val coroutines = rememberCoroutineScope()
-
     val context = LocalContext.current
     val viewModel = LocalCodeVerificationViewModel.current
 
@@ -113,7 +106,7 @@ fun CodeVerificationScreen(
                 onValueChange = {
                     viewModel.changeVerificationCodeText(it)
                 },
-                placeholder = { Text(stringResource(id = R.string.verificaiton_code)) },
+                placeholder = { androidx.compose.material.Text(stringResource(id = R.string.verificaiton_code)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
@@ -122,6 +115,9 @@ fun CodeVerificationScreen(
                         RoundedCornerShape(6.dp)
                     ),
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
                     cursorColor = Color.Gray,
@@ -195,12 +191,13 @@ fun CodeVerificationScreen(
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
                     cursorColor = Color.Gray,
-
-                    textColor = Color.Black,
+                    focusedLabelColor = Color.LightGray,
+                    unfocusedLabelColor = Color.Gray,
+                    textColor = Color.Gray,
                     focusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
-                    unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
+                    unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için,
 
-                    placeholderColor = Color.Gray,
+                    placeholderColor = Color.Gray
                 ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
@@ -227,12 +224,13 @@ fun CodeVerificationScreen(
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
                     cursorColor = Color.Gray,
+                    focusedLabelColor = Color.LightGray,
+                    unfocusedLabelColor = Color.Gray,
+                    textColor = Color.Gray,
+                    focusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için
+                    unfocusedIndicatorColor = Color.Transparent, // Border kalınlığını sabitlemek için,
 
-                    textColor = Color.Black,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-
-                    placeholderColor = Color.Gray,
+                    placeholderColor = Color.Gray
                 )
             )
 

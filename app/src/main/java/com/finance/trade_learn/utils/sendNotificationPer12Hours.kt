@@ -20,7 +20,6 @@ import androidx.work.WorkRequest
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.finance.trade_learn.R
-import com.finance.trade_learn.base.BaseViewModel.Companion.setLockMainActivityStatus
 import com.finance.trade_learn.repository.CoinDetailRepositoryImp
 import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.view.MainActivity
@@ -82,8 +81,6 @@ class SendNotificationPer12Hours @Inject constructor(
 
         CoroutineScope(Dispatchers.IO).launch {
             val response = cryptoService().getCoinList()
-            setLockMainActivityStatus(false)
-
             if(response.isSuccessful){
                 response.body()?.data?.let {
                     val item = it.firstOrNull { it.id.equals(other = coinName, ignoreCase = true) } ?: return@launch
