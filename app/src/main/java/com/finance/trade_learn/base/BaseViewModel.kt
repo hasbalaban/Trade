@@ -45,11 +45,8 @@ open class BaseViewModel @Inject constructor(
     }
 
     fun getAllCrypto() {
-        setLockMainActivityStatus(true)
-
         viewModelScope.launch {
             val response = cryptoService().getCoinList()
-            setLockMainActivityStatus(false)
 
             when(response.isSuccessful){
                 true -> {
@@ -133,8 +130,11 @@ open class BaseViewModel @Inject constructor(
 
     suspend fun getUserInfo() {
         viewModelScope.launch {
+            setLockMainActivityStatus(true)
             val userService = UserApi()
             val response = userService.getUserInfo(email = userEmail)
+
+            setLockMainActivityStatus(false)
 
             if (response.isSuccessful){
                 response.body()?.let {
