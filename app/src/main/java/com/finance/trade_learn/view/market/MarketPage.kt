@@ -10,7 +10,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,9 +29,9 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -57,8 +56,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -67,14 +64,13 @@ import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.utils.FirebaseLogEvents
-import com.finance.trade_learn.view.MarketPageItems
 import com.finance.trade_learn.view.LocalBaseViewModel
+import com.finance.trade_learn.view.MarketPageItems
 import com.finance.trade_learn.view.home.PortfolioCard
 import com.finance.trade_learn.view.trade.FilterAndSortButtons
 import com.finance.trade_learn.viewModel.MarketViewModel
 import kotlinx.coroutines.delay
 import java.math.BigDecimal
-
 
 
 private fun clickSendEmailButton( context: Context) {
@@ -92,8 +88,8 @@ private fun composeEmail(addresses: Array<String>, subject: String, context: Con
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainToolbar(scrollBehavior : TopAppBarScrollBehavior) {
-    TopAppBar(
+private fun MainToolbar(scrollBehavior: TopAppBarScrollBehavior) {
+    androidx.compose.material3.TopAppBar(
         colors = topAppBarColors(
             containerColor = MaterialTheme.colors.primary,
             scrolledContainerColor = MaterialTheme.colors.primary
@@ -108,6 +104,64 @@ private fun MainToolbar(scrollBehavior : TopAppBarScrollBehavior) {
 
 
 
+}
+
+
+@Composable
+private fun PopularSection(
+    openTradePage: (String) -> Unit
+){
+    val baseViewModel = LocalBaseViewModel.current
+    val popularItems = baseViewModel.listOfCryptoForPopular.observeAsState().value
+
+    val popularItemListState = rememberLazyListState()
+    AutoScrollList(popularItemListState = popularItemListState)
+
+
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+    ) {
+        Text(
+            text = stringResource(id = R.string.popular_coins),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 6.dp, start = 12.dp),
+            color = MaterialTheme.colors.onPrimary
+        )
+
+        if (popularItems != null) {
+
+            LazyRow(
+                state = popularItemListState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                items(popularItems) {
+
+                    val item = NewModelForItemHistory(
+                        CoinName = it.CoinName.split(" ").first(),
+                        CoinAmount = it.CoinPrice.toDoubleOrNull() ?: 0.0,
+                        Total = BigDecimal.ZERO,
+                        Image = it.CoinImage,
+                        currentPrice = it.CoinPrice + " $" ,
+                    )
+
+
+                    PortfolioCard(
+                        portfolioItem = item,
+                        modifier = Modifier
+                            .clickable {
+                                openTradePage.invoke(it.id)
+                            }
+                            .sizeIn(minWidth = 200.dp)
+                    )
+                }
+            }
+        }
+
+    }
 }
 
 
@@ -189,16 +243,13 @@ fun MarketScreen(
     navigateToLogin: () -> Unit,
     viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()
 ) {
-    val baseViewModel = LocalBaseViewModel.current
-    val popularItemListState = rememberLazyListState()
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(snapAnimationSpec = spring(stiffness = Spring.StiffnessLow))
-    val popularItems = baseViewModel.listOfCryptoForPopular.observeAsState().value
 
 
     val listOfItems by viewModel.itemList.collectAsState()
     val searchBarViewState by viewModel.searchBarViewState.collectAsState()
 
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(snapAnimationSpec = spring(stiffness = Spring.StiffnessLow))
 
 
 
@@ -211,10 +262,6 @@ fun MarketScreen(
 
 
 
-    AutoScrollList(popularItemListState = popularItemListState)
-
-
-
         Scaffold(modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -222,103 +269,50 @@ fun MarketScreen(
                 MainToolbar(scrollBehavior = scrollBehavior)
             },
             containerColor = MaterialTheme.colors.primary
-        ) {
+        ) { it->
 
-            ConstraintLayout(modifier = Modifier
+            Column(modifier = Modifier
                 .padding(top = it.calculateTopPadding())
                 .fillMaxSize()) {
-                val (toolbar, divider1, mainItemsScreen) = createRefs()
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(toolbar) {
-                        top.linkTo(parent.top)
-                    }) {
 
-                    Column(
-                        modifier = Modifier
-                            .verticalScroll(rememberScrollState())
+
+                PopularSection() {}
+
+                Column(modifier = Modifier){
+                    HorizontalDivider(modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = colorResource(id = R.color.light_grey))
+                        .height(1.dp)
+                    )
+
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 12.dp)
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.popular_coins),
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(top = 6.dp, start = 12.dp),
-                            color = MaterialTheme.colors.onPrimary
+
+                        FilterAndSortButtons(
+                            selectedFilter = searchBarViewState.filterType,
+                            onClickFilter = {
+                                val bundle = Bundle()
+                                bundle.putString("type", it.name)
+                                FirebaseLogEvents.logClickFilterEvent(bundle)
+
+                                viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(filterType = it))
+                            }
                         )
 
-                        if (popularItems != null) {
-
-                            LazyRow(
-                                state = popularItemListState,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp)
-                            ) {
-                                items(popularItems) {
-
-                                    val item = NewModelForItemHistory(
-                                        CoinName = it.CoinName.split(" ").first(),
-                                        CoinAmount = it.CoinPrice.toDoubleOrNull() ?: 0.0,
-                                        Total = BigDecimal.ZERO,
-                                        Image = it.CoinImage,
-                                        currentPrice = it.CoinPrice + " $" ,
-                                    )
-
-
-                                    PortfolioCard(
-                                        portfolioItem = item,
-                                        modifier = Modifier
-                                            .clickable {
-                                                openTradePage.invoke(it.id)
-                                            }
-                                            .sizeIn(minWidth = 220.dp)
-                                    )
-                                }
-                            }
-                        }
-
+                        MarketPageItems(
+                            coinsHome = listOfItems,
+                            onViewClick = { selectedItemName ->
+                                openTradePage.invoke(selectedItemName)
+                            },
+                            navigateToLogin = navigateToLogin
+                        )
                     }
-
                 }
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = colorResource(id = R.color.light_grey))
-                    .height(1.dp)
-                    .constrainAs(divider1) {
-                        top.linkTo(toolbar.bottom)
-                    }
-                ) {}
 
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp)
-                    .constrainAs(mainItemsScreen) {
-                        top.linkTo(divider1.bottom)
-                        bottom.linkTo(parent.bottom)
-                        height = Dimension.fillToConstraints
-                    }
 
-                ) {
-
-                    FilterAndSortButtons(
-                        selectedFilter = searchBarViewState.filterType,
-                        onClickFilter = {
-                            val bundle = Bundle()
-                            bundle.putString("type", it.name)
-                            FirebaseLogEvents.logClickFilterEvent(bundle)
-
-                            viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(filterType = it))
-                        }
-                    )
-
-                    MarketPageItems(
-                        coinsHome = listOfItems,
-                        onViewClick = { selectedItemName ->
-                            openTradePage.invoke(selectedItemName)
-                        },
-                        navigateToLogin = navigateToLogin
-                    )
-                }
             }
         }
 
