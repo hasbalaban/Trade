@@ -42,9 +42,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,6 +76,7 @@ import com.finance.trade_learn.view.loginscreen.codeverification.CodeVerificatio
 import com.finance.trade_learn.view.loginscreen.forgotpassword.ForgotPasswordScreen
 import com.finance.trade_learn.view.loginscreen.login.LoginScreen
 import com.finance.trade_learn.view.loginscreen.signup.SignUpScreen
+import com.finance.trade_learn.view.market.HorizontalPagerScreen
 import com.finance.trade_learn.view.market.MarketScreen
 import com.finance.trade_learn.view.profile.ProfileScreen
 import com.finance.trade_learn.view.trade.MainBuySellScreen
@@ -86,7 +84,6 @@ import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.CodeVerificationViewModel
 import com.finance.trade_learn.viewModel.ForgotPasswordViewModel
 import com.finance.trade_learn.viewModel.HomeViewModel
-import com.finance.trade_learn.viewModel.MarketViewModel
 import com.finance.trade_learn.viewModel.LoginViewModel
 import com.finance.trade_learn.viewModel.ProfileViewModel
 import com.finance.trade_learn.viewModel.SignUpViewModel
@@ -246,14 +243,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             composable(Screens.Market.route) {
-                    MarketScreen(
-                        openTradePage = {
-                            navController.navigate(Screens.Trade(it).route)
-                        },
-                        navigateToLogin = {
-                            navController.navigate(Screens.Login.route)
-                        }
-                    )
+                HorizontalPagerScreen(
+                    openTradePage = {
+                        navController.navigate(Screens.Trade(it).route)
+                    },
+                    navigateToLogin = {
+                        navController.navigate(Screens.Login.route)
+                    })
             }
 
             composable(
