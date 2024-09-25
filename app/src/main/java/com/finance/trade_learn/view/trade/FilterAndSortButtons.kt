@@ -2,7 +2,6 @@ package com.finance.trade_learn.view.trade
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,9 +19,8 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,23 +28,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.finance.trade_learn.R
 import com.finance.trade_learn.models.FilterType
+import com.finance.trade_learn.viewModel.MarketViewModel
 
 @Composable
 fun FilterAndSortButtons(
-    selectedFilter : FilterType = FilterType.Default,
-    onClickFilter : (FilterType) -> Unit
+    onClickFilter : (FilterType) -> Unit,
+    viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()
 ) {
+    val searchBarViewState by viewModel.searchBarViewState.collectAsState()
+
     var expanded by remember { mutableStateOf(false) }
 
     Row(
@@ -90,7 +90,7 @@ fun FilterAndSortButtons(
 
                 FilterType.entries.forEach {
                     FilterItem(
-                        isSelected = selectedFilter == it,
+                        isSelected = searchBarViewState.filterType == it,
                         filterType = it,
                         onClickFilter = {
                             onClickFilter.invoke(it)
@@ -118,7 +118,7 @@ fun FilterAndSortButtons(
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text =  stringResource(id = selectedFilter.text))
+            Text(text =  stringResource(id = searchBarViewState.filterType.text))
         }
     }
 }
@@ -146,9 +146,6 @@ private fun FilterItem(
 @Composable
 fun PreviewFilterAndSortButtons() {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        FilterAndSortButtons(
-            selectedFilter = FilterType.Default,
-            onClickFilter = {}
-        )
+        FilterAndSortButtons(onClickFilter = {})
     }
 }

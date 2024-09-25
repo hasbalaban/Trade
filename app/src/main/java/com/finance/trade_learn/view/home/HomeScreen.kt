@@ -125,8 +125,7 @@ fun StockitPortfolioScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 24.dp)
-            .padding(vertical = 16.dp, horizontal = 12.dp)
+            .padding(horizontal = 12.dp)
     ) {
 
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -233,7 +232,7 @@ fun PortfolioCard(
         elevation = 4.dp,
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 2.dp, end = 10.dp)
+            .padding(end = 10.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
