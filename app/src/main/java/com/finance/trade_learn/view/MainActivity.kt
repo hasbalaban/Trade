@@ -14,6 +14,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,6 +37,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -77,7 +82,6 @@ import com.finance.trade_learn.view.loginscreen.forgotpassword.ForgotPasswordScr
 import com.finance.trade_learn.view.loginscreen.login.LoginScreen
 import com.finance.trade_learn.view.loginscreen.signup.SignUpScreen
 import com.finance.trade_learn.view.market.HorizontalPagerScreen
-import com.finance.trade_learn.view.market.MarketScreen
 import com.finance.trade_learn.view.profile.ProfileScreen
 import com.finance.trade_learn.view.trade.MainBuySellScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
@@ -150,13 +154,18 @@ class MainActivity : AppCompatActivity() {
                 val context = LocalContext.current
                 val navController = rememberNavController()
 
-                val bottomAppBarState = BottomAppBarState(0f, 0f,0f)
-                val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior(state = bottomAppBarState)
+                val bottomAppBarState = BottomAppBarState(0f, 0f, 0f)
+                val bottomScrollBehavior =
+                    BottomAppBarDefaults.exitAlwaysScrollBehavior(state = bottomAppBarState)
+                val topScrollBehavior =
+                    TopAppBarDefaults.enterAlwaysScrollBehavior(snapAnimationSpec = spring(stiffness = Spring.StiffnessLow))
+
 
                 val isLockedScreen by BaseViewModel.lockMainActivityToAction.observeAsState(true)
 
                 navController.addOnDestinationChangedListener { controller, destination, arguments ->
-                    val bottomNavigationIsVisible = destination.route in Constants.BottomNavItems.map { it.route }
+                    val bottomNavigationIsVisible =
+                        destination.route in Constants.BottomNavItems.map { it.route }
 
                     baseViewModel.setBottomNavigationBarStatus(bottomNavigationIsVisible)
                     BaseViewModel.setLockMainActivityStatus(false)
@@ -174,13 +183,38 @@ class MainActivity : AppCompatActivity() {
                     LocalBaseViewModel provides baseViewModel
                 ) {
                     Scaffold(
-                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                        modifier = Modifier
+                            .nestedScroll(bottomScrollBehavior.nestedScrollConnection)
+                            .nestedScroll(topScrollBehavior.nestedScrollConnection),
+                        topBar = {
+                            TopAppBar(
+                                title = {
+                                    Text(
+                                        text = stringResource(id = R.string.app_name),
+                                        fontSize = 20.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                },
+                                colors = TopAppBarDefaults.topAppBarColors(
+                                    containerColor = MaterialTheme.colors.primary,
+                                    scrolledContainerColor = MaterialTheme.colors.primary
+                                ),
+                                scrollBehavior = topScrollBehavior
+                            )
+                        },
                         bottomBar = {
-                            BottomNavigationBar(navController = navController, scrollBehavior = scrollBehavior)
+                            BottomNavigationBar(
+                                navController = navController,
+                                scrollBehavior = bottomScrollBehavior
+                            )
                         },
                         backgroundColor = MaterialTheme.colors.primary
-                    ) { padding ->
-                        MainScreen(navController, Modifier.padding(paddingValues = padding))
+                    ) { innerPadding ->
+                        MainScreen(
+                            scrollBehavior = topScrollBehavior,
+                            navController,
+                            modifier = Modifier.padding(innerPadding)
+                        )
                     }
 
                     if (isLockedScreen) {
@@ -207,8 +241,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun MainScreen(navController: NavHostController, modifier: Modifier = Modifier) {
+    private fun MainScreen(
+        scrollBehavior: TopAppBarScrollBehavior,
+        navController: NavHostController,
+        modifier: Modifier = Modifier
+    ) {
         val context = LocalContext.current
 
         val baseViewModel = hiltViewModel<BaseViewModel>()
@@ -319,7 +358,9 @@ class MainActivity : AppCompatActivity() {
                         },
                         navigateToHome = {
                             navController.navigate(Screens.Wallet.route) {
-                                popUpTo(navController.graph.startDestinationRoute ?: Screens.Home.route)
+                                popUpTo(
+                                    navController.graph.startDestinationRoute ?: Screens.Home.route
+                                )
                                 launchSingleTop = true
                             }
                         }
@@ -361,7 +402,9 @@ class MainActivity : AppCompatActivity() {
                                 .show()
 
                             navController.navigate(Screens.Login.route) {
-                                popUpTo(navController.graph.startDestinationRoute ?: Screens.Home.route)
+                                popUpTo(
+                                    navController.graph.startDestinationRoute ?: Screens.Home.route
+                                )
                                 launchSingleTop = true
                             }
                         },
@@ -512,7 +555,11 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 delay(6_000)
                 val currentMillis = System.currentTimeMillis()
-                val updateTime = SharedPreferencesManager(this@MainActivity).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
+                val updateTime =
+                    SharedPreferencesManager(this@MainActivity).getSharedPreferencesLong(
+                        "interstitialAdLoadedTime",
+                        currentMillis
+                    )
                 if (currentMillis < updateTime) return@launch
 
                 MobileAds.initialize(this@MainActivity) {}
@@ -565,7 +612,9 @@ fun BottomNavigationBar(
     scrollBehavior: BottomAppBarScrollBehavior
 ) {
     val baseViewModel = LocalBaseViewModel.current
-    val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(true)
+    val shouldShowBottomNavigationBar by baseViewModel.shouldShowBottomNavigationBar.observeAsState(
+        true
+    )
 
     if (!shouldShowBottomNavigationBar) return
 
@@ -656,8 +705,9 @@ fun BottomNavigationBar(
 private fun BottomBarPreview() {
     FinanceAppTheme {
         val navController = rememberNavController()
-        val bottomAppBarState = BottomAppBarState(0f, 0f,0f)
-        val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior(state = bottomAppBarState)
+        val bottomAppBarState = BottomAppBarState(0f, 0f, 0f)
+        val scrollBehavior =
+            BottomAppBarDefaults.exitAlwaysScrollBehavior(state = bottomAppBarState)
 
 
 

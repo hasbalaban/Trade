@@ -19,9 +19,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextField
@@ -90,20 +88,16 @@ private fun composeEmail(addresses: Array<String>, subject: String, context: Con
 @Composable
 private fun MainToolbar(scrollBehavior: TopAppBarScrollBehavior) {
     androidx.compose.material3.TopAppBar(
+        modifier = Modifier.padding(0.dp),
         colors = topAppBarColors(
             containerColor = MaterialTheme.colors.primary,
             scrolledContainerColor = MaterialTheme.colors.primary
         ),
-        title = {},
-        actions = {
+        title = {
             SearchBar()
         },
         scrollBehavior = scrollBehavior
     )
-
-
-
-
 }
 
 
@@ -118,15 +112,11 @@ private fun PopularSection(
     AutoScrollList(popularItemListState = popularItemListState)
 
 
-    Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-    ) {
+    Column(modifier = Modifier.padding(start = 12.dp),){
         Text(
             text = stringResource(id = R.string.popular_coins),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 6.dp, start = 12.dp),
             color = MaterialTheme.colors.onPrimary
         )
 
@@ -213,7 +203,7 @@ fun SearchBar(viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()) {
                 }
             }
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(end = 16.dp),
         shape = RoundedCornerShape(20),
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = MaterialTheme.colors.primaryVariant,
@@ -241,58 +231,57 @@ fun SearchBar(viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()) {
 fun MarketScreen(
     openTradePage: (String) -> Unit,
     navigateToLogin: () -> Unit,
-    viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()
+    viewModel: MarketViewModel = hiltViewModel<MarketViewModel>()
 ) {
-
-
-
     val listOfItems by viewModel.itemList.collectAsState()
-    val searchBarViewState by viewModel.searchBarViewState.collectAsState()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(snapAnimationSpec = spring(stiffness = Spring.StiffnessLow))
 
 
 
-    LaunchedEffect(scrollBehavior.state.collapsedFraction){
+    LaunchedEffect(scrollBehavior.state.collapsedFraction) {
         if (viewModel.searchBarViewState.value.isFocused) {
             viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(isFocused = false))
         }
     }
 
 
+    Column(modifier = Modifier.fillMaxSize()) {
 
 
-        Scaffold(modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        Scaffold(
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 MainToolbar(scrollBehavior = scrollBehavior)
             },
             containerColor = MaterialTheme.colors.primary
-        ) { it->
+        ) { it ->
 
-            Column(modifier = Modifier
-                .padding(top = it.calculateTopPadding())
-                .fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .padding(top = it.calculateTopPadding())
+                    .fillMaxSize()
+            ) {
 
+                PopularSection(openTradePage = openTradePage)
 
-                PopularSection() {}
-
-                Column(modifier = Modifier){
-                    HorizontalDivider(modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = colorResource(id = R.color.light_grey))
-                        .height(1.dp)
+                Column(modifier = Modifier) {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = colorResource(id = R.color.light_grey))
+                            .height(1.dp)
                     )
-
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(start = 12.dp)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(start = 12.dp)
                     ) {
 
                         FilterAndSortButtons(
-                            selectedFilter = searchBarViewState.filterType,
                             onClickFilter = {
                                 val bundle = Bundle()
                                 bundle.putString("type", it.name)
@@ -314,12 +303,11 @@ fun MarketScreen(
 
 
             }
+
+
         }
-
-
-
+    }
 }
-
 
 @Composable
 fun AutoScrollList(popularItemListState: LazyListState) {
