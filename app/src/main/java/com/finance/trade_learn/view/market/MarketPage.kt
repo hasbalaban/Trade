@@ -23,6 +23,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -224,6 +225,16 @@ fun SearchBar(viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()) {
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colors.onPrimary
+            )
+        },
+        trailingIcon = {
+            Icon(
+                modifier = Modifier.clickable {
+                    viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(searchText = ""))
+                },
+                imageVector = Icons.Default.Clear,
                 contentDescription = null,
                 tint = MaterialTheme.colors.onPrimary
             )
