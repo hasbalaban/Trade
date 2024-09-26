@@ -230,14 +230,16 @@ fun SearchBar(viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()) {
             )
         },
         trailingIcon = {
-            Icon(
-                modifier = Modifier.clickable {
-                    viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(searchText = ""))
-                },
-                imageVector = Icons.Default.Clear,
-                contentDescription = null,
-                tint = MaterialTheme.colors.onPrimary
-            )
+            if (searchBarViewState.searchText.isNotEmpty()){
+                Icon(
+                    modifier = Modifier.clickable {
+                        viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(searchText = ""))
+                    },
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = null,
+                    tint = MaterialTheme.colors.onPrimary
+                )
+            }
         },
         modifier = Modifier
             .height(56.dp)
