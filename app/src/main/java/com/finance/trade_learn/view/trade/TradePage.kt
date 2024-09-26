@@ -25,9 +25,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -387,7 +387,7 @@ fun TradeAmountInput(
                     imeAction = ImeAction.Done
                 ),
                 modifier = Modifier.weight(1f),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = androidx.compose.material.MaterialTheme.colors.onPrimary,
                     unfocusedTextColor = androidx.compose.material.MaterialTheme.colors.onPrimary,
                     focusedBorderColor = androidx.compose.material.MaterialTheme.colors.onPrimary,

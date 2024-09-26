@@ -199,6 +199,7 @@ fun StockitPortfolioScreen(
                                     openTradePage.invoke(it.CoinName)
                                 }
                                 .sizeIn(minWidth = 220.dp)
+                                .padding(start = 4.dp)
                         )
                     }
                 }
