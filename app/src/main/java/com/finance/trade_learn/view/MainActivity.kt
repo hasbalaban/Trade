@@ -157,8 +157,6 @@ class MainActivity : AppCompatActivity() {
                 val bottomAppBarState = BottomAppBarState(0f, 0f, 0f)
                 val bottomScrollBehavior =
                     BottomAppBarDefaults.exitAlwaysScrollBehavior(state = bottomAppBarState)
-                val topScrollBehavior =
-                    TopAppBarDefaults.enterAlwaysScrollBehavior(snapAnimationSpec = spring(stiffness = Spring.StiffnessLow))
 
 
                 val isLockedScreen by BaseViewModel.lockMainActivityToAction.observeAsState(true)
@@ -184,24 +182,7 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     Scaffold(
                         modifier = Modifier
-                            .nestedScroll(bottomScrollBehavior.nestedScrollConnection)
-                            .nestedScroll(topScrollBehavior.nestedScrollConnection),
-                        topBar = {
-                            TopAppBar(
-                                title = {
-                                    Text(
-                                        text = stringResource(id = R.string.app_name),
-                                        fontSize = 20.sp,
-                                        textAlign = TextAlign.Center
-                                    )
-                                },
-                                colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = MaterialTheme.colors.primary,
-                                    scrolledContainerColor = MaterialTheme.colors.primary
-                                ),
-                                scrollBehavior = topScrollBehavior
-                            )
-                        },
+                            .nestedScroll(bottomScrollBehavior.nestedScrollConnection),
                         bottomBar = {
                             BottomNavigationBar(
                                 navController = navController,
@@ -211,7 +192,6 @@ class MainActivity : AppCompatActivity() {
                         backgroundColor = MaterialTheme.colors.primary
                     ) { innerPadding ->
                         MainScreen(
-                            scrollBehavior = topScrollBehavior,
                             navController,
                             modifier = Modifier.padding(innerPadding)
                         )
@@ -241,10 +221,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun MainScreen(
-        scrollBehavior: TopAppBarScrollBehavior,
         navController: NavHostController,
         modifier: Modifier = Modifier
     ) {
@@ -254,7 +232,7 @@ class MainActivity : AppCompatActivity() {
 
 
         NavHost(
-            modifier = modifier,
+            modifier = modifier.padding(top = 24.dp),
             navController = navController,
             startDestination = Screens.Home.route
         ) {

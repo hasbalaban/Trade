@@ -42,20 +42,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
@@ -91,29 +87,17 @@ private fun composeEmail(addresses: Array<String>, subject: String, context: Con
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainToolbar(scrollBehavior: TopAppBarScrollBehavior, openTradePage: (String) -> Unit,
-                        viewModel: MarketViewModel = hiltViewModel()
+private fun MainToolbar(
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     LargeTopAppBar(
-        title = {TopAppBarScreen(openTradePage)},
-        actions = {
-            FilterAndSortButtons(
-                onClickFilter = {
-                    val bundle = Bundle()
-                    bundle.putString("type", it.name)
-                    FirebaseLogEvents.logClickFilterEvent(bundle)
-
-                    viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(filterType = it))
-                }
-            )
-        },
-        expandedHeight = 320.dp, // Dinamik olarak hesaplanan yükseklik atanıyor
+        title = { SearchBar() },
+        expandedHeight = 60.dp,
+        collapsedHeight = 0.dp,
         colors = topAppBarColors(
             containerColor = MaterialTheme.colors.primary,
             scrolledContainerColor = MaterialTheme.colors.primary
         ),
-
-        windowInsets = TopAppBarDefaults.windowInsets,
         scrollBehavior = scrollBehavior
     )
 
@@ -132,7 +116,7 @@ private fun PopularSection(
     AutoScrollList(popularItemListState = popularItemListState)
 
 
-    Column(modifier = Modifier.height(210.dp)){
+    Column(modifier = Modifier.padding(start = 16.dp)){
 
         Text(
             modifier = Modifier
@@ -150,7 +134,7 @@ private fun PopularSection(
                 state = popularItemListState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 2.dp)
+                    .padding(top = 8.dp)
             ) {
                 items(popularItems) {
 
@@ -177,15 +161,6 @@ private fun PopularSection(
             }
         }
 
-    }
-}
-
-@Composable
-private fun TopAppBarScreen(openTradePage: (String) -> Unit){
-    Column(modifier = Modifier.height(260.dp)) {
-        SearchBar()
-
-        PopularSection(openTradePage = openTradePage)
     }
 }
 
@@ -286,8 +261,6 @@ fun MarketScreen(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-
-
     LaunchedEffect(scrollBehavior.state.collapsedFraction) {
         if (viewModel.searchBarViewState.value.isFocused) {
             viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(isFocused = false))
@@ -296,14 +269,13 @@ fun MarketScreen(
 
 
     Column(modifier = Modifier.fillMaxSize()) {
-
-
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+            ,
             topBar = {
-                MainToolbar(scrollBehavior = scrollBehavior, openTradePage = openTradePage)
+                MainToolbar(scrollBehavior = scrollBehavior)
             },
             containerColor = MaterialTheme.colors.primary
         ) { it ->
@@ -314,11 +286,24 @@ fun MarketScreen(
                     .fillMaxSize()
             ) {
 
+
+                PopularSection(openTradePage = openTradePage)
+
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(color = colorResource(id = R.color.light_grey))
                         .height(1.dp)
+                )
+
+                FilterAndSortButtons(
+                    onClickFilter = {
+                        val bundle = Bundle()
+                        bundle.putString("type", it.name)
+                        FirebaseLogEvents.logClickFilterEvent(bundle)
+
+                        viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(filterType = it))
+                    }
                 )
 
                 Column(
