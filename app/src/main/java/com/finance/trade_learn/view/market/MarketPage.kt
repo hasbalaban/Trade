@@ -5,8 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.ViewTreeObserver
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -28,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -42,16 +41,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
@@ -84,20 +87,36 @@ private fun composeEmail(addresses: Array<String>, subject: String, context: Con
     }catch (_:Exception){ }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainToolbar(scrollBehavior: TopAppBarScrollBehavior) {
-    androidx.compose.material3.TopAppBar(
-        modifier = Modifier.padding(0.dp),
+private fun MainToolbar(scrollBehavior: TopAppBarScrollBehavior, openTradePage: (String) -> Unit,
+                        viewModel: MarketViewModel = hiltViewModel()
+) {
+    LargeTopAppBar(
+        title = {TopAppBarScreen(openTradePage)},
+        actions = {
+            FilterAndSortButtons(
+                onClickFilter = {
+                    val bundle = Bundle()
+                    bundle.putString("type", it.name)
+                    FirebaseLogEvents.logClickFilterEvent(bundle)
+
+                    viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(filterType = it))
+                }
+            )
+        },
+        expandedHeight = 320.dp, // Dinamik olarak hesaplanan yükseklik atanıyor
         colors = topAppBarColors(
             containerColor = MaterialTheme.colors.primary,
             scrolledContainerColor = MaterialTheme.colors.primary
         ),
-        title = {
-            SearchBar()
-        },
+
+        windowInsets = TopAppBarDefaults.windowInsets,
         scrollBehavior = scrollBehavior
     )
+
+
 }
 
 
@@ -112,8 +131,12 @@ private fun PopularSection(
     AutoScrollList(popularItemListState = popularItemListState)
 
 
-    Column(modifier = Modifier.padding(start = 12.dp),){
+    Column(modifier = Modifier.height(210.dp)){
+
         Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 2.dp),
             text = stringResource(id = R.string.popular_coins),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
@@ -126,7 +149,7 @@ private fun PopularSection(
                 state = popularItemListState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .padding(top = 2.dp)
             ) {
                 items(popularItems) {
 
@@ -145,12 +168,23 @@ private fun PopularSection(
                             .clickable {
                                 openTradePage.invoke(it.id)
                             }
-                            .sizeIn(minWidth = 200.dp)
+                            .sizeIn(minWidth = 220.dp)
+                            .padding(start = 4.dp, bottom = 8.dp,)
+
                     )
                 }
             }
         }
 
+    }
+}
+
+@Composable
+private fun TopAppBarScreen(openTradePage: (String) -> Unit){
+    Column(modifier = Modifier.height(260.dp)) {
+        SearchBar()
+
+        PopularSection(openTradePage = openTradePage)
     }
 }
 
@@ -195,6 +229,7 @@ fun SearchBar(viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()) {
             )
         },
         modifier = Modifier
+            .height(56.dp)
             .onFocusChanged { focusState ->
                 viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(isFocused = focusState.isFocused))
 
@@ -203,7 +238,8 @@ fun SearchBar(viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()) {
                 }
             }
             .fillMaxWidth()
-            .padding(end = 16.dp),
+            .padding(end = 16.dp)
+        ,
         shape = RoundedCornerShape(20),
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = MaterialTheme.colors.primaryVariant,
@@ -235,7 +271,7 @@ fun MarketScreen(
 ) {
     val listOfItems by viewModel.itemList.collectAsState()
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(snapAnimationSpec = spring(stiffness = Spring.StiffnessLow))
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
 
 
@@ -254,7 +290,7 @@ fun MarketScreen(
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                MainToolbar(scrollBehavior = scrollBehavior)
+                MainToolbar(scrollBehavior = scrollBehavior, openTradePage = openTradePage)
             },
             containerColor = MaterialTheme.colors.primary
         ) { it ->
@@ -265,45 +301,28 @@ fun MarketScreen(
                     .fillMaxSize()
             ) {
 
-                PopularSection(openTradePage = openTradePage)
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = colorResource(id = R.color.light_grey))
+                        .height(1.dp)
+                )
 
-                Column(modifier = Modifier) {
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(color = colorResource(id = R.color.light_grey))
-                            .height(1.dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+
+                    MarketPageItems(
+                        coinsHome = listOfItems,
+                        onViewClick = { selectedItemName ->
+                            openTradePage.invoke(selectedItemName)
+                        },
+                        navigateToLogin = navigateToLogin
                     )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .padding(start = 12.dp)
-                    ) {
-
-                        FilterAndSortButtons(
-                            onClickFilter = {
-                                val bundle = Bundle()
-                                bundle.putString("type", it.name)
-                                FirebaseLogEvents.logClickFilterEvent(bundle)
-
-                                viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(filterType = it))
-                            }
-                        )
-
-                        MarketPageItems(
-                            coinsHome = listOfItems,
-                            onViewClick = { selectedItemName ->
-                                openTradePage.invoke(selectedItemName)
-                            },
-                            navigateToLogin = navigateToLogin
-                        )
-                    }
                 }
-
-
             }
-
 
         }
     }
