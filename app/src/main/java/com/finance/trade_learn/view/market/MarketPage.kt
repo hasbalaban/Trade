@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -38,20 +40,25 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
@@ -63,7 +70,7 @@ import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.utils.FirebaseLogEvents
 import com.finance.trade_learn.view.LocalBaseViewModel
-import com.finance.trade_learn.view.MarketPageItems
+import com.finance.trade_learn.view.coin.CoinItemScreen
 import com.finance.trade_learn.view.home.PortfolioCard
 import com.finance.trade_learn.view.trade.FilterAndSortButtons
 import com.finance.trade_learn.viewModel.MarketViewModel
@@ -120,8 +127,7 @@ private fun PopularSection(
 
         Text(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 2.dp),
+                .fillMaxWidth(),
             text = stringResource(id = R.string.popular_coins),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
@@ -261,11 +267,13 @@ fun MarketScreen(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
+
     LaunchedEffect(scrollBehavior.state.collapsedFraction) {
         if (viewModel.searchBarViewState.value.isFocused) {
             viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value.copy(isFocused = false))
         }
     }
+
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -285,16 +293,7 @@ fun MarketScreen(
                     .padding(top = it.calculateTopPadding())
                     .fillMaxSize()
             ) {
-
-
-                PopularSection(openTradePage = openTradePage)
-
-                HorizontalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = colorResource(id = R.color.light_grey))
-                        .height(1.dp)
-                )
+                TopSection(scrollBehavior = scrollBehavior)
 
                 FilterAndSortButtons(
                     onClickFilter = {
@@ -306,19 +305,25 @@ fun MarketScreen(
                     }
                 )
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                ) {
-
-                    MarketPageItems(
-                        coinsHome = listOfItems,
-                        onViewClick = { selectedItemName ->
-                            openTradePage.invoke(selectedItemName)
-                        },
-                        navigateToLogin = navigateToLogin
-                    )
+                listOfItems.let {item ->
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(start = 16.dp)){
+                        items(
+                            items = item,
+                            key = {
+                                it.id
+                            }
+                        ){
+                            CoinItemScreen(
+                                coin = it,
+                                navigateToLogin = navigateToLogin,
+                                clickedItem = { selectedItemName ->
+                                    openTradePage.invoke(selectedItemName)
+                                }
+                            )
+                        }
+                    }
                 }
             }
 
@@ -337,6 +342,69 @@ fun AutoScrollList(popularItemListState: LazyListState) {
             popularItemListState.animateScrollToItem(newPosition)
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TopSection(
+    scrollBehavior: TopAppBarScrollBehavior,
+){
+
+
+    var size : Pair<Dp, Dp>? by remember {
+        mutableStateOf(null)
+    }
+    val newHeight by remember {
+        derivedStateOf {
+            size?.let { (it.second - (it.second * scrollBehavior.state.collapsedFraction)) } ?: 0.dp
+
+        }
+    }
+
+    CalculateSize(
+        calculatedSize = {
+            if (size != null) return@CalculateSize
+            size = it
+        }
+    ) {
+        Column(
+            modifier = Modifier.then(
+                if (size == null) Modifier
+                else Modifier.height(newHeight)
+            )
+        ) {
+            PopularSection { }
+            HorizontalDivider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = colorResource(id = R.color.light_grey))
+                    .height(1.dp)
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun CalculateSize(calculatedSize : (Pair<Dp, Dp>) -> Unit, content: @Composable () -> Unit){
+    var size by remember { mutableStateOf(Pair(0.dp, 0.dp)) }
+    val localDensity = LocalDensity.current
+
+
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight()
+        .onGloballyPositioned { coordinates ->
+            size = with(localDensity) {
+                val width = coordinates.size.width.toDp()
+                val height = coordinates.size.height.toDp()
+                Pair(first = width, second = height)
+            }
+            calculatedSize.invoke(size)
+        }) {
+        content()
+    }
+
 }
 
 
