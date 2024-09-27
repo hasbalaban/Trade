@@ -13,30 +13,6 @@ import androidx.compose.ui.unit.dp
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.view.coin.CoinItemScreen
 
-@Composable
-fun MarketPageItems (
-    coinsHome: List<CoinsHome>?,
-    onViewClick : (String) -> Unit,
-    navigateToLogin : () -> Unit,
-) {
-    coinsHome?.let {item ->
-
-        LazyColumn(modifier = Modifier.padding(start = 16.dp)){
-            items(
-                items = item,
-                key = {
-                    it.id
-                }
-            ){
-                CoinItemScreen(
-                    coin = it,
-                    navigateToLogin = navigateToLogin,
-                    clickedItem = onViewClick
-                )
-            }
-        }
-    }
-}
 
 @Preview
 @Composable
