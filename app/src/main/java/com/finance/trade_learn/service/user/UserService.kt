@@ -1,5 +1,6 @@
 package com.finance.trade_learn.service.user
 
+import com.finance.trade_learn.database.dataBaseEntities.TableRow
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 import com.finance.trade_learn.models.NewUserRequest
@@ -56,6 +57,12 @@ interface UserService {
     suspend fun addOrRemoveWatchListItem(
         @Body watchListRequestItem : WatchListRequestItem
     ): Response<WrapResponse<List<WatchListItem>>>
+
+
+
+
+    @GET("/currencies")
+    suspend fun getAllCurrencies(): Response<WrapResponse<List<TableRow>>>
 
 
 }

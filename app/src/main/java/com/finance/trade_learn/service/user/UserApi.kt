@@ -1,5 +1,6 @@
 package com.finance.trade_learn.service.user
 
+import com.finance.trade_learn.database.dataBaseEntities.TableRow
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactions
 import com.finance.trade_learn.database.dataBaseEntities.UserTransactionsRequest
 import com.finance.trade_learn.models.ErrorResponse
@@ -143,6 +144,11 @@ class UserApi {
 
     suspend fun addOrRemoveWatchListItem(watchListRequestItem : WatchListRequestItem): Response<WrapResponse<List<WatchListItem>>> {
         return userService.addOrRemoveWatchListItem(watchListRequestItem = watchListRequestItem)
+    }
+
+
+    suspend fun getAllCurrencies(): Response<WrapResponse<List<TableRow>>> {
+        return userService.getAllCurrencies()
     }
 
 }

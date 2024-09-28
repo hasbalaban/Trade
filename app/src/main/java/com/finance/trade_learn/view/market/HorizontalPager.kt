@@ -26,12 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finance.trade_learn.view.market.currenciesScreen.CurrenciesScreen
 import kotlinx.coroutines.launch
 
 
-val tabList = listOf("Coin", "Currencies", "Other")
+val tabList = listOf("Coin", "Currencies")
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HorizontalPagerScreen(
     openTradePage: (String) -> Unit,
@@ -47,7 +47,7 @@ fun HorizontalPagerScreen(
 
         ScrollableTabRow(
             selectedTabIndex = pagerState.currentPage,
-            edgePadding = 12.dp,
+            //edgePadding = 12.dp,
             backgroundColor = MaterialTheme.colors.primary,
             indicator = {tabPositions ->
                 HorizontalDivider(
@@ -77,13 +77,7 @@ fun HorizontalPagerScreen(
                                 1 ->{
                                     Text(
                                         text = "Currencies", color = MaterialTheme.colors.onPrimary,
-                                        fontSize = 24.sp
-                                    )
-                                }
-                                else ->{
-                                    Text(
-                                        text = "Other", color = MaterialTheme.colors.onPrimary,
-                                        fontSize = 24.sp
+                                        fontSize = 24.sp, style = androidx.compose.material3.MaterialTheme.typography.titleLarge
                                     )
                                 }
 
@@ -120,11 +114,7 @@ fun HorizontalPagerScreen(
                         )
                     }
                     1 -> {
-                        Text(
-                            text = "Currencies...",
-                            color = MaterialTheme.colors.onPrimary,
-                            fontSize = 24.sp
-                        )
+                        CurrenciesScreen()
                     }
 
                     else -> {

@@ -6,6 +6,7 @@ data class NewModelForItemHistory(
     var CoinName: String,
     var CoinAmount: Double,
     var Total: BigDecimal,
-    val Image: String,
+    val Image: String?,
     val currentPrice : String,
+    val percentChange : String? = null,
 )
