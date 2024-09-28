@@ -346,8 +346,8 @@ fun PortfolioCard1(
             portfolioItem.percentChange?.let {
                 Image(
                     modifier = Modifier
-                        .padding(horizontal = 14.dp)
-                        .size(height = 10.dp, width = 20.dp)
+                        .padding(end = 10.dp)
+                        .size(height = 10.dp, width = 16.dp)
                         .rotate(
                             if (!it.contains("-")) 0.0f else 180f
                         ),
@@ -391,6 +391,17 @@ fun PortfolioCard1(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.End
             )
+
+
+            portfolioItem.percentChange?.let {
+                Text(
+                    text = portfolioItem.percentChange,
+                    style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.End
+                )
+            }
 
 
         }
