@@ -10,6 +10,7 @@ import com.finance.trade_learn.models.UserBalance
 import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
+import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import com.finance.trade_learn.models.modelsConvector.CoinsHome
 import com.finance.trade_learn.models.watchList.WatchListItem
 import com.finance.trade_learn.models.watchList.WatchListRequestItem
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,7 +37,7 @@ open class BaseViewModel @Inject constructor(
     private var userPassword = ""
 
 
-    var listOfCryptoForPopular = MutableLiveData<List<CoinsHome>>()
+    var listOfCryptoForPopular = MutableLiveData<List<NewModelForItemHistory>>()
 
     private val _shouldShowBottomNavigationBar = MutableLiveData<Boolean>()
     val shouldShowBottomNavigationBar : LiveData<Boolean> get() = _shouldShowBottomNavigationBar
@@ -82,7 +84,7 @@ open class BaseViewModel @Inject constructor(
 
 
 
-    private fun convertPopularCoinList(list: List<CoinsHome>?): ArrayList<CoinsHome> {
+    private fun convertPopularCoinList(list: List<CoinsHome>?): List<NewModelForItemHistory> {
         val popList = arrayListOf<CoinsHome>()
         val populerlist = mutableListOf("bit", "bnb", "eth", "sol", "gate", "avax")
         list?.let{
@@ -99,7 +101,15 @@ open class BaseViewModel @Inject constructor(
                 if (!popList.contains(i)) popList.add(i)
             }
         }
-        return popList
+        return popList.map {
+            NewModelForItemHistory(
+                CoinName = it.CoinName.split(" ").first(),
+                CoinAmount = it.CoinPrice.toDoubleOrNull() ?: 0.0,
+                Total = BigDecimal.ZERO,
+                Image = it.CoinImage,
+                currentPrice = it.CoinPrice + " $" ,
+            )
+        }
     }
 
 
