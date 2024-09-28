@@ -258,7 +258,8 @@ fun WalletContent(navigateToHistoryPage: () -> Unit, openTradePage : (String) ->
             }) { item ->
 
                 PortfolioCard1(
-                    item, modifier = Modifier
+                    portfolioItem = item,
+                    modifier = Modifier
                         .clickable {
                             openTradePage.invoke(item.CoinName)
                         }
