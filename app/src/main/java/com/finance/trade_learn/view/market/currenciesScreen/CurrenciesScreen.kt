@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -45,33 +48,36 @@ fun CurrenciesScreen(viewModel: CurrenciesViewModel = hiltViewModel()) {
     val items by BaseViewModel.currencies.collectAsState()
     val mappedList = items.toMap()
 
-
-
     LazyColumn(modifier = Modifier.fillMaxWidth()
     ) {
         stickyHeader {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colors.primary)
-                    .padding(vertical = 6.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Spacer(modifier = Modifier.width(68.dp))
-                Text(stringResource(id = R.string.Symbol_text), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier
-                    .weight(1f).padding(start = 10.dp), overflow = TextOverflow.Ellipsis)
-                Text(stringResource(id = R.string.buy).replace(":", ""), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
-                Text(stringResource(id = R.string.sell), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
-                Spacer(modifier = Modifier.width(24.dp))
+
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.primary)
+                        .padding(top = 6.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(modifier = Modifier.width(68.dp))
+                    Text(stringResource(id = R.string.Symbol_text), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier
+                        .weight(1f).padding(start = 12.dp), overflow = TextOverflow.Ellipsis)
+                    Text(stringResource(id = R.string.buy).replace(":", ""), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                    Text(stringResource(id = R.string.sell), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                    Spacer(modifier = Modifier.width(24.dp))
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+
             }
-            Spacer(modifier = Modifier.height(4.dp))
         }
 
         items(mappedList){
 
 
             PortfolioCard1(
+                isCurrency = true,
                 it,
                 modifier = Modifier
                     .clickable {

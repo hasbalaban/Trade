@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
 import java.math.BigDecimal
+import java.util.Locale
 
 @Entity(tableName = "myCoins")
 data class MyCoins(
@@ -29,8 +30,7 @@ data class TableRow(
 )
 
 fun List<TableRow>.toMap(): List<NewModelForItemHistory> {
-
-    return map {
+    val mappedList = map {
         NewModelForItemHistory(
             CoinName = it.Sembol,
             CoinAmount =  it.Alış.toDouble(),
@@ -40,4 +40,18 @@ fun List<TableRow>.toMap(): List<NewModelForItemHistory> {
             percentChange = it.FarkYüzde
         )
     }
+
+    val adjustedList = if (Locale.getDefault().country.equals(other = "tr", ignoreCase = true)) mappedList
+    else {
+        val (firstList, secondList) =  mappedList.partition{item ->
+
+            val a = listOf("usd", "eur", "gbp", "jpy", "cad", "sek", "chf", "try", "rub")
+            a.any {
+                it.contains(other = item.CoinName, ignoreCase = true)
+            }
+        }
+
+        firstList.shuffled() + secondList
+    }
+    return adjustedList
 }

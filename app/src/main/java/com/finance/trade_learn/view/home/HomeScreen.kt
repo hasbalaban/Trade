@@ -322,6 +322,7 @@ fun PortfolioCard(
 
 @Composable
 fun PortfolioCard1(
+    isCurrency : Boolean = false,
     portfolioItem: NewModelForItemHistory,
     modifier: Modifier,
 ) {
@@ -373,16 +374,18 @@ fun PortfolioCard1(
                 overflow = TextOverflow.Ellipsis
             )
 
+
+            val preText = if (isCurrency) "" else "$"
             Text(
                 modifier = Modifier.weight(1f),
-                text = portfolioItem.CoinAmount.format(2),
+                text = preText + portfolioItem.CoinAmount.format(2),
                 color = MaterialTheme.colors.onPrimary,
                 style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End
             )
 
             Text(
-                "\$${portfolioItem.Total.toDouble().format(2)}",
+                text = preText + portfolioItem.Total.toDouble().format(2),
                 style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colors.onPrimary,
                 modifier = Modifier.weight(1f),
