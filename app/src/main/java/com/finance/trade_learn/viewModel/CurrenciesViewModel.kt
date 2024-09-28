@@ -18,23 +18,6 @@ data class CurrenciesUiState(
 
 class CurrenciesViewModel : ViewModel() {
 
-    init {
-        getAllCurrencies()
-    }
 
 
-    private fun getAllCurrencies(){
-        viewModelScope.launch {
-            val userService = UserApi()
-            val response = userService.getAllCurrencies()
-
-            if (response.isSuccessful){
-                response.body()?.data?.let {
-                    updateCurrencies(it)
-                }
-                return@launch
-            }
-
-        }
-    }
 }
