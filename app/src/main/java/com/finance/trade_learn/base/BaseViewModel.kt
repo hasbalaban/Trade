@@ -34,6 +34,9 @@ import javax.inject.Inject
 open class BaseViewModel @Inject constructor(
 ) : ViewModel() {
 
+    init {
+        getAllCurrencies()
+    }
 
     private var userEmail = ""
     private var userPassword = ""
@@ -199,6 +202,22 @@ open class BaseViewModel @Inject constructor(
             println(response.body()?.message)
         }
     }
+
+    private fun getAllCurrencies(){
+        viewModelScope.launch {
+            val userService = UserApi()
+            val response = userService.getAllCurrencies()
+
+            if (response.isSuccessful){
+                response.body()?.data?.let {
+                    updateCurrencies(it)
+                }
+                return@launch
+            }
+
+        }
+    }
+
 
 
     companion object {
