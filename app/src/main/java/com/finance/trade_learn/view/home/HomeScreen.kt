@@ -430,7 +430,7 @@ private fun BalanceCard(clickedViewAll: () -> Unit) {
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = "\$${animatedBalance}",
+                text = "\$${animatedBalance.toDouble().format(2)}",
                 style = MaterialTheme.typography.h4.copy(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primary,

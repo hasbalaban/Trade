@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
@@ -159,6 +160,10 @@ fun ItemIcon(imageUrl: String, itemName: String, modifier: Modifier = Modifier) 
                 crossfade(true)
                 placeholder(R.drawable.placeholder)
                 error(R.drawable.error)
+
+                memoryCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.ENABLED)
+                networkCachePolicy(CachePolicy.READ_ONLY)
             }
             .build()
     )
