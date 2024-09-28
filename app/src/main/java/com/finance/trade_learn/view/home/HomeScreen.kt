@@ -236,7 +236,7 @@ fun PortfolioCard(
             .padding(end = 10.dp)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
         ) {
@@ -252,23 +252,19 @@ fun PortfolioCard(
 
                 Column(modifier = Modifier.padding(start = 16.dp)) {
                     Text(
-                        text = item.symbol,
+                        text = item.name,
                         style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colors.onPrimary
                     )
                     Text(
-                        text = item.name,
+                        text = item.symbol,
                         style = MaterialTheme.typography.body2.copy(color = Color.Gray),
                         color = MaterialTheme.colors.onPrimary.copy(alpha = 0.9f)
                     )
                 }
             }
 
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(16.dp)
-            )
+            Spacer(modifier = Modifier.fillMaxWidth().height(8.dp))
 
             Row(
                 modifier = modifier.fillMaxWidth(),

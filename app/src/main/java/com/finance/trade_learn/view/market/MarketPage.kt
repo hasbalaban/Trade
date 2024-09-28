@@ -123,10 +123,11 @@ private fun PopularSection(
     AutoScrollList(popularItemListState = popularItemListState)
 
 
-    Column(modifier = Modifier.padding(start = 16.dp)){
+    Column(modifier = Modifier){
 
         Text(
             modifier = Modifier
+                .padding(start = 12.dp)
                 .fillMaxWidth(),
             text = stringResource(id = R.string.popular_coins),
             fontSize = 18.sp,
@@ -139,29 +140,19 @@ private fun PopularSection(
             LazyRow(
                 state = popularItemListState,
                 modifier = Modifier
+                    .padding(start = 8.dp)
+                    .padding(vertical = 8.dp)
                     .fillMaxWidth()
-                    .padding(top = 8.dp)
             ) {
                 items(popularItems) {
-
-                    val item = NewModelForItemHistory(
-                        CoinName = it.CoinName.split(" ").first(),
-                        CoinAmount = it.CoinPrice.toDoubleOrNull() ?: 0.0,
-                        Total = BigDecimal.ZERO,
-                        Image = it.CoinImage,
-                        currentPrice = it.CoinPrice + " $" ,
-                    )
-
-
                     PortfolioCard(
-                        portfolioItem = item,
+                        portfolioItem = it,
                         modifier = Modifier
+                            .padding(start = 4.dp)
                             .clickable {
-                                openTradePage.invoke(it.id)
+                                openTradePage.invoke(it.CoinName)
                             }
                             .sizeIn(minWidth = 220.dp)
-                            .padding(start = 4.dp, bottom = 8.dp,)
-
                     )
                 }
             }
@@ -179,6 +170,7 @@ fun SearchBar(viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    val items = BaseViewModel.currentItems.collectAsState()
 
     LaunchedEffect(isKeyboardOpen){
         if (!isKeyboardOpen) focusManager.clearFocus()
@@ -190,7 +182,6 @@ fun SearchBar(viewModel : MarketViewModel = hiltViewModel<MarketViewModel>()) {
         }
     }
 
-    val items = BaseViewModel.currentItems.collectAsState()
 
     LaunchedEffect(items.value) {
         viewModel.updateSearchBarViewState(viewModel.searchBarViewState.value)
