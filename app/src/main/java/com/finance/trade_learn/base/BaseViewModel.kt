@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.finance.trade_learn.database.dataBaseEntities.TableRow
 import com.finance.trade_learn.models.UserBalance
 import com.finance.trade_learn.models.UserInfo
 import com.finance.trade_learn.models.WrapResponse
@@ -23,6 +24,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -204,6 +206,10 @@ open class BaseViewModel @Inject constructor(
         var allCryptoItems = MutableStateFlow<MutableList<CoinDetail>>(mutableListOf())
 
 
+        private var _currencies = MutableStateFlow<List<TableRow>>(emptyList())
+        var currencies = _currencies.asStateFlow()
+
+
         private val _userInfo = MutableStateFlow<WrapResponse<UserInfo>>(WrapResponse())
         val userInfo : StateFlow<WrapResponse<UserInfo>> get() = _userInfo
 
@@ -226,6 +232,11 @@ open class BaseViewModel @Inject constructor(
 
         fun updateUserWatchList(userWatchList: List<WatchListItem>){
             _userInfo.value = userInfo.value.copy(data = userInfo.value.data?.copy(userWatchList = userWatchList))
+        }
+
+
+        fun updateCurrencies(currencies: List<TableRow>){
+            _currencies.value = currencies
         }
 
         fun updateUserLoginStatus(isLogin : Boolean){

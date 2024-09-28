@@ -325,6 +325,9 @@ fun PortfolioCard1(
     portfolioItem: NewModelForItemHistory,
     modifier: Modifier,
 ) {
+    val priceChangeColor = if (portfolioItem.percentChange?.contains("-") == false) Color(0xFF4CAF50) else Color(0xFFF44336)
+
+
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -338,7 +341,22 @@ fun PortfolioCard1(
             .fillMaxWidth()
             .padding(vertical = 12.dp, horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically) {
 
-            ItemIcon(
+
+            portfolioItem.percentChange?.let {
+                Image(
+                    modifier = Modifier
+                        .padding(horizontal = 14.dp)
+                        .size(height = 10.dp, width = 20.dp)
+                        .rotate(
+                            if (!it.contains("-")) 0.0f else 180f
+                        ),
+                    painter = painterResource(id = R.drawable.arrow),
+                    contentDescription = stringResource(id = R.string.change24),
+                    colorFilter = ColorFilter.tint(priceChangeColor),
+                    contentScale = ContentScale.FillBounds,
+                    alignment = Alignment.TopStart
+                )
+            }?: ItemIcon(
                 imageUrl = portfolioItem.Image,
                 itemName = portfolioItem.CoinName,
                 modifier = Modifier.size(40.dp)

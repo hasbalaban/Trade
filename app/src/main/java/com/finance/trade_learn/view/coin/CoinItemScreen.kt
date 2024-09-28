@@ -151,7 +151,8 @@ fun CoinItemScreen(
 }
 
 @Composable
-fun ItemIcon(imageUrl: String, itemName: String, modifier: Modifier = Modifier) {
+fun ItemIcon(imageUrl: String?, itemName: String, modifier: Modifier = Modifier) {
+    if (imageUrl.isNullOrBlank()) return
 
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(LocalContext.current)
