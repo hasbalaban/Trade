@@ -66,7 +66,7 @@ fun CurrenciesScreen(viewModel: CurrenciesViewModel = hiltViewModel()) {
                         .weight(1f).padding(start = 12.dp), overflow = TextOverflow.Ellipsis)
                     Text(stringResource(id = R.string.buy).replace(":", ""), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
                     Text(stringResource(id = R.string.sell), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
-                    Text(stringResource(id = R.string.change).replace(": ", ""), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                    Text(stringResource(id = R.string.change).replace(": ", ""), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = MaterialTheme.colors.onPrimary, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
                     Spacer(modifier = Modifier.width(24.dp))
                 }
                 Spacer(modifier = Modifier.height(4.dp))
