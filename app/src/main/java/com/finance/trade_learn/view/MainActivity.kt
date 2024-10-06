@@ -439,8 +439,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setup() {
-        isOneEntering()
-        checkIsAdShowed()
+        val viewModelUtils = ViewModelUtils()
+        val firstLogin = viewModelUtils.isOneEntering(this)
+        isOneEntering(state = firstLogin)
+        if (!firstLogin){
+            checkIsAdShowed()
+        }
         showNotificationPermission()
         //Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
     }
@@ -476,9 +480,7 @@ class MainActivity : AppCompatActivity() {
 
 
     //check is first entering or no ? // if it's first time add 1000 dollars
-    private fun isOneEntering() {
-        val viewModelUtils = ViewModelUtils()
-        val state = viewModelUtils.isOneEntering(this)
+    private fun isOneEntering(state : Boolean) {
         if (state) {
             // create notification
             NotificationWorkManager(3, TimeUnit.DAYS, this)
