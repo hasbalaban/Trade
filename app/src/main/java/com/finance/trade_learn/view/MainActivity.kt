@@ -21,6 +21,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -439,8 +440,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setup() {
-        isOneEntering()
-        checkIsAdShowed()
+        val viewModelUtils = ViewModelUtils()
+        val firstLogin = viewModelUtils.isOneEntering(this)
+        isOneEntering(state = firstLogin)
+        if (!firstLogin){
+            checkIsAdShowed()
+        }
         showNotificationPermission()
         //Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
     }
@@ -476,9 +481,7 @@ class MainActivity : AppCompatActivity() {
 
 
     //check is first entering or no ? // if it's first time add 1000 dollars
-    private fun isOneEntering() {
-        val viewModelUtils = ViewModelUtils()
-        val state = viewModelUtils.isOneEntering(this)
+    private fun isOneEntering(state : Boolean) {
         if (state) {
             // create notification
             NotificationWorkManager(3, TimeUnit.DAYS, this)
@@ -611,8 +614,8 @@ fun BottomNavigationBar(
         containerColor = MaterialTheme.colors.primary,
         contentColor = Color.White,
         tonalElevation = 8.dp,
-        modifier = Modifier
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+        contentPadding = PaddingValues(0.dp),
+        modifier = Modifier.clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
 
     ) {
         Constants.BottomNavItems.forEach { navItem ->

@@ -64,6 +64,8 @@ import com.finance.trade_learn.utils.percentageChange
 import com.finance.trade_learn.view.LocalHomeViewModel
 import com.finance.trade_learn.view.coin.CoinItemScreen
 import com.finance.trade_learn.view.coin.ItemIcon
+import com.finance.trade_learn.view.market.currenciesScreen.CurrenciesForHomeScreen
+import com.finance.trade_learn.view.market.currenciesScreen.CurrenciesScreen
 import com.finance.trade_learn.view.wallet.format
 import java.util.Calendar
 import java.util.Locale
@@ -157,7 +159,6 @@ fun StockitPortfolioScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        // Portfolio Section
 
         if (items.isNotEmpty()) {
             Row(
@@ -206,7 +207,6 @@ fun StockitPortfolioScreen(
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-
 
         WatchListSection(
             openTradePage = openTradePage,
@@ -264,7 +264,9 @@ fun PortfolioCard(
                 }
             }
 
-            Spacer(modifier = Modifier.fillMaxWidth().height(8.dp))
+            Spacer(modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp))
 
             Row(
                 modifier = modifier.fillMaxWidth(),
@@ -525,6 +527,11 @@ private fun WatchListSection(
             )
         }
     }?.mapNotNull { it }
+
+
+
+    //currencies
+    CurrenciesForHomeScreen()
 
     Text(
         text = stringResource(id = R.string.watchlist_text),
