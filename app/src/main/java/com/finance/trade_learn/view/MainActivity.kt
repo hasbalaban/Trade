@@ -21,6 +21,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -613,8 +614,8 @@ fun BottomNavigationBar(
         containerColor = MaterialTheme.colors.primary,
         contentColor = Color.White,
         tonalElevation = 8.dp,
-        modifier = Modifier
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+        contentPadding = PaddingValues(0.dp),
+        modifier = Modifier.clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
 
     ) {
         Constants.BottomNavItems.forEach { navItem ->
