@@ -36,6 +36,9 @@ import com.finance.trade_learn.viewModel.CurrenciesViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material.Text
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
@@ -44,6 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.finance.trade_learn.utils.FirebaseLogEvents
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -98,17 +102,39 @@ fun CurrenciesScreen(viewModel: CurrenciesViewModel = hiltViewModel()) {
 
 @Composable
 fun CurrenciesForHomeScreen(){
-    val items by BaseViewModel.currencies.collectAsState()
-    val adjustedList = items.toMap().chunked(2)
+    var isExpanded by remember { mutableStateOf(false) }
 
+    val items by BaseViewModel.currencies.collectAsState()
+    val adjustedList = items.toMap().chunked(
+        if (isExpanded) 2 else 1
+    )
 
     Column {
 
-        Text(
-            text = stringResource(id = R.string.currencies),
-            style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colors.onPrimary
-        )
+        Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
+
+            Text(
+                text = stringResource(id = R.string.currencies),
+                style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colors.onPrimary
+            )
+
+
+            Text(
+                text = if(isExpanded) stringResource(id = R.string.less) else stringResource(id = R.string.expand),
+                style = MaterialTheme.typography.h6.copy(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp,
+                    color = Color(0xff3E84F6)
+                ),
+                color = Color(0xff3E84F6),
+                modifier = Modifier.clickable {
+                    isExpanded = !isExpanded
+                    FirebaseLogEvents.logEvent("$isExpanded clicked")
+                }
+            )
+        }
+
 
 
         LazyRow {
@@ -171,7 +197,7 @@ fun StockCard(
     modifier: Modifier
 ) {
     Column(
-        modifier = modifier.padding(6.dp)) {
+        modifier = modifier.padding(4.dp)) {
         Text(
             text = title,
             fontWeight = FontWeight.Bold,
@@ -180,7 +206,7 @@ fun StockCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color(0xFFEBEBEB))
-                .padding(4.dp),
+                .padding(start = 4.dp, top = 4.dp, end = 2.dp, bottom = 4.dp),
             textAlign = TextAlign.Start
         )
 

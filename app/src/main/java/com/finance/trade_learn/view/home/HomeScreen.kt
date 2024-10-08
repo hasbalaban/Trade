@@ -21,7 +21,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
@@ -119,6 +121,8 @@ fun StockitPortfolioScreen(
     val viewModel = LocalHomeViewModel.current
     val items by viewModel.myCoinsNewModel.observeAsState(emptyList())
 
+    val scrollState = rememberScrollState()
+
 
     val userInfo = BaseViewModel.userInfo.collectAsState()
 
@@ -160,60 +164,65 @@ fun StockitPortfolioScreen(
 
 
 
-        if (items.isNotEmpty()) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = stringResource(id = R.string.portfolio_text),
-                    style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colors.onPrimary
-                )
-                Text(
-                    text = stringResource(id = R.string.view_all),
-                    style = MaterialTheme.typography.h6.copy(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp,
-                        color = Color(0xff3E84F6)
-                    ),
-                    color = Color(0xff3E84F6),
-                    modifier = Modifier.clickable {
-                        FirebaseLogEvents.logEvent("click View All")
-                        clickedViewAll.invoke()
-                    }
-                )
-            }
+        Column(modifier = Modifier){
 
-            Spacer(modifier = Modifier.height(8.dp))
+            if (items.isNotEmpty()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.portfolio_text),
+                        style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                    Text(
+                        text = stringResource(id = R.string.view_all),
+                        style = MaterialTheme.typography.h6.copy(
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp,
+                            color = Color(0xff3E84F6)
+                        ),
+                        color = Color(0xff3E84F6),
+                        modifier = Modifier.clickable {
+                            FirebaseLogEvents.logEvent("click View All")
+                            clickedViewAll.invoke()
+                        }
+                    )
+                }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(items) {
-                        PortfolioCard(
-                            portfolioItem = it,
-                            modifier = Modifier
-                                .clickable {
-                                    openTradePage.invoke(it.CoinName)
-                                }
-                                .sizeIn(minWidth = 220.dp)
-                                .padding(start = 4.dp)
-                        )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    LazyRow(modifier = Modifier.fillMaxWidth()) {
+                        items(items) {
+                            PortfolioCard(
+                                portfolioItem = it,
+                                modifier = Modifier
+                                    .clickable {
+                                        openTradePage.invoke(it.CoinName)
+                                    }
+                                    .sizeIn(minWidth = 220.dp)
+                                    .padding(start = 4.dp)
+                            )
+                        }
                     }
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
 
-        WatchListSection(
-            openTradePage = openTradePage,
-            openMarketPage = openMarketPage,
-            navigateToLogin = navigateToLogin,
-            navigateToSignUp = navigateToSignUp
-        )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            WatchListSection(
+                openTradePage = openTradePage,
+                openMarketPage = openMarketPage,
+                navigateToLogin = navigateToLogin,
+                navigateToSignUp = navigateToSignUp
+            )
+        }
+
 
     }
 }

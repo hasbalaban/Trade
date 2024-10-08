@@ -123,6 +123,8 @@
     <string name="Symbol_text">Symbol</string>
     <string name="change">Change</string>
     <string name="currencies">Currencies</string>
+    <string name="expand">Expand</string>
+    <string name="less">Less</string>
 
 
 </resources>
