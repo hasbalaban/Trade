@@ -148,6 +148,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+        val source = intent.getStringExtra("source")
+
+        val message = when(source){
+            "shortCut-Market-1" -> "shortCut-Market-1 üzerinden açıldı"
+            "shortCut-Market-2" -> "shortCut-Market-2 üzerinden açıldı"
+            else -> "Normal açılış"
+        }
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
         enableEdgeToEdge()
 
         setContent {
