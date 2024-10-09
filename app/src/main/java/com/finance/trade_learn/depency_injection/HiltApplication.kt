@@ -3,11 +3,16 @@ package com.finance.trade_learn.depency_injection
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
+import android.content.Intent
+import android.content.pm.ShortcutInfo
+import android.content.pm.ShortcutManager
+import android.graphics.drawable.Icon
 import android.util.Log
 import android.widget.Toast
 import com.finance.trade_learn.R
 import com.finance.trade_learn.utils.RemoteConfigs
 import com.finance.trade_learn.utils.RemoteConfigsConst
+import com.finance.trade_learn.view.MainActivity
 import com.google.firebase.Firebase
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -32,6 +37,8 @@ class HiltApplication : Application() {
     }
 
     private fun setup(){
+        setShortCut()
+
         remoteConfig = Firebase.remoteConfig
         val configSettings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = 3600
@@ -41,12 +48,39 @@ class HiltApplication : Application() {
 
         fetchAndActivateFirebase()
 
+
         return
         Thread.setDefaultUncaughtExceptionHandler { thread, exception ->
             handleUncaughtException(thread, exception)
         }
     }
 
+
+    private fun setShortCut(){
+        val shortcutManager = getSystemService(ShortcutManager::class.java)
+
+        val intent = Intent(this, MainActivity::class.java).setAction(Intent.ACTION_VIEW)
+        intent.putExtra("source", "shortCut-Market-1")
+
+        val intent2 = Intent(this, MainActivity::class.java).setAction(Intent.ACTION_VIEW)
+        intent.putExtra("source", "shortCut-Market-2")
+
+        val shortcut1 = ShortcutInfo.Builder(this, "market-1")
+            .setShortLabel("Market-1")
+            .setLongLabel("Open Example Activity")
+            .setIcon(Icon.createWithResource(this, R.drawable.market))
+            .setIntent(intent)
+            .build()
+
+        val shortcut2 = ShortcutInfo.Builder(this, "market-2")
+            .setShortLabel("Market-2")
+            .setLongLabel("Open Example Activity")
+            .setIcon(Icon.createWithResource(this, R.drawable.market))
+            .setIntent(intent2)
+            .build()
+
+        shortcutManager.dynamicShortcuts = listOf(shortcut1, shortcut2)
+    }
 
 
     // Hata yakalayıcı fonksiyon
