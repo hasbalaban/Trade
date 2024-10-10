@@ -21,29 +21,36 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,6 +58,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
@@ -66,8 +74,8 @@ import com.finance.trade_learn.utils.percentageChange
 import com.finance.trade_learn.view.LocalHomeViewModel
 import com.finance.trade_learn.view.coin.CoinItemScreen
 import com.finance.trade_learn.view.coin.ItemIcon
+import com.finance.trade_learn.view.market.CalculateSize
 import com.finance.trade_learn.view.market.currenciesScreen.CurrenciesForHomeScreen
-import com.finance.trade_learn.view.market.currenciesScreen.CurrenciesScreen
 import com.finance.trade_learn.view.wallet.format
 import java.util.Calendar
 import java.util.Locale
@@ -110,6 +118,7 @@ fun HomeScreen(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockitPortfolioScreen(
     openTradePage: (String) -> Unit,
@@ -121,99 +130,118 @@ fun StockitPortfolioScreen(
     val viewModel = LocalHomeViewModel.current
     val items by viewModel.myCoinsNewModel.observeAsState(emptyList())
 
-    val scrollState = rememberScrollState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
 
-    val userInfo = BaseViewModel.userInfo.collectAsState()
-
-    val greetingMessage by remember { mutableIntStateOf(getTimeBasedGreeting()) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 12.dp)
-    ) {
-
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-
-            Text(
-                text = stringResource(id = greetingMessage),
-                style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
-                color = MaterialTheme.colors.onPrimary
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            userInfo.value.data?.let {
-                Text(
-                    text = "-   " + it.nameAndSurname,
-                    style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
-                    color = MaterialTheme.colors.onPrimary
-                )
-            }
+    var size : Pair<Dp, Dp>? by remember {
+        mutableStateOf(null)
+    }
+    val newHeight by remember {
+        derivedStateOf {
+            size?.let { (it.second - (it.second * scrollBehavior.state.collapsedFraction)) } ?: 0.dp
 
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-
-        BalanceCard(clickedViewAll = clickedViewAll)
-
-
-        Spacer(modifier = Modifier.height(16.dp))
+    }
 
 
 
-        Column(modifier = Modifier){
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+        ,
+        topBar = {
+            MyToolbar(
+                scrollBehavior = scrollBehavior
+            )
+        },
+        backgroundColor = MaterialTheme.colors.primary
+    ) { it ->
 
-            if (items.isNotEmpty()) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.portfolio_text),
-                        style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colors.onPrimary
-                    )
-                    Text(
-                        text = stringResource(id = R.string.view_all),
-                        style = MaterialTheme.typography.h6.copy(
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
-                            color = Color(0xff3E84F6)
-                        ),
-                        color = Color(0xff3E84F6),
-                        modifier = Modifier.clickable {
-                            FirebaseLogEvents.logEvent("click View All")
-                            clickedViewAll.invoke()
-                        }
-                    )
+        Column(
+            modifier = Modifier
+                .padding(top = it.calculateTopPadding())
+                .fillMaxSize()
+                .padding(horizontal = 12.dp)
+        ) {
+
+
+            CalculateSize(
+                calculatedSize = {
+                    if (size != null) return@CalculateSize
+                    size = it
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
+                    modifier = Modifier.then(
+                        if (size == null) Modifier
+                        else Modifier.height(newHeight)
+                    )
                 ) {
-                    LazyRow(modifier = Modifier.fillMaxWidth()) {
-                        items(items) {
-                            PortfolioCard(
-                                portfolioItem = it,
-                                modifier = Modifier
-                                    .clickable {
-                                        openTradePage.invoke(it.CoinName)
-                                    }
-                                    .sizeIn(minWidth = 220.dp)
-                                    .padding(start = 4.dp)
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
+                    BalanceCard(clickedViewAll = clickedViewAll)
+
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
+
+
+                    if (items.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.portfolio_text),
+                                style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colors.onPrimary
+                            )
+                            Text(
+                                text = stringResource(id = R.string.view_all),
+                                style = MaterialTheme.typography.h6.copy(
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 16.sp,
+                                    color = Color(0xff3E84F6)
+                                ),
+                                color = Color(0xff3E84F6),
+                                modifier = Modifier.clickable {
+                                    FirebaseLogEvents.logEvent("click View All")
+                                    clickedViewAll.invoke()
+                                }
                             )
                         }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                                items(items) {
+                                    PortfolioCard(
+                                        portfolioItem = it,
+                                        modifier = Modifier
+                                            .clickable {
+                                                openTradePage.invoke(it.CoinName)
+                                            }
+                                            .sizeIn(minWidth = 220.dp)
+                                            .padding(start = 4.dp)
+                                    )
+                                }
+                            }
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             WatchListSection(
                 openTradePage = openTradePage,
@@ -221,10 +249,12 @@ fun StockitPortfolioScreen(
                 navigateToLogin = navigateToLogin,
                 navigateToSignUp = navigateToSignUp
             )
+
+
+
         }
-
-
     }
+
 }
 
 @Composable
@@ -670,6 +700,54 @@ fun EmptyWatchlist(openMarketPage: () -> Unit) {
             )
         }
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MyToolbar(
+    scrollBehavior: TopAppBarScrollBehavior
+) {
+
+    val userInfo = BaseViewModel.userInfo.collectAsState()
+
+    val greetingMessage by remember { mutableIntStateOf(getTimeBasedGreeting()) }
+
+    LargeTopAppBar(
+        title = {
+
+            Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+
+                Text(
+                    text = stringResource(id = greetingMessage),
+                    style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
+                    color = MaterialTheme.colors.onPrimary
+                )
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                userInfo.value.data?.let {
+                    Text(
+                        text = "-   " + it.nameAndSurname,
+                        style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                }
+
+            }
+        },
+        expandedHeight = 60.dp,
+        collapsedHeight = 0.dp,
+        colors = topAppBarColors(
+            containerColor = MaterialTheme.colors.primary,
+            scrolledContainerColor = MaterialTheme.colors.primary
+        ),
+        scrollBehavior = scrollBehavior
+    )
+
+
+
+
 }
 
 
