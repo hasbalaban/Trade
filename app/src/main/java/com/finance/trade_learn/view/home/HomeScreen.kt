@@ -678,7 +678,7 @@ fun getTimeBasedGreeting(): Int {
     val hour = calendar.get(Calendar.HOUR_OF_DAY)
 
     return when (hour) {
-        in 6..11 -> R.string.good_mornig
+        in 6..11 -> R.string.good_morning
         in 12..17 -> R.string.welcome
         in 18..23 -> R.string.good_evening
         else -> R.string.good_night
