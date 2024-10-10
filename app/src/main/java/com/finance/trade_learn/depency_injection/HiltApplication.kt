@@ -67,19 +67,19 @@ class HiltApplication : Application() {
 
         val shortcut1 = ShortcutInfo.Builder(this, "market-1")
             .setShortLabel("Market-1")
-            .setLongLabel("Open Example Activity")
-            .setIcon(Icon.createWithResource(this, R.drawable.market))
+            .setLongLabel("Open Example Activity-1")
+            .setIcon(Icon.createWithResource(this, R.drawable.home))
             .setIntent(intent)
             .build()
 
         val shortcut2 = ShortcutInfo.Builder(this, "market-2")
             .setShortLabel("Market-2")
-            .setLongLabel("Open Example Activity")
-            .setIcon(Icon.createWithResource(this, R.drawable.market))
+            .setLongLabel("Open Example Activity-2")
+            .setIcon(Icon.createWithResource(this, R.drawable.last_trade))
             .setIntent(intent2)
             .build()
 
-        shortcutManager.dynamicShortcuts = listOf(shortcut1, shortcut2)
+        shortcutManager.dynamicShortcuts = listOf(shortcut1)
     }
 
 
