@@ -32,7 +32,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -160,7 +160,6 @@ fun StockitPortfolioScreen(
 
         Column(
             modifier = Modifier
-                .padding(top = it.calculateTopPadding())
                 .fillMaxSize()
                 .padding(horizontal = 12.dp)
         ) {
@@ -179,15 +178,10 @@ fun StockitPortfolioScreen(
                     )
                 ) {
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-
                     BalanceCard(clickedViewAll = clickedViewAll)
 
 
                     Spacer(modifier = Modifier.height(16.dp))
-
-
 
 
                     if (items.isNotEmpty()) {
@@ -713,10 +707,9 @@ private fun MyToolbar(
 
     val greetingMessage by remember { mutableIntStateOf(getTimeBasedGreeting()) }
 
-    LargeTopAppBar(
+    TopAppBar(
         title = {
-
-            Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
 
                 Text(
                     text = stringResource(id = greetingMessage),
@@ -736,8 +729,6 @@ private fun MyToolbar(
 
             }
         },
-        expandedHeight = 60.dp,
-        collapsedHeight = 0.dp,
         colors = topAppBarColors(
             containerColor = MaterialTheme.colors.primary,
             scrolledContainerColor = MaterialTheme.colors.primary
