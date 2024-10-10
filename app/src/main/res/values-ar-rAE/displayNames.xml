@@ -107,5 +107,15 @@
     <string name="add_watchlist">إضافة إلى قائمة المراقبة</string>
     <string name="name_and_surname_text">الاسم واللقب</string>
 
+    <string name="good_morning">صباح الخير</string>
+    <string name="good_evening">مساء الخير</string>
+    <string name="good_night">تصبح على خير</string>
+    <string name="Symbol_text">رمز</string>
+    <string name="change">التغيير</string>
+    <string name="currencies">العملات</string>
+    <string name="expand">توسيع</string>
+    <string name="less">أقل</string>
+
+
 </resources>
 
