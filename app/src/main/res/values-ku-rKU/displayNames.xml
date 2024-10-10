@@ -108,4 +108,16 @@
     <string name="add_watchlist">Lîsteya şopandinê zêde bike</string>
     <string name="name_and_surname_text">Nav û paşnav</string>
 
+
+
+    <string name="good_morning">Beyanîbaş</string>
+    <string name="good_evening">Evarbaş</string>
+    <string name="good_night">Şevbaş</string>
+    <string name="Symbol_text">Sembol</string>
+    <string name="change">Guhertin</string>
+    <string name="currencies">Diravên</string>
+    <string name="expand">Berfirehkirin</string>
+    <string name="less">Kêm</string>
+
+
 </resources>

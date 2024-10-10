@@ -109,4 +109,15 @@
     <string name="add_watchlist">वॉचलिस्ट में जोड़ें</string>
     <string name="name_and_surname_text">नाम और उपनाम</string>
 
+
+    <string name="good_morning">सुप्रभात</string>
+    <string name="good_evening">शुभ संध्या</string>
+    <string name="good_night">शुभ रात्रि</string>
+    <string name="Symbol_text">प्रतीक</string>
+    <string name="change">परिवर्तन</string>
+    <string name="currencies">मुद्राएँ</string>
+    <string name="expand">विस्तार</string>
+    <string name="less">कम</string>
+
+
 </resources>

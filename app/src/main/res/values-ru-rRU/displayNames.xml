@@ -107,4 +107,15 @@
     <string name="add_watchlist">Добавить в список наблюдения</string>
     <string name="name_and_surname_text">Имя и фамилия</string>
 
+
+    <string name="good_morning">Доброе утро</string>
+    <string name="good_evening">Добрый вечер</string>
+    <string name="good_night">Спокойной ночи</string>
+    <string name="Symbol_text">Символ</string>
+    <string name="change">Изменение</string>
+    <string name="currencies">Валюты</string>
+    <string name="expand">Развернуть</string>
+    <string name="less">Меньше</string>
+
+
 </resources>

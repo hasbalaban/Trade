@@ -108,4 +108,14 @@
     <string name="add_watchlist">添加到观察列表</string>
     <string name="name_and_surname_text">姓名</string>
 
+    <string name="good_morning">早上好</string>
+    <string name="good_evening">晚上好</string>
+    <string name="good_night">晚安</string>
+    <string name="Symbol_text">符号</string>
+    <string name="change">变化</string>
+    <string name="currencies">货币</string>
+    <string name="expand">展开</string>
+    <string name="less">较少</string>
+
+
 </resources>
