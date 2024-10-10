@@ -377,7 +377,7 @@ private fun TopSection(
 
 
 @Composable
-private fun CalculateSize(calculatedSize : (Pair<Dp, Dp>) -> Unit, content: @Composable () -> Unit){
+fun CalculateSize(calculatedSize : (Pair<Dp, Dp>) -> Unit, content: @Composable () -> Unit){
     var size by remember { mutableStateOf(Pair(0.dp, 0.dp)) }
     val localDensity = LocalDensity.current
 
