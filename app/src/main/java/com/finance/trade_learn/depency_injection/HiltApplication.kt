@@ -68,7 +68,7 @@ class HiltApplication : Application() {
         val shortcut1 = ShortcutInfo.Builder(this, "market-1")
             .setShortLabel("Market-1")
             .setLongLabel("Open Example Activity-1")
-            .setIcon(Icon.createWithResource(this, R.drawable.home))
+            .setIcon(Icon.createWithResource(this, R.drawable.search))
             .setIntent(intent)
             .build()
 
