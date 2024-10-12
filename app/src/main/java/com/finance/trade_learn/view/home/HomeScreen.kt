@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -80,10 +81,7 @@ fun HomeScreen(
     navigateToSignUp : () -> Unit,
 ) {
     val viewModel = LocalHomeViewModel.current
-
     val islogin by BaseViewModel.isLogin.collectAsState()
-
-
     val marketItems = currentItems.collectAsState()
 
     if (!islogin && marketItems.value.isNotEmpty()) {
@@ -94,8 +92,6 @@ fun HomeScreen(
         viewModel.getDataFromApi(userInfo.value.data?.balances?.map { it.itemName })
     }
 
-
-
     if (marketItems.value.isNotEmpty()) {
         StockitPortfolioScreen(
             openTradePage = openTradePage,
@@ -105,8 +101,6 @@ fun HomeScreen(
             navigateToSignUp = navigateToSignUp
         )
     }
-
-
 }
 
 @Composable
@@ -138,39 +132,40 @@ fun StockitPortfolioScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 12.dp)
-            .padding(horizontal = 12.dp)
+            .padding(start = 8.dp)
     ) {
-        GreetingSection()
-        BalanceCard(clickedViewAll = clickedViewAll)
-        Spacer(modifier = Modifier.height(16.dp))
+        GreetingSection(modifier = Modifier.padding(end = 12.dp))
+        Spacer(modifier = Modifier.height(12.dp))
+        BalanceCard(clickedViewAll = clickedViewAll, modifier = Modifier.padding(end = 8.dp))
 
-        if (items.isNotEmpty()) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = stringResource(id = R.string.portfolio_text),
-                    style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colors.onPrimary
-                )
-                Text(text = stringResource(id = R.string.view_all),
-                    style = MaterialTheme.typography.h6.copy(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp,
-                        color = Color(0xff3E84F6)
-                    ),
-                    color = Color(0xff3E84F6),
-                    modifier = Modifier.clickable {
-                        FirebaseLogEvents.logEvent("click View All")
-                        clickedViewAll.invoke()
-                    })
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
+            Spacer(modifier = Modifier.height(2.dp))
 
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
+
+                item{
+                    Row(
+                        modifier = Modifier.padding(top = 6.dp, end = 8.dp, bottom = 2.dp, start = 4.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.portfolio_text),
+                            style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colors.onPrimary
+                        )
+                        Text(text = stringResource(id = R.string.view_all),
+                            style = MaterialTheme.typography.h6.copy(
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 16.sp,
+                                color = Color(0xff3E84F6)
+                            ),
+                            color = Color(0xff3E84F6),
+                            modifier = Modifier.clickable {
+                                FirebaseLogEvents.logEvent("click View All")
+                                clickedViewAll.invoke()
+                            })
+                    }
+                }
+
                 item {
                     LazyRow(modifier = Modifier.padding(top = 4.dp)){
                         items(items){
@@ -185,8 +180,9 @@ fun StockitPortfolioScreen(
                 }
 
                 item {
-
-                    Row (modifier = Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.SpaceBetween){
+                    Row (modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp, end = 12.dp, start = 4.dp), horizontalArrangement = Arrangement.SpaceBetween){
 
                         Text(
                             text = stringResource(id = R.string.currencies),
@@ -214,7 +210,8 @@ fun StockitPortfolioScreen(
                     LazyRow {
                         items(adjustedList){
                             Column(
-                                modifier = Modifier.padding(top = 4.dp)
+                                modifier = Modifier
+                                    .padding(top = 4.dp)
                                     .width(IntrinsicSize.Min)
                                     .height(IntrinsicSize.Min),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -265,16 +262,6 @@ fun StockitPortfolioScreen(
                     )
                 }
 
-                item {
-                    WatchListSection(
-                        openTradePage = openTradePage,
-                        openMarketPage = openMarketPage,
-                        navigateToLogin = navigateToLogin,
-                        navigateToSignUp = navigateToSignUp
-                    )
-                }
-
-
                 when {
                     !isLogin -> {
                         item {
@@ -310,13 +297,7 @@ fun StockitPortfolioScreen(
 
 
             }
-        }
-
-
-
     }
-
-
 }
 
 
@@ -515,7 +496,7 @@ fun PortfolioCard1(
 
 
 @Composable
-private fun BalanceCard(clickedViewAll: () -> Unit) {
+private fun BalanceCard(clickedViewAll: () -> Unit, modifier: Modifier) {
     val viewModel = LocalHomeViewModel.current
     val cryptoItems by viewModel.myCoinsNewModel.observeAsState(emptyList())
     val totalBalance by viewModel.totalBalance.collectAsState(0f)
@@ -533,24 +514,56 @@ private fun BalanceCard(clickedViewAll: () -> Unit) {
     )
 
 
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        backgroundColor = Color(0xFF1E88E5), // Blue background color
-        elevation = 4.dp,
-        modifier = Modifier
+
+
+    Row(
+        modifier = modifier
+            .height(IntrinsicSize.Min)
             .clickable {
                 clickedViewAll.invoke()
             }
             .fillMaxWidth()
-            .height(160.dp)
+            .background(Color(0xFF1E88E5), RoundedCornerShape(16.dp))
+            .padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
+
+
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp), // Padding inside the card
-            verticalArrangement = Arrangement.Center, // Centers content vertically
-            horizontalAlignment = Alignment.CenterHorizontally // Centers content horizontally
+                .fillMaxHeight()
+                .weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
+            Text(
+                text = stringResource(id = R.string.dollar_holdings),
+                style = MaterialTheme.typography.subtitle1.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = "\$${totalDollarBalance.format(2)}",
+                style = MaterialTheme.typography.h5.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.primary,
+                )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+
+        Column(modifier = Modifier
+            .fillMaxHeight()
+            .weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ){
             Text(
                 text = stringResource(id = R.string.total_coin_value),
                 style = MaterialTheme.typography.subtitle1.copy(
@@ -568,43 +581,9 @@ private fun BalanceCard(clickedViewAll: () -> Unit) {
                     color = MaterialTheme.colors.primary,
                 )
             )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = stringResource(id = R.string.dollar_holdings),
-                style = MaterialTheme.typography.subtitle1.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = "\$${totalDollarBalance.format(2)}",
-                style = MaterialTheme.typography.h5.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.primary,
-                )
-            )
         }
     }
-
 }
-
-@Composable
-private fun WatchListSection(
-    openTradePage: (String) -> Unit,
-    openMarketPage: () -> Unit,
-    navigateToLogin : () -> Unit,
-    navigateToSignUp : () -> Unit,
-) {
-
-
-
-}
-
 
 
 @Composable
@@ -698,13 +677,13 @@ fun EmptyWatchlist(openMarketPage: () -> Unit) {
 
 
 @Composable
-private fun GreetingSection() {
+private fun GreetingSection(modifier: Modifier) {
 
     val userInfo = BaseViewModel.userInfo.collectAsState()
 
     val greetingMessage by remember { mutableIntStateOf(getTimeBasedGreeting()) }
 
-    Row(modifier = Modifier
+    Row(modifier = modifier
         .fillMaxWidth()
         .padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
 

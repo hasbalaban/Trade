@@ -136,8 +136,6 @@ fun CoinItemScreen(
                         Color(0xFF40AE95) else Color(0xFFF44336)
                 )
             }
-
-
         }
 
 
@@ -145,7 +143,7 @@ fun CoinItemScreen(
             itemId = coin.id,
             navigateToLogin = navigateToLogin,
             clickedItem = clickedItem
-            )
+        )
 
     }
 }
