@@ -28,15 +28,9 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -51,7 +45,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -116,7 +109,6 @@ fun HomeScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockitPortfolioScreen(
     openTradePage: (String) -> Unit,
@@ -142,207 +134,190 @@ fun StockitPortfolioScreen(
         }
     }
 
-
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
-    Scaffold(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            MyToolbar(
-                scrollBehavior = scrollBehavior
-            )
-        },
-        backgroundColor = MaterialTheme.colors.primary
-    ) { it ->
+            .padding(top = 12.dp)
+            .padding(horizontal = 12.dp)
+    ) {
+        GreetingSection()
+        BalanceCard(clickedViewAll = clickedViewAll)
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 12.dp)
-        ) {
+        if (items.isNotEmpty()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(id = R.string.portfolio_text),
+                    style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colors.onPrimary
+                )
+                Text(text = stringResource(id = R.string.view_all),
+                    style = MaterialTheme.typography.h6.copy(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                        color = Color(0xff3E84F6)
+                    ),
+                    color = Color(0xff3E84F6),
+                    modifier = Modifier.clickable {
+                        FirebaseLogEvents.logEvent("click View All")
+                        clickedViewAll.invoke()
+                    })
+            }
 
-            BalanceCard(clickedViewAll = clickedViewAll)
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
 
-            if (items.isNotEmpty()) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.portfolio_text),
-                        style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colors.onPrimary
-                    )
-                    Text(text = stringResource(id = R.string.view_all),
-                        style = MaterialTheme.typography.h6.copy(
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
-                            color = Color(0xff3E84F6)
-                        ),
-                        color = Color(0xff3E84F6),
-                        modifier = Modifier.clickable {
-                            FirebaseLogEvents.logEvent("click View All")
-                            clickedViewAll.invoke()
-                        })
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                item {
+                    LazyRow(modifier = Modifier.padding(top = 4.dp)){
+                        items(items){
+                            PortfolioCard(portfolioItem = it, modifier = Modifier
+                                .clickable {
+                                    openTradePage.invoke(it.CoinName)
+                                }
+                                .sizeIn(minWidth = 220.dp)
+                                .padding(start = 4.dp))
+                        }
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                item {
 
+                    Row (modifier = Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.SpaceBetween){
 
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    item {
-                        LazyRow(modifier = Modifier.padding(top = 4.dp)){
-                            items(items){
-                                PortfolioCard(portfolioItem = it, modifier = Modifier
-                                    .clickable {
-                                        openTradePage.invoke(it.CoinName)
-                                    }
-                                    .sizeIn(minWidth = 220.dp)
-                                    .padding(start = 4.dp))
-                            }
-                        }
-                    }
-
-                    item {
-
-                        Row (modifier = Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.SpaceBetween){
-
-                            Text(
-                                text = stringResource(id = R.string.currencies),
-                                style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colors.onPrimary
-                            )
-
-
-                            Text(
-                                text = if(isExpanded) stringResource(id = R.string.less) else stringResource(id = R.string.expand),
-                                style = MaterialTheme.typography.h6.copy(
-                                    fontWeight = FontWeight.Normal,
-                                    fontSize = 16.sp,
-                                    color = Color(0xff3E84F6)
-                                ),
-                                color = Color(0xff3E84F6),
-                                modifier = Modifier.clickable {
-                                    isExpanded = !isExpanded
-                                    FirebaseLogEvents.logEvent("$isExpanded clicked")
-                                }
-                            )
-                        }
-                    }
-                    item {
-                        LazyRow {
-                            items(adjustedList){
-                                Column(
-                                    modifier = Modifier.padding(top = 4.dp)
-                                        .width(IntrinsicSize.Min)
-                                        .height(IntrinsicSize.Min),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-
-                                    val firstItem = it.firstOrNull()
-                                    val secondItem = it.getOrNull(1)
-
-                                    firstItem?.let {
-                                        StockCard(
-                                            title = it.CoinName,
-                                            price = it.currentPrice,
-                                            changePercent = it.percentChange ?: "",
-                                            percentColor = if (it.percentChange?.contains("+") == true)
-                                                Color(0xFF40AE95) else Color(0xFFF44336),
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .weight(1f)
-                                        )
-                                    }
-                                    secondItem?.let {
-                                        StockCard(
-                                            title = it.CoinName,
-                                            price = it.currentPrice,
-                                            changePercent = it.percentChange ?: "",
-                                            percentColor = if (it.percentChange?.contains("+") == true)
-                                                Color(0xFF40AE95) else Color(0xFFF44336),
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .weight(1f)
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-
-                    item {
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-
-                    item {
                         Text(
-                            text = stringResource(id = R.string.watchlist_text),
+                            text = stringResource(id = R.string.currencies),
                             style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colors.onPrimary
                         )
-                    }
 
-                    item {
-                        WatchListSection(
-                            openTradePage = openTradePage,
-                            openMarketPage = openMarketPage,
-                            navigateToLogin = navigateToLogin,
-                            navigateToSignUp = navigateToSignUp
+
+                        Text(
+                            text = if(isExpanded) stringResource(id = R.string.less) else stringResource(id = R.string.expand),
+                            style = MaterialTheme.typography.h6.copy(
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 16.sp,
+                                color = Color(0xff3E84F6)
+                            ),
+                            color = Color(0xff3E84F6),
+                            modifier = Modifier.clickable {
+                                isExpanded = !isExpanded
+                                FirebaseLogEvents.logEvent("$isExpanded clicked")
+                            }
                         )
                     }
-
-
-                    when {
-                        !isLogin -> {
-                            item {
-                                LoginOrSignUpScreen(
-                                    navigateToLogin = navigateToLogin,
-                                    navigateToSignUp = navigateToSignUp
-                                )
-                            }
-                        }
-
-                        items.isNullOrEmpty() -> {
-                            item {
-                                EmptyWatchlist(openMarketPage)
-                            }
-                        }
-
-                        else -> {
-
-                            items(
-                                items = watchlistItems,
-                                key = { it.id }
+                }
+                item {
+                    LazyRow {
+                        items(adjustedList){
+                            Column(
+                                modifier = Modifier.padding(top = 4.dp)
+                                    .width(IntrinsicSize.Min)
+                                    .height(IntrinsicSize.Min),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                CoinItemScreen(
-                                    coin = it,
-                                    navigateToLogin = navigateToLogin,
-                                    clickedItem = { selectedItemName ->
-                                        openTradePage.invoke(selectedItemName)
-                                    }
-                                )
+
+                                val firstItem = it.firstOrNull()
+                                val secondItem = it.getOrNull(1)
+
+                                firstItem?.let {
+                                    StockCard(
+                                        title = it.CoinName,
+                                        price = it.currentPrice,
+                                        changePercent = it.percentChange ?: "",
+                                        percentColor = if (it.percentChange?.contains("+") == true)
+                                            Color(0xFF40AE95) else Color(0xFFF44336),
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .weight(1f)
+                                    )
+                                }
+                                secondItem?.let {
+                                    StockCard(
+                                        title = it.CoinName,
+                                        price = it.currentPrice,
+                                        changePercent = it.percentChange ?: "",
+                                        percentColor = if (it.percentChange?.contains("+") == true)
+                                            Color(0xFF40AE95) else Color(0xFFF44336),
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .weight(1f)
+                                    )
+                                }
                             }
                         }
                     }
 
-
                 }
+
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                item {
+                    Text(
+                        text = stringResource(id = R.string.watchlist_text),
+                        style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                }
+
+                item {
+                    WatchListSection(
+                        openTradePage = openTradePage,
+                        openMarketPage = openMarketPage,
+                        navigateToLogin = navigateToLogin,
+                        navigateToSignUp = navigateToSignUp
+                    )
+                }
+
+
+                when {
+                    !isLogin -> {
+                        item {
+                            LoginOrSignUpScreen(
+                                navigateToLogin = navigateToLogin,
+                                navigateToSignUp = navigateToSignUp
+                            )
+                        }
+                    }
+
+                    items.isNullOrEmpty() -> {
+                        item {
+                            EmptyWatchlist(openMarketPage)
+                        }
+                    }
+
+                    else -> {
+
+                        items(
+                            items = watchlistItems,
+                            key = { it.id }
+                        ) {
+                            CoinItemScreen(
+                                coin = it,
+                                navigateToLogin = navigateToLogin,
+                                clickedItem = { selectedItemName ->
+                                    openTradePage.invoke(selectedItemName)
+                                }
+                            )
+                        }
+                    }
+                }
+
+
             }
-
-
-
         }
 
 
 
-        }
     }
+
+
+}
 
 
 @Composable
@@ -722,50 +697,34 @@ fun EmptyWatchlist(openMarketPage: () -> Unit) {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MyToolbar(
-    scrollBehavior: TopAppBarScrollBehavior
-) {
+private fun GreetingSection() {
 
     val userInfo = BaseViewModel.userInfo.collectAsState()
 
     val greetingMessage by remember { mutableIntStateOf(getTimeBasedGreeting()) }
 
-    TopAppBar(
-        title = {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
 
-                Text(
-                    text = stringResource(id = greetingMessage),
-                    style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
-                    color = MaterialTheme.colors.onPrimary
-                )
+        Text(
+            text = stringResource(id = greetingMessage),
+            style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
+            color = MaterialTheme.colors.onPrimary
+        )
 
-                Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(12.dp))
 
-                userInfo.value.data?.let {
-                    Text(
-                        text = "-   " + it.nameAndSurname,
-                        style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
-                        color = MaterialTheme.colors.onPrimary
-                    )
-                }
+        userInfo.value.data?.let {
+            Text(
+                text = "-   " + it.nameAndSurname,
+                style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
+                color = MaterialTheme.colors.onPrimary
+            )
+        }
 
-            }
-        },
-        colors = topAppBarColors(
-            containerColor = MaterialTheme.colors.primary,
-            scrolledContainerColor = MaterialTheme.colors.primary
-        ),
-        scrollBehavior = scrollBehavior
-    )
-
-
-
-
+    }
 }
 
 
