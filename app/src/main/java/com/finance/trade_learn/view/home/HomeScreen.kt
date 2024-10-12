@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,24 +59,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.base.BaseViewModel.Companion.allCryptoItems
 import com.finance.trade_learn.base.BaseViewModel.Companion.currentItems
+import com.finance.trade_learn.database.dataBaseEntities.toMap
 import com.finance.trade_learn.models.create_new_model_for_tem_history.NewModelForItemHistory
-import com.finance.trade_learn.models.modelsConvector.CoinsHome
-import com.finance.trade_learn.models.modelsConvector.Percent
+import com.finance.trade_learn.models.watchList.toCoinHome
 import com.finance.trade_learn.theme.FinanceAppTheme
 import com.finance.trade_learn.utils.FirebaseLogEvents
-import com.finance.trade_learn.utils.percentageChange
 import com.finance.trade_learn.view.LocalHomeViewModel
 import com.finance.trade_learn.view.coin.CoinItemScreen
 import com.finance.trade_learn.view.coin.ItemIcon
-import com.finance.trade_learn.view.market.CalculateSize
-import com.finance.trade_learn.view.market.currenciesScreen.CurrenciesForHomeScreen
+import com.finance.trade_learn.view.market.currenciesScreen.StockCard
 import com.finance.trade_learn.view.wallet.format
 import java.util.Calendar
 import java.util.Locale
@@ -130,26 +128,27 @@ fun StockitPortfolioScreen(
     val viewModel = LocalHomeViewModel.current
     val items by viewModel.myCoinsNewModel.observeAsState(emptyList())
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    var isExpanded by remember { mutableStateOf(false) }
+    val currenciesItems by BaseViewModel.currencies.collectAsState()
+    val adjustedList = currenciesItems.toMap().chunked(
+        if (isExpanded) 2 else 1
+    )
 
-
-    var size : Pair<Dp, Dp>? by remember {
-        mutableStateOf(null)
-    }
-    val newHeight by remember {
+    val isLogin by BaseViewModel.isLogin.collectAsState()
+    val userInfo = BaseViewModel.userInfo.collectAsState()
+    val watchlistItems by remember {
         derivedStateOf {
-            size?.let { (it.second - (it.second * scrollBehavior.state.collapsedFraction)) } ?: 0.dp
-
+            userInfo.value.data?.userWatchList?.toCoinHome() ?: emptyList()
         }
     }
 
 
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-        ,
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MyToolbar(
                 scrollBehavior = scrollBehavior
@@ -164,38 +163,63 @@ fun StockitPortfolioScreen(
                 .padding(horizontal = 12.dp)
         ) {
 
+            BalanceCard(clickedViewAll = clickedViewAll)
 
-            CalculateSize(
-                calculatedSize = {
-                    if (size != null) return@CalculateSize
-                    size = it
-                }
-            ) {
-                Column(
-                    modifier = Modifier.then(
-                        if (size == null) Modifier
-                        else Modifier.height(newHeight)
-                    )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (items.isNotEmpty()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Text(
+                        text = stringResource(id = R.string.portfolio_text),
+                        style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                    Text(text = stringResource(id = R.string.view_all),
+                        style = MaterialTheme.typography.h6.copy(
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp,
+                            color = Color(0xff3E84F6)
+                        ),
+                        color = Color(0xff3E84F6),
+                        modifier = Modifier.clickable {
+                            FirebaseLogEvents.logEvent("click View All")
+                            clickedViewAll.invoke()
+                        })
+                }
 
-                    BalanceCard(clickedViewAll = clickedViewAll)
+                Spacer(modifier = Modifier.height(8.dp))
 
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    item {
+                        LazyRow(modifier = Modifier.padding(top = 4.dp)){
+                            items(items){
+                                PortfolioCard(portfolioItem = it, modifier = Modifier
+                                    .clickable {
+                                        openTradePage.invoke(it.CoinName)
+                                    }
+                                    .sizeIn(minWidth = 220.dp)
+                                    .padding(start = 4.dp))
+                            }
+                        }
+                    }
 
+                    item {
 
-                    if (items.isNotEmpty()) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
+                        Row (modifier = Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.SpaceBetween){
+
                             Text(
-                                text = stringResource(id = R.string.portfolio_text),
+                                text = stringResource(id = R.string.currencies),
                                 style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
                                 color = MaterialTheme.colors.onPrimary
                             )
+
+
                             Text(
-                                text = stringResource(id = R.string.view_all),
+                                text = if(isExpanded) stringResource(id = R.string.less) else stringResource(id = R.string.expand),
                                 style = MaterialTheme.typography.h6.copy(
                                     fontWeight = FontWeight.Normal,
                                     fontSize = 16.sp,
@@ -203,53 +227,123 @@ fun StockitPortfolioScreen(
                                 ),
                                 color = Color(0xff3E84F6),
                                 modifier = Modifier.clickable {
-                                    FirebaseLogEvents.logEvent("click View All")
-                                    clickedViewAll.invoke()
+                                    isExpanded = !isExpanded
+                                    FirebaseLogEvents.logEvent("$isExpanded clicked")
                                 }
                             )
                         }
+                    }
+                    item {
+                        LazyRow {
+                            items(adjustedList){
+                                Column(
+                                    modifier = Modifier.padding(top = 4.dp)
+                                        .width(IntrinsicSize.Min)
+                                        .height(IntrinsicSize.Min),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                                    val firstItem = it.firstOrNull()
+                                    val secondItem = it.getOrNull(1)
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                                items(items) {
-                                    PortfolioCard(
-                                        portfolioItem = it,
-                                        modifier = Modifier
-                                            .clickable {
-                                                openTradePage.invoke(it.CoinName)
-                                            }
-                                            .sizeIn(minWidth = 220.dp)
-                                            .padding(start = 4.dp)
-                                    )
+                                    firstItem?.let {
+                                        StockCard(
+                                            title = it.CoinName,
+                                            price = it.currentPrice,
+                                            changePercent = it.percentChange ?: "",
+                                            percentColor = if (it.percentChange?.contains("+") == true)
+                                                Color(0xFF40AE95) else Color(0xFFF44336),
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .weight(1f)
+                                        )
+                                    }
+                                    secondItem?.let {
+                                        StockCard(
+                                            title = it.CoinName,
+                                            price = it.currentPrice,
+                                            changePercent = it.percentChange ?: "",
+                                            percentColor = if (it.percentChange?.contains("+") == true)
+                                                Color(0xFF40AE95) else Color(0xFFF44336),
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .weight(1f)
+                                        )
+                                    }
                                 }
                             }
                         }
+
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    item {
+                        Text(
+                            text = stringResource(id = R.string.watchlist_text),
+                            style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colors.onPrimary
+                        )
+                    }
+
+                    item {
+                        WatchListSection(
+                            openTradePage = openTradePage,
+                            openMarketPage = openMarketPage,
+                            navigateToLogin = navigateToLogin,
+                            navigateToSignUp = navigateToSignUp
+                        )
+                    }
+
+
+                    when {
+                        !isLogin -> {
+                            item {
+                                LoginOrSignUpScreen(
+                                    navigateToLogin = navigateToLogin,
+                                    navigateToSignUp = navigateToSignUp
+                                )
+                            }
+                        }
+
+                        items.isNullOrEmpty() -> {
+                            item {
+                                EmptyWatchlist(openMarketPage)
+                            }
+                        }
+
+                        else -> {
+
+                            items(
+                                items = watchlistItems,
+                                key = { it.id }
+                            ) {
+                                CoinItemScreen(
+                                    coin = it,
+                                    navigateToLogin = navigateToLogin,
+                                    clickedItem = { selectedItemName ->
+                                        openTradePage.invoke(selectedItemName)
+                                    }
+                                )
+                            }
+                        }
+                    }
 
 
                 }
             }
 
-            WatchListSection(
-                openTradePage = openTradePage,
-                openMarketPage = openMarketPage,
-                navigateToLogin = navigateToLogin,
-                navigateToSignUp = navigateToSignUp
-            )
+
+
+        }
 
 
 
         }
     }
 
-}
 
 @Composable
 fun PortfolioCard(
@@ -532,74 +626,6 @@ private fun WatchListSection(
     navigateToSignUp : () -> Unit,
 ) {
 
-    val isLogin by BaseViewModel.isLogin.collectAsState()
-    val userInfo = BaseViewModel.userInfo.collectAsState()
-
-    val items = userInfo.value.data?.userWatchList?.map { watchListItem ->
-        val currentItemInfo = allCryptoItems.value.firstOrNull { it.id == watchListItem.itemId }
-        if (currentItemInfo == null) null
-        else {
-
-            val percenteChange: Percent = if (currentItemInfo.price_change_24h == null) {
-                Percent("0.0", "+")
-            } else {
-                percentageChange(currentItemInfo.price_change_percentage_24h.toString())
-            }
-
-            val coinPercenteChange = percenteChange.raise + percenteChange.percentChange.format(2) + "%"
-
-            CoinsHome(
-                id = currentItemInfo.id,
-                CoinName = currentItemInfo.name.uppercase(Locale.getDefault()) + " / USD",
-                coinSymbol = currentItemInfo.symbol.uppercase(Locale.getDefault()) + " / USD",
-                CoinPrice = currentItemInfo.current_price?.format(2) ?: "0.0",
-                CoinChangePercente = coinPercenteChange,
-                CoinImage = currentItemInfo.image,
-                marketCap = currentItemInfo.market_cap,
-                total_volume = currentItemInfo.total_volume,
-            )
-        }
-    }?.mapNotNull { it }
-
-
-
-    //currencies
-    CurrenciesForHomeScreen()
-
-    Text(
-        text = stringResource(id = R.string.watchlist_text),
-        style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
-        color = MaterialTheme.colors.onPrimary
-    )
-
-    when{
-        !isLogin -> {
-            LoginOrSignUpScreen(navigateToLogin = navigateToLogin, navigateToSignUp = navigateToSignUp)
-        }
-        items.isNullOrEmpty() -> {
-            EmptyWatchlist(openMarketPage)
-        }
-        else -> {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                LazyColumn(modifier = Modifier) {
-                    items(
-                        items = items,
-                        key = {
-                            it.id
-                        }
-                    ) {
-                        CoinItemScreen(
-                            coin = it,
-                            navigateToLogin = navigateToLogin,
-                            clickedItem = { selectedItemName ->
-                                openTradePage.invoke(selectedItemName)
-                            }
-                        )
-                    }
-                }
-            }
-        }
-    }
 
 
 }
@@ -671,8 +697,7 @@ fun EmptyWatchlist(openMarketPage: () -> Unit) {
                 modifier = Modifier
                     .size(64.dp)
                     .background(
-                        Color(0xff3E84F6).copy(alpha = 0.9f),
-                        shape = RoundedCornerShape(8.dp)
+                        Color(0xff3E84F6).copy(alpha = 0.9f), shape = RoundedCornerShape(8.dp)
                     )
                     .padding(8.dp)
                     .clickable { openMarketPage.invoke() }
@@ -709,7 +734,9 @@ private fun MyToolbar(
 
     TopAppBar(
         title = {
-            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
 
                 Text(
                     text = stringResource(id = greetingMessage),
