@@ -25,7 +25,7 @@ class SharedPreferencesManager(context: Context) {
         sharedPreferencesManager.edit().putBoolean(keyName, value).apply()
     }
 
-    fun getSharedPreferencesBoolen(keyName: String) =
-        sharedPreferencesManager.getBoolean(keyName, false)
+    fun getSharedPreferencesBoolen(keyName: String, defaultValue : Boolean = false) =
+        sharedPreferencesManager.getBoolean(keyName, defaultValue)
 
 }
