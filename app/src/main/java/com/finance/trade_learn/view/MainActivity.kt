@@ -2,20 +2,16 @@ package com.finance.trade_learn.view
 
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,9 +34,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -71,6 +64,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.work.WorkManager
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
@@ -101,7 +95,6 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 val LocalBaseViewModel = compositionLocalOf<BaseViewModel> { error("No BaseViewModel found") }
@@ -452,12 +445,16 @@ class MainActivity : AppCompatActivity() {
     private fun setup() {
         val viewModelUtils = ViewModelUtils()
         val firstLogin = viewModelUtils.isOneEntering(this)
-        isOneEntering(state = firstLogin)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPostPermission(delay = 10000)
+        }
+
         if (!firstLogin){
             checkIsAdShowed()
         }
+
         showNotificationPermission()
-        //Smartlook.setupAndStartRecording("49af8b0bc2a7ef077d215bfde0b330a2269559fc")
     }
 
     private fun showNotificationPermission() {
@@ -466,12 +463,6 @@ class MainActivity : AppCompatActivity() {
             // NotificationPermissionManager.canAskNotificationPermission(this)
         }
 
-    }
-
-    @SuppressLint("HardwareIds")
-    private fun setTestPhone() {
-        val androidId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
-        if (androidId != "8d1e30b2ef5afa39") 1 else 2
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -485,25 +476,6 @@ class MainActivity : AppCompatActivity() {
                     requestedPermissions,
                     Constants.POST_NOTIFICATION
                 )
-            }
-        }
-    }
-
-
-    //check is first entering or no ? // if it's first time add 1000 dollars
-    private fun isOneEntering(state : Boolean) {
-        if (state) {
-            // create notification
-            NotificationWorkManager(3, TimeUnit.DAYS, this)
-
-            val deviceId = UUID.randomUUID()
-            SharedPreferencesManager(this).addSharedPreferencesString(
-                "deviceId",
-                deviceId.toString()
-            )
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                requestPostPermission(delay = 10000)
             }
         }
     }
