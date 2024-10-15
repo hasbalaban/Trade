@@ -14,16 +14,16 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.finance.trade_learn.R
-import com.finance.trade_learn.repository.CoinDetailRepositoryImp
 import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.view.MainActivity
-import com.finance.trade_learn.viewModel.TradeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,12 +37,6 @@ class SendNotificationPer12Hours @Inject constructor(
     override fun doWork(): Result {
         getData()
         return Result.success()
-    }
-
-    @Inject
-    lateinit var coinDetailRepositoryImp : CoinDetailRepositoryImp
-    val viewModel : TradeViewModel by lazy {
-        TradeViewModel(coinDetailRepositoryImp)
     }
 
     fun createNotification(coinName: String, price: String) {
@@ -93,14 +87,23 @@ class SendNotificationPer12Hours @Inject constructor(
 
 
 // this will change because we use this fun for tests...
-fun NotificationWorkManager(repeatTime : Long, timeUnit : TimeUnit, context: Context) {
+fun notificationWorkManager(repeatTime : Long, timeUnit : TimeUnit, context: Context) {
+    val workManager = WorkManager.getInstance(context)
+
     val constraint = Constraints.Builder()
-        .setRequiresBatteryNotLow(true)
+        .setRequiresBatteryNotLow(false)
+        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .setRequiresCharging(false)
         .build()
 
-    val myWorkRequest: WorkRequest =
+    val myWorkRequest: PeriodicWorkRequest =
         PeriodicWorkRequestBuilder<SendNotificationPer12Hours>(repeatTime, timeUnit)
             .setConstraints(constraint)
             .build()
-    WorkManager.getInstance(context).enqueue(myWorkRequest)
+
+    workManager.enqueueUniquePeriodicWork(
+        "1",
+        ExistingPeriodicWorkPolicy.REPLACE,
+        myWorkRequest
+    )
 }
