@@ -24,29 +24,3 @@ private fun reviewUs(){
   //  reviewUs.reviewUsStart(activity = requireActivity(), manager = reviewUsResult.first, reviewInfo = reviewUsResult.second)
 }
 
-private fun ShowInterstitialAd(context: Context) {
-    adInterstitial?.apply {
-        show(context as Activity)
-        adInterstitial = null
-        SharedPreferencesManager(context).addSharedPreferencesLong("interstitialAdLoadedTime",System.currentTimeMillis()+(60*60*1000))
-    }
-}
-
-private fun setInterstitialAd(context: Context) {
-    if (RemoteConfigs.SHOULD_SHOW_ADVERTISEMENT.not()) return
-
-    val currentMillis = System.currentTimeMillis()
-    val updateTime = SharedPreferencesManager(context).getSharedPreferencesLong("interstitialAdLoadedTime", currentMillis)
-    if (currentMillis < updateTime) return
-
-    val adRequest = AdRequest.Builder().build()
-    MobileAds.setRequestConfiguration(RequestConfiguration.Builder().build())
-    InterstitialAd.load(context, Constants.ProductionAdKey, adRequest, object : InterstitialAdLoadCallback() {
-        override fun onAdFailedToLoad(adError: LoadAdError) {}
-        override fun onAdLoaded(interstitialAd: InterstitialAd) {
-            adInterstitial = interstitialAd
-        }
-    })
-}
-
-private var adInterstitial: InterstitialAd? = null
