@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">加密演示 - 免费买卖</string>
     <string name="hello_blank_fragment">你好，空片段</string>
     <string name="USD"> / 美元</string>
     <string name="home">首页</string>

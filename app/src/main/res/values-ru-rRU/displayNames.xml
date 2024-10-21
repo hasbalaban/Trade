@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Crypto Demo - Бесплатная покупка/продажа</string>
     <string name="hello_blank_fragment">привет пустой фрагмент</string>
     <string name="USD"> / USD</string>
     <string name="home">Главная</string>

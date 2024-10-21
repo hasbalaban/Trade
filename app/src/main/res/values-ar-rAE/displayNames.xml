@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">عرض تجريبي للعملات المشفرة - شراء/بيع مجاني</string>
     <string name="hello_blank_fragment">مرحبا جزء فارغ</string>
     <string name="USD"> / دولار أمريكي</string>
     <string name="home">الصفحة الرئيسية</string>
