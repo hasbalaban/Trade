@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">क्रिप्टो डेमो - मुफ्त खरीद/बिक्री</string>
     <string name="hello_blank_fragment">नमस्ते खाली खंड</string>
     <string name="USD"> / USD</string>
     <string name="home">मुख्य पृष्ठ</string>
