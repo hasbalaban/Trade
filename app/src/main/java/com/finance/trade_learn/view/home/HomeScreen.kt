@@ -112,7 +112,8 @@ fun StockitPortfolioScreen(
     navigateToSignUp : () -> Unit,
 ) {
     val viewModel = LocalHomeViewModel.current
-    val items by viewModel.myCoinsNewModel.observeAsState(emptyList())
+    val portfolioItem by viewModel.myCoinsNewModel.observeAsState(emptyList())
+    val popularItems by BaseViewModel.listOfCryptoForPopular.collectAsState(emptyList())
 
     var isExpanded by remember { mutableStateOf(false) }
     val currenciesItems by BaseViewModel.currencies.collectAsState()
@@ -144,11 +145,16 @@ fun StockitPortfolioScreen(
 
                 item{
                     Row(
-                        modifier = Modifier.padding(top = 6.dp, end = 8.dp, bottom = 2.dp, start = 4.dp).fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(top = 6.dp, end = 8.dp, bottom = 2.dp, start = 4.dp)
+                            .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
+                        viewModel.totalBalance
                         Text(
-                            text = stringResource(id = R.string.portfolio_text),
+                            text = if (portfolioItem.size <= 1 && portfolioItem.any { it.CoinName.contains("tether", true) })
+                                stringResource(id = R.string.balance)
+                            else stringResource(id = R.string.portfolio_text),
                             style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colors.onPrimary
                         )
@@ -167,11 +173,15 @@ fun StockitPortfolioScreen(
                 }
 
                 item {
+                    val list = if (portfolioItem.size <= 1 && portfolioItem.any { it.CoinName.contains("tether", true) })
+                        popularItems
+                    else portfolioItem
+
                     LazyRow(modifier = Modifier.padding(top = 4.dp)){
-                        items(items){
+                        items(list){
                             PortfolioCard(portfolioItem = it, modifier = Modifier
                                 .clickable {
-                                    openTradePage.invoke(it.CoinName)
+                                    openTradePage.invoke(it.id)
                                 }
                                 .sizeIn(minWidth = 220.dp)
                                 .padding(start = 4.dp))
@@ -272,7 +282,7 @@ fun StockitPortfolioScreen(
                         }
                     }
 
-                    items.isNullOrEmpty() -> {
+                    watchlistItems.isEmpty() -> {
                         item {
                             EmptyWatchlist(openMarketPage)
                         }
@@ -463,7 +473,7 @@ fun PortfolioCard1(
             val preText = if (isCurrency) "" else "$"
             Text(
                 modifier = Modifier.weight(1f),
-                text = preText + portfolioItem.CoinAmount.format(2),
+                text = portfolioItem.CoinAmount.format(2),
                 color = MaterialTheme.colors.onPrimary,
                 style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End

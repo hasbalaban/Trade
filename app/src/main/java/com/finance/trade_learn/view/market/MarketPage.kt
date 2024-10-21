@@ -116,8 +116,7 @@ private fun MainToolbar(
 private fun PopularSection(
     openTradePage: (String) -> Unit
 ){
-    val baseViewModel = LocalBaseViewModel.current
-    val popularItems = baseViewModel.listOfCryptoForPopular.observeAsState().value
+    val popularItems by BaseViewModel.listOfCryptoForPopular.collectAsState(emptyList())
 
     val popularItemListState = rememberLazyListState()
     AutoScrollList(popularItemListState = popularItemListState)

@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,7 +43,6 @@ open class BaseViewModel @Inject constructor(
     private var userPassword = ""
 
 
-    var listOfCryptoForPopular = MutableLiveData<List<NewModelForItemHistory>>()
 
     private val _shouldShowBottomNavigationBar = MutableLiveData<Boolean>()
     val shouldShowBottomNavigationBar : LiveData<Boolean> get() = _shouldShowBottomNavigationBar
@@ -68,14 +68,14 @@ open class BaseViewModel @Inject constructor(
 
                         val mappedList = convertCryptoList(allCryptoItems.value)
                         if (mappedList.isNotEmpty()){
-                            listOfCryptoForPopular.value = convertPopularCoinList(mappedList)
+                            _listOfCryptoForPopular.value = convertPopularCoinList(mappedList)
 
                             currentItems.value = mappedList
                         }
                     }
                 }
                 false -> {
-                    listOfCryptoForPopular.value = convertPopularCoinList(currentItems.value)
+                    _listOfCryptoForPopular.value = convertPopularCoinList(currentItems.value)
                 }
             }
 
@@ -108,6 +108,7 @@ open class BaseViewModel @Inject constructor(
         }
         return popList.map {
             NewModelForItemHistory(
+                id = it.id.lowercase(Locale.getDefault()),
                 CoinName = it.CoinName.split(" ").first(),
                 CoinAmount = it.CoinPrice.toDoubleOrNull() ?: 0.0,
                 Total = BigDecimal.ZERO,
@@ -227,6 +228,9 @@ open class BaseViewModel @Inject constructor(
 
         private var _currencies = MutableStateFlow<List<TableRow>>(emptyList())
         var currencies = _currencies.asStateFlow()
+
+        private var _listOfCryptoForPopular = MutableStateFlow<List<NewModelForItemHistory>>(emptyList())
+        var listOfCryptoForPopular = _listOfCryptoForPopular.asStateFlow()
 
 
         private val _userInfo = MutableStateFlow<WrapResponse<UserInfo>>(WrapResponse())

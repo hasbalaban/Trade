@@ -74,6 +74,7 @@ class WalletPageViewModel @Inject constructor(
                 val totalItemBalance = amount * price
 
             NewModelForItemHistory(
+                id = item.id.lowercase(Locale.getDefault()),
                 CoinName =item.id.lowercase(Locale.getDefault()),
                 CoinAmount = amount.toDouble(),
                 Total = totalItemBalance,

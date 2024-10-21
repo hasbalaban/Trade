@@ -32,6 +32,7 @@ data class TableRow(
 fun List<TableRow>.toMap(): List<NewModelForItemHistory> {
     val mappedList = map {
         NewModelForItemHistory(
+            id = it.Sembol,
             CoinName = it.Sembol,
             CoinAmount =  it.Alış.toDouble(),
             Total = it.Satış.toDouble().toBigDecimal(),
