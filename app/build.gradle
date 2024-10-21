@@ -32,8 +32,8 @@ android {
         applicationId "com.finance.trade_learn"
         minSdk 30
         targetSdk 34
-        versionCode 101
-        versionName "2.6.5"
+        versionCode 102
+        versionName "2.6.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
