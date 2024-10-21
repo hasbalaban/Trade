@@ -364,12 +364,6 @@ private fun TopSection(
             )
         ) {
             PopularSection { }
-            HorizontalDivider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = colorResource(id = R.color.light_grey))
-                    .height(1.dp)
-            )
         }
     }
 }
