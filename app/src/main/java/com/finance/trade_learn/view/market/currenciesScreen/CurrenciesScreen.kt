@@ -113,11 +113,12 @@ fun StockCard(
             text = title,
             fontWeight = FontWeight.Bold,
             fontSize = 12.sp,
+            maxLines = 1,
             color = Color(0xFF001F6B),
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color(0xFFEBEBEB))
-                .padding(start = 4.dp, top = 4.dp, end = 2.dp, bottom = 4.dp),
+                .padding(start = 4.dp, top = 2.dp, end = 2.dp, bottom = 2.dp),
             textAlign = TextAlign.Start
         )
 
@@ -126,9 +127,10 @@ fun StockCard(
                 .background(color = Color(0xFF001F6B),)
                 .padding(start = 6.dp, end = 4.dp)
         ){
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = price,
+                maxLines = 1,
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.sp,
                 color = Color.White
@@ -136,11 +138,11 @@ fun StockCard(
 
 
             Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 4.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
+                .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
 
                 Text(
                     text = changePercent,
+                    maxLines = 1,
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     color = percentColor

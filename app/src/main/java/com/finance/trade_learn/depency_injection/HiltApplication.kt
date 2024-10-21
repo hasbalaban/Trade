@@ -48,8 +48,6 @@ class HiltApplication : Application() {
 
         fetchAndActivateFirebase()
 
-
-        return
         Thread.setDefaultUncaughtExceptionHandler { thread, exception ->
             handleUncaughtException(thread, exception)
         }
@@ -67,14 +65,14 @@ class HiltApplication : Application() {
 
         val shortcut1 = ShortcutInfo.Builder(this, "market-1")
             .setShortLabel("Market-1")
-            .setLongLabel("Open Example Activity-1")
+            .setLongLabel("Open Market")
             .setIcon(Icon.createWithResource(this, R.drawable.search))
             .setIntent(intent)
             .build()
 
         val shortcut2 = ShortcutInfo.Builder(this, "market-2")
             .setShortLabel("Market-2")
-            .setLongLabel("Open Example Activity-2")
+            .setLongLabel("Open Market")
             .setIcon(Icon.createWithResource(this, R.drawable.last_trade))
             .setIntent(intent2)
             .build()
@@ -137,7 +135,7 @@ class HiltApplication : Application() {
                     //Toast.makeText(this, "Fetch and activate succeeded", Toast.LENGTH_SHORT,).show()
 
                     RemoteConfigs.SHOULD_BE_LOCAL_REQUEST = remoteConfig.getBoolean(RemoteConfigsConst.SHOULD_BE_LOCAL_REQUEST)
-                    //RemoteConfigs.SHOULD_SHOW_ADVERTISEMENT = remoteConfig.getBoolean(RemoteConfigsConst.SHOULD_SHOW_ADVERTISEMENT)
+                    RemoteConfigs.SHOULD_SHOW_ADVERTISEMENT = remoteConfig.getBoolean(RemoteConfigsConst.SHOULD_SHOW_ADVERTISEMENT)
 
                     RemoteConfigs.setRemoteConfigStatus(true)
                 } else {
