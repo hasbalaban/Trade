@@ -11,7 +11,7 @@ import com.finance.trade_learn.R
 
 object Constants {
     const val ProductionAdKey = "ca-app-pub-2861105825918511/1127322176"
-    const val TestAdKey =       "ca-app-pub-2861105825918511/1127322176"
+    const val TestAdKey =       "ca-app-pub-3940256099942544/1033173712"
 
 
     const val POST_NOTIFICATION = 1
