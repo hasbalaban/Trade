@@ -67,7 +67,10 @@ import androidx.navigation.navArgument
 import com.finance.trade_learn.R
 import com.finance.trade_learn.base.BaseViewModel
 import com.finance.trade_learn.theme.FinanceAppTheme
-import com.finance.trade_learn.utils.*
+import com.finance.trade_learn.utils.Constants
+import com.finance.trade_learn.utils.RemoteConfigs
+import com.finance.trade_learn.utils.Screens
+import com.finance.trade_learn.utils.SharedPreferencesManager
 import com.finance.trade_learn.view.history.TradeHistoryScreen
 import com.finance.trade_learn.view.home.HomeScreen
 import com.finance.trade_learn.view.loading.LoadingLottieAnimation
@@ -87,13 +90,24 @@ import com.finance.trade_learn.viewModel.ProfileViewModel
 import com.finance.trade_learn.viewModel.SignUpViewModel
 import com.finance.trade_learn.viewModel.TransactionViewModel
 import com.finance.trade_learn.viewModel.TvViewModel
-import com.finance.trade_learn.viewModel.WalletPageViewModel
 import com.finance.trade_learn.viewModel.ViewModelUtils
-import com.google.android.gms.ads.*
+import com.finance.trade_learn.viewModel.WalletPageViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+
 
 val LocalBaseViewModel = compositionLocalOf<BaseViewModel> { error("No BaseViewModel found") }
 
@@ -479,9 +493,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setInterstitialAd() {
-        val adRequest = AdRequest.Builder().build()
-        MobileAds.setRequestConfiguration(RequestConfiguration.Builder().build())
 
+        val testDevices: MutableList<String> = ArrayList()
+        testDevices.add(AdRequest.DEVICE_ID_EMULATOR)
+        val requestConfiguration = RequestConfiguration.Builder()
+            .setTestDeviceIds(testDevices)
+            .build()
+
+        MobileAds.setRequestConfiguration(requestConfiguration)
+
+        val adRequest = AdRequest.Builder().build()
         InterstitialAd.load(
             this,
             Constants.ProductionAdKey,
@@ -511,10 +532,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIsAdShowed() {
-
-        if (RemoteConfigs.SHOULD_SHOW_ADVERTISEMENT) {
-            lifecycleScope.launch {
-                delay(6_000)
+        lifecycleScope.launch {
+            delay(6_000)
+            if (RemoteConfigs.SHOULD_SHOW_ADVERTISEMENT) {
                 val currentMillis = System.currentTimeMillis()
                 val updateTime =
                     SharedPreferencesManager(this@MainActivity).getSharedPreferencesLong(
@@ -553,18 +573,6 @@ class MainActivity : AppCompatActivity() {
 
 
 }
-
-private fun isEmulator(): Boolean {
-    return (Build.FINGERPRINT.startsWith("generic")
-            || Build.FINGERPRINT.startsWith("unknown")
-            || Build.MODEL.contains("google_sdk")
-            || Build.MODEL.contains("Emulator")
-            || Build.MODEL.contains("Android SDK built for x86")
-            || Build.MANUFACTURER.contains("Genymotion") || Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith(
-        "generic"
-    )) || "google_sdk" == Build.PRODUCT
-}
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
