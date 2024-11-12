@@ -2,9 +2,9 @@ package com.finance.trade_learn.utils
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.finance.trade_learn.R
@@ -27,11 +27,18 @@ object Constants {
             icon = Icons.Filled.Search,
             route = "market"
         ),
+        /*
         BottomNavItem(
             label = R.string.Trade,
             icon = Icons.Filled.SwapHoriz,
             route = Screens.HistoryScreen.route
           //  route = "trade?coinName={coinName}"
+        ),
+         */
+        BottomNavItem(
+            label = R.string.score_board,
+            icon = Icons.Filled.EmojiEvents,
+            route = Screens.ScoreBoard.route
         ),
         BottomNavItem(
             label = R.string.Wallet,
@@ -59,6 +66,7 @@ sealed class Screens(val label: String? = null,val icon : Int, val route: String
 
     object SingUp : Screens("Profile",R.drawable.home,"sign_up")
     object HistoryScreen : Screens("historyScreen",R.drawable.home,"historyScreen")
+    object ScoreBoard : Screens("scoreBoard",R.drawable.home,"scoreBoard")
 }
 
 
