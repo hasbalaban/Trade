@@ -80,6 +80,7 @@ import com.finance.trade_learn.view.loginscreen.login.LoginScreen
 import com.finance.trade_learn.view.loginscreen.signup.SignUpScreen
 import com.finance.trade_learn.view.market.HorizontalPagerScreen
 import com.finance.trade_learn.view.profile.ProfileScreen
+import com.finance.trade_learn.view.score_board.ScoreBoard
 import com.finance.trade_learn.view.trade.MainBuySellScreen
 import com.finance.trade_learn.view.wallet.WalletScreen
 import com.finance.trade_learn.viewModel.CodeVerificationViewModel
@@ -331,7 +332,10 @@ class MainActivity : AppCompatActivity() {
                         navController.popBackStack()
                     })
                 }
+            }
 
+            composable(Screens.ScoreBoard.route) {
+                ScoreBoard()
             }
 
             composable(Screens.Profile.route) {
@@ -609,11 +613,6 @@ fun BottomNavigationBar(
         Constants.BottomNavItems.forEach { navItem ->
             val isSelected = currentRoute == navItem.route
 
-            val otherModifier =
-                if (navItem.label == R.string.Trade) Modifier
-                    .clip(CircleShape)
-                    .background(selectedColor)
-                else Modifier
 
             NavigationBarItem(
                 icon = {
@@ -621,11 +620,9 @@ fun BottomNavigationBar(
                         imageVector = navItem.icon,
                         contentDescription = stringResource(id = navItem.label),
                         modifier = Modifier
-                            .size(20.dp)
-                            .then(otherModifier),
+                            .size(if (isSelected && navItem.label == R.string.score_board) 32.dp else 20.dp),
                         colorFilter = ColorFilter.tint(
-                            if (isSelected && navItem.label != R.string.Trade) selectedColor
-                            else if (navItem.label == R.string.Trade) Color.White
+                            if (isSelected) selectedColor
                             else Color.LightGray
                         )
                     )
