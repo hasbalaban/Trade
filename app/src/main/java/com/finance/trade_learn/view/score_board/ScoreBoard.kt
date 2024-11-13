@@ -13,27 +13,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.StarHalf
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material.icons.filled.StarHalf
-import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.Stars
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,33 +32,41 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.finance.trade_learn.models.ScoreBoardItem
+import com.finance.trade_learn.service.ctryptoApi.cryptoService
 import com.finance.trade_learn.theme.FinanceAppTheme
+import com.finance.trade_learn.view.wallet.format
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.math.min
 
 class ScoreBoardViewModel() : ViewModel(){
-    private val _users = MutableStateFlow(emptyList<Deneme>())
-    val users = _users.asStateFlow()
-
+    private val _scoreBoardItems = MutableStateFlow<List<ScoreBoardItem>>(emptyList())
+    val scoreBoardItems = _scoreBoardItems.asStateFlow()
     init {
-        val list = ArrayList<Deneme>()
-        for (i in 0..15){
-            val item = Deneme(
-                name = "User-$i",
-                totalBalance = i.toDouble()
-            )
-            list.add(item)
-        }
+        getAllCrypto()
+    }
+
+    private fun getAllCrypto() {
         viewModelScope.launch {
-            _users.emit(list)
+            val response = cryptoService().getScoreBoard()
+
+            when(response.isSuccessful){
+                true -> {
+                    response.body()?.data?.let {newList ->
+                        _scoreBoardItems.emit(newList)
+                    }
+                }
+                false ->  _scoreBoardItems.emit(emptyList())
+            }
         }
     }
 }
 
 @Composable
 fun ScoreBoard(viewModel: ScoreBoardViewModel = androidx.lifecycle.viewmodel.compose.viewModel()){
-    val list by viewModel.users.collectAsState()
+    val list by viewModel.scoreBoardItems.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -108,7 +106,7 @@ fun Header() {
 }
 
 @Composable
-fun ScoreBoard(userList: List<Deneme>) {
+fun ScoreBoard(userList: List<ScoreBoardItem>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -145,12 +143,12 @@ fun ScoreBoard(userList: List<Deneme>) {
                     text = "${index + 1}",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = textColor
+                    color = textColor,
+                    modifier = Modifier.width(40.dp)
                 )
 
-                Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = user.name,
+                    text = user.nameAndUsername.replaceRange(minOf(user.nameAndUsername.length, 2)..<user.nameAndUsername.length, "*".repeat((user.nameAndUsername.length - 2).coerceAtLeast(3))),
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     color = textColor,
@@ -198,7 +196,7 @@ fun ScoreBoard(userList: List<Deneme>) {
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
-                        text = "${user.totalBalance} ₺",
+                        text = "${user.totalBalance.format(2)} $",
                         fontSize = 16.sp,
                         color = textColor,
                         fontWeight = FontWeight.Medium
@@ -218,10 +216,10 @@ fun ScoreBoard(userList: List<Deneme>) {
 @Preview
 @Composable
 private fun Preview(){
-    val list = ArrayList<Deneme>()
+    val list = ArrayList<ScoreBoardItem>()
     for (i in 0..15){
-        val item = Deneme(
-            name = "User-$i",
+        val item = ScoreBoardItem(
+            nameAndUsername = "User-$i",
             totalBalance = i.toDouble()
         )
         list.add(item)

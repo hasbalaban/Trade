@@ -1,5 +1,6 @@
 package com.finance.trade_learn.service.ctryptoApi
 
+import com.finance.trade_learn.models.ScoreBoardItem
 import com.finance.trade_learn.models.WrapResponse
 import com.finance.trade_learn.models.coin_gecko.CoinDetail
 import com.finance.trade_learn.service.user.client
@@ -22,6 +23,10 @@ class cryptoService() {
 
     suspend fun getCoinList(): Response<WrapResponse<List<CoinDetail>?>> {
         return localRetrofit.getLocalCoinList()
+    }
+
+    suspend fun getScoreBoard(): Response<WrapResponse<List<ScoreBoardItem>?>> {
+        return localRetrofit.getScoreBoard()
     }
 
 }

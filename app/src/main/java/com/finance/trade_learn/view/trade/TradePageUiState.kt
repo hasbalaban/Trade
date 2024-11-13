@@ -58,7 +58,7 @@ data class BuySellScreenData(
 
 
     val isBuyEnabled : Boolean
-        get() = balance > 0 && balance >= totalTransactionCost
+        get() = balance > 0  && totalTransactionCost > 0 && balance >= totalTransactionCost
                 && totalTransactionCost >= 0
                 && !selectedItemId.equals(other = "tether", ignoreCase = true)
 
