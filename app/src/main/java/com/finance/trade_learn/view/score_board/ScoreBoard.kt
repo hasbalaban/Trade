@@ -117,7 +117,6 @@ fun ScoreBoard(userList: List<ScoreBoardItem>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF121212)) // Koyu gri arka plan
     ) {
         itemsIndexed(userList.sortedByDescending { it.totalBalance }) { index, user ->
             val backgroundColor = when {
